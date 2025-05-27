@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
-using NA_Logic.IRepository;  // Import namespace của Authorization
+using NA_Logic.IRepository;
+using System.Text.Json;  // Import namespace của Authorization
 
 namespace NA_Xepthoikhoabieu.Authorization
 {
@@ -38,8 +39,9 @@ namespace NA_Xepthoikhoabieu.Authorization
             if (string.IsNullOrEmpty(token))
             {
                 context.Response.StatusCode = 401; // Unauthorized
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Token không tồn tại. Vui lòng đăng nhập.");
+                context.Response.ContentType = "application/json";
+                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                await context.Response.WriteAsync(response);
                 return;
             }
 
@@ -47,8 +49,9 @@ namespace NA_Xepthoikhoabieu.Authorization
             if (!_jwtHelperRepository.IsValidToken(token))
             {
                 context.Response.StatusCode = 401; // Unauthorized
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Token không hợp lệ. Vui lòng đăng nhập lại.");
+                context.Response.ContentType = "application/json";
+                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                await context.Response.WriteAsync(response);
                 return;
             }
 
@@ -61,8 +64,9 @@ namespace NA_Xepthoikhoabieu.Authorization
             else
             {
                 context.Response.StatusCode = 401; // Unauthorized
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Token không hợp lệ. Vui lòng đăng nhập lại.");
+                context.Response.ContentType = "application/json";
+                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                await context.Response.WriteAsync(response);
                 return;
             }
 
