@@ -1,0 +1,6 @@
+@NA_Xepthoikhoabieu_HostAddress = http://localhost:5065
+
+GET {{NA_Xepthoikhoabieu_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
