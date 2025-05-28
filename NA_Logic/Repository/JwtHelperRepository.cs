@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NA_Logic.IRepository;
 using System;
@@ -14,12 +15,14 @@ namespace NA_Logic.Repository
         private readonly string _secretKey;
         private readonly string _issuer;
         private readonly string[] _audiences;
+        private readonly IConfiguration _config;
 
-        public JwtHelperRepository(string secretKey, string issuer, string[] audiences)
+        public JwtHelperRepository(string secretKey, string issuer, string[] audiences, IConfiguration config)
         {
             _secretKey = secretKey;
             _issuer = issuer;
             _audiences = audiences;
+            _config = config;
         }
 
         /// <summary>
@@ -106,6 +109,33 @@ namespace NA_Logic.Repository
             {
                 return null;
             }
+        }
+
+        public string GenerateJwtToken(string userId)
+        {
+            var jwtSettings = _config.GetSection("JwtSettings");
+            var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!);
+
+            // Lấy thời gian hết hạn từ cấu hình (ExpireTime - tính bằng phút)
+            int expireMinutes = int.Parse(jwtSettings["ExpireTime"]!);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(secretKey);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim("UserId", userId)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+                Issuer = jwtSettings["Issuer"],
+                Audience = jwtSettings["Audience"],
+                SigningCredentials = creds
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

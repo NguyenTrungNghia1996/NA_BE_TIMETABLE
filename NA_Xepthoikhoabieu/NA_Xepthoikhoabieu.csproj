@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\NA_Entities\NA_Entities.csproj" />
     <ProjectReference Include="..\NA_Logic\NA_Logic.csproj" />
   </ItemGroup>

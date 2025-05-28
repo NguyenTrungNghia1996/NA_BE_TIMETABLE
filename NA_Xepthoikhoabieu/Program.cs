@@ -33,6 +33,7 @@ builder.Services.AddCors(options =>
 // Add Repository
 //builder.Services.AddScoped<IAuthenRepository, AuthenRepository>();
 builder.Services.AddScoped<IPasswordHasherRepository, PasswordHasherRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 
 // Đọc cấu hình từ appsettings.json
