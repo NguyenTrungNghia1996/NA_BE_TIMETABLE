@@ -41,11 +41,7 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("Không tồn tại key"));
 
 // Cấu hình JwtHelperRepository vào DI container
-builder.Services.AddSingleton<IJwtHelperRepository>(new JwtHelperRepository(
-    jwtSettings["SecretKey"],
-    jwtSettings["Issuer"],
-    new[] { jwtSettings["Audience"] }
-));
+builder.Services.AddSingleton<IJwtHelperRepository, JwtHelperRepository>();
 
 // Thêm Authorization
 builder.Services.AddAuthorization();

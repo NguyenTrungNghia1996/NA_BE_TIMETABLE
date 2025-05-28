@@ -28,16 +28,22 @@ namespace NA_Logic.Repository
 
         public bool VerifyPassword(string hashedPassword, string providedPassword)
         {
-            var hashBytes = Convert.FromBase64String(hashedPassword);
-            var salt = new byte[SaltSize];
-            Buffer.BlockCopy(hashBytes, 0, salt, 0, SaltSize);
+            try
+            {
+                var hashBytes = Convert.FromBase64String(hashedPassword);
+                var salt = new byte[SaltSize];
+                Buffer.BlockCopy(hashBytes, 0, salt, 0, SaltSize);
+                var key = new byte[KeySize];
+                Buffer.BlockCopy(hashBytes, SaltSize, key, 0, KeySize);
 
-            var key = new byte[KeySize];
-            Buffer.BlockCopy(hashBytes, SaltSize, key, 0, KeySize);
+                var providedKey = new Rfc2898DeriveBytes(providedPassword, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
 
-            var providedKey = new Rfc2898DeriveBytes(providedPassword, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
-
-            return key.SequenceEqual(providedKey);
+                return key.SequenceEqual(providedKey);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 

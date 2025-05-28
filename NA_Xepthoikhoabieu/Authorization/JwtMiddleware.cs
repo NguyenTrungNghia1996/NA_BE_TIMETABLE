@@ -40,7 +40,7 @@ namespace NA_Xepthoikhoabieu.Authorization
             {
                 context.Response.StatusCode = 401; // Unauthorized
                 context.Response.ContentType = "application/json";
-                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                var response = JsonSerializer.Serialize(new { status = "error", message = "Token không tồn tại. Vui lòng đăng nhập." });
                 await context.Response.WriteAsync(response);
                 return;
             }
@@ -50,7 +50,7 @@ namespace NA_Xepthoikhoabieu.Authorization
             {
                 context.Response.StatusCode = 401; // Unauthorized
                 context.Response.ContentType = "application/json";
-                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                var response = JsonSerializer.Serialize(new { status = "error", message = "Token không tồn tại. Vui lòng đăng nhập." });
                 await context.Response.WriteAsync(response);
                 return;
             }
@@ -65,7 +65,7 @@ namespace NA_Xepthoikhoabieu.Authorization
             {
                 context.Response.StatusCode = 401; // Unauthorized
                 context.Response.ContentType = "application/json";
-                var response = JsonSerializer.Serialize(new { message = "Token không tồn tại. Vui lòng đăng nhập." });
+                var response = JsonSerializer.Serialize(new { status = "error", message = "Token không tồn tại. Vui lòng đăng nhập." });
                 await context.Response.WriteAsync(response);
                 return;
             }

@@ -12,17 +12,19 @@ namespace NA_Logic.Repository
 {
     public class JwtHelperRepository : IJwtHelperRepository
     {
+        private readonly IConfiguration _config;
         private readonly string _secretKey;
         private readonly string _issuer;
         private readonly string[] _audiences;
-        private readonly IConfiguration _config;
 
-        public JwtHelperRepository(string secretKey, string issuer, string[] audiences, IConfiguration config)
+        public JwtHelperRepository(IConfiguration config)
         {
-            _secretKey = secretKey;
-            _issuer = issuer;
-            _audiences = audiences;
             _config = config;
+
+            var jwtSection = _config.GetSection("JwtSettings");
+            _secretKey = jwtSection["SecretKey"]!;
+            _issuer = jwtSection["Issuer"]!;
+            _audiences = new[] { jwtSection["Audience"]! };
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using NA_Entities.Entities.Auth;
+using NA_Entities.Entities.Dtos;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NA_Xepthoikhoabieu.Mapping
@@ -7,8 +9,7 @@ namespace NA_Xepthoikhoabieu.Mapping
     {
         public MappingProfile()
         {
-            // Cấu hình ánh xạ từ Website_Menu_Active sang Website_MenuDto
-            //CreateMap<QLW_QLTTCT, ThongtincongtyDto>();
+            CreateMap<Auth_Users, UserDto>();
         }
     }
 }
