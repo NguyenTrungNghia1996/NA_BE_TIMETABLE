@@ -52,7 +52,7 @@ docker-cleanup:
   image: docker:latest
   needs: ["docker-build-and-push"]
   rules:
-    - if: '$CI_COMMIT_BRANCH == "deploy"'
+    - if: '$CI_COMMIT_BRANCH == "dev"'
   script:
     - |
       TAG_LATEST="latest"
