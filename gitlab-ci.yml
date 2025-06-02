@@ -16,9 +16,9 @@ docker-build-and-push:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "deploy" && $CI_MERGE_REQUEST_STATE == "merged"'
+    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_MERGE_REQUEST_STATE == "merged"'
       when: on_success
-    - if: '$CI_COMMIT_BRANCH == "deploy" && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "push"'
       when: on_success
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
