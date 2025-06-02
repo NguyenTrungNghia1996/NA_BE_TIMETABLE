@@ -113,7 +113,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public string GenerateJwtToken(string userId)
+        public string GenerateJwtToken(string userId, string Id_Donvi)
         {
             var jwtSettings = _config.GetSection("JwtSettings");
             var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!);
@@ -129,7 +129,8 @@ namespace NA_Logic.Repository
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-            new Claim("UserId", userId)
+            new Claim("UserId", userId),
+            new Claim("Id_Donvi", Id_Donvi)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
                 Issuer = jwtSettings["Issuer"],

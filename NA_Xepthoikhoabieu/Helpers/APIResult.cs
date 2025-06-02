@@ -75,5 +75,14 @@ namespace NA_Xepthoikhoabieu.Helpers
                 StatusCode = 500
             };
         }
+        public static IActionResult Ok(string message = "Thành công")
+        {
+            return new OkObjectResult(new ApiResponse<object>
+            {
+                Data = new object[] { },
+                Message = message,
+                Status = "success"
+            });
+        }
     }
 }

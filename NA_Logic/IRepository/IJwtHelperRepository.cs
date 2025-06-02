@@ -8,6 +8,6 @@ namespace NA_Logic.IRepository
         string GetTokenFromRequest(HttpRequest request);
         bool IsValidTokenFromRequest(HttpRequest request);
         ClaimsPrincipal? GetPrincipalFromToken(string token);
-        string GenerateJwtToken(string userId);
+        string GenerateJwtToken(string userId, string Id_Donvi);
     }
 }

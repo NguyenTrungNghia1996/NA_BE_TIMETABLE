@@ -82,7 +82,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!validPassword)
                 return ApiResult.Unauthorized("Mật khẩu không chính xác");
             // Nếu đăng nhập thành công, tạo JWT token
-            var toke = _jwtHelperRepository.GenerateJwtToken(user.Id.ToString());
+            var toke = _jwtHelperRepository.GenerateJwtToken(user.Id.ToString(), user.Id_Donvi.ToString());
             var userDto = _mapper.Map<UserDto>(user);
             return ApiResult.Success(new
             {
