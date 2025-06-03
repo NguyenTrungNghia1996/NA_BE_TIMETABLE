@@ -37,6 +37,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetlistUsers_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
+            
             if (PageIndex < 1 || PageSize < 1)
                 return ApiResult.BadRequest($"PageIndex hoặc PageSize không hợp lệ, vui lòng kiểm tra lại (PageIndex >= 1; PageSize >= 1)");
             int totalrecord = 0;

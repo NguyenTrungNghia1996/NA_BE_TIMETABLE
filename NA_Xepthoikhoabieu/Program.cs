@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IPasswordHasherRepository, PasswordHasherRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IDM_CaphocRepository, DM_CaphocRepository>();
-
+builder.Services.AddScoped<IClaimHelperRepository, ClaimHelperRepository>();
 
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
