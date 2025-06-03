@@ -10,7 +10,7 @@ using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/Caphoc")]
+    [Route("api/caphoc")]
     [ApiController]
     public class DM_CaphocController : ControllerBase
     {
