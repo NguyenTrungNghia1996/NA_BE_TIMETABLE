@@ -49,7 +49,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             "Lấy danh sách người dùng thành công");
         }
         // Get detail user by id
-        [HttpGet]
+        [HttpGet("detail")]
         public IActionResult DetailUser_ById([FromQuery]int id)
         {
             return Ok();
