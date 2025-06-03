@@ -36,6 +36,7 @@ builder.Services.AddScoped<IPasswordHasherRepository, PasswordHasherRepository>(
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IDM_CaphocRepository, DM_CaphocRepository>();
 builder.Services.AddScoped<IClaimHelperRepository, ClaimHelperRepository>();
+builder.Services.AddScoped<IDM_DonviRepository, DM_DonviRepository>();
 
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
