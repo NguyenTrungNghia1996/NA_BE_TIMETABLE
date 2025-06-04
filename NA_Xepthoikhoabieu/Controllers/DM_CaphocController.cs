@@ -32,9 +32,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult Getlist_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _clamHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idDonvi = _clamHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search, idDonvi, ref totalrecord);
@@ -56,9 +55,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _clamHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idDonvi = _clamHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
             var detailCaphoc = _caphocRepository.GetDetailByID(Id, idDonvi);
             if (detailCaphoc == null)
@@ -74,9 +72,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _clamHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idDonvi = _clamHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
             // mapper data 
             var item = _mapper.Map<DM_Caphoc>(caphoc);
@@ -98,11 +95,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_Caphoc_Dto caphoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _clamHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idDonvi = _clamHelperRepository.GetIdDonvi(User);
-
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _caphocRepository.GetDetailByID(caphoc.Id, idDonvi);          
             if (!ModelState.IsValid)
@@ -126,10 +120,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _clamHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Kiểm tra tồn tại Id_Donvi 
             int idDonvi = _clamHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _caphocRepository.GetDetailByID(id, idDonvi);        
             if (caphocdb == null)

@@ -68,10 +68,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult DetailUser_ById([FromQuery] int id)
         {
-            // kiểm tra tính hợp lệ của thông tin trong token
-            var check = _claimHelperRepository.CheckUserExists(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin user không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idUser = _claimHelperRepository.GetUserId(User);
+            if (idUser <= 0)
+                return ApiResult.Unauthorized($"Thông tin user id = {idUser} không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             // Lấy bản ghi từ db
             var detailUser = _auth.FindUserById(id);
@@ -88,8 +87,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult CreateUser([FromBody] Auth_UsersDto user)
         {
             // kiểm tra tính hợp lệ của thông tin trong token
-            var check = _claimHelperRepository.CheckUserExists(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin user không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
@@ -136,9 +133,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult UpdateUser([FromBody] Auth_Users_UpdateDto user)
         {
-            // kiểm tra tính hợp lệ của thông tin trong token
-            var check = _claimHelperRepository.CheckUserExists(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đăng nhập không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
@@ -184,9 +178,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult DeleteUser([FromQuery] int id)
         {
-            // kiểm tra tính hợp lệ của thông tin trong token
-            var check = _claimHelperRepository.CheckUserExists(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đăng nhập không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
@@ -239,6 +230,5 @@ namespace NA_Xepthoikhoabieu.Controllers
                 token = toke,
             }, "Đăng nhập thành công");
         }
-        //
     }
 }

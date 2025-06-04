@@ -19,8 +19,21 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var claimValue = user.FindFirst("Id_Donvi")?.Value;
-                return int.TryParse(claimValue, out int idDonvi) ? idDonvi : 0;
+                if (user != null)
+                {
+                    if (!CheckUserExists(user))
+                    {
+                        return 0;
+                    }
+                    var userId = GetUserId(user);
+                    var dbUser = _context.Auth_Users.Find(userId);
+                    if (dbUser == null)
+                    {
+                        return 0;
+                    }
+                    return dbUser.Id_Donvi;
+                }
+                return 0;
             }
             catch
             {
