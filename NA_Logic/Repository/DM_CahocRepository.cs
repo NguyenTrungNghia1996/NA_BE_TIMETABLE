@@ -47,6 +47,7 @@ namespace NA_Logic.Repository
                 var result = _dbContext.Set<DM_Cahoc_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
                     .ToList();
+                if (result == null) result = new List<DM_Cahoc_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -100,8 +101,11 @@ namespace NA_Logic.Repository
             {
                 DM_Cahoc cahoc = new DM_Cahoc();
                 cahoc = _dbContext.DM_Cahoc.Find(Id);
-                _dbContext.DM_Cahoc.Remove(cahoc);
-                _dbContext.SaveChanges();
+                if (cahoc != null)
+                {
+                    _dbContext.DM_Cahoc.Remove(cahoc);
+                    _dbContext.SaveChanges();
+                }
                 return true;
             }
             catch
