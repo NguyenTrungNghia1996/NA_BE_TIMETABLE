@@ -1,15 +1,15 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using NA_Entities.DBContext;
-using NA_Entities.Entities.Auth;
-using NA_Entities.Entities.Danh_muc;
-using NA_Logic.IRepository;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using NA_Entities.DBContext;
+using NA_Entities.Entities.Auth;
+using NA_Entities.Entities.Danh_muc;
+using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
 {
@@ -32,9 +32,9 @@ namespace NA_Logic.Repository
 
                 var result = _context.Set<DM_Caphoc_List>()
                     .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
-                        paramPageIndex, paramPageSize, paramSearch,paramIdDonvi, paramTotal)
+                        paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
                     .ToList();
-
+                if (result == null) result = new List<DM_Caphoc_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -55,7 +55,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add( DM_Caphoc dm_caphoc)
+        public bool Add(DM_Caphoc dm_caphoc)
         {
             try
             {
@@ -88,8 +88,11 @@ namespace NA_Logic.Repository
             {
                 DM_Caphoc item = new DM_Caphoc();
                 item = _context.DM_Caphoc.Find(Id);
-                _context.DM_Caphoc.Remove(item);
-                _context.SaveChanges();
+                if (item != null)
+                {
+                    _context.DM_Caphoc.Remove(item);
+                    _context.SaveChanges();
+                }
                 return true;
             }
             catch

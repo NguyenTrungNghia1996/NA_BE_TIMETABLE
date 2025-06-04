@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using NA_Entities.Entities.Auth;
 
 namespace NA_Logic.IRepository
 {

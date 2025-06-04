@@ -14,6 +14,11 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Caphoc_List, DM_Caphoc_ListDto>();
             CreateMap<DM_Caphoc, DM_Caphoc_Dto>();
             CreateMap<DM_Caphoc_Dto, DM_Caphoc>();
+            CreateMap<Auth_Users, Auth_UsersDto>();
+            CreateMap<Auth_UsersDto, Auth_Users>();
+            CreateMap<Auth_Users, Auth_UsersDto>();
+            CreateMap<Auth_Users_UpdateDto, Auth_Users>();
+            
             CreateMap<DM_Cahoc,DM_CahocDto>();
             CreateMap<DM_Cahoc_List, DM_Cahoc_ListDto>();
             CreateMap<DM_CahocDto, DM_Cahoc>();
