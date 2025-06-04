@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -22,6 +23,9 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Cahoc,DM_CahocDto>();
             CreateMap<DM_Cahoc_List, DM_Cahoc_ListDto>();
             CreateMap<DM_CahocDto, DM_Cahoc>();
+            CreateMap<DM_Donvi, DM_DonviDto>();
+            CreateMap<DM_Donvi_List, DM_Donvi_List_Dto>();
+            CreateMap<DM_DonviDto, DM_Donvi>();
         }
     }
 }

@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NA_Entities.Entities.Danhmuc
+namespace NA_Entities.Entities.Dtos
 {
-    public class DM_Donvi
+    public class DM_DonviDto
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên không được để trống")]
@@ -24,11 +25,11 @@ namespace NA_Entities.Entities.Danhmuc
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn cấp học")]
-        public int Id_Caphoc { get; set; } 
+        public int Id_Caphoc { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
-        public int Id_Cahoc { get; set; } 
+        public int Id_Cahoc { get; set; }
     }
-    public class DM_Donvi_List
+    public class DM_Donvi_List_Dto
     {
         public int? Stt = 0;
         public int Id { get; set; } = 0;
@@ -36,7 +37,7 @@ namespace NA_Entities.Entities.Danhmuc
         public string Diachi { get; set; } = string.Empty;
         public string Sodienthoai { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Tencaphoc { get; set; }=string.Empty;
+        public string Tencaphoc { get; set; } = string.Empty;
         public string Tencahoc { get; set; } = string.Empty;
     }
 }
