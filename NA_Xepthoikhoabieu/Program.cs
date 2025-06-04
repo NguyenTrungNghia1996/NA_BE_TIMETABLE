@@ -38,6 +38,9 @@ builder.Services.AddScoped<IDM_CaphocRepository, DM_CaphocRepository>();
 builder.Services.AddScoped<IDM_CahocRepository, DM_CahocRepository>();
 builder.Services.AddScoped<IClaimHelperRepository, ClaimHelperRepository>();
 builder.Services.AddScoped<IDM_DonviRepository, DM_DonviRepository>();
+builder.Services.AddScoped<IAuth_MenusRepository, Auth_MenusRepository>();
+builder.Services.AddScoped<IAuth_RolesRepository, Auth_RolesRepository>();
+
 
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

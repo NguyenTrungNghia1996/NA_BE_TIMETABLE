@@ -2,6 +2,7 @@
 using System.Text.Json;  // Import namespace của Authorization
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using NA_Logic.IRepository;
 
 namespace NA_Xepthoikhoabieu.Authorization
@@ -10,13 +11,13 @@ namespace NA_Xepthoikhoabieu.Authorization
     {
         private readonly RequestDelegate _next;
         private readonly IJwtHelperRepository _jwtHelperRepository;
-        private readonly IAuthRepository _auth;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public JwtMiddleware(RequestDelegate next, IJwtHelperRepository jwtHelperRepository, IAuthRepository auth)
+        public JwtMiddleware(RequestDelegate next, IJwtHelperRepository jwtHelperRepository, IServiceScopeFactory serviceScopeFactory)
         {
             _next = next;
             _jwtHelperRepository = jwtHelperRepository;
-            _auth = auth;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -82,7 +83,10 @@ namespace NA_Xepthoikhoabieu.Authorization
                 await context.Response.WriteAsync(response);
                 return;
             }
-            var userDetail = _auth.CheckUser_DonviExists(idUser);
+            using var scope = _serviceScopeFactory.CreateScope();
+            var authRepo = scope.ServiceProvider.GetRequiredService<IAuthRepository>();
+
+            var userDetail = authRepo.CheckUser_DonviExists(idUser);
             if (!userDetail)
             {
                 context.Response.StatusCode = 401; // Unauthorized
