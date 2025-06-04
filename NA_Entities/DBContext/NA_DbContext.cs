@@ -19,11 +19,14 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Caphoc_List> DM_Caphoc_List { get; set; }
         public DbSet<DM_Donvi> DM_Donvi { get; set; }
         public DbSet<DM_Donvi_List> DM_Donvi_List { get; set; }
+        public DbSet<DM_Cahoc> DM_Cahoc { get; set; }
+        public DbSet<DM_Cahoc_List> DM_Cahoc_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
             builder.Entity<DM_Caphoc_List>().HasNoKey();
             builder.Entity<DM_Donvi_List>().HasNoKey();
+            builder.Entity<DM_Cahoc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
