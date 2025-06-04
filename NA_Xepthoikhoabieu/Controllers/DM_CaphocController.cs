@@ -64,10 +64,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (detailCaphoc == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_Caphoc_Dto>(detailCaphoc);
-            return ApiResult.Success(new
-            {
-                item = detailDto
-            },
+            return ApiResult.Success(detailDto,
             "Thành công");
         }
         [HttpPost]

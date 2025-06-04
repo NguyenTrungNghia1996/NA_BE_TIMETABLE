@@ -79,10 +79,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {id}");
             var detailDto = _mapper.Map<Auth_UsersDto>(detailUser);
             detailDto.IdRoles = _auth.GetListIdRolesByUser(id);
-            return ApiResult.Success(new
-            {
-                item = detailDto
-            },
+            return ApiResult.Success(detailDto,
             "Thành công");
         }
         // Create new user
