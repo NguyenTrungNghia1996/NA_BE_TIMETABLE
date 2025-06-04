@@ -20,7 +20,7 @@ namespace NA_Logic.IRepository
         bool UpdateUserToRoles(int userId, List<int> rolesId);
         bool DeleteUsers_Roles(int idUser);
         bool DeleteUser(int id);
-
+        bool CheckUser_DonviExists(int id);
         //Role
         List<int> GetListIdRolesByUser(int id);
         bool checkRolesExist(List<int> idRoles);

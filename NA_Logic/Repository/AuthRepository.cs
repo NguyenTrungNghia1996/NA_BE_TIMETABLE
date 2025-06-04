@@ -233,5 +233,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckUser_DonviExists(int id)
+        {
+            try
+            {
+                var exists = (from user in _context.Auth_Users
+                              join donvi in _context.DM_Donvi
+                              on user.Id_Donvi equals donvi.Id
+                              where user.Id == id
+                              select user).Any();
+                return exists;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

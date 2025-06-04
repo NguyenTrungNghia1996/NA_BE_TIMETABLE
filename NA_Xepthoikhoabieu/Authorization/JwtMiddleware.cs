@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System.Threading.Tasks;
-using NA_Logic.IRepository;
+﻿using System.Linq;
 using System.Text.Json;  // Import namespace của Authorization
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using NA_Logic.IRepository;
 
 namespace NA_Xepthoikhoabieu.Authorization
 {
@@ -10,11 +10,13 @@ namespace NA_Xepthoikhoabieu.Authorization
     {
         private readonly RequestDelegate _next;
         private readonly IJwtHelperRepository _jwtHelperRepository;
+        private readonly IAuthRepository _auth;
 
-        public JwtMiddleware(RequestDelegate next, IJwtHelperRepository jwtHelperRepository)
+        public JwtMiddleware(RequestDelegate next, IJwtHelperRepository jwtHelperRepository, IAuthRepository auth)
         {
             _next = next;
             _jwtHelperRepository = jwtHelperRepository;
+            _auth = auth;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -55,6 +57,7 @@ namespace NA_Xepthoikhoabieu.Authorization
                 return;
             }
 
+
             // Gán giá trị claims sau khi xác thực thành công để lấy userId
             var principal = _jwtHelperRepository.GetPrincipalFromToken(token);
             if (principal != null)
@@ -66,6 +69,25 @@ namespace NA_Xepthoikhoabieu.Authorization
                 context.Response.StatusCode = 401; // Unauthorized
                 context.Response.ContentType = "application/json";
                 var response = JsonSerializer.Serialize(new { status = "error", message = "Token không tồn tại. Vui lòng đăng nhập." });
+                await context.Response.WriteAsync(response);
+                return;
+            }
+            // Kiểm tra user Id và đơn vị
+            var userId = context.User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int idUser) || idUser <= 0)
+            {
+                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.ContentType = "application/json";
+                var response = JsonSerializer.Serialize(new { status = "error", message = "Thông tin người dùng không hợp lệ." });
+                await context.Response.WriteAsync(response);
+                return;
+            }
+            var userDetail = _auth.CheckUser_DonviExists(idUser);
+            if (!userDetail)
+            {
+                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.ContentType = "application/json";
+                var response = JsonSerializer.Serialize(new { status = "error", message = "Thông tin người dùng hoặc đơn vị không tồn tại trong cơ sở dữ liệu. Vui lòng liên hệ admin" });
                 await context.Response.WriteAsync(response);
                 return;
             }
