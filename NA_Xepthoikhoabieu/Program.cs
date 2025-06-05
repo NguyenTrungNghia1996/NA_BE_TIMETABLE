@@ -41,6 +41,7 @@ builder.Services.AddScoped<IDM_DonviRepository, DM_DonviRepository>();
 builder.Services.AddScoped<IAuth_MenusRepository, Auth_MenusRepository>();
 builder.Services.AddScoped<IAuth_RolesRepository, Auth_RolesRepository>();
 builder.Services.AddScoped<IDM_DiemtruongRepository, DM_DiemtruongRepository>();
+builder.Services.AddScoped<IDM_LoaiphonghocRepository, DM_LoaiphonghocRepository>();
 
 
 // Đọc cấu hình từ appsettings.json

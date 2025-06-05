@@ -29,6 +29,9 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Diemtruong, DM_DiemtruongDto>();
             CreateMap<DM_Diemtruong_List, DM_Diemtruong_ListDto>();
             CreateMap<DM_DiemtruongDto, DM_Diemtruong>();
+            CreateMap<DM_Loaiphonghoc, DM_LoaiphonghocDto>();
+            CreateMap<DM_Loaiphonghoc_List,DM_Loaiphonghoc_ListDto>();
+            CreateMap<DM_LoaiphonghocDto, DM_Loaiphonghoc>();
         }
     }
 }

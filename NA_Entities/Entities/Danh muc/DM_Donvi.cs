@@ -9,7 +9,7 @@ namespace NA_Entities.Entities.Danhmuc
     public class DM_Donvi
     {
         public int Id { get; set; } = 0;
-        [Required(ErrorMessage = "Tên không được để trống")]
+        [Required(ErrorMessage = "Tên đơn vị không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string TenDonvi { get; set; } = string.Empty;
         [Required(ErrorMessage = "Địa chỉ không được để trống")]
