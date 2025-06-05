@@ -51,7 +51,7 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Donvi_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                var result = _context.Set<DM_Donvi_List>().FromSqlRaw("EXEC DM_Donvi_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch,  paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Donvi_List>();

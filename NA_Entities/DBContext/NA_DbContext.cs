@@ -30,6 +30,8 @@ namespace NA_Entities.DBContext
         public DbSet<Auth_Roles_Menus_Permissions> Auth_Roles_Menus_Permissions { get; set; }
         public DbSet<Auth_Menus> Auth_Menus { get; set; }
         public DbSet<Auth_MenusList> Auth_MenusList { get; set; }
+        public DbSet<DM_Diemtruong> DM_Diemtruong { get; set; }
+        public DbSet<DM_Diemtruong_List> DM_Diemtruong_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -40,6 +42,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Auth_MenusList>().HasNoKey();
             builder.Entity<Auth_Users_Roles>().HasKey(ur => new { ur.Id_Users, ur.Id_Roles });
             builder.Entity<DM_Cahoc_List>().HasNoKey();
+            builder.Entity<DM_Diemtruong_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

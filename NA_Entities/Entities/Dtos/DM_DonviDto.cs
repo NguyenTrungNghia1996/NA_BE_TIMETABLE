@@ -24,9 +24,9 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Vui lòng chọn cấp học")]
+        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn cấp học")]
         public int Id_Caphoc { get; set; }
-        [Required(ErrorMessage = "Vui lòng chọn ca học")]
+        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_Cahoc { get; set; }
     }
     public class DM_Donvi_List_Dto
@@ -37,7 +37,7 @@ namespace NA_Entities.Entities.Dtos
         public string Diachi { get; set; } = string.Empty;
         public string Sodienthoai { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Tencaphoc { get; set; } = string.Empty;
-        public string Tencahoc { get; set; } = string.Empty;
+        public string TenCaphoc { get; set; } = string.Empty;
+        public string TenCahoc { get; set; } = string.Empty;
     }
 }
