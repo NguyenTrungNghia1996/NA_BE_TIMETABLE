@@ -4,29 +4,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using NA_Entities.Entities.Auth;
-using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/roles")]
+    [Route("api/menus")]
     [ApiController]
-    public class Auth_RolesController : ControllerBase
+    public class Auth_MenusController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IAuth_RolesRepository _role;
+        private readonly IAuth_MenusRepository _menus;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
-        public Auth_RolesController(IMapper mapper,
-                                    IAuth_RolesRepository role,
+        public Auth_MenusController(IMapper mapper,
+                                    IAuth_MenusRepository menus,
                                     IClaimHelperRepository claimHelperRepository,
                                     IAuthRepository auth
                                 )
         {
-            _role = role;
+            _menus = menus;
             _mapper = mapper;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
@@ -45,7 +43,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _role.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _menus.GetList_Pagging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null) list = [];
             return ApiResult.Success(new
             {
@@ -54,6 +52,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             },
             "Thành công");
         }
+        // Detail by Id
         [HttpGet("detail")]
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int id)
@@ -69,18 +68,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
 
             // Lấy bản ghi từ db
-            var detailRole = _role.GetDetailByID(id);
-            if (detailRole == null)
+            var detailMenu = _menus.GetDetailByID(id);
+            if (detailMenu == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {id}");
-            var detailRole_Permission = _mapper.Map<Auth_RolesDto>(detailRole);
-            var listPerrmission = _role.GetPermissionByRoleId(detailRole_Permission.Id);
-            detailRole_Permission.Permission = listPerrmission;
-            return ApiResult.Success(detailRole_Permission,
+            return ApiResult.Success(detailMenu,
             "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] Auth_RolesDto role)
+        public IActionResult Create([FromBody] Auth_Menus menu)
         {
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
@@ -91,38 +87,23 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
-            role.Id = 0;
-            var detailRole = _mapper.Map<Auth_Roles>(role);
+            // kiểm tra tồn tại bản ghi cha
+            if (menu.Parent_Id > 0)
+            {
+                var parent = _menus.GetDetailByID(menu.Parent_Id.Value);
+                if (parent == null)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi cha có Id= {menu.Parent_Id}, vui lòng kiểm tra lại");
+            }
+            menu.Id = 0;
             // add 
-            bool add = _role.Add(detailRole);
+            bool add = _menus.Add(menu);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
-            // add Roles_Permission
-            if (role.Permission.Count > 0)
-            {
-                var listPermission = _mapper.Map<List<Auth_Roles_Permissions>>(role.Permission);
-                for (int i = 0; i < listPermission.Count; i++)
-                {
-                    if (listPermission[i].Id != 0)
-                    {
-                        var exitsPermission = _role.FindPermissionById(listPermission[i].Id);
-                        if (exitsPermission == null)
-                            return ApiResult.NotFound($"Permission Id {listPermission[i].Id} không tồn tại, vui lòng kiểm tra lại");
-                    }
-                    listPermission[i].Id_Roles = detailRole.Id;
-                }
-                var addPermission = _role.AddPermission(listPermission);
-                if (!addPermission)
-                {
-                    role.Permission = [];
-                }
-            }
-            role.Id = detailRole.Id;
-            return ApiResult.Success(role, "Thêm mới thành công");
+            return ApiResult.Success(menu, "Thêm mới thành công");
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] Auth_RolesDto role)
+        public IActionResult Update([FromBody] Auth_Menus menu)
         {
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
@@ -133,34 +114,21 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
-            var roledb = _role.GetDetailByID(role.Id);
-            if (roledb == null)
+            var menudb = _menus.GetDetailByID(menu.Id);
+            if (menudb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại id");
-            var detailRole = _mapper.Map<Auth_Roles>(role);
-            bool edit = _role.Update(detailRole);
+            // kiểm tra tồn tại bản ghi cha
+            if (menu.Parent_Id > 0)
+            {
+                var parent = _menus.GetDetailByID(menu.Parent_Id.Value);
+                if (parent == null)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi cha có Id= {menu.Parent_Id}, vui lòng kiểm tra lại");
+            }
+            bool edit = _menus.Update(menu);
             if (!edit)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             // add Roles_Permission
-            if (role.Permission.Count > 0)
-            {
-                var listPermission = _mapper.Map<List<Auth_Roles_Permissions>>(role.Permission);
-                for (int i = 0; i < listPermission.Count; i++)
-                {
-                    if (listPermission[i].Id != 0)
-                    {
-                        var exitsPermission = _role.FindPermissionById(listPermission[i].Id);
-                        if (exitsPermission == null)
-                            return ApiResult.NotFound($"Permission Id {listPermission[i].Id} không tồn tại, vui lòng kiểm tra lại");
-                    }
-                    listPermission[i].Id_Roles = detailRole.Id;
-                }
-                var addPermission = _role.AddPermission(listPermission);
-                if (!addPermission)
-                {
-                    role.Permission = [];
-                }
-            }
-            return ApiResult.Success(role, "Cập nhật thành công");
+            return ApiResult.Success(menu, "Cập nhật thành công");
         }
         [HttpDelete]
         [RequireToken]
@@ -174,13 +142,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
             // Kiểm tra bản ghi hợp lệ
-            var roledb = _role.GetDetailByID(id);
+            var roledb = _menus.GetDetailByID(id);
             if (roledb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var delPermission = _role.DeletePermissionbyRoleId(id);
-            if (!delPermission)
-                return ApiResult.NotFound("Xóa thất bại, vui lòng kiểm tra lại");
-            var request = _role.Deleted(id);
+            var request = _menus.Deleted(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
 

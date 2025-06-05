@@ -27,7 +27,9 @@ namespace NA_Entities.DBContext
         public DbSet<Auth_Users_RolesList> Auth_Users_RolesList { get; set; }
         public DbSet<DM_Cahoc> DM_Cahoc { get; set; }
         public DbSet<DM_Cahoc_List> DM_Cahoc_List { get; set; }
-        public DbSet<Auth_Roles_Menus_Permissions> Auth_Roles_Menus_Permissions { get; set; }
+        public DbSet<Auth_Roles_Permissions> Auth_Roles_Permissions { get; set; }
+        public DbSet<Auth_Menus> Auth_Menus { get; set; }
+        public DbSet<Auth_MenusList> Auth_MenusList { get; set; }
         public DbSet<DM_Diemtruong> DM_Diemtruong { get; set; }
         public DbSet<DM_Diemtruong_List> DM_Diemtruong_List { get; set; }
         public DbSet<DM_Loaiphonghoc> DM_Loaiphonghoc {  get; set; }
@@ -43,6 +45,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Cahoc_List>().HasNoKey();
             builder.Entity<DM_Diemtruong_List>().HasNoKey();
             builder.Entity<DM_Loaiphonghoc_List>().HasNoKey();
+            builder.Entity<Auth_MenusList>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
