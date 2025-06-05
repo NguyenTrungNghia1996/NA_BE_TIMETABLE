@@ -1,6 +1,7 @@
 stages:
   - docker
-  - cleanup
+  - cleanup 
+  - deploy
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -68,3 +69,15 @@ docker-cleanup:
 
       echo "Pruning build cache (intermediate layers)..."
       docker builder prune -f
+docker-deploy:
+  stage: deploy
+  image: docker:latest
+  needs: ["docker-build-and-push"]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: on_success
+  before_script:
+    - sudo docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo "Deploying frontend service using Docker Compose as root..."
+    - sudo bash -c "cd /root/docker/na_thoikhoabieu && docker compose pull thoikhoabieu && docker compose up -d thoikhoabieu"
