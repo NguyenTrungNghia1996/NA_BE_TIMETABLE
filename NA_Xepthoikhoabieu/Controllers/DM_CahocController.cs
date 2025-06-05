@@ -42,26 +42,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            if (Id <= 0)
-                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+
             // Lấy bản ghi từ db
             var detailCahoc = _cahoc.GetDetailById(Id);
             if (detailCahoc == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_CahocDto>(detailCahoc);
-            return ApiResult.Success(new
-            {
-                item = detailDto
-            },
-            "Thành công");
+            return ApiResult.Success(detailDto,"Thành công");
         }
         [HttpPost]
         [RequireToken]
         public IActionResult Create([FromBody] DM_CahocDto cahoc)
-        {
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-
+        { 
             // mapper data 
             var item = _mapper.Map<DM_Cahoc>(cahoc);
             item.Id = 0;
@@ -79,8 +71,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_CahocDto cahoc)
-        {
+        public IActionResult Update([FromBody]DM_CahocDto cahoc) { 
 
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _cahoc.GetDetailById(cahoc.Id);
@@ -104,11 +95,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _claimHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            // Kiểm tra bản ghi hợp lệ
+
             var caphocdb = _cahoc.GetDetailById(id);
             if (caphocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
