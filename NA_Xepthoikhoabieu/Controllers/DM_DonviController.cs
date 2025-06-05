@@ -9,6 +9,7 @@ using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
@@ -21,12 +22,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_DonviRepository _donvi;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
-        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth)
+        private readonly IDM_CahocRepository _cahocRepository;
+        private readonly IDM_CaphocRepository _caphocRepository;
+        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CahocRepository cahocRepository, IDM_CaphocRepository caphocRepository)
         {
             _mapper = mapper;
             _donvi = donvi;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
+            _cahocRepository = cahocRepository;
+            _caphocRepository = caphocRepository;
         }
         [HttpGet]
         [RequireToken]
@@ -75,8 +80,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_DonviDto donvi)
         {
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
             if (!checkIsAdmin)
@@ -87,7 +91,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<DM_Donvi>(donvi);
             item.Id = 0;
-            // add 
+            var checkcahoc = _cahocRepository.CheckId(item.Id_Cahoc);
+            var checkcaphoc = _caphocRepository.CheckId(item.Id_Caphoc);
+            if (!checkcahoc)
+                ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            if (!checkcaphoc)
+                ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             bool add = _donvi.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
