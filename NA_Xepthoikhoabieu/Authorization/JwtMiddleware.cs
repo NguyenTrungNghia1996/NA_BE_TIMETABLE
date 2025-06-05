@@ -95,42 +95,9 @@ namespace NA_Xepthoikhoabieu.Authorization
                 await context.Response.WriteAsync(response);
                 return;
             }
-            // Nếu có chính sách phân quyền thì kiểm tra thêm
-            if (!string.IsNullOrEmpty(requireTokenAttribute.Policy))
-            {
-                // Lấy quyền từ Claims
-                var permissionValue = context.User.FindFirst("Permissions")?.Value;
-                if (!int.TryParse(permissionValue, out int permissionInt))
-                {
-                    await ReturnUnauthorized(context, "Không thể đọc quyền từ token.");
-                    return;
-                }
 
-                var userPermission = (MenuPermission)permissionInt;
-
-                // Convert policy string sang enum
-                if (!Enum.TryParse<MenuPermission>(requireTokenAttribute.Policy, out var requiredPermission))
-                {
-                    await ReturnUnauthorized(context, $"Không tìm thấy quyền \"{requireTokenAttribute.Policy}\".");
-                    return;
-                }
-
-                // Check bằng bitmask
-                if (!userPermission.HasFlag(requiredPermission))
-                {
-                    await ReturnUnauthorized(context, $"Bạn không có quyền truy cập \"{requireTokenAttribute.Policy}\".");
-                    return;
-                }
-            }
             // Tiếp tục nếu token hợp lệ
             await _next(context);
-        }
-        private async Task ReturnUnauthorized(HttpContext context, string message)
-        {
-            context.Response.StatusCode = 401;
-            context.Response.ContentType = "application/json";
-            var response = JsonSerializer.Serialize(new { status = "error", message });
-            await context.Response.WriteAsync(response);
         }
     }
 }
