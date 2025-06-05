@@ -128,6 +128,14 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Donvi>(donvi);
+            var checkcahoc = _cahocRepository.CheckId(item.Id_Cahoc);
+            var checkcaphoc = _caphocRepository.CheckId(item.Id_Caphoc);
+            if (!checkcahoc)
+                ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            if (!checkcaphoc)
+                ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             bool add = _donvi.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
