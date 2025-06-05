@@ -6,28 +6,14 @@ using System.Threading.Tasks;
 
 namespace NA_Entities.Entities.Auth
 {
-    public class Auth_Menus
+    [Flags]
+    public enum MenuPermission
     {
-        public int Id { get; set; }
-        [Required(ErrorMessage = "Tên không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string Ten { get; set; } = string.Empty;
-        public int Id_Parent { get; set; } = 0;
-        public int Thutu { get; set; } = 0;
-        public string? Url { get; set; } = string.Empty;
-        public bool? Is_Active { get; set; }
-        public string? Mota { get; set; } = string.Empty;
-    }
-    public class Auth_MenusList
-    {
-        public int Id { get; set; }
-        [Required(ErrorMessage = "Tên không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string Ten { get; set; } = string.Empty;
-        public int Id_Parent { get; set; } = 0;
-        public int Thutu { get; set; } = 0;
-        public string? Url { get; set; } = string.Empty;
-        public bool? Is_Active { get; set; }
-        public string? Mota { get; set; } = string.Empty;
+        None = 0,
+        Dashboard = 1 << 0,
+        Reports = 1 << 1,
+        Users = 1 << 2,
+        Settings = 1 << 3,
+        // Thêm quyền khác nếu cần
     }
 }
