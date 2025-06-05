@@ -45,6 +45,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Cahoc_List>().HasNoKey();
             builder.Entity<DM_Diemtruong_List>().HasNoKey();
             builder.Entity<DM_Loaiphonghoc_List>().HasNoKey();
+            builder.Entity<Auth_MenusList>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
