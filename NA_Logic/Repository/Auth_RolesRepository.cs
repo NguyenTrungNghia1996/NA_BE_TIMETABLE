@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Auth;
+using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
@@ -28,7 +30,7 @@ namespace NA_Logic.Repository
                 var paramTotal = new SqlParameter("total", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
                 var result = _context.Set<Auth_RolesList>()
-                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
+                    .FromSqlRaw("EXEC Auth_GetlistRoles_Pagging @pageIndex, @pageSize, @search, @total OUTPUT",
                         paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<Auth_RolesList>();
@@ -44,7 +46,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var role = _context.Auth_Roles.FirstOrDefault(c => c.Id == id );
+                var role = _context.Auth_Roles.FirstOrDefault(c => c.Id == id);
                 return role;
             }
             catch
@@ -88,6 +90,66 @@ namespace NA_Logic.Repository
                 if (item != null)
                 {
                     _context.Auth_Roles.Remove(item);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public List<Auth_Roles_PermissionDto> GetPermissionByRoleId(int idRole)
+        {
+            try
+            {
+                var permissions = _context.Auth_Roles_Permissions
+                                          .Where(c => c.Id_Roles == idRole)
+                                          .Select(c => new Auth_Roles_PermissionDto
+                                          {
+                                              Key = c.Key,
+                                              PermissionValue = c.PermissionValue
+                                          })
+                                          .ToList();
+                return permissions;
+            }
+            catch
+            {
+                return new List<Auth_Roles_PermissionDto>();
+            }
+        }
+        public bool AddPermission(List<Auth_Roles_Permissions> list_permssions)
+        {
+            try
+            {
+                _context.BulkInsertOrUpdateOrDelete(list_permssions);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public Auth_Roles_Permissions FindPermissionById(int id)
+        {
+            try
+            {
+                var permission = _context.Auth_Roles_Permissions.FirstOrDefault(c => c.Id == id);
+                return permission;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public bool DeletePermissionbyRoleId(int idRole)
+        {
+            try
+            {
+                var permissions = _context.Auth_Roles_Permissions.Where(c => c.Id_Roles == idRole).ToList();
+                if (permissions.Count > 0)
+                {
+                    _context.Auth_Roles_Permissions.RemoveRange(permissions);
                     _context.SaveChanges();
                 }
                 return true;

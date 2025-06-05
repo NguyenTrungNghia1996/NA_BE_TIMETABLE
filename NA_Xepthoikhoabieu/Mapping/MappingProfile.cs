@@ -19,8 +19,8 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<Auth_UsersDto, Auth_Users>();
             CreateMap<Auth_Users, Auth_UsersDto>();
             CreateMap<Auth_Users_UpdateDto, Auth_Users>();
-            
-            CreateMap<DM_Cahoc,DM_CahocDto>();
+
+            CreateMap<DM_Cahoc, DM_CahocDto>();
             CreateMap<DM_Cahoc_List, DM_Cahoc_ListDto>();
             CreateMap<DM_CahocDto, DM_Cahoc>();
             CreateMap<DM_Donvi, DM_DonviDto>();
@@ -29,6 +29,11 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Diemtruong, DM_DiemtruongDto>();
             CreateMap<DM_Diemtruong_List, DM_Diemtruong_ListDto>();
             CreateMap<DM_DiemtruongDto, DM_Diemtruong>();
+
+            CreateMap<Auth_Roles, Auth_RolesDto>();
+            CreateMap<Auth_RolesDto, Auth_Roles>();
+            CreateMap<Auth_Roles_PermissionDto, Auth_Roles_Permissions>();
+            CreateMap<Auth_Roles_Permissions, Auth_Roles_PermissionDto>();
         }
     }
 }

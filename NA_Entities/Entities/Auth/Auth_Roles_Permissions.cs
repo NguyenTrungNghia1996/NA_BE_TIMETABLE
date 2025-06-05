@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace NA_Entities.Entities.Auth
 {
-    public class Auth_Roles_Menus_Permissions
+    public class Auth_Roles_Permissions
     {
         public int Id { get; set; } = 0;
-        public int Id_Menu { get; set; }
-        public int Id_Role { get; set; }
-        public bool? Read_Only { get; set; }
+        public int Id_Roles { get; set; }
+        public string Key { get; set; } = string.Empty;
+        public int PermissionValue { get; set; }
     }
+
 }
