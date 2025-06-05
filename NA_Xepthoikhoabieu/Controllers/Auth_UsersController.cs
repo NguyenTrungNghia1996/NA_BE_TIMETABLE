@@ -42,9 +42,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetlistUsers_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            // kiểm tra tính hợp lệ của thông tin trong token
-            var check = _claimHelperRepository.CheckUserExists(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin user không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);

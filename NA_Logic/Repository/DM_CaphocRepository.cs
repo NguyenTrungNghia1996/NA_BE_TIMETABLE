@@ -20,19 +20,18 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int Id_Donvi, ref int totalrecord)
+        public List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
                 var paramSearch = new SqlParameter("search", SqlDbType.NVarChar) { Value = search ?? string.Empty };
                 var paramPageIndex = new SqlParameter("pageIndex", SqlDbType.Int) { Value = PageIndex };
                 var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int) { Value = PageSize };
-                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int) { Value = Id_Donvi };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
                 var result = _context.Set<DM_Caphoc_List>()
-                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
-                        paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
+                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                        paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Caphoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -43,11 +42,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Caphoc GetDetailByID(int Id, int Id_Donvi)
+        public DM_Caphoc GetDetailByID(int Id)
         {
             try
             {
-                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Id_Donvi == Id_Donvi);
+                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id);
                 return caphoc;
             }
             catch
