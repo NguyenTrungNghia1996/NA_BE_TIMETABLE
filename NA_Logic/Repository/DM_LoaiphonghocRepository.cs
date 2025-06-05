@@ -13,14 +13,14 @@ using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
 {
-    public class DM_CaphocRepository : IDM_CaphocRepository
+    public class DM_LoaiphonghocRepository : IDM_LoaiphonghocRepository
     {
         private readonly NA_DbContext _context;
-        public DM_CaphocRepository(NA_DbContext context)
+        public DM_LoaiphonghocRepository(NA_DbContext context)
         {
             _context = context;
         }
-        public List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -29,11 +29,11 @@ namespace NA_Logic.Repository
                 var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int) { Value = PageSize };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
-                var result = _context.Set<DM_Caphoc_List>()
-                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                var result = _context.Set<DM_Loaiphonghoc_List>()
+                    .FromSqlRaw("EXEC DM_Loaiphonghoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
                         paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Caphoc_List>();
+                if (result == null) result = new List<DM_Loaiphonghoc_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -42,23 +42,23 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Caphoc GetDetailByID(int Id)
+        public DM_Loaiphonghoc GetDetailByID(int Id)
         {
             try
             {
-                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id);
-                return caphoc;
+                var loaiph = _context.DM_Loaiphonghoc.FirstOrDefault(c => c.Id == Id);
+                return loaiph;
             }
             catch
             {
                 return null;
             }
         }
-        public bool Add(DM_Caphoc dm_caphoc)
+        public bool Add(DM_Loaiphonghoc dM_Loaiphonghoc)
         {
             try
             {
-                _context.DM_Caphoc.Add(dm_caphoc);
+                _context.DM_Loaiphonghoc.Add(dM_Loaiphonghoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -67,12 +67,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Caphoc dm_caphoc)
+        public bool Update(DM_Loaiphonghoc dM_Loaiphonghoc)
         {
             try
             {
                 _context.ChangeTracker.Clear();
-                _context.DM_Caphoc.Update(dm_caphoc);
+                _context.DM_Loaiphonghoc.Update(dM_Loaiphonghoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -85,26 +85,14 @@ namespace NA_Logic.Repository
         {
             try
             {
-                DM_Caphoc item = new DM_Caphoc();
-                item = _context.DM_Caphoc.Find(Id);
+                DM_Loaiphonghoc item = new DM_Loaiphonghoc();
+                item = _context.DM_Loaiphonghoc.Find(Id);
                 if (item != null)
                 {
-                    _context.DM_Caphoc.Remove(item);
+                    _context.DM_Loaiphonghoc.Remove(item);
                     _context.SaveChanges();
                 }
                 return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public bool CheckId(int Id)
-        {
-            if (Id <= 0) return false;
-            try
-            {
-                return _context.DM_Caphoc.Any(c => c.Id == Id);
             }
             catch
             {
