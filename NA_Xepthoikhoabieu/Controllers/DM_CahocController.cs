@@ -69,13 +69,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             },
             "Thêm mới thành công");
         }
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            var check = _claimHelperRepository.CheckIdDonvi(User);
-            if (check == false) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        [HttpPut]
+        [RequireToken]
+        public IActionResult Update([FromBody]DM_CahocDto cahoc) { 
 
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _cahoc.GetDetailById(cahoc.Id);
@@ -99,10 +95,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // Kiểm tra bản ghi hợp lệ
+
             var caphocdb = _cahoc.GetDetailById(id);
             if (caphocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
