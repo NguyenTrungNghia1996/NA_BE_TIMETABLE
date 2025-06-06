@@ -40,7 +40,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         // Get list users paging
         [HttpGet]
         [RequireToken]
-        public IActionResult GetlistUsers_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetlistUsers_Pageing([FromQuery] int PageIndex = 0, [FromQuery] int PageSize = 0, [FromQuery] string search = "")
         {
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
