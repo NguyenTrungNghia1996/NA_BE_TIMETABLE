@@ -34,6 +34,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Diemtruong_List> DM_Diemtruong_List { get; set; }
         public DbSet<DM_Loaiphonghoc> DM_Loaiphonghoc {  get; set; }
         public DbSet<DM_Loaiphonghoc_List> DM_Loaiphonghoc_List { get; set; }
+        public DbSet<DM_Khoikienthuc> DM_Khoikienthuc { get; set; }
+        public DbSet<DM_Khoikienthuc_List> DM_Khoikienthuc_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -46,6 +48,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Diemtruong_List>().HasNoKey();
             builder.Entity<DM_Loaiphonghoc_List>().HasNoKey();
             builder.Entity<Auth_MenusList>().HasNoKey();
+            builder.Entity<DM_Khoikienthuc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

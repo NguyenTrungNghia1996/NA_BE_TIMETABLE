@@ -45,18 +45,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
 
             // Lấy bản ghi từ db
-            var detailCahoc = _loaiphonghoc.GetDetailByID(Id);
-            if (detailCahoc == null)
+            var detail = _loaiphonghoc.GetDetailByID(Id);
+            if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_LoaiphonghocDto>(detailCahoc);
+            var detailDto = _mapper.Map<DM_LoaiphonghocDto>(detail);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_LoaiphonghocDto cahoc)
+        public IActionResult Create([FromBody] DM_LoaiphonghocDto loaiphonghoc)
         {
             // mapper data 
-            var item = _mapper.Map<DM_Loaiphonghoc>(cahoc);
+            var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
             item.Id = 0;
             // add 
             bool add = _loaiphonghoc.Add(item);
@@ -72,17 +72,17 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_LoaiphonghocDto cahoc)
+        public IActionResult Update([FromBody] DM_LoaiphonghocDto loaiphonghoc)
         {
 
             // Kiểm tra bản ghi hợp lệ
-            var caphocdb = _loaiphonghoc.GetDetailByID(cahoc.Id);
+            var db = _loaiphonghoc.GetDetailByID(loaiphonghoc.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (caphocdb == null)
+            if (db == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Loaiphonghoc>(cahoc);
+            var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
             bool add = _loaiphonghoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
