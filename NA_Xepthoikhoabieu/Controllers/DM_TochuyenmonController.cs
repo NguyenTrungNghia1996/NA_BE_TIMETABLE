@@ -8,17 +8,17 @@ using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/khoikienthuc")]
+    [Route("api/tochuyenmon")]
     [ApiController]
-    public class DM_KhoikienthucController : ControllerBase
+    public class DM_TochuyenmonController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IDM_KhoikienthucRepository _khoikienthuc;
+        private readonly IDM_TochuyenmonRepository _tochuyenmon;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_KhoikienthucController(IMapper mapper, IDM_KhoikienthucRepository khoikienthuc, IClaimHelperRepository claimHelperRepository)
+        public DM_TochuyenmonController(IMapper mapper, IDM_TochuyenmonRepository tochuyenmon, IClaimHelperRepository claimHelperRepository)
         {
             _mapper = mapper;
-            _khoikienthuc = khoikienthuc;
+            _tochuyenmon = tochuyenmon;
             _claimHelperRepository = claimHelperRepository;
         }
         [HttpGet]
@@ -28,10 +28,10 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _khoikienthuc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _tochuyenmon.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            var listDto = _mapper.Map<List<DM_Khoikienthuc_ListDto>>(list);
+            var listDto = _mapper.Map<List<DM_Tochuyenmon_ListDto>>(list);
             return ApiResult.Success(new
             {
                 items = listDto,
@@ -44,25 +44,25 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
             // Lấy bản ghi từ db
-            var detail = _khoikienthuc.GetDetailById(Id);
+            var detail = _tochuyenmon.GetDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_KhoikienthucDto>(detail);
+            var detailDto = _mapper.Map<DM_TochuyenmonDto>(detail);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_KhoikienthucDto khoikienthuc)
+        public IActionResult Create([FromBody] DM_TochuyenmonDto tochuyenmon)
         {
             // mapper data 
-            var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
+            var item = _mapper.Map<DM_Tochuyenmon>(tochuyenmon);
             item.Id = 0;
             // add 
-            bool add = _khoikienthuc.Add(item);
+            bool add = _tochuyenmon.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
-            var itemDto = _mapper.Map<DM_KhoikienthucDto>(item);
+            var itemDto = _mapper.Map<DM_TochuyenmonDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -71,21 +71,21 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_KhoikienthucDto khoikienthuc)
+        public IActionResult Update([FromBody] DM_TochuyenmonDto tochuyenmon)
         {
 
             // Kiểm tra bản ghi hợp lệ
-            var db = _khoikienthuc.GetDetailById(khoikienthuc.Id);
+            var db = _tochuyenmon.GetDetailById(tochuyenmon.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (db == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
-            bool add = _khoikienthuc.Update(item);
+            var item = _mapper.Map<DM_Tochuyenmon>(tochuyenmon);
+            bool add = _tochuyenmon.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_KhoikienthucDto>(item);
+            var itemDto = _mapper.Map<DM_TochuyenmonDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -97,10 +97,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult Delete([FromQuery] int id)
         {
 
-            var item = _khoikienthuc.GetDetailById(id);
+            var item = _tochuyenmon.GetDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _khoikienthuc.Delete(id);
+            var request = _tochuyenmon.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");

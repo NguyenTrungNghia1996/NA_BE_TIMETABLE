@@ -11,8 +11,8 @@ namespace NA_Logic.IRepository
     {
         List<DM_Khoikienthuc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         DM_Khoikienthuc GetDetailById(int Id);
-        bool Add(DM_Khoikienthuc dm_cahoc);
-        bool Update(DM_Khoikienthuc dm_cahoc);
+        bool Add(DM_Khoikienthuc dM_Khoikienthuc);
+        bool Update(DM_Khoikienthuc dM_Khoikienthuc);
         bool Delete(int Id);
     }
 }

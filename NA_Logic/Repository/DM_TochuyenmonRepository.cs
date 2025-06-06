@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class DM_KhoikienthucRepository : IDM_KhoikienthucRepository
+    public class DM_TochuyenmonRepository : IDM_TochuyenmonRepository
     {
         private readonly NA_DbContext _dbContext;
-        public DM_KhoikienthucRepository(NA_DbContext dbContext)
+        public DM_TochuyenmonRepository(NA_DbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public List<DM_Khoikienthuc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Tochuyenmon_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Khoikienthuc_List>().FromSqlRaw("EXEC DM_Khoikienthuc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                var result = _dbContext.Set<DM_Tochuyenmon_List>().FromSqlRaw("EXEC DM_Tochuyenmon_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Khoikienthuc_List>();
+                if (result == null) result = new List<DM_Tochuyenmon_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -52,11 +52,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Khoikienthuc GetDetailById(int Id)
+        public DM_Tochuyenmon GetDetailById(int Id)
         {
             try
             {
-                var item = _dbContext.DM_Khoikienthuc.FirstOrDefault(c => c.Id == Id);
+                var item = _dbContext.DM_Tochuyenmon.FirstOrDefault(c => c.Id == Id);
                 return item;
             }
             catch (Exception)
@@ -64,11 +64,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add(DM_Khoikienthuc dM_Khoikienthuc)
+        public bool Add(DM_Tochuyenmon dM_Tochuyenmon)
         {
             try
             {
-                _dbContext.DM_Khoikienthuc.Add(dM_Khoikienthuc);
+                _dbContext.DM_Tochuyenmon.Add(dM_Tochuyenmon);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -77,12 +77,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Khoikienthuc dM_Khoikienthuc)
+        public bool Update(DM_Tochuyenmon dM_Tochuyenmon)
         {
             try
             {
                 _dbContext.ChangeTracker.Clear();
-                _dbContext.DM_Khoikienthuc.Update(dM_Khoikienthuc);
+                _dbContext.DM_Tochuyenmon.Update(dM_Tochuyenmon);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -95,11 +95,11 @@ namespace NA_Logic.Repository
         {
             try
             {
-                DM_Khoikienthuc item = new DM_Khoikienthuc();
-                item = _dbContext.DM_Khoikienthuc.Find(Id);
+                DM_Tochuyenmon item = new DM_Tochuyenmon();
+                item = _dbContext.DM_Tochuyenmon.Find(Id);
                 if (item != null)
                 {
-                    _dbContext.DM_Khoikienthuc.Remove(item);
+                    _dbContext.DM_Tochuyenmon.Remove(item);
                     _dbContext.SaveChanges();
                 }
                 return true;
