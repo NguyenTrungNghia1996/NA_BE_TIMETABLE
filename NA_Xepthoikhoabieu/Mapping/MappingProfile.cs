@@ -32,6 +32,12 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Loaiphonghoc, DM_LoaiphonghocDto>();
             CreateMap<DM_Loaiphonghoc_List,DM_Loaiphonghoc_ListDto>();
             CreateMap<DM_LoaiphonghocDto, DM_Loaiphonghoc>();
+            CreateMap<DM_Khoikienthuc, DM_KhoikienthucDto>();
+            CreateMap<DM_Khoikienthuc_List,DM_Khoikienthuc_ListDto>();
+            CreateMap<DM_KhoikienthucDto, DM_Khoikienthuc>();
+            CreateMap<DM_Tochuyenmon,DM_TochuyenmonDto>();
+            CreateMap<DM_TochuyenmonDto,DM_Tochuyenmon>();
+            CreateMap<DM_Tochuyenmon_List,DM_Tochuyenmon_ListDto>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();

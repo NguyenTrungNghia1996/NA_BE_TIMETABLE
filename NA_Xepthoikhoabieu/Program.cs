@@ -42,7 +42,8 @@ builder.Services.AddScoped<IAuth_MenusRepository, Auth_MenusRepository>();
 builder.Services.AddScoped<IAuth_RolesRepository, Auth_RolesRepository>();
 builder.Services.AddScoped<IDM_DiemtruongRepository, DM_DiemtruongRepository>();
 builder.Services.AddScoped<IDM_LoaiphonghocRepository, DM_LoaiphonghocRepository>();
-
+builder.Services.AddScoped<IDM_KhoikienthucRepository, DM_KhoikienthucRepository>();
+builder.Services.AddScoped<IDM_TochuyenmonRepository, DM_TochuyenmonRepository>();
 
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

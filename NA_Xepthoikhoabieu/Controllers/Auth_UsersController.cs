@@ -49,8 +49,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
-            if (PageIndex < 1 || PageSize < 1)
-                return ApiResult.BadRequest($"PageIndex hoặc PageSize không hợp lệ, vui lòng kiểm tra lại (PageIndex >= 1; PageSize >= 1)");
             int totalrecord = 0;
             var list = _auth.GetListUsers_Paging(PageIndex, PageSize, search, ref totalrecord);
             return ApiResult.Success(new
@@ -170,6 +168,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 item = user
             }, "Cập nhật tài khoản thành công");
         }
+        //
         // Update new user
         [HttpDelete]
         [RequireToken]

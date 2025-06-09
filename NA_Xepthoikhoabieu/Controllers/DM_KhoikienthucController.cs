@@ -8,29 +8,30 @@ using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/cahoc")]
+    [Route("api/khoikienthuc")]
     [ApiController]
-    public class DM_CahocController : ControllerBase
+    public class DM_KhoikienthucController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IDM_CahocRepository _cahoc;
+        private readonly IDM_KhoikienthucRepository _khoikienthuc;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_CahocController(IMapper mapper, IDM_CahocRepository cahoc, IClaimHelperRepository claimHelperRepository)
+        public DM_KhoikienthucController(IMapper mapper, IDM_KhoikienthucRepository khoikienthuc, IClaimHelperRepository claimHelperRepository)
         {
             _mapper = mapper;
-            _cahoc = cahoc;
+            _khoikienthuc = khoikienthuc;
             _claimHelperRepository = claimHelperRepository;
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "") {
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        {
 
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _cahoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _khoikienthuc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            var listDto = _mapper.Map<List<DM_Cahoc_ListDto>>(list);
+            var listDto = _mapper.Map<List<DM_Khoikienthuc_ListDto>>(list);
             return ApiResult.Success(new
             {
                 items = listDto,
@@ -42,27 +43,26 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-
             // Lấy bản ghi từ db
-            var detailCahoc = _cahoc.GetDetailById(Id);
-            if (detailCahoc == null)
+            var detail = _khoikienthuc.GetDetailById(Id);
+            if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_CahocDto>(detailCahoc);
-            return ApiResult.Success(detailDto,"Thành công");
+            var detailDto = _mapper.Map<DM_KhoikienthucDto>(detail);
+            return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_CahocDto cahoc)
-        { 
+        public IActionResult Create([FromBody] DM_KhoikienthucDto khoikienthuc)
+        {
             // mapper data 
-            var item = _mapper.Map<DM_Cahoc>(cahoc);
+            var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
             item.Id = 0;
             // add 
-            bool add = _cahoc.Add(item);
+            bool add = _khoikienthuc.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
-            var itemDto = _mapper.Map<DM_CahocDto>(item);
+            var itemDto = _mapper.Map<DM_KhoikienthucDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -71,20 +71,21 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody]DM_CahocDto cahoc) { 
+        public IActionResult Update([FromBody] DM_KhoikienthucDto khoikienthuc)
+        {
 
             // Kiểm tra bản ghi hợp lệ
-            var cahocdb = _cahoc.GetDetailById(cahoc.Id);
+            var db = _khoikienthuc.GetDetailById(khoikienthuc.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (cahocdb == null)
+            if (db == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Cahoc>(cahoc);
-            bool add = _cahoc.Update(item);
+            var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
+            bool add = _khoikienthuc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_CahocDto>(item);
+            var itemDto = _mapper.Map<DM_KhoikienthucDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -96,10 +97,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult Delete([FromQuery] int id)
         {
 
-            var cahocdb = _cahoc.GetDetailById(id);
-            if (cahocdb == null)
+            var item = _khoikienthuc.GetDetailById(id);
+            if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _cahoc.Delete(id);
+            var request = _khoikienthuc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
