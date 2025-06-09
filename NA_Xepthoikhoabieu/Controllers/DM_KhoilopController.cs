@@ -15,40 +15,33 @@ using NA_Xepthoikhoabieu.Helpers;
 namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
-    [Route("api/donvi")]
-    public class DM_DonviController : ControllerBase
+    [Route("api/khoilop")]
+    public class DM_KhoilopController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IDM_DonviRepository _donvi;
+        private readonly IDM_KhoilopRepository _khoilop;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CahocRepository _cahocRepository;
         private readonly IDM_CaphocRepository _caphocRepository;
-        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CahocRepository cahocRepository, IDM_CaphocRepository caphocRepository)
+        public DM_KhoilopController(IMapper mapper, IDM_KhoilopRepository khoilop, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository caphocRepository)
         {
             _mapper = mapper;
-            _donvi = donvi;
+            _khoilop = khoilop;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
-            _cahocRepository = cahocRepository;
             _caphocRepository = caphocRepository;
         }
         [HttpGet]
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _donvi.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _khoilop.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            var listDto = _mapper.Map<List<DM_Donvi_List_Dto>>(list);
+            var listDto = _mapper.Map<List<DM_Khoilop_ListDto>>(list);
             return ApiResult.Success(new
             {
                 items = listDto,
@@ -60,44 +53,32 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            if (Id <= 0)
-                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
-            var detail = _donvi.getDonviById(Id);
+            var detail = _khoilop.getDonviById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_DonviDto>(detail);
+            var detailDto = _mapper.Map<DM_KhoilopDto>(detail);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_DonviDto donvi)
+        public IActionResult Create([FromBody] DM_KhoilopDto khoilop)
         {
 
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-
             // mapper data 
-            var item = _mapper.Map<DM_Donvi>(donvi);
+            var item = _mapper.Map<DM_Khoilop>(khoilop);
             item.Id = 0;
-            var checkcahoc = _cahocRepository.CheckId(item.Id_Cahoc);
-            var checkcaphoc = _caphocRepository.CheckId(item.Id_Caphoc);
-            if (!checkcahoc)
-                ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            bool add = _donvi.Add(item);
+            bool add = _khoilop.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
-            var itemDto = _mapper.Map<DM_DonviDto>(item);
+            var itemDto = _mapper.Map<DM_KhoilopDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -106,34 +87,26 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_DonviDto donvi)
+        public IActionResult Update([FromBody] DM_KhoilopDto khoilop)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+
             // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDonviById(donvi.Id);
+            var khoilopdb = _khoilop.getDonviById(khoilop.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (donvidb == null)
+            if (khoilopdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Donvi>(donvi);
-            var checkcahoc = _cahocRepository.CheckId(item.Id_Cahoc);
-            var checkcaphoc = _caphocRepository.CheckId(item.Id_Caphoc);
-            if (!checkcahoc)
-                ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            var item = _mapper.Map<DM_Khoilop>(khoilop);
+            var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            bool add = _donvi.Update(item);
+            bool add = _khoilop.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_DonviDto>(item);
+            var itemDto = _mapper.Map<DM_KhoilopDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -144,17 +117,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
             // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDonviById(id);
-            if (donvidb == null)
+            var item = _khoilop.getDonviById(id);
+            if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _donvi.Delete(id);
+            var request = _khoilop.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");

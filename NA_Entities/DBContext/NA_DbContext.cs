@@ -38,6 +38,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Khoikienthuc_List> DM_Khoikienthuc_List { get; set; }
         public DbSet<DM_Tochuyenmon> DM_Tochuyenmon { get; set; }
         public DbSet<DM_Tochuyenmon_List> DM_Tochuyenmon_list { get; set; }
+        public DbSet<DM_Khoilop> DM_Khoilop { get; set; }
+        public DbSet<DM_Khoilop_List> DM_Khoilop_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -52,6 +54,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Auth_MenusList>().HasNoKey();
             builder.Entity<DM_Khoikienthuc_List>().HasNoKey();
             builder.Entity<DM_Tochuyenmon_List>().HasNoKey();
+            builder.Entity<DM_Khoilop_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
