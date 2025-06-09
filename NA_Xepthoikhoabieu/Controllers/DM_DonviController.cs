@@ -113,7 +113,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Success(new
             {
                 item = donvi
-            }, "Tạo tài khoản thành công");
+            }, "Tạo đơn vị thành công");
         }
         [HttpPut]
         [RequireToken]
@@ -153,11 +153,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     item = donvi
                 },
-                "Cập nhật thông tin tài khoản thành công, lưu nhóm quyền thất bại");
+                "Cập nhật thông tin đơn vị thành công, lưu cấp học thất bại");
             return ApiResult.Success(new
             {
                 item = donvi
-            }, "Cập nhật tài khoản thành công");
+            }, "Cập nhật đơn vị thành công");
         }
         [HttpDelete]
         [RequireToken]
@@ -178,8 +178,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             var deleteCap = _donvi.DeleteCap(id);
             if (!deleteCap)
-                return ApiResult.NotFound("Xóa nhóm quyền tài khoản lỗi");
-            return ApiResult.Ok("Xóa tài khoản thành công");
+                return ApiResult.NotFound("Xóa các cấp học lỗi");
+            return ApiResult.Ok("Xóa đơn vị thành công");
         }
     }
 }
