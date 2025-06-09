@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
+using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Logic.IRepository;
@@ -29,6 +30,19 @@ namespace NA_Logic.Repository
             catch
             {
                 return null;
+            }
+        }
+        public List<int> GetlistCapbyDonvi(int id)
+        {
+            try
+            {
+                var list = _context.Cap_Donvi.Where(x => x.Id_Don_vi == id).Select(x => x.Id_Cap_hoc).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
             }
         }
         public List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
@@ -76,12 +90,62 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool AddCap(int Id, List<int> capId)
+        {
+            try
+            {
+                if (capId != null && capId.Count > 0)
+                {
+                    for (int i = 0; i < capId.Count; i++)
+                    {
+                        var capDonvi = new Cap_Donvi
+                        {
+                            Id_Don_vi = Id,
+                            Id_Cap_hoc = capId[i]
+                        };
+                        _context.Cap_Donvi.Add(capDonvi);
+                    }
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Update(DM_Donvi dm_donvi)
         {
             try
             {
                 _context.ChangeTracker.Clear();
                 _context.DM_Donvi.Update(dm_donvi);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateCap(int Id, List<int> capId)
+        {
+            try
+            {
+                var del = _context.Cap_Donvi.Where(x => x.Id_Don_vi == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Cap_Donvi.RemoveRange(del);
+                }
+                for (int i = 0; i < capId.Count; i++)
+                {
+                    var capDv = new Cap_Donvi
+                    {
+                        Id_Don_vi = Id,
+                        Id_Cap_hoc = capId[i]
+                    };
+                    _context.Cap_Donvi.Add(capDv);
+                }
                 _context.SaveChanges();
                 return true;
             }
@@ -99,6 +163,23 @@ namespace NA_Logic.Repository
                 if (donvi != null)
                 {
                     _context.DM_Donvi.Remove(donvi);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteCap(int Id)
+        {
+            try
+            {
+                var del = _context.Cap_Donvi.Where(x => x.Id_Don_vi == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Cap_Donvi.RemoveRange(del);
                     _context.SaveChanges();
                 }
                 return true;
