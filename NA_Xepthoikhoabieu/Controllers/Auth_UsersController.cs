@@ -101,7 +101,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!_auth.checkRolesExist(user.IdRoles))
                 return ApiResult.NotFound("Danh sách id nhóm quyền không hợp lệ, vui lòng chọn id tồn tại");
             // mapping data to Auth_Users
-            if (_donviRepository.getDonviById(user.Id_Donvi) == null)
+            if (_donviRepository.getDetailById(user.Id_Donvi) == null)
                 return ApiResult.NotFound($"Id đơn vị = {user.Id_Donvi} không tồn tại");
             var addUser = _mapper.Map<Auth_Users>(user);
             addUser.Id = 0;
@@ -146,7 +146,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             if (!_auth.checkRolesExist(user.IdRoles))
                 return ApiResult.NotFound("Danh sách id nhóm quyền không hợp lệ, vui lòng chọn id tồn tại");
-            if (_donviRepository.getDonviById(user.Id_Donvi) == null)
+            if (_donviRepository.getDetailById(user.Id_Donvi) == null)
                 return ApiResult.NotFound($"Id đơn vị = {user.Id_Donvi} không tồn tại");
             // mapping data to Auth_Users
             var editUser = _mapper.Map<Auth_Users>(user);

@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace NA_Entities.Entities.Dtos
 {
-    public class DM_KhoikienthucDto
+    public class DM_TiethocDto
     {
         public int Id { get; set; } = 0;
-        [Required(ErrorMessage = "Tên ca học không được để trống")]
+        [Required(ErrorMessage = "Tên tiết học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string? Ghi_chu { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn ca học")]
+        public int Id_Ca_hoc { get; set; }
     }
-    public class DM_Khoikienthuc_ListDto
+    public class DM_Tiethoc_ListDto
     {
-        public int STT { get; set; } = 0;
+        public int Stt { get; set; } = 0;
         public int Id { get; set; } = 0;
         public string Ten { get; set; } = string.Empty;
-        public string? Ghi_chu { get; set; }
     }
 }

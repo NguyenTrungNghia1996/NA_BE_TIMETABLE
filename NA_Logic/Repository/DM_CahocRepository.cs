@@ -121,6 +121,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckIds(IEnumerable<int> ids)
+        {
+            var existingIds = _dbContext.DM_Cahoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
 
     }
 }

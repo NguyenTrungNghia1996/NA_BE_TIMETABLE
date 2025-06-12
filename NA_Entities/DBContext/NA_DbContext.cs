@@ -20,6 +20,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Donvi> DM_Donvi { get; set; }
         public DbSet<DM_Donvi_List> DM_Donvi_List { get; set; }
         public DbSet<Cap_Donvi> Cap_Donvi { get; set; }
+        public DbSet<Ca_Donvi> Ca_Donvi { get; set; }
         // Auth_Roles
         public DbSet<Auth_Roles> Auth_Roles { get; set; }
         public DbSet<Auth_RolesList> Auth_RolesList { get; set; }
@@ -43,6 +44,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Khoilop_List> DM_Khoilop_List { get; set; }
         public DbSet<DM_Phonghoc> DM_Phonghoc { get; set; }
         public DbSet<DM_Phonghoc_list> DM_Phonghoc_List { get; set; }
+        public DbSet<DM_Tiethoc> DM_Tiethoc { get; set; }
+        public DbSet<DM_Tiethoc_List> DM_Tiethoc_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -59,6 +62,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Tochuyenmon_List>().HasNoKey();
             builder.Entity<DM_Khoilop_List>().HasNoKey();
             builder.Entity<DM_Phonghoc_list>().HasNoKey();
+            builder.Entity<DM_Tiethoc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

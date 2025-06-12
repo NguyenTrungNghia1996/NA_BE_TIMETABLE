@@ -15,22 +15,21 @@ using NA_Xepthoikhoabieu.Helpers;
 namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
-    [Route("api/khoilop")]
-    public class DM_KhoilopController : ControllerBase
+    [Route("api/tiethoc")]
+    public class DM_TiethocController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IDM_KhoilopRepository _khoilop;
+        private readonly IDM_TiethocRepository _tiethoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CahocRepository _cahocRepository;
-        private readonly IDM_CaphocRepository _caphocRepository;
-        public DM_KhoilopController(IMapper mapper, IDM_KhoilopRepository khoilop, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository caphocRepository)
+        public DM_TiethocController(IMapper mapper, IDM_TiethocRepository tiethoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CahocRepository cahocRepository)
         {
             _mapper = mapper;
-            _khoilop = khoilop;
+            _tiethoc = tiethoc;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
-            _caphocRepository = caphocRepository;
+            _cahocRepository = cahocRepository;
         }
         [HttpGet]
         [RequireToken]
@@ -38,10 +37,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _khoilop.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _tiethoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            var listDto = _mapper.Map<List<DM_Khoilop_ListDto>>(list);
+            var listDto = _mapper.Map<List<DM_Tiethoc_ListDto>>(list);
             return ApiResult.Success(new
             {
                 items = listDto,
@@ -55,30 +54,30 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
 
             // Lấy bản ghi từ db
-            var detail = _khoilop.getDetailById(Id);
+            var detail = _tiethoc.getDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_KhoilopDto>(detail);
+            var detailDto = _mapper.Map<DM_TiethocDto>(detail);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_KhoilopDto khoilop)
+        public IActionResult Create([FromBody] DM_TiethocDto tiethoc)
         {
 
             // mapper data 
-            var item = _mapper.Map<DM_Khoilop>(khoilop);
+            var item = _mapper.Map<DM_Tiethoc>(tiethoc);
             item.Id = 0;
-            var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
-            if (!checkcaphoc)
-                ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            var checkcahoc = _cahocRepository.CheckId(item.Id_Ca_hoc);
+            if (!checkcahoc)
+                ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            bool add = _khoilop.Add(item);
+            bool add = _tiethoc.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
-            var itemDto = _mapper.Map<DM_KhoilopDto>(item);
+            var itemDto = _mapper.Map<DM_TiethocDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -87,26 +86,26 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_KhoilopDto khoilop)
+        public IActionResult Update([FromBody] DM_TiethocDto tiethoc)
         {
 
             // Kiểm tra bản ghi hợp lệ
-            var khoilopdb = _khoilop.getDetailById(khoilop.Id);
+            var khoilopdb = _tiethoc.getDetailById(tiethoc.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (khoilopdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Khoilop>(khoilop);
-            var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
-            if (!checkcaphoc)
-                ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            var item = _mapper.Map<DM_Tiethoc>(tiethoc);
+            var checkcahoc = _cahocRepository.CheckId(item.Id_Ca_hoc);
+            if (!checkcahoc)
+                ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            bool add = _khoilop.Update(item);
+            bool add = _tiethoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_KhoilopDto>(item);
+            var itemDto = _mapper.Map<DM_TiethocDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -118,10 +117,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult Delete([FromQuery] int id)
         {
             // Kiểm tra bản ghi hợp lệ
-            var item = _khoilop.getDetailById(id);
+            var item = _tiethoc.getDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _khoilop.Delete(id);
+            var request = _tiethoc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");

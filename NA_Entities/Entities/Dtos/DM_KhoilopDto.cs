@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NA_Entities.Entities.Danhmuc
+namespace NA_Entities.Entities.Dtos
 {
     public class DM_KhoilopDto
     {
