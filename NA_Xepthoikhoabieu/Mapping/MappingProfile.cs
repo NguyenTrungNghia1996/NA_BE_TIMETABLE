@@ -42,6 +42,9 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Khoilop,DM_KhoilopDto>();
             CreateMap<DM_KhoilopDto,DM_Khoilop>();
             CreateMap<DM_Khoilop_List,DM_Khoilop_ListDto>();
+            CreateMap<DM_Phonghoc,DM_PhonghocDto>();
+            CreateMap<DM_Phonghoc_list,DM_Phonghoc_listDto>();
+            CreateMap<DM_PhonghocDto,DM_Phonghoc>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();
