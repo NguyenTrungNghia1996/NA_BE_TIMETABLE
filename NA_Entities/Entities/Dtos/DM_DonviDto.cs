@@ -24,8 +24,8 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
-        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn ca học")]
-        public int Id_Cahoc { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
+        public List<int> Id_Cahoc { get; set; } = new List<int>();
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
     }
@@ -37,7 +37,6 @@ namespace NA_Entities.Entities.Dtos
         public string Diachi { get; set; } = string.Empty;
         public string Sodienthoai { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string TenCahoc { get; set; } = string.Empty;
 
     }
     public class DM_Donvi_updateDto
@@ -57,8 +56,8 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
-        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn ca học")]
-        public int Id_Cahoc { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
+        public List<int> Id_Cahoc { get; set; } = new List<int>();
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
 

@@ -52,7 +52,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Khoilop getDonviById(int id)
+        public DM_Khoilop getDetailById(int id)
         {
             try
             {

@@ -64,11 +64,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
-            var detail = _donvi.getDonviById(Id);
+            var detail = _donvi.getDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_DonviDto>(detail);
             detailDto.IdCap = _donvi.GetlistCapbyDonvi(Id);
+            detailDto.Id_Cahoc = _donvi.GetlistCabyDonvi(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -88,9 +89,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             addDonvi.Id = 0;
             if (donvi.IdCap == null || donvi.IdCap.Count == 0)
             {
-                return ApiResult.NotFound("Vui lòng chọn ít nhất 1 cấp học");
+                ModelState.AddModelError("IdCap", "Vui lòng chọn ít nhất 1 cấp học");
             }
-            var checkcahoc = _cahocRepository.CheckId(donvi.Id_Cahoc);
+            if (donvi.Id_Cahoc == null || donvi.Id_Cahoc.Count == 0)
+            {
+                ModelState.AddModelError("Id_Cahoc", "Vui lòng chọn ít nhất 1 ca học");
+            }
+            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_Cahoc);
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
@@ -104,12 +109,25 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             donvi.Id = addDonvi.Id;
             var addCapDonvi = _donvi.AddCap(donvi.Id, donvi.IdCap);
+            var addCaDonvi = _donvi.AddCa(donvi.Id, donvi.Id_Cahoc);
+            if(!addCaDonvi && !addCapDonvi)
+                return ApiResult.Success(new
+                {
+                    item = donvi
+                },
+                "Tạo đơn vị thành công, lưu cấp học và ca học thất bại");
             if (!addCapDonvi)
                 return ApiResult.Success(new
                 {
                     item = donvi
                 },
                 "Tạo đơn vị thành công, lưu cấp học thất bại");
+            if(!addCaDonvi)
+                return ApiResult.Success(new
+                {
+                    item = donvi
+                },
+                "Tạo đơn vị thành công, lưu ca học thất bại");
             return ApiResult.Success(new
             {
                 item = donvi
@@ -126,17 +144,21 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
             // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDonviById(donvi.Id);
+            var donvidb = _donvi.getDetailById(donvi.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (donvidb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
             if (donvi.IdCap == null || donvi.IdCap.Count == 0)
             {
-                return ApiResult.NotFound("Vui lòng chọn ít nhất 1 cấp học");
+                ModelState.AddModelError("IdCap", "Vui lòng chọn ít nhất 1 cấp học");
+            }
+            if (donvi.Id_Cahoc == null || donvi.Id_Cahoc.Count == 0)
+            {
+                ModelState.AddModelError("Id_Cahoc", "Vui lòng chọn ít nhất 1 ca học");
             }
             var item = _mapper.Map<DM_Donvi>(donvi);
-            var checkcahoc = _cahocRepository.CheckId(item.Id_Cahoc);
+            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_Cahoc);
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
@@ -148,12 +170,25 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var editCap = _donvi.UpdateCap(donvi.Id, donvi.IdCap);
+            var editCa = _donvi.UpdateCa(donvi.Id, donvi.Id_Cahoc);
+            if (!editCa && !editCap)
+                return ApiResult.Success(new
+                {
+                    item = donvi
+                },
+                "Cập nhật đơn vị thành công, cập nhật cấp học và ca học thất bại");
             if (!editCap)
                 return ApiResult.Success(new
                 {
                     item = donvi
                 },
-                "Cập nhật thông tin đơn vị thành công, lưu cấp học thất bại");
+                "Cập nhật đơn vị thành công, cập nhật cấp học thất bại");
+            if (!editCa)
+                return ApiResult.Success(new
+                {
+                    item = donvi
+                },
+                "Cập nhật đơn vị thành công, cập nhật ca học thất bại");
             return ApiResult.Success(new
             {
                 item = donvi
@@ -170,15 +205,20 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
             // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDonviById(id);
+            var donvidb = _donvi.getDetailById(id);
             if (donvidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _donvi.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             var deleteCap = _donvi.DeleteCap(id);
+            var deleteCa = _donvi.DeleteCa(id);
+            if (!deleteCap && !deleteCa)
+                return ApiResult.NotFound("Xóa các cấp học và ca học lỗi");
             if (!deleteCap)
                 return ApiResult.NotFound("Xóa các cấp học lỗi");
+            if(!deleteCa)
+                return ApiResult.NotFound("Xóa các ca học lỗi");
             return ApiResult.Ok("Xóa đơn vị thành công");
         }
     }

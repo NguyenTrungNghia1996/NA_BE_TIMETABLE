@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NA_Entities.Entities.Danh_muc
+namespace NA_Entities.Entities.Dtos
 {
     public class DM_PhonghocDto
     {

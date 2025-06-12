@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public DM_Donvi getDonviById(int id)
+        public DM_Donvi getDetailById(int id)
         {
             try
             {
@@ -37,6 +37,19 @@ namespace NA_Logic.Repository
             try
             {
                 var list = _context.Cap_Donvi.Where(x => x.Id_Don_vi == id).Select(x => x.Id_Cap_hoc).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
+            }
+        }
+        public List<int> GetlistCabyDonvi(int id)
+        {
+            try
+            {
+                var list = _context.Ca_Donvi.Where(x => x.Id_Donvi == id).Select(x => x.Id_Cahoc).ToList();
                 if (list == null) return new List<int>();
                 return list;
             }
@@ -114,6 +127,30 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool AddCa(int Id, List<int> caId)
+        {
+            try
+            {
+                if (caId != null && caId.Count > 0)
+                {
+                    for (int i = 0; i < caId.Count; i++)
+                    {
+                        var caDonvi = new Ca_Donvi
+                        {
+                            Id_Donvi = Id,
+                            Id_Cahoc = caId[i]
+                        };
+                        _context.Ca_Donvi.Add(caDonvi);
+                    }
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Update(DM_Donvi dm_donvi)
         {
             try
@@ -154,6 +191,32 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool UpdateCa(int Id, List<int> caId)
+        {
+            try
+            {
+                var del = _context.Ca_Donvi.Where(x => x.Id_Donvi == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Ca_Donvi.RemoveRange(del);
+                }
+                for (int i = 0; i < caId.Count; i++)
+                {
+                    var caDv = new Ca_Donvi
+                    {
+                        Id_Donvi = Id,
+                        Id_Cahoc = caId[i]
+                    };
+                    _context.Ca_Donvi.Add(caDv);
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try
@@ -180,6 +243,23 @@ namespace NA_Logic.Repository
                 if (del != null && del.Count > 0)
                 {
                     _context.Cap_Donvi.RemoveRange(del);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteCa(int Id)
+        {
+            try
+            {
+                var del = _context.Ca_Donvi.Where(x => x.Id_Donvi == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Ca_Donvi.RemoveRange(del);
                     _context.SaveChanges();
                 }
                 return true;

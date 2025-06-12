@@ -6,22 +6,21 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
-using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
 {
-    public class DM_PhonghocRepository : IDM_PhonghocRepository
+    public class DM_TiethocRepository : IDM_TiethocRepository
     {
         private readonly NA_DbContext _context;
-        public DM_PhonghocRepository(NA_DbContext context)
+        public DM_TiethocRepository(NA_DbContext context)
         {
             _context = context;
         }
 
-        public List<DM_Phonghoc_list> GetList_Paging(int PageIndex, int PageSize, string search, int idDiemtruong,int idDonvi, ref int totalrecord)
+        public List<DM_Tiethoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -37,22 +36,14 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
-                var paramIdDiemtruong = new SqlParameter("idDiemtruong", SqlDbType.Int)
-                {
-                    Value = idDiemtruong
-                };
-                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
-                {
-                    Value = idDonvi
-                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Phonghoc_list>().FromSqlRaw("EXEC DM_Phonghoc_GetList_Paging @pageIndex, @pageSize, @search, @idDiemtruong,@idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDiemtruong,paramIdDonvi, paramTotal)
+                var result = _context.Set<DM_Tiethoc_List>().FromSqlRaw("EXEC DM_Tiethoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Phonghoc_list>();
+                if (result == null) result = new List<DM_Tiethoc_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -61,11 +52,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Phonghoc getDetailById(int id)
+        public DM_Tiethoc getDetailById(int id)
         {
             try
             {
-                var data = _context.DM_Phonghoc.Find(id);
+                var data = _context.DM_Tiethoc.Find(id);
                 return data;
             }
             catch
@@ -73,11 +64,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add(DM_Phonghoc dM_Phonghoc)
+        public bool Add(DM_Tiethoc dM_Tiethoc)
         {
             try
             {
-                _context.DM_Phonghoc.Add(dM_Phonghoc);
+                _context.DM_Tiethoc.Add(dM_Tiethoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -86,13 +77,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
-        public bool Update(DM_Phonghoc dM_Phonghoc)
+        public bool Update(DM_Tiethoc dM_Tiethoc)
         {
             try
             {
                 _context.ChangeTracker.Clear();
-                _context.DM_Phonghoc.Update(dM_Phonghoc);
+                _context.DM_Tiethoc.Update(dM_Tiethoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -101,16 +91,15 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
         public bool Delete(int Id)
         {
             try
             {
-                DM_Phonghoc ph = new DM_Phonghoc();
-                ph = _context.DM_Phonghoc.Find(Id);
-                if (ph != null)
+                DM_Tiethoc item = new DM_Tiethoc();
+                item = _context.DM_Tiethoc.Find(Id);
+                if (item != null)
                 {
-                    _context.DM_Phonghoc.Remove(ph);
+                    _context.DM_Tiethoc.Remove(item);
                     _context.SaveChanges();
                 }
                 return true;
