@@ -113,6 +113,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId(int Id)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _dbContext.DM_Diemtruong.Any(c => c.Id == Id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }

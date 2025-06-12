@@ -99,5 +99,17 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId(int Id)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _context.DM_Loaiphonghoc.Any(c => c.Id == Id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
