@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
     public interface IDM_LoaiphonghocRepository
     {
         DM_Loaiphonghoc GetDetailByID(int id);
-        List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
+        List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord);
         bool Add(DM_Loaiphonghoc dM_Loaiphonghoc);
         bool Update(DM_Loaiphonghoc dM_Loaiphonghoc);
         bool Deleted(int Id);
