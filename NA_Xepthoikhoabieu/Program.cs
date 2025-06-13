@@ -47,6 +47,7 @@ builder.Services.AddScoped<IDM_TochuyenmonRepository, DM_TochuyenmonRepository>(
 builder.Services.AddScoped<IDM_KhoilopRepository, DM_KhoilopRepository>();
 builder.Services.AddScoped<IDM_PhonghocRepository, DM_PhonghocRepository>();
 builder.Services.AddScoped<IDM_TiethocRepository, DM_TiethocRepository>();
+builder.Services.AddScoped<IDM_NgayhocRepository, DM_NgayhocRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("Không tồn tại key"));
