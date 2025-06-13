@@ -21,7 +21,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Ngayhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Ngayhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord)
         {
             try
             {
@@ -37,12 +37,16 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int)
+                {
+                    Value = IdDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Ngayhoc_List>().FromSqlRaw("EXEC DM_Ngayhoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _dbContext.Set<DM_Ngayhoc_List>().FromSqlRaw("EXEC DM_Ngayhoc_GetList_Paging @pageIndex, @pageSize, @search,@Id_Donvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Ngayhoc_List>();
                 totalrecord = (int)paramTotal.Value;

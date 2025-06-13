@@ -15,11 +15,13 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_Ca_hoc { get; set; }
+        public int Id_Donvi { get; set; } = 0;
     }
     public class DM_Tiethoc_List
     {
         public int Stt { get; set; } = 0;
         public int Id { get; set;} = 0;
         public string Ten { get; set; }= string.Empty;
+        public int Id_Donvi{ get;set; } = 0;
     }
 }

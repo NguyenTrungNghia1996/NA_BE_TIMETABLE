@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Tiethoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Tiethoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord)
         {
             try
             {
@@ -36,12 +36,16 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int)
+                {
+                    Value = IdDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Tiethoc_List>().FromSqlRaw("EXEC DM_Tiethoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _context.Set<DM_Tiethoc_List>().FromSqlRaw("EXEC DM_Tiethoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Tiethoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -64,6 +68,19 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<int> GetlistCabyTiethoc(int id)
+        {
+            try
+            {
+                var list = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == id).Select(x => x.Id_Ca_hoc).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
+            }
+        }
         public bool Add(DM_Tiethoc dM_Tiethoc)
         {
             try
@@ -73,6 +90,30 @@ namespace NA_Logic.Repository
                 return true;
             }
             catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool AddCa(int Id, List<int> caId)
+        {
+            try
+            {
+                if (caId != null && caId.Count > 0)
+                {
+                    for (int i = 0; i < caId.Count; i++)
+                    {
+                        var caTiethoc = new Ca_Tiethoc
+                        {
+                            Id_Tiet_hoc = Id,
+                            Id_Ca_hoc = caId[i]
+                        };
+                        _context.Ca_Tiethoc.Add(caTiethoc);
+                    }
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
             {
                 return false;
             }
@@ -91,6 +132,32 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool UpdateCa(int Id, List<int> caId)
+        {
+            try
+            {
+                var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Ca_Tiethoc.RemoveRange(del);
+                }
+                for (int i = 0; i < caId.Count; i++)
+                {
+                    var Catiethoc = new Ca_Tiethoc
+                    {
+                        Id_Tiet_hoc = Id,
+                        Id_Ca_hoc = caId[i]
+                    };
+                    _context.Ca_Tiethoc.Add(Catiethoc);
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try
@@ -100,6 +167,23 @@ namespace NA_Logic.Repository
                 if (item != null)
                 {
                     _context.DM_Tiethoc.Remove(item);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteCa(int Id)
+        {
+            try
+            {
+                var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Ca_Tiethoc.RemoveRange(del);
                     _context.SaveChanges();
                 }
                 return true;

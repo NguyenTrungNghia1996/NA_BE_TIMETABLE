@@ -25,10 +25,12 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _khoikienthuc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _khoikienthuc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             var listDto = _mapper.Map<List<DM_Khoikienthuc_ListDto>>(list);
@@ -43,6 +45,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
             var detail = _khoikienthuc.GetDetailById(Id);
             if (detail == null)
@@ -54,9 +59,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_KhoikienthucDto khoikienthuc)
         {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
             var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
             item.Id = 0;
+            item.Id_Donvi = idDonvi;
             // add 
             bool add = _khoikienthuc.Add(item);
             if (!add)
@@ -73,7 +82,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_KhoikienthucDto khoikienthuc)
         {
-
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
             var db = _khoikienthuc.GetDetailById(khoikienthuc.Id);
             if (!ModelState.IsValid)
@@ -82,6 +93,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
+            item.Id_Donvi = idDonvi;
             bool add = _khoikienthuc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
@@ -96,7 +108,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             var item = _khoikienthuc.GetDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
