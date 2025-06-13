@@ -46,6 +46,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Phonghoc_list> DM_Phonghoc_List { get; set; }
         public DbSet<DM_Tiethoc> DM_Tiethoc { get; set; }
         public DbSet<DM_Tiethoc_List> DM_Tiethoc_List { get; set; }
+        public DbSet<DM_Ngayhoc> DM_Ngayhoc { get; set; }
+        public DbSet<DM_Ngayhoc_List> DM_Ngayhoc_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -63,6 +65,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Khoilop_List>().HasNoKey();
             builder.Entity<DM_Phonghoc_list>().HasNoKey();
             builder.Entity<DM_Tiethoc_List>().HasNoKey();
+            builder.Entity<DM_Ngayhoc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
