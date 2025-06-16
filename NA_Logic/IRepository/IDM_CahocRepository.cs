@@ -10,10 +10,10 @@ namespace NA_Logic.IRepository
     public interface IDM_CahocRepository
     {
         List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search,int IdDonvi, ref int totalrecord);
-        DM_Cahoc GetDetailById(int Id);
+        DM_Cahoc GetDetailById(int Id, int idDonvi);
         bool Add(DM_Cahoc dm_cahoc);
         bool Update(DM_Cahoc dm_cahoc);
-        bool Delete(int Id);
+        bool Delete(int Id, int idDonvi);
         bool CheckId(int Id);
         bool CheckIds(IEnumerable<int> ids, int idDonvi);
     }
