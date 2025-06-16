@@ -13,8 +13,6 @@ namespace NA_Entities.Entities.Danh_muc
         [Required(ErrorMessage = "Tên tiết học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Vui lòng chọn ca học")]
-        public int Id_Ca_hoc { get; set; }
         public int Id_Donvi { get; set; } = 0;
     }
     public class DM_Tiethoc_List
