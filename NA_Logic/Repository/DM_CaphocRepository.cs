@@ -86,7 +86,7 @@ namespace NA_Logic.Repository
             try
             {
                 DM_Caphoc item = new DM_Caphoc();
-                item = _context.DM_Caphoc.Find(Id);
+                item = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
                 if (item != null)
                 {
                     item.Trang_thai_xoa = true;

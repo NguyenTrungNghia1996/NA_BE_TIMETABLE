@@ -69,6 +69,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<DM_Khoilop>(khoilop);
             item.Id = 0;
+            item.Trang_thai_xoa = false;
             var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");

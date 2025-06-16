@@ -56,7 +56,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var data = _context.DM_Khoilop.Find(id);
+                var data = _context.DM_Khoilop.FirstOrDefault(c => c.Id == id && c.Trang_thai_xoa == false);
                 return data;
             }
             catch
@@ -96,10 +96,11 @@ namespace NA_Logic.Repository
             try
             {
                 DM_Khoilop item = new DM_Khoilop();
-                item = _context.DM_Khoilop.Find(Id);
+                item = _context.DM_Khoilop.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
                 if (item != null)
                 {
-                    _context.DM_Khoilop.Remove(item);
+                    item.Trang_thai_xoa = true;
+                    _context.DM_Khoilop.Update(item);
                     _context.SaveChanges();
                 }
                 return true;
