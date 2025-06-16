@@ -15,6 +15,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten { get; set; } = string.Empty;
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghichu { get; set; } = string.Empty;
+        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Caphoc_ListDto
     {
