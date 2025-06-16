@@ -81,8 +81,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id_Don_vi = idDonvi;
             addph.Id = 0;
-            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
-            var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong);
+            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
+            var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_Loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_diemtruong)
@@ -116,8 +116,8 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Phonghoc>(phonghoc);
             item.Id_Don_vi = idDonvi;
-            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
-            var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong);
+            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
+            var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_Loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_diemtruong)

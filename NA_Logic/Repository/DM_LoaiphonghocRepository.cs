@@ -100,12 +100,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id)
+        public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Loaiphonghoc.Any(c => c.Id == Id);
+                return _context.DM_Loaiphonghoc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
             }
             catch
             {
