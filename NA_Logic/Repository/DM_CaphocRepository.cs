@@ -46,7 +46,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id);
+                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
                 return caphoc;
             }
             catch
@@ -89,7 +89,8 @@ namespace NA_Logic.Repository
                 item = _context.DM_Caphoc.Find(Id);
                 if (item != null)
                 {
-                    _context.DM_Caphoc.Remove(item);
+                    item.Trang_thai_xoa = true;
+                    _context.DM_Caphoc.Update(item);
                     _context.SaveChanges();
                 }
                 return true;
@@ -104,7 +105,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Caphoc.Any(c => c.Id == Id);
+                return _context.DM_Caphoc.Any(c => c.Id == Id && c.Trang_thai_xoa==false);
             }
             catch
             {
@@ -113,7 +114,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids)
         {
-            var existingIds = _context.DM_Caphoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _context.DM_Caphoc.Where(c => ids.Contains(c.Id) && c.Trang_thai_xoa == false).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
     }

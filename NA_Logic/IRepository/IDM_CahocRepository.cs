@@ -15,6 +15,6 @@ namespace NA_Logic.IRepository
         bool Update(DM_Cahoc dm_cahoc);
         bool Delete(int Id);
         bool CheckId(int Id);
-        bool CheckIds(IEnumerable<int> ids);
+        bool CheckIds(IEnumerable<int> ids, int idDonvi);
     }
 }

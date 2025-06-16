@@ -81,7 +81,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 ModelState.AddModelError("Id_Ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
-            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc);
+            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc, idDonvi);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
@@ -123,7 +123,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             var item = _mapper.Map<DM_Tiethoc>(tiethoc);
             item.Id_Donvi=idDonvi;
-            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc);
+            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc, idDonvi);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
