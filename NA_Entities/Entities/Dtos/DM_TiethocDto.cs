@@ -14,7 +14,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_Donvi { get; set; } = 0;
-        [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
+        [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
         public List<int> Id_Ca_hoc { get; set; } = new List<int>();
     }
     public class DM_Tiethoc_ListDto
@@ -31,7 +31,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_Donvi { get; set; } = 0;
-        [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
+        [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
         public List<int> Id_Ca_hoc { get; set; } = new List<int>();
     }
 }
