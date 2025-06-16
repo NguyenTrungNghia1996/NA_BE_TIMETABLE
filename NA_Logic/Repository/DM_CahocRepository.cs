@@ -56,11 +56,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Cahoc GetDetailById(int Id)
+        public DM_Cahoc GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id);
+                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false && c.Id_Donvi == idDonvi);
                 return cahoc;
             }
             catch(Exception) 
@@ -95,15 +95,16 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id)
+        public bool Delete(int Id, int idDonvi)
         {
             try
             {
                 DM_Cahoc cahoc = new DM_Cahoc();
-                cahoc = _dbContext.DM_Cahoc.Find(Id);
+                cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false && c.Id_Donvi == idDonvi);
                 if (cahoc != null)
                 {
-                    _dbContext.DM_Cahoc.Remove(cahoc);
+                    cahoc.Trang_thai_xoa = true;
+                    _dbContext.DM_Cahoc.Update(cahoc);
                     _dbContext.SaveChanges();
                 }
                 return true;
