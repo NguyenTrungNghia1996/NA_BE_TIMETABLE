@@ -18,6 +18,7 @@ namespace NA_Logic.IRepository
         bool UpdateCa(int Id, List<int> caId);
         bool Delete(int Id);
         bool DeleteCa(int Id);
+        bool CheckId(int idTiet, int idDonvi, int idCa);
 
     }
 }

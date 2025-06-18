@@ -26,4 +26,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ghichu { get; set; }=string.Empty;
         public int Id_Donvi { get;set; } = 0;
     }
+    public class Ca_banDto
+    {
+        public int Id { get; set; } = 0;
+        public List<Ngay_banDto> Ds_Ngay { get; set; } = new List<Ngay_banDto>();
+    }
 }

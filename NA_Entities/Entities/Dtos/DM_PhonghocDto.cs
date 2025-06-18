@@ -35,4 +35,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_diem_truong { get; set; } = string.Empty;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
     }
+    public class Phong_banDto
+    {
+        public int Id { get; set; }
+        public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
+    }
 }

@@ -193,5 +193,28 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId(int idTiet, int idDonvi, int idCa)
+        {
+            if (idTiet <= 0) return false;
+            try
+            {
+                // Check ca thuộc đơn vị trước (nhanh hơn)
+                var caValid = _context.DM_Cahoc
+                    .AsNoTracking()
+                    .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
+
+                if (!caValid) return false;
+
+                // Sau đó check tiết trong ca
+                return _context.Ca_Tiethoc
+                    .AsNoTracking()
+                    .Any(ct => ct.Id_Tiet_hoc == idTiet && ct.Id_Ca_hoc == idCa);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
