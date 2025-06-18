@@ -217,7 +217,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
-                        if (!_tiethoc.CheckId(tiet.Id, ca.Id, idDonvi))
+                        if (!_tiethoc.CheckId(tiet.Id, idDonvi, ca.Id))
                         {
                             errors.Add($"Tiết học {tiet.Id} không hợp lệ");
                             continue;
