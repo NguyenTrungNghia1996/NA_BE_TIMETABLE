@@ -48,6 +48,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Ngayhoc> DM_Ngayhoc { get; set; }
         public DbSet<DM_Ngayhoc_List> DM_Ngayhoc_List { get; set; }
         public DbSet<Ca_Tiethoc> Ca_Tiethoc { get; set; }
+        public DbSet<Tiet_ban> Tiet_ban { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();

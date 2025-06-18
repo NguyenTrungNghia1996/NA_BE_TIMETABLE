@@ -34,4 +34,9 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
         public List<int> Id_Ca_hoc { get; set; } = new List<int>();
     }
+    public class TietbanDto
+    {
+        public int Id { get; set; } = 0;
+        public bool Trang_thai { get; set; } = false;
+    }
 }

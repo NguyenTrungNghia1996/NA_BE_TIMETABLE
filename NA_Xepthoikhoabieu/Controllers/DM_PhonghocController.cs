@@ -25,7 +25,12 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IAuthRepository _auth;
         private readonly IDM_LoaiphonghocRepository _loaiphonghoc;
         private readonly IDM_DiemtruongRepository _diemtruong;
-        public DM_PhonghocController(IMapper mapper, IDM_PhonghocRepository phonghoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_LoaiphonghocRepository loaiphonghoc, IDM_DiemtruongRepository diemtruong)
+        private readonly IDM_CahocRepository _cahoc;
+        private readonly IDM_NgayhocRepository _ngayhoc;
+        private readonly IDM_TiethocRepository _tiethoc;
+        public DM_PhonghocController(IMapper mapper, IDM_PhonghocRepository phonghoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
+                                     IDM_LoaiphonghocRepository loaiphonghoc, IDM_DiemtruongRepository diemtruong, IDM_CahocRepository cahoc, IDM_NgayhocRepository ngayhoc,
+                                     IDM_TiethocRepository tiethoc)
         {
             _mapper = mapper;
             _phonghoc = phonghoc;
@@ -33,6 +38,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _loaiphonghoc = loaiphonghoc;
             _diemtruong = diemtruong;
+            _cahoc = cahoc;
+            _ngayhoc = ngayhoc;
+            _tiethoc = tiethoc;
         }
         [HttpGet]
         [RequireToken]
@@ -64,7 +72,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _phonghoc.getDetailById(Id);
+            var detail = _phonghoc.getDetailById(Id, idDonvi);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_PhonghocDto>(detail);
@@ -108,7 +116,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var phonghocdb = _phonghoc.getDetailById(phonghoc.Id);
+            var phonghocdb = _phonghoc.getDetailById(phonghoc.Id,idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (phonghocdb == null)
@@ -143,13 +151,112 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var phonghocdb = _phonghoc.getDetailById(id);
+            var phonghocdb = _phonghoc.getDetailById(id,idDonvi);
             if (phonghocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _phonghoc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("tietban")]
+        [RequireToken]
+        public IActionResult GetListTietBan([FromQuery] int Id)
+        {
+            if (Id <= 0)
+                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            var detail = _phonghoc.CheckId(Id, idDonvi);
+            if (!detail)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            // Lấy bản ghi từ db
+            var result = _phonghoc.GetListTietBan(Id,idDonvi);
+
+            if (result == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+
+            return ApiResult.Success(result, "Thành công");
+        }
+        [HttpPost("tietban")]
+        [RequireToken]
+        public IActionResult Create([FromBody] Phong_banDto phongban)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            // Validate phòng học
+            if (!_phonghoc.CheckId(phongban.Id, idDonvi))
+                return ApiResult.BadRequest("Phòng học không hợp lệ");
+
+            // check id, check trùng
+            var danhSachTietBan = new List<Tiet_ban>();
+            var errors = new List<string>();
+            var existingCombinations = new HashSet<string>();
+
+            foreach (var ca in phongban.Ds_Ca)
+            {
+                if (!_cahoc.CheckId(ca.Id, idDonvi))
+                {
+                    errors.Add($"Ca học {ca.Id} không hợp lệ");
+                    continue;
+                }
+
+                foreach (var ngay in ca.Ds_Ngay)
+                {
+                    if (!_ngayhoc.CheckId(ngay.Id, idDonvi))
+                    {
+                        errors.Add($"Ngày học {ngay.Id} không hợp lệ");
+                        continue;
+                    }
+
+                    foreach (var tiet in ngay.Ds_Tiet)
+                    {
+                        if (!_tiethoc.CheckId(tiet.Id, ca.Id, idDonvi))
+                        {
+                            errors.Add($"Tiết học {tiet.Id} không hợp lệ");
+                            continue;
+                        }
+
+                        if (tiet.Trang_thai == true)
+                        {
+                            // Tạo unique key để check trùng
+                            string uniqueKey = $"{phongban.Id}_{ca.Id}_{ngay.Id}_{tiet.Id}";
+
+                            if (existingCombinations.Contains(uniqueKey))
+                            {
+                                errors.Add($"Trùng lặp bản ghi");
+                                continue;
+                            }
+
+                            existingCombinations.Add(uniqueKey);
+                            danhSachTietBan.Add(new Tiet_ban
+                            {
+                                Id_phong = phongban.Id,
+                                Id_ca = ca.Id,
+                                Id_thu = ngay.Id,
+                                Id_tiet = tiet.Id
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Kiểm tra có lỗi không
+            if (errors.Any())
+                return ApiResult.BadRequest(string.Join("; ", errors));
+
+            bool result = _phonghoc.AddTietBan(danhSachTietBan);
+
+            if (!result)
+                return ApiResult.NotFound("Thêm mới thất bại");
+
+            return ApiResult.Success(new { id_phong = phongban.Id, so_tiet_ban = danhSachTietBan.Count }, "Thêm mới thành công");
         }
     }
 }
