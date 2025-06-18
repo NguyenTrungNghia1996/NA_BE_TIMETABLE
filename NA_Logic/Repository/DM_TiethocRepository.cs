@@ -198,7 +198,7 @@ namespace NA_Logic.Repository
             if (idTiet <= 0) return false;
             try
             {
-                // Check ca thuộc đơn vị trước (nhanh hơn)
+                // Check ca thuộc đơn vị trước
                 var caValid = _context.DM_Cahoc
                     .AsNoTracking()
                     .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
