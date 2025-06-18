@@ -254,9 +254,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool result = _phonghoc.AddTietBan(danhSachTietBan);
 
             if (!result)
-                return ApiResult.NotFound("Thêm mới thất bại");
+                return ApiResult.NotFound("Cập nhật tiết bận thất bại");
 
-            return ApiResult.Success(new { id_phong = phongban.Id, so_tiet_ban = danhSachTietBan.Count }, "Thêm mới thành công");
+            return ApiResult.Success(new { id_phong = phongban.Id, so_tiet_ban = danhSachTietBan.Count }, "Cập nhật tiết bận thành công");
         }
     }
 }
