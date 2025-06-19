@@ -14,5 +14,6 @@ namespace NA_Logic.IRepository
         bool Add(DM_Khoikienthuc dM_Khoikienthuc);
         bool Update(DM_Khoikienthuc dM_Khoikienthuc);
         bool Delete(int Id);
+        bool CheckId(int Id, int idDonvi);
     }
 }
