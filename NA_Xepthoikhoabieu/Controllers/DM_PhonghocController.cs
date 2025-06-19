@@ -163,16 +163,19 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetListTietBan([FromQuery] int Id)
         {
-            if (Id <= 0)
+            if (Id < 0)
                 return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            var detail = _phonghoc.CheckId(Id, idDonvi);
-            if (!detail)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            if (Id > 0)
+            {
+                var detail = _phonghoc.CheckId(Id, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            }
             // Lấy bản ghi từ db
             var result = _phonghoc.GetListTietBan(Id,idDonvi);
 
@@ -181,9 +184,10 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success(result, "Thành công");
         }
+
         [HttpPost("tietban")]
         [RequireToken]
-        public IActionResult Create([FromBody] Phong_banDto phongban)
+        public IActionResult Update([FromBody] Phong_banDto phongban)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
@@ -201,40 +205,30 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             foreach (var ca in phongban.Ds_Ca)
             {
-                if (!_cahoc.CheckId(ca.Id, idDonvi))
-                {
-                    errors.Add($"Ca học {ca.Id} không hợp lệ");
-                    continue;
-                }
-
                 foreach (var ngay in ca.Ds_Ngay)
                 {
-                    if (!_ngayhoc.CheckId(ngay.Id, idDonvi))
-                    {
-                        errors.Add($"Ngày học {ngay.Id} không hợp lệ");
-                        continue;
-                    }
-
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
-                        if (!_tiethoc.CheckId(tiet.Id, idDonvi, ca.Id))
+                        bool isValid = _phonghoc.CheckIds_Tietban(ngay.Id, ca.Id, tiet.Id, idDonvi);
+                        if (!isValid)
                         {
-                            errors.Add($"Tiết học {tiet.Id} không hợp lệ");
-                            continue;
+                            errors.Add($"Dữ liệu không hợp lệ cho Ca: {ca.Id}, Ngày: {ngay.Id}, Tiết: {tiet.Id}");
+                            break;
                         }
 
                         if (tiet.Trang_thai == true)
                         {
                             // Tạo unique key để check trùng
                             string uniqueKey = $"{phongban.Id}_{ca.Id}_{ngay.Id}_{tiet.Id}";
-
+                            //kiểm tra unique tồn tại chưa
                             if (existingCombinations.Contains(uniqueKey))
                             {
                                 errors.Add($"Trùng lặp bản ghi");
                                 continue;
                             }
-
+                            //nếu chưa tồn tại thì thêm vào combinations
                             existingCombinations.Add(uniqueKey);
+                            //thêm các tiết trạng thái bằng true vào danh sách tiết bận
                             danhSachTietBan.Add(new Tiet_ban
                             {
                                 Id_phong = phongban.Id,
@@ -246,13 +240,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                     }
                 }
             }
-
             // Kiểm tra có lỗi không
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
 
-            bool result = _phonghoc.AddTietBan(danhSachTietBan);
-
+            bool result = _phonghoc.AddTietBan(danhSachTietBan,phongban.Id);
             if (!result)
                 return ApiResult.NotFound("Cập nhật tiết bận thất bại");
 

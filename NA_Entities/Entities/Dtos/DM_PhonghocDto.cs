@@ -37,7 +37,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Phong_banDto
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
 }

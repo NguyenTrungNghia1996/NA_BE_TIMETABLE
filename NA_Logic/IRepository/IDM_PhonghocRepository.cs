@@ -16,7 +16,8 @@ namespace NA_Logic.IRepository
         bool Update(DM_Phonghoc dM_Phonghoc);
         bool Delete(int Id);
         Phong_banDto GetListTietBan(int Id, int idDonvi);
-        bool AddTietBan(List<Tiet_ban> dsTietBan);
+        bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong);
         bool CheckId(int Id, int idDonvi);
+        bool CheckIds_Tietban(int idNgay, int idCa, int idTiet, int idDonvi);
     }
 }
