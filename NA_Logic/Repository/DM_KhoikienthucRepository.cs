@@ -113,6 +113,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _dbContext.DM_Khoikienthuc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }
