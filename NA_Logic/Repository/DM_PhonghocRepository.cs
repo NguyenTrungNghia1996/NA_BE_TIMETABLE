@@ -134,7 +134,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public Phong_banDto GetListTietBan(int Id, int idDonvi)
+        public Phong_banDto GetListTietBan(int Id , int idDonvi)
         {
             var dsCa = _context.DM_Cahoc.Where(c => c.Id_Donvi == idDonvi).ToList();
             var dsNgay = _context.DM_Ngayhoc.Where(c => c.Id_Donvi == idDonvi).ToList();
@@ -169,14 +169,52 @@ namespace NA_Logic.Repository
 
             return result;
         }
-        public bool AddTietBan(List<Tiet_ban> dsTietBan)
+        public bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var existingTietBan = _context.Tiet_ban.Where(tb => tb.Id_phong == idPhong).ToList();
+                if (existingTietBan.Any())
+                {
+                    _context.BulkDelete(existingTietBan);
+                }
+
+                if (dsTietBan != null && dsTietBan.Any())
+                {
+                    _context.BulkInsert(dsTietBan);
+                }
+
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+        public bool CheckIds_Tietban(int idNgay, int idCa, int idTiet, int idDonvi)
         {
             try
             {
-                _context.BulkInsertOrUpdateOrDelete(dsTietBan);
-                return true;
+                var paramIdNgay = new SqlParameter("@IdNgay", SqlDbType.Int) { Value = idNgay };
+                var paramIdCa = new SqlParameter("@IdCa", SqlDbType.Int) { Value = idCa };
+                var paramIdTiet = new SqlParameter("@IdTiet", SqlDbType.Int) { Value = idTiet };
+                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = idDonvi };
+
+                var paramResult = new SqlParameter("@Result", SqlDbType.Bit)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                _context.Database.ExecuteSqlRaw(
+                    "EXEC CheckIds_Tietban @IdNgay, @IdCa, @IdTiet, @IdDonvi, @Result OUTPUT",
+                    paramIdNgay, paramIdCa, paramIdTiet, paramIdDonvi, paramResult);
+
+                return Convert.ToBoolean(paramResult.Value);
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }
