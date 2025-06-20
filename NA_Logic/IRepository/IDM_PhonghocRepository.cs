@@ -19,5 +19,6 @@ namespace NA_Logic.IRepository
         bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds_Tietban(int idNgay, int idCa, int idTiet, int idDonvi);
+        bool DeleteTietBan(int Id);
     }
 }
