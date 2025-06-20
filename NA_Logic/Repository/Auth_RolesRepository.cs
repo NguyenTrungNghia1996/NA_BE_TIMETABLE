@@ -129,16 +129,10 @@ namespace NA_Logic.Repository
                                        .Where(x => x.Id_Roles == roleId)
                                        .ToList();
 
-                // Bước 2: Lọc ra những bản ghi cần xóa: Có trong DB nhưng không có trong danh sách mới
-                var toDelete = existing
-                    .Where(dbItem => !list_permssions.Any(newItem =>
-                        newItem.Key == dbItem.Key && newItem.PermissionValue == dbItem.PermissionValue))
-                    .ToList();
-
-                // Bước 3: Xóa những bản ghi không còn
-                if (toDelete.Any())
-                    _context.BulkDelete(toDelete);
-                _context.BulkInsertOrUpdate(list_permssions);
+                // Bước 2: Xóa những bản ghi cũ
+                if (existing.Any())
+                    _context.BulkDelete(existing);
+                _context.BulkInsert(list_permssions);
                 return true;
             }
             catch
