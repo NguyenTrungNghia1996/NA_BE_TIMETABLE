@@ -16,6 +16,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_Donvi { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
         public List<int> Id_Ca_hoc { get; set; } = new List<int>();
+        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Tiethoc_ListDto
     {
