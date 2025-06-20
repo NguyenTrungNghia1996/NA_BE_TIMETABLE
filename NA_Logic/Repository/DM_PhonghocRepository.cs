@@ -175,16 +175,11 @@ namespace NA_Logic.Repository
             try
             {
                 var existingTietBan = _context.Tiet_ban.Where(tb => tb.Id_phong == idPhong).ToList();
-                //Lọc ra những bản ghi có trong DB nhưng không có trong danh sách mới
-                var toDelete = existingTietBan
-                    .Where(dbItem => !dsTietBan.Any(newItem =>
-                        newItem.Id_ca == dbItem.Id_ca && newItem.Id_thu == dbItem.Id_thu && newItem.Id_tiet == dbItem.Id_tiet))
-                    .ToList();
 
                 //xóa
                 if (existingTietBan.Any())
                 {
-                    _context.BulkDelete(toDelete);
+                    _context.BulkDelete(existingTietBan);
                 }
                 //thêm
                 if (dsTietBan != null && dsTietBan.Any())
