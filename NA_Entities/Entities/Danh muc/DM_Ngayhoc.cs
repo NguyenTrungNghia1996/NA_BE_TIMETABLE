@@ -16,7 +16,6 @@ namespace NA_Entities.Entities.Danhmuc
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghi_chu { get; set; }
         public int Id_Donvi { get; set; } = 0;
-        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Ngayhoc_List
     {

@@ -60,7 +60,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var data = _context.DM_Tiethoc.FirstOrDefault(c=>c.Id == id && c.Trang_thai_xoa==false);
+                var data = _context.DM_Tiethoc.FirstOrDefault(c=>c.Id == id);
                 return data;
             }
             catch
@@ -166,8 +166,7 @@ namespace NA_Logic.Repository
                 item = _context.DM_Tiethoc.Find(Id);
                 if (item != null)
                 {
-                    item.Trang_thai_xoa = true;
-                    _context.DM_Tiethoc.Update(item);
+                    _context.DM_Tiethoc.Remove(item);
                     _context.SaveChanges();
                 }
                 return true;

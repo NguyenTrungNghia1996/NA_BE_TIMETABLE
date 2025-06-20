@@ -77,7 +77,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Tiethoc>(tiethoc);
             item.Id = 0;
             item.Id_Donvi = idDonvi;
-            item.Trang_thai_xoa = false;
             if (tiethoc.Id_Ca_hoc == null || tiethoc.Id_Ca_hoc.Count == 0)
             {
                 ModelState.AddModelError("Id_Ca_hoc", "Vui lòng chọn ít nhất 1 ca học");

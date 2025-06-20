@@ -67,7 +67,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Ngayhoc>(Ngayhoc);
             item.Id = 0;
             item.Id_Donvi = idDonvi;
-            item.Trang_thai_xoa = false;
             // add 
             bool add = _Ngayhoc.Add(item);
             if (!add)
