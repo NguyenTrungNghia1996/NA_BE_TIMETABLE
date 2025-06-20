@@ -154,11 +154,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             var phonghocdb = _phonghoc.getDetailById(id,idDonvi);
             if (phonghocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            var tietban = _phonghoc.DeleteTietBan(id);
+            if (!tietban)
+                return ApiResult.NotFound("Xóa tiết bận thất bại");
             var request = _phonghoc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
+
         [HttpGet("tietban")]
         [RequireToken]
         public IActionResult GetListTietBan([FromQuery] int Id)

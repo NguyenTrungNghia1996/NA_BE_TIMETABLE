@@ -219,5 +219,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool DeleteTietBan(int Id)
+        {
+            try
+            {
+                var tietban = _context.Tiet_ban.Where(c => c.Id_phong == Id).ToList();
+                if (tietban.Count > 0)
+                {
+                    _context.Tiet_ban.RemoveRange(tietban);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
