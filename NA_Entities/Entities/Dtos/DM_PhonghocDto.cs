@@ -14,8 +14,8 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Sức chứa không được để trống")]
-        [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "Sức chứa phải là số nguyên dương")]
-        public string Suc_chua { get; set; } = string.Empty;
+        [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
+        public int Suc_chua { get; set; } = 0;
         [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_Loai_phong_hoc { get; set; }
 
@@ -34,5 +34,10 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_loai_phong_hoc { get; set; } = string.Empty;
         public string Ten_diem_truong { get; set; } = string.Empty;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
+    }
+    public class Phong_banDto
+    {
+        public int Id { get; set; } = 0;
+        public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
 }

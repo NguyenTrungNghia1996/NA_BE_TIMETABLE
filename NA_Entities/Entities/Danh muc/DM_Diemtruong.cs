@@ -25,6 +25,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int STT { get; set; } = 0;
         public int Id { get; set; } = 0;
         public string Ten { get; set; }=string.Empty;
+        public string DiaChi { get; set; } = string.Empty;
         public string Ghichu { get; set; } =string.Empty;
         public int Id_Donvi { get; set; }
     }

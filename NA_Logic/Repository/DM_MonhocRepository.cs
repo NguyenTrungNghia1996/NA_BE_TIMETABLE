@@ -12,15 +12,15 @@ using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
 {
-    public class DM_KhoilopRepository : IDM_KhoilopRepository
+    public class DM_MonhocRepository : IDM_MonhocRepository
     {
         private readonly NA_DbContext _context;
-        public DM_KhoilopRepository(NA_DbContext context)
+        public DM_MonhocRepository(NA_DbContext context)
         {
             _context = context;
         }
 
-        public List<DM_Khoilop_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord)
         {
             try
             {
@@ -36,14 +36,18 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Khoilop_List>().FromSqlRaw("EXEC DM_Khoilop_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _context.Set<DM_Monhoc_List>().FromSqlRaw("EXEC DM_Monhoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Khoilop_List>();
+                if (result == null) result = new List<DM_Monhoc_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -52,11 +56,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Khoilop getDetailById(int id)
+        public DM_Monhoc GetDetailById(int id, int idDonvi)
         {
             try
             {
-                var data = _context.DM_Khoilop.FirstOrDefault(c => c.Id == id && c.Trang_thai_xoa == false);
+                var data = _context.Dm_Monhoc.FirstOrDefault(c => c.Id == id && c.Id_don_vi==idDonvi);
                 return data;
             }
             catch
@@ -64,11 +68,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add(DM_Khoilop dM_Khoilop)
+        public bool Add(DM_Monhoc dM_Monhoc)
         {
             try
             {
-                _context.DM_Khoilop.Add(dM_Khoilop);
+                _context.Dm_Monhoc.Add(dM_Monhoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -77,12 +81,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Khoilop dM_Khoilop)
+        public bool Update(DM_Monhoc dM_Monhoc)
         {
             try
             {
                 _context.ChangeTracker.Clear();
-                _context.DM_Khoilop.Update(dM_Khoilop);
+                _context.Dm_Monhoc.Update(dM_Monhoc);
                 _context.SaveChanges();
                 return true;
             }
@@ -91,16 +95,15 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id)
+        public bool Delete(int Id, int idDonvi)
         {
             try
             {
-                DM_Khoilop item = new DM_Khoilop();
-                item = _context.DM_Khoilop.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                DM_Monhoc item = new DM_Monhoc();
+                item = _context.Dm_Monhoc.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
                 if (item != null)
                 {
-                    item.Trang_thai_xoa = true;
-                    _context.DM_Khoilop.Update(item);
+                    _context.Dm_Monhoc.Remove(item);
                     _context.SaveChanges();
                 }
                 return true;

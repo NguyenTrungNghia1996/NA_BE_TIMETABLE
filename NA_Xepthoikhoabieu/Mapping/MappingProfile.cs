@@ -48,9 +48,13 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Tiethoc,DM_TiethocDto>();
             CreateMap<DM_TiethocDto,DM_Tiethoc>();
             CreateMap<DM_Tiethoc_List,DM_Tiethoc_ListDto>();
+            CreateMap<DM_Tiethoc_updateDto, DM_Tiethoc>();
             CreateMap<DM_Ngayhoc_List,DM_Ngayhoc_ListDto>();
             CreateMap<DM_NgayhocDto,DM_Ngayhoc>();
             CreateMap<DM_Ngayhoc,DM_NgayhocDto>();
+            CreateMap<DM_Monhoc,DM_MonhocDto>();
+            CreateMap<DM_MonhocDto,DM_Monhoc>();
+            CreateMap<DM_Monhoc_List, DM_Monhoc_ListDto>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();

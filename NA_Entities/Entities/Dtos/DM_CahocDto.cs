@@ -15,6 +15,8 @@ namespace NA_Entities.Entities.Dtos
         public string Ten { get; set; } = string.Empty;
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghichu { get; set; } = string.Empty;
+        public int Id_Donvi { get; set; } = 0;
+        public bool Trang_thai_xoa = false;
     }
     public class DM_Cahoc_ListDto
     {
@@ -22,5 +24,11 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ten { get; set; }= string.Empty;
         public string Ghichu { get; set; }=string.Empty;
+        public int Id_Donvi { get;set; } = 0;
+    }
+    public class Ca_banDto
+    {
+        public int Id { get; set; } = 0;
+        public List<Ngay_banDto> Ds_Ngay { get; set; } = new List<Ngay_banDto>();
     }
 }

@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord)
         {
             try
             {
@@ -36,12 +36,16 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int)
+                {
+                    Value = IdDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Cahoc_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _dbContext.Set<DM_Cahoc_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search,@Id_Donvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch,paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Cahoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -52,11 +56,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Cahoc GetDetailById(int Id)
+        public DM_Cahoc GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id);
+                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false && c.Id_Donvi == idDonvi);
                 return cahoc;
             }
             catch(Exception) 
@@ -91,15 +95,16 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id)
+        public bool Delete(int Id, int idDonvi)
         {
             try
             {
                 DM_Cahoc cahoc = new DM_Cahoc();
-                cahoc = _dbContext.DM_Cahoc.Find(Id);
+                cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false && c.Id_Donvi == idDonvi);
                 if (cahoc != null)
                 {
-                    _dbContext.DM_Cahoc.Remove(cahoc);
+                    cahoc.Trang_thai_xoa = true;
+                    _dbContext.DM_Cahoc.Update(cahoc);
                     _dbContext.SaveChanges();
                 }
                 return true;
@@ -109,21 +114,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id)
+        public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Cahoc.Any(c => c.Id == Id);
+                return _dbContext.DM_Cahoc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
             }
             catch
             {
                 return false;
             }
         }
-        public bool CheckIds(IEnumerable<int> ids)
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Cahoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Cahoc.Where(c => ids.Contains(c.Id) && c.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

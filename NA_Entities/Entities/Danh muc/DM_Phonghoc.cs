@@ -14,6 +14,7 @@ namespace NA_Entities.Entities.Danh_muc
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Sức chứa không được để trống")]
+        [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
         public int Suc_chua { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_Loai_phong_hoc { get; set; }
