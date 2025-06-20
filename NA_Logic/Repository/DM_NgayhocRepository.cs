@@ -61,7 +61,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var Ngayhoc = _dbContext.DM_Ngayhoc.FirstOrDefault(c => c.Id == Id);
+                var Ngayhoc = _dbContext.DM_Ngayhoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa==false);
                 return Ngayhoc;
             }
             catch (Exception)
@@ -104,7 +104,8 @@ namespace NA_Logic.Repository
                 Ngayhoc = _dbContext.DM_Ngayhoc.Find(Id);
                 if (Ngayhoc != null)
                 {
-                    _dbContext.DM_Ngayhoc.Remove(Ngayhoc);
+                    Ngayhoc.Trang_thai_xoa = true;
+                    _dbContext.DM_Ngayhoc.Update(Ngayhoc);
                     _dbContext.SaveChanges();
                 }
                 return true;
@@ -119,7 +120,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Ngayhoc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+                return _dbContext.DM_Ngayhoc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi && c.Trang_thai_xoa==false);
             }
             catch
             {
