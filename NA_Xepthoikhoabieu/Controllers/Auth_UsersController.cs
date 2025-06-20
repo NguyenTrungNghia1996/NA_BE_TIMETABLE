@@ -140,6 +140,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             var detailUser = _auth.FindUserById(user.Id);
             if (detailUser == null) return ApiResult.NotFound($"Không tồn tại user có id = {user.Id}");
+            
             if (user.IdRoles == null || user.IdRoles.Count == 0)
             {
                 return ApiResult.NotFound("Vui lòng chọn ít nhất 1 nhóm quyền");
@@ -151,6 +152,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapping data to Auth_Users
             var editUser = _mapper.Map<Auth_Users>(user);
             editUser.Username = detailUser.Username;
+            editUser.Password = detailUser.Password;
             // thêm tài khoản
             var request = _auth.UpdateUser(editUser);
             if (!request)
