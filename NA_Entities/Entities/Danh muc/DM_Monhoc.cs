@@ -15,7 +15,6 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_loai_phong_hoc { get; set; } = 0;
-        public int Id_khoi_kien_thuc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;
         public bool Khong_can_phong_hoc { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;
@@ -42,7 +41,6 @@ namespace NA_Entities.Entities.Danh_muc
         public int So_tiet_toi_da_hai_ca { get; set; } = 0;
         public bool La_mon_tu_chon { get; set; } = false;
         public string Ten_loai_phong_hoc { get; set; } = string.Empty;
-        public string Ten_khoi_kien_thuc { get; set; } = string.Empty;
     }
 
 }

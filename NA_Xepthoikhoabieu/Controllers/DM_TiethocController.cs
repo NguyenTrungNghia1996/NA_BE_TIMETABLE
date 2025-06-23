@@ -157,12 +157,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _tiethoc.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
             var deleteCa = _tiethoc.DeleteCa(id);
             if (!deleteCa)
-                return ApiResult.NotFound("Xóa các cấp học lỗi");
-            return ApiResult.Ok("Xóa đơn vị thành công");
+                return ApiResult.NotFound("Xóa các ca học lỗi");
+            if (!request)
+                return ApiResult.NotFound("Xóa thất bại");
+            
+            return ApiResult.Ok("Xóa tiết học thành công");
         }
     }
 }

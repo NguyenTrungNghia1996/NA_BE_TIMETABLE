@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Logic.Repository;
@@ -57,6 +58,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (detailCahoc == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_MonhocDto>(detailCahoc);
+            detailDto.Id_khoi_kien_thuc = _monhoc.GetlistKhoikienthucbyMon(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -71,7 +73,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id = 0;
             item.Id_don_vi = idDonvi;
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc, idDonvi);
-            var check_khoikienthuc = _khoikienthuc.CheckId(monhoc.Id_khoi_kien_thuc, idDonvi);
+            var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_khoikienthuc)
@@ -82,13 +84,19 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool add = _monhoc.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
-            // mapper data trả về view
-            var itemDto = _mapper.Map<DM_MonhocDto>(item);
+            monhoc.Id = item.Id;
+            var addMonkhoikienthuc = _monhoc.AddKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
+
+            if (!addMonkhoikienthuc)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Tạo môn học thành công, lưu khối kiến thức thất bại");
             return ApiResult.Success(new
             {
-                item = itemDto
-            },
-            "Thêm mới thành công");
+                item = monhoc
+            }, "Tạo môn học thành công");
         }
         [HttpPut]
         [RequireToken]
@@ -106,15 +114,30 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Monhoc>(monhoc);
             item.Id_don_vi = idDonvi;
+            var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc, idDonvi);
+            var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
+            if (!check_loaiphonghoc)
+                ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
+            if (!check_khoikienthuc)
+                ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             bool add = _monhoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_MonhocDto>(item);
+            var editCap = _monhoc.UpdateKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
+
+            if (!editCap)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Cập nhật môn học thành công, cập nhật khối kiến thức thất bại");
+
             return ApiResult.Success(new
             {
-                item = itemDto
-            },
-            "Cập nhật thành công");
+                item = monhoc
+            }, "Cập nhật khối kiến thức thành công");
         }
         [HttpDelete]
         [RequireToken]
@@ -127,7 +150,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (monhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _monhoc.Delete(id, idDonvi);
+            var deleteKhoi = _monhoc.DeleteKhoi(id);
+            if (!deleteKhoi)
+                return ApiResult.NotFound("Xóa các khối kiến thức lỗi");
             if (!request)
+                if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }

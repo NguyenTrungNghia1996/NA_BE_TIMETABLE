@@ -68,6 +68,19 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<int> GetlistKhoikienthucbyMon(int id)
+        {
+            try
+            {
+                var list = _context.Mon_Khoikienthuc.Where(x => x.Id_mon == id).Select(x => x.Id_khoi_kien_thuc).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
+            }
+        }
         public bool Add(DM_Monhoc dM_Monhoc)
         {
             try
@@ -77,6 +90,30 @@ namespace NA_Logic.Repository
                 return true;
             }
             catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool AddKhoikienthuc(int Id, List<int> khoiId)
+        {
+            try
+            {
+                if (khoiId != null && khoiId.Count > 0)
+                {
+                    for (int i = 0; i < khoiId.Count; i++)
+                    {
+                        var mon_khoi = new Mon_Khoikienthuc
+                        {
+                            Id_mon = Id,
+                            Id_khoi_kien_thuc = khoiId[i]
+                        };
+                        _context.Mon_Khoikienthuc.Add(mon_khoi);
+                    }
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
             {
                 return false;
             }
@@ -95,6 +132,32 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool UpdateKhoikienthuc(int Id, List<int> khoiId)
+        {
+            try
+            {
+                var del = _context.Mon_Khoikienthuc.Where(x => x.Id_mon == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Mon_Khoikienthuc.RemoveRange(del);
+                }
+                for (int i = 0; i < khoiId.Count; i++)
+                {
+                    var mon_khoi = new Mon_Khoikienthuc
+                    {
+                        Id_mon = Id,
+                        Id_khoi_kien_thuc = khoiId[i]
+                    };
+                    _context.Mon_Khoikienthuc.Add(mon_khoi);
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id, int idDonvi)
         {
             try
@@ -104,6 +167,23 @@ namespace NA_Logic.Repository
                 if (item != null)
                 {
                     _context.Dm_Monhoc.Remove(item);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteKhoi(int Id)
+        {
+            try
+            {
+                var del = _context.Mon_Khoikienthuc.Where(x => x.Id_mon == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Mon_Khoikienthuc.RemoveRange(del);
                     _context.SaveChanges();
                 }
                 return true;
