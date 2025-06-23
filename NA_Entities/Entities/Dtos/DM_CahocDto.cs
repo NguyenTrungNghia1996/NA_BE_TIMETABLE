@@ -31,4 +31,5 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public List<Ngay_banDto> Ds_Ngay { get; set; } = new List<Ngay_banDto>();
     }
+
 }

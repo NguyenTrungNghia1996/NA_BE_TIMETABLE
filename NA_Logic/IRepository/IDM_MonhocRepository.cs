@@ -1,4 +1,5 @@
 ﻿using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace NA_Logic.IRepository
         bool UpdateKhoikienthuc(int Id, List<int> khoiId);
         bool Delete(int Id, int idDonvi);
         bool DeleteKhoi(int Id);
+        bool CheckId(int Id, int idDonvi);
+        Mon_banDto GetListTietBan(int Id, int idDonvi);
+        bool AddTietBan(List<Tiet_tranh_xep> dsTietTranhXep, int idMon);
+        bool CheckIds_Tiet(int idNgay, int idCa, int idTiet, int idDonvi);
+        bool DeleteTietTranhXep(int Id);
 
     }
 }

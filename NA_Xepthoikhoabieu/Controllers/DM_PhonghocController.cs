@@ -89,6 +89,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id_Don_vi = idDonvi;
             addph.Id = 0;
+            //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
@@ -97,6 +98,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_Diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            //thêm
             bool add = _phonghoc.Add(addph);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
@@ -124,6 +126,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Phonghoc>(phonghoc);
             item.Id_Don_vi = idDonvi;
+            //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
@@ -132,6 +135,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_Diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            //update
             bool add = _phonghoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
@@ -154,9 +159,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             var phonghocdb = _phonghoc.getDetailById(id,idDonvi);
             if (phonghocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+
+            //xóa tiết bận
             var tietban = _phonghoc.DeleteTietBan(id);
             if (!tietban)
                 return ApiResult.NotFound("Xóa tiết bận thất bại");
+            //xóa phòng
             var request = _phonghoc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
@@ -213,6 +221,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
+                        //check các id
                         bool isValid = _phonghoc.CheckIds_Tietban(ngay.Id, ca.Id, tiet.Id, idDonvi);
                         if (!isValid)
                         {
@@ -247,7 +256,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra có lỗi không
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
-
+            //add
             bool result = _phonghoc.AddTietBan(danhSachTietBan,phongban.Id);
             if (!result)
                 return ApiResult.NotFound("Cập nhật tiết bận thất bại");

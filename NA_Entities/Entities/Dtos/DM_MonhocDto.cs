@@ -67,5 +67,10 @@ namespace NA_Entities.Entities.Dtos
         public List<int> Id_khoi_kien_thuc { get; set; } = new List<int>();
 
     }
+    public class Mon_banDto
+    {
+        public int Id { get; set; } = 0;
+        public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
+    }
 
 }
