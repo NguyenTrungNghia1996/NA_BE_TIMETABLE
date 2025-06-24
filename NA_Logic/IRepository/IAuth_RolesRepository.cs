@@ -15,7 +15,7 @@ namespace NA_Logic.IRepository
         bool Update(Auth_Roles role);
         bool Deleted(int id);
         List<Auth_Roles_PermissionDto> GetPermissionByRoleId(int idRole);
-
+        List<Auth_Roles_PermissionDto> GetPermissionsByUserId(int userId);
         // Role Permission
         bool AddPermission(List<Auth_Roles_Permissions> list_permssions);
         Auth_Roles_Permissions FindPermissionById(int id);

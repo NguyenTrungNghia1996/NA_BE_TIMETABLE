@@ -20,12 +20,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_DonviRepository _donviRepository;
         private readonly IClaimHelperRepository _claimHelperRepository;
+        private readonly IAuth_RolesRepository _rolesRepository;
         public Auth_UsersController(IAuthRepository auth,
                                     IJwtHelperRepository jwtHelperRepository,
                                     IPasswordHasherRepository passwordHasher,
                                     IMapper mapper,
                                     IClaimHelperRepository claimHelperRepository,
-                                    IDM_DonviRepository donviRepository
+                                    IDM_DonviRepository donviRepository, 
+                                    IAuth_RolesRepository rolesRepository
                                     )
         {
             _auth = auth;
@@ -34,6 +36,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _mapper = mapper;
             _claimHelperRepository = claimHelperRepository;
             _donviRepository = donviRepository;
+            _rolesRepository = rolesRepository;
 
         }
 
@@ -227,6 +230,26 @@ namespace NA_Xepthoikhoabieu.Controllers
                 item = userDto,
                 token = toke,
             }, "Đăng nhập thành công");
+        }
+        //get permission
+        [HttpGet("permission")]
+        [RequireToken]
+        public IActionResult GetPermission ()
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            if (idUser <= 0)
+                return ApiResult.Unauthorized($"Thông tin user id = {idUser} không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            // Lấy bản ghi từ db
+            var detailPerbyUser = _rolesRepository.GetPermissionsByUserId(idUser);
+            if (detailPerbyUser == null)
+                return ApiResult.NotFound($"Không tìm thấy quyền nào nào cho Id= {idUser}");
+            var detailDto = new Auth_PermissionDto
+            {
+                Permission = detailPerbyUser
+            };
+            return ApiResult.Success(detailDto,
+            "Thành công");
         }
     }
 }

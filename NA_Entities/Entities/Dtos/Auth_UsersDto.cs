@@ -22,6 +22,7 @@ namespace NA_Entities.Entities.Dtos
         public bool? IsAdmin { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một nhóm người dùng")]
         public List<int> IdRoles { get; set; } = new List<int>();
+
     }
     public class Auth_Users_UpdateDto
     {
@@ -35,5 +36,9 @@ namespace NA_Entities.Entities.Dtos
         public bool? IsAdmin { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một nhóm người dùng")]
         public List<int> IdRoles { get; set; } = new List<int>();
+    }
+    public class Auth_PermissionDto
+    {
+        public List<Auth_Roles_PermissionDto> Permission { get; set; } = new List<Auth_Roles_PermissionDto>();
     }
 }

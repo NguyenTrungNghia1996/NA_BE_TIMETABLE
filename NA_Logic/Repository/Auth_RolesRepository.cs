@@ -118,6 +118,43 @@ namespace NA_Logic.Repository
                 return new List<Auth_Roles_PermissionDto>();
             }
         }
+        public List<Auth_Roles_PermissionDto> GetPermissionsByUserId(int userId)
+        {
+            try
+            {
+                var Permissions = _context.Auth_Users_Roles
+                                    .Where(ur => ur.Id_Users == userId)
+                                    .Join(_context.Auth_Roles_Permissions,
+                                          ur => ur.Id_Roles,
+                                          rp => rp.Id_Roles,
+                                          (ur, rp) => new Auth_Roles_PermissionDto
+                                          {
+                                              Key = rp.Key,
+                                              PermissionValue = rp.PermissionValue
+                                          })
+                                    .ToList();
+
+                var combinedPermissions = new Dictionary<string, int>();
+
+                foreach (var perm in Permissions)
+                {
+                    if (combinedPermissions.ContainsKey(perm.Key))
+                        combinedPermissions[perm.Key] |= perm.PermissionValue;
+                    else
+                        combinedPermissions[perm.Key] = perm.PermissionValue;
+                }
+
+                return combinedPermissions.Select(kv => new Auth_Roles_PermissionDto
+                {
+                    Key = kv.Key,
+                    PermissionValue = kv.Value
+                }).ToList();
+            }
+            catch
+            {
+                return new List<Auth_Roles_PermissionDto>();
+            }
+        }
         public bool AddPermission(List<Auth_Roles_Permissions> list_permssions)
         {
             try
