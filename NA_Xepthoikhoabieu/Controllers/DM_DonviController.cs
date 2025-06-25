@@ -23,13 +23,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _caphocRepository;
-        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,  IDM_CaphocRepository caphocRepository)
+        private readonly IDM_NgayhocRepository _ngayhocRepository;
+        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,  IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository)
         {
             _mapper = mapper;
             _donvi = donvi;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _caphocRepository = caphocRepository;
+            _ngayhocRepository = ngayhocRepository;
         }
         [HttpGet]
         [RequireToken]
@@ -178,6 +180,49 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             
             return ApiResult.Ok("Xóa đơn vị thành công");
+        }
+        [HttpGet("ngay")]
+        [RequireToken]
+        public IActionResult GetNgayByID()
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Lấy bản ghi từ db
+            var detail = _donvi.GetlistNgaybyDonvi(idDonvi);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {idDonvi}");
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("ngay")]
+        [RequireToken]
+        public IActionResult addNgay([FromBody] Donvi_NgayDto ngayDv)
+        {
+            //kiểm tra id đơn vị
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (ngayDv.Id_Ngay == null || ngayDv.Id_Ngay.Count == 0)
+            {
+                ModelState.AddModelError("Id_ngay", "Vui lòng chọn ít nhất 1 ngày học");
+            }
+            //kiểm tra id ngày
+            var checkngayhoc = _ngayhocRepository.CheckIds(ngayDv.Id_Ngay);
+            if (!checkngayhoc)
+                ModelState.AddModelError("Id_ngay", "Id ngày học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            //add ngày
+            var addNgayDonvi = _donvi.UpdateNgay(idDonvi, ngayDv.Id_Ngay);
+
+            if (!addNgayDonvi)
+                return ApiResult.Success(new
+                {
+                    item = ngayDv
+                },
+                "Cập nhật ngày cho đơn vị thất bại");
+            return ApiResult.Success(
+             "Cập nhật ngày cho đơn vị thành công");
         }
     }
 }

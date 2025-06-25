@@ -210,7 +210,8 @@ namespace NA_Logic.Repository
         public Mon_banDto GetListTietBan(int Id, int idDonvi)
         {
             var dsCa = _context.DM_Cahoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsNgay = _context.DM_Ngayhoc.Where(c => c.Id_Donvi == idDonvi).ToList();
+            var dsNgay = _context.DM_Ngayhoc.Where(ngay => _context.Ngay_Donvi
+                         .Any(nd => nd.Id_ngay == ngay.Id && nd.Id_don_vi == idDonvi)).ToList();
             var dsTiet = _context.DM_Tiethoc.Where(c => c.Id_Donvi == idDonvi).ToList();
             var dsCaTiet = _context.Ca_Tiethoc.ToList();
 

@@ -15,7 +15,6 @@ namespace NA_Entities.Entities.Dtos
 
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghi_chu { get; set; }
-        public int Id_Donvi { get; set; } = 0;
     }
     public class DM_Ngayhoc_ListDto
     {
@@ -23,7 +22,6 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ten { get; set; } = string.Empty;
         public string Ghi_chu { get; set; } = string.Empty;
-        public int Id_Donvi { get; set; } = 0;
 
     }
     public class Ngay_banDto

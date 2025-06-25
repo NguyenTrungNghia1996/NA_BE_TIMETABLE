@@ -58,4 +58,10 @@ namespace NA_Entities.Entities.Dtos
         public List<int> IdCap { get; set; } = new List<int>();
 
     }
+    public class Donvi_NgayDto
+    {
+        public int Id { get; set; }= 0;
+        public List<int> Id_Ngay { get; set; } = new List<int>();
+
+    }
 }

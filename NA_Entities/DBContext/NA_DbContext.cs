@@ -53,6 +53,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Monhoc_List> DM_Monhoc_List { get; set; }
         public DbSet<Mon_Khoikienthuc> Mon_Khoikienthuc { get; set; }
         public DbSet<Tiet_tranh_xep> Tiet_Tranh_Xep { get; set; }
+        public DbSet<Ngay_Donvi> Ngay_Donvi    { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
