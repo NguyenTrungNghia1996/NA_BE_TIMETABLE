@@ -20,7 +20,6 @@ namespace NA_Entities.Entities.Dtos
         public int Id_tiet { get; set; } = 0;
         public int Id_khoi_lop { get; set; } = 0;
         public bool Ap_dung_cho_tat_ca_cac_khoi { get; set; } = false;
-        public int Id_don_vi { get; set; } = 0;
     }
     public class Tiet_co_dinh_ListDto
     {

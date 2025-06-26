@@ -14,7 +14,6 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_ca { get; set; } = 0;
         public int Id_tiet { get; set; } = 0;
         public int Id_khoi_lop { get; set; } = 0;
-        public int Id_don_vi { get; set; } = 0;
     }
     public class Tiet_co_dinh_List
     {

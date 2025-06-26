@@ -58,7 +58,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _tietcodinh.GetDetailById(Id,idDonvi);
+            var detail = _tietcodinh.GetDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             return ApiResult.Success(detail, "Thành công");
@@ -97,7 +97,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                         Id_ca = tietcd.Id_ca,
                         Id_tiet = tietcd.Id_tiet,
                         Id_khoi_lop = khoilop.Id,
-                        Id_don_vi=idDonvi
 
                     });
                 }
@@ -117,7 +116,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                     Id_ca = tietcd.Id_ca,
                     Id_tiet = tietcd.Id_tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
-                    Id_don_vi = idDonvi
                 });
             }
             //thêm
@@ -139,7 +137,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var tietcddb = _tietcodinh.GetDetailById(tietcd.Id, idDonvi);
+            var tietcddb = _tietcodinh.GetDetailById(tietcd.Id);
             //if (!ModelState.IsValid)
             //    return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (tietcddb == null)
@@ -171,11 +169,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                         Id_ca = tietcd.Id_ca,
                         Id_tiet = tietcd.Id_tiet,
                         Id_khoi_lop = khoilop.Id,
-                        Id_don_vi = idDonvi
 
                     });
                 }
-                update = _tietcodinh.UpdateAllKhoi(tietcdList, tietcd.Id_mon, idDonvi);
+                update = _tietcodinh.UpdateAllKhoi(tietcdList, tietcd.Id_mon);
             }
             //nếu chỉ cho 1 khối
             else
@@ -193,7 +190,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                     Id_ca = tietcd.Id_ca,
                     Id_tiet = tietcd.Id_tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
-                    Id_don_vi = idDonvi
                 };
                 update = _tietcodinh.Update(tietcd_update);
             }
@@ -214,10 +210,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var item = _tietcodinh.GetDetailById(id,idDonvi);
+            var item = _tietcodinh.GetDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _tietcodinh.Delete(id,idDonvi);
+            var request = _tietcodinh.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
 

@@ -54,11 +54,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Tiet_co_dinh GetDetailById(int Id, int idDonvi)
+        public Tiet_co_dinh GetDetailById(int Id)
         {
             try
             {
-                var tietcodinh = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
+                var tietcodinh = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id );
                 return tietcodinh;
             }
             catch (Exception)
@@ -92,14 +92,14 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon, int idDonvi)
+        public bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
                 // Lấy danh sách khối đã có
                 var existingKhoiIds = _dbContext.Tiet_co_dinh
-                    .Where(x => x.Id_mon == idMon && x.Id_don_vi == idDonvi)
+                    .Where(x => x.Id_mon == idMon)
                     .Select(x => x.Id_khoi_lop)
                     .Distinct()
                     .ToList();
@@ -123,12 +123,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id, int idDonvi)
+        public bool Delete(int Id)
         {
             try
             {
                 Tiet_co_dinh tiet_cd = new Tiet_co_dinh();
-                tiet_cd = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
+                tiet_cd = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id);
                 if (tiet_cd != null)
                 {
                     _dbContext.Tiet_co_dinh.Remove(tiet_cd);

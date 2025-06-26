@@ -11,11 +11,11 @@ namespace NA_Logic.IRepository
     public interface ITiet_co_dinhRepository
     {
         List<Tiet_co_dinh_List> GetList_Paging(int PageIndex, int PageSize, int IdDonvi, ref int totalrecord);
-        Tiet_co_dinh GetDetailById(int Id, int idDonvi);
+        Tiet_co_dinh GetDetailById(int Id);    
         bool Add(List<Tiet_co_dinh> tiet_cd);
         bool Update(Tiet_co_dinh tiet_cd);
-        bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon, int idDonvi);
-        bool Delete(int Id, int idDonvi);
+        bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon);
+        bool Delete(int Id);
         bool CheckIds(int idMon, int idNgay, int idCa, int idTiet, int idKhoi, int idDonvi);
     }
 }
