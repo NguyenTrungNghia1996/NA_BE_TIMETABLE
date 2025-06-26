@@ -127,5 +127,18 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
+        [HttpGet("khoilopbydonvi")]
+        [RequireToken]
+        public IActionResult GetKhoiLopByID()
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Lấy bản ghi từ db
+            var detail = _khoilop.GetKhoilopByDonvi(idDonvi);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho đơn vị có Id= {idDonvi}");
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }

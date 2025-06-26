@@ -28,4 +28,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ghi_chu { get; set; } = string.Empty;
 
     }
+    public class Khoilop_byDonvi
+    {
+        public int Id { get; set; }
+        public string Ten { get; set; }
+    }
 }

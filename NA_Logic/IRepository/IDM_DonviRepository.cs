@@ -18,7 +18,5 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         bool DeleteCap(int Id);
         bool AddCap(int Id, List<int> capId);
-        List<int> GetlistNgaybyDonvi(int id);
-        bool UpdateNgay(int Id, List<int> ngayId);
     }
 }

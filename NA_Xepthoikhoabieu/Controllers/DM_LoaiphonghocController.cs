@@ -62,6 +62,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (!ModelState.IsValid)
+                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             // mapper data 
             var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
             item.Id = 0;
