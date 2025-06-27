@@ -36,6 +36,7 @@ namespace NA_Entities.Entities.Dtos
     public class TietbanDto
     {
         public int Id { get; set; } = 0;
+        public string Ten { get; set; } = string.Empty;
         public bool Trang_thai { get; set; } = false;
     }
 }

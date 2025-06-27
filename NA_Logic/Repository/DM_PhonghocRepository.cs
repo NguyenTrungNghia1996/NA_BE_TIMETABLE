@@ -155,11 +155,13 @@ namespace NA_Logic.Repository
                     Ds_Ngay = dsNgay.Select(ngay => new Ngay_banDto
                     {
                         Id = ngay.Id,
+                        Ten = ngay.Ten,
                         Ds_Tiet = dsTiet
                             .Where(tiet => dsCaTiet.Any(ct => ct.Id_Ca_hoc == ca.Id && ct.Id_Tiet_hoc == tiet.Id)) 
                             .Select(tiet => new TietbanDto
                             {
                                 Id = tiet.Id,
+                                Ten = tiet.Ten,
                                 Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
                                                                td.Id_thu == ngay.Id &&
                                                                td.Id_tiet == tiet.Id)
