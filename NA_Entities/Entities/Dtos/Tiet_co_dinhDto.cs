@@ -24,6 +24,7 @@ namespace NA_Entities.Entities.Dtos
     public class Tiet_co_dinh_ListDto
     {
         public int STT { get; set; } = 0;
+        public int Id { get; set; } = 0;
         public string Ten_mon_hoc { get; set; } = string.Empty;
         public string Ten_khoi_lop { get; set; } = string.Empty;
         public string Ten_ca_hoc { get; set; } = string.Empty;

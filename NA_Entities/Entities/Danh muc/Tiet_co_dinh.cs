@@ -18,6 +18,7 @@ namespace NA_Entities.Entities.Danh_muc
     public class Tiet_co_dinh_List
     {
         public int STT { get; set; } = 0;
+        public int Id { get; set; } = 0;
         public string Ten_mon_hoc { get; set; } = string.Empty;
         public string Ten_khoi_lop { get; set; } = string.Empty;
         public string Ten_ca_hoc { get; set; } = string.Empty;
