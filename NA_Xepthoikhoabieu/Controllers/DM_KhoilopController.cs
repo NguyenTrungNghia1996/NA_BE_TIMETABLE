@@ -127,7 +127,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
-        [HttpGet("khoilopbydonvi")]
+        [HttpGet("khoiloptheodonvi")]
         [RequireToken]
         public IActionResult GetKhoiLopByID()
         {

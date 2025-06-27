@@ -64,7 +64,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detailDto = _mapper.Map<DM_NgayhocDto>(detailNgayhoc);
             return ApiResult.Success(detailDto, "Thành công");
         }
-        [HttpGet("ngaybydonvi")]
+        [HttpGet("ngaytheodonvi")]
         [RequireToken]
         public IActionResult GetListByID()
         {

@@ -15,7 +15,7 @@ using NA_Xepthoikhoabieu.Helpers;
 namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
-    [Route("api/ngaybydonvi")]
+    [Route("api/ngaytheodonvi")]
     public class Ngay_DonviController : ControllerBase
     {
         private readonly IMapper _mapper;
