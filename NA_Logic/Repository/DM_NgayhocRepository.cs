@@ -65,6 +65,26 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<DM_Ngayhoc> GetListNgayhocByDonvi(int idDonvi)
+        {
+            try
+            {
+                var listIdNgay = _dbContext.Ngay_Donvi
+                    .Where(nd => nd.Id_don_vi == idDonvi)
+                    .Select(nd => nd.Id_ngay)
+                    .ToList();
+
+                var listNgayhoc = _dbContext.DM_Ngayhoc
+                    .Where(nh => listIdNgay.Contains(nh.Id))
+                    .ToList();
+
+                return listNgayhoc;
+            }
+            catch (Exception)
+            {
+                return new List<DM_Ngayhoc>();
+            }
+        }
         public bool Add(DM_Ngayhoc dm_Ngayhoc)
         {
             try

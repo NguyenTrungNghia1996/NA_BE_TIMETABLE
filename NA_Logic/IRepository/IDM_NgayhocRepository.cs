@@ -12,6 +12,7 @@ namespace NA_Logic.IRepository
     {
         List<DM_Ngayhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         DM_Ngayhoc GetDetailById(int Id);
+        List<DM_Ngayhoc> GetListNgayhocByDonvi(int idDonvi);
         bool Add(DM_Ngayhoc dm_Ngayhoc);
         bool Update(DM_Ngayhoc dm_Ngayhoc);
         bool Delete(int Id);
