@@ -69,16 +69,13 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var listIdNgay = _dbContext.Ngay_Donvi
-                    .Where(nd => nd.Id_don_vi == idDonvi)
-                    .Select(nd => nd.Id_ngay)
-                    .ToList();
+                return _dbContext.DM_Ngayhoc
+                        .Join(_dbContext.Ngay_Donvi.Where(nd => nd.Id_don_vi == idDonvi),
+                              nh => nh.Id,
+                              nd => nd.Id_ngay,
+                              (nh, nd) => nh)
+                        .ToList();
 
-                var listNgayhoc = _dbContext.DM_Ngayhoc
-                    .Where(nh => listIdNgay.Contains(nh.Id))
-                    .ToList();
-
-                return listNgayhoc;
             }
             catch (Exception)
             {
