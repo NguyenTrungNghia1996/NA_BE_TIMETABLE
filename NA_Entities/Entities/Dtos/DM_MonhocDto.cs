@@ -16,7 +16,6 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_loai_phong_hoc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;
-        public bool Khong_can_phong_hoc { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]
@@ -36,7 +35,6 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ten { get; set; } = string.Empty;
         public bool Do_GVCN_phu_trach { get; set; } = false;
-        public bool Khong_can_phong_hoc { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         public int So_tiet_toi_da_mot_ca { get; set; } = 0;
@@ -53,7 +51,6 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_loai_phong_hoc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;
-        public bool Khong_can_phong_hoc { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]

@@ -152,7 +152,7 @@ namespace NA_Logic.Repository
                         _dbContext.Ngay_Donvi.AsNoTracking()
                             .Any(ngay => ngay.Id_ngay == idNgay && ngay.Id_don_vi == idDonvi) &&
                         _dbContext.DM_Cahoc.AsNoTracking()
-                            .Any(ca => ca.Id == idCa && ca.Id_Donvi == idDonvi) &&
+                            .Any(ca => ca.Id == idCa) &&
                         _dbContext.Cap_Donvi.AsNoTracking()
                             .Join(_dbContext.DM_Khoilop.AsNoTracking(),
                                 cd => cd.Id_Cap_hoc,

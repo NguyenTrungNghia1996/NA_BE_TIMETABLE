@@ -134,43 +134,37 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public Phong_banDto GetListTietBan(int Id , int idDonvi)
+        public Phong_banDto GetListTietBan(int Id, int idDonvi)
         {
-            var dsCa = _context.DM_Cahoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsNgay = _context.DM_Ngayhoc.Where(ngay => _context.Ngay_Donvi
-                          .Any(nd => nd.Id_ngay == ngay.Id && nd.Id_don_vi == idDonvi)).ToList(); ;
-            var dsTiet = _context.DM_Tiethoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsCaTiet = _context.Ca_Tiethoc.ToList();
+            var rawData = _context.Database
+                .SqlQueryRaw<Tiet_banDto>(
+                    "EXEC GetList_TietBanPhong @Id_phong, @Id_donvi",
+                    new SqlParameter("@Id_phong", Id),
+                    new SqlParameter("@Id_donvi", idDonvi))
+                .ToList();
 
-            var tietBan = _context.Tiet_ban
-                        .Where(tb => tb.Id_phong == Id)
-                        .Select(tb => new { tb.Id_ca, tb.Id_thu, tb.Id_tiet })
-                        .ToList();
-            var result = new Phong_banDto
-            {
-                Id = Id,
-                Ds_Ca = dsCa.Select(ca => new Ca_banDto
+            var result = rawData
+                .GroupBy(x => new { x.Id_ca })
+                .Select(caGroup => new Ca_banDto
                 {
-                    Id = ca.Id,
-                    Ds_Ngay = dsNgay.Select(ngay => new Ngay_banDto
-                    {
-                        Id = ngay.Id,
-                        Ten = ngay.Ten,
-                        Ds_Tiet = dsTiet
-                            .Where(tiet => dsCaTiet.Any(ct => ct.Id_Ca_hoc == ca.Id && ct.Id_Tiet_hoc == tiet.Id)) 
-                            .Select(tiet => new TietbanDto
-                            {
-                                Id = tiet.Id,
-                                Ten = tiet.Ten,
-                                Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
-                                                               td.Id_thu == ngay.Id &&
-                                                               td.Id_tiet == tiet.Id)
-                            }).ToList()
-                    }).ToList()
-                }).ToList()
-            };
+                    Id = caGroup.Key.Id_ca,
+                    Ds_Ngay = caGroup
+                        .GroupBy(x => new { x.Id_thu, x.Ten_thu })
+                        .Select(ngayGroup => new Ngay_banDto
+                        {
+                            Id = ngayGroup.Key.Id_thu,
+                            Ten = ngayGroup.Key.Ten_thu,
+                            Ds_Tiet = ngayGroup
+                                .Select(item => new TietbanDto
+                                {
+                                    Id = item.Id_tiet,
+                                    Ten = item.Ten_tiet,
+                                    Trang_thai = item.Trang_thai
+                                }).ToList()
+                        }).ToList()
+                }).ToList();
 
-            return result;
+            return new Phong_banDto { Id = Id, Ds_Ca = result };
         }
         public bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong)
         {

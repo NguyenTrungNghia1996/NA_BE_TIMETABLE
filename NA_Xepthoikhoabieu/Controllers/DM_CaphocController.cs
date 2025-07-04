@@ -6,6 +6,7 @@ using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
@@ -17,20 +18,24 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IClaimHelperRepository _clamHelperRepository;
+        private readonly IAuthRepository _auth;
         public DM_CaphocController(IMapper mapper,
                                    IDM_CaphocRepository caphocRepository,
-                                   IClaimHelperRepository clamHelperRepository
+                                   IClaimHelperRepository clamHelperRepository,
+                                   IAuthRepository auth
                                 )
         {
             _caphocRepository = caphocRepository;
             _mapper = mapper;
             _clamHelperRepository = clamHelperRepository;
+            _auth = auth;
         }
         // Get list Caphoc paging
         [HttpGet]
         [RequireToken]
         public IActionResult Getlist_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
@@ -61,7 +66,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpPost]
         [RequireToken]
         public IActionResult Create([FromBody] DM_Caphoc_Dto caphoc)
-        {          
+        {
+            int idUser = _clamHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             // mapper data 
@@ -84,7 +96,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_Caphoc_Dto caphoc)
         {
-
+            int idUser = _clamHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _caphocRepository.GetDetailByID(caphoc.Id);          
             if (!ModelState.IsValid)
@@ -106,7 +124,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpDelete]
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
-        {     
+        {
+            int idUser = _clamHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var caphocdb = _caphocRepository.GetDetailByID(id);        
             if (caphocdb == null)

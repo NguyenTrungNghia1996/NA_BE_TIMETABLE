@@ -28,12 +28,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _Ngayhoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
@@ -51,12 +46,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            
             // Lấy bản ghi từ db
             var detailNgayhoc = _Ngayhoc.GetDetailById(Id);
             if (detailNgayhoc == null)

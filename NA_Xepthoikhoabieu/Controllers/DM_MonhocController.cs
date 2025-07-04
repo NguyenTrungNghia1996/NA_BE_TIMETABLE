@@ -18,13 +18,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IDM_LoaiphonghocRepository _loaiphong;
         private readonly IDM_KhoikienthucRepository _khoikienthuc;
-        public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, IDM_KhoikienthucRepository khoikienthuc)
+        private readonly INgay_DonviRepository _ngaydv;
+        public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, IDM_KhoikienthucRepository khoikienthuc, INgay_DonviRepository ngaydv)
         {
             _mapper = mapper;
             _monhoc = monhoc;
             _claimHelperRepository = claimHelperRepository;
             _loaiphong = loaiphong;
             _khoikienthuc = khoikienthuc;
+            _ngaydv = ngaydv;
         }
         [HttpGet]
         [RequireToken]
@@ -216,11 +218,16 @@ namespace NA_Xepthoikhoabieu.Controllers
             var danhSachTiet = new List<Tiet_tranh_xep>();
             var errors = new List<string>();
             var existingCombinations = new HashSet<string>();
-
+            var validDays = _ngaydv.GetlistNgaybyDonvi(idDonvi);
             foreach (var ca in monban.Ds_Ca)
             {
                 foreach (var ngay in ca.Ds_Ngay)
                 {
+                    // Bỏ qua ngày không hợp lệ
+                    if (!validDays.Contains(ngay.Id))
+                    {
+                        continue;
+                    }
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
                         //check các id

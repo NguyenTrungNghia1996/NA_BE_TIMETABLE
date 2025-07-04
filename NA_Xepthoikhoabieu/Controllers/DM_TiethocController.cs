@@ -35,12 +35,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _tiethoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
+            var list = _tiethoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             var listDto = _mapper.Map<List<DM_Tiethoc_ListDto>>(list);
@@ -55,9 +53,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
             // Lấy bản ghi từ db
             var detail = _tiethoc.getDetailById(Id);
             if (detail == null)
@@ -70,18 +66,21 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_TiethocDto tiethoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // mapper data 
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
+            
             var item = _mapper.Map<DM_Tiethoc>(tiethoc);
             item.Id = 0;
-            item.Id_Donvi = idDonvi;
             if (tiethoc.Id_Ca_hoc == null || tiethoc.Id_Ca_hoc.Count == 0)
             {
                 ModelState.AddModelError("Id_Ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
-            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc, idDonvi);
+            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
@@ -108,9 +107,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_TiethocDto tiethoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var tiethocdb = _tiethoc.getDetailById(tiethoc.Id);
             if (!ModelState.IsValid)
@@ -122,8 +125,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_Ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
             var item = _mapper.Map<DM_Tiethoc>(tiethoc);
-            item.Id_Donvi=idDonvi;
-            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc, idDonvi);
+            var checkcahoc = _cahocRepository.CheckIds(tiethoc.Id_Ca_hoc);
             if (!checkcahoc)
                 ModelState.AddModelError("Id_Ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
@@ -149,9 +151,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var item = _tiethoc.getDetailById(id);
             if (item == null)

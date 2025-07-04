@@ -20,6 +20,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Donvi> DM_Donvi { get; set; }
         public DbSet<DM_Donvi_List> DM_Donvi_List { get; set; }
         public DbSet<Cap_Donvi> Cap_Donvi { get; set; }
+        public DbSet<Ca_Donvi> Ca_Donvi { get; set; }
         // Auth_Roles
         public DbSet<Auth_Roles> Auth_Roles { get; set; }
         public DbSet<Auth_RolesList> Auth_RolesList { get; set; }

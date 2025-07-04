@@ -26,6 +26,7 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
+        public List<int> Id_ca_hoc { get; set; } = new List<int>();
     }
     public class DM_Donvi_List_Dto
     {
@@ -56,6 +57,7 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
+        public List<int> Id_ca_hoc { get; set; } = new List<int>();
 
     }
     public class Donvi_NgayDto
