@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NA_Entities.Entities.Danh_muc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ngay_banDto
     {
-        public int Id { get; set; } = 0;
+        public Ngay Id { get; set; } = Ngay.thu_hai;
         public List<TietbanDto> Ds_Tiet { get; set; } = new List<TietbanDto>();
     }
 }

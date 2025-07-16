@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NA_Entities.Entities.Danh_muc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class TietbanDto
     {
-        public int Id { get; set; } = 0;
+        public Tiet Id { get; set; } = Tiet.tiet_mot;
         public bool Trang_thai { get; set; } = false;
     }
 }

@@ -199,11 +199,11 @@ namespace NA_Logic.Repository
             try
             {
                 // Check ca thuộc đơn vị trước
-                var caValid = _context.DM_Cahoc
-                    .AsNoTracking()
-                    .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
+                //var caValid = _context.DM_Cahoc
+                //    .AsNoTracking()
+                //    .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
 
-                if (!caValid) return false;
+                //if (!caValid) return false;
 
                 // Sau đó check tiết trong ca
                 return _context.Ca_Tiethoc

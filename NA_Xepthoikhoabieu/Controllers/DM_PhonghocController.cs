@@ -171,31 +171,31 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Ok("Xóa thành công");
         }
 
-        [HttpGet("tietban")]
-        [RequireToken]
-        public IActionResult GetListTietBan([FromQuery] int Id)
-        {
-            if (Id < 0)
-                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+        //[HttpGet("tietban")]
+        //[RequireToken]
+        //public IActionResult GetListTietBan([FromQuery] int Id)
+        //{
+        //    if (Id < 0)
+        //        return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0)
-                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (Id > 0)
-            {
-                var detail = _phonghoc.CheckId(Id, idDonvi);
-                if (!detail)
-                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            }
-            // Lấy bản ghi từ db
-            var result = _phonghoc.GetListTietBan(Id,idDonvi);
+        //    // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        //    if (idDonvi == 0)
+        //        return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        //    if (Id > 0)
+        //    {
+        //        var detail = _phonghoc.CheckId(Id, idDonvi);
+        //        if (!detail)
+        //            return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+        //    }
+        //    // Lấy bản ghi từ db
+        //    var result = _phonghoc.GetListTietBan(Id,idDonvi);
 
-            if (result == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+        //    if (result == null)
+        //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
 
-            return ApiResult.Success(result, "Thành công");
-        }
+        //    return ApiResult.Success(result, "Thành công");
+        //}
 
         [HttpPost("tietban")]
         [RequireToken]
@@ -221,18 +221,20 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
+                        var idthu = (int)ngay.Id;
+                        var idtiet = (int)tiet.Id;
                         //check các id
-                        bool isValid = _phonghoc.CheckIds_Tietban(ngay.Id, ca.Id, tiet.Id, idDonvi);
-                        if (!isValid)
-                        {
-                            errors.Add($"Dữ liệu không hợp lệ cho Ca: {ca.Id}, Ngày: {ngay.Id}, Tiết: {tiet.Id}");
-                            break;
-                        }
+                        //bool isValid = _monhoc.CheckIds_Tiet( ca.Id, idDonvi);
+                        //if (!isValid)
+                        //{
+                        //    errors.Add($"Dữ liệu không hợp lệ cho Ca: {ca.Id}, Ngày: {ngay.Id}, Tiết: {tiet.Id}");
+                        //    break;
+                        //}
 
                         if (tiet.Trang_thai == true)
                         {
-                            // Tạo unique key để check trùng
-                            string uniqueKey = $"{phongban.Id}_{ca.Id}_{ngay.Id}_{tiet.Id}";
+                            //Tạo unique key để check trùng
+                            string uniqueKey = $"{phongban.Id}_{ca.Id}_{idthu}_{idtiet}";
                             //kiểm tra unique tồn tại chưa
                             if (existingCombinations.Contains(uniqueKey))
                             {
@@ -246,8 +248,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                             {
                                 Id_phong = phongban.Id,
                                 Id_ca = ca.Id,
-                                Id_thu = ngay.Id,
-                                Id_tiet = tiet.Id
+                                Id_thu = idthu,
+                                Id_tiet = idtiet
                             });
                         }
                     }

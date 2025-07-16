@@ -134,17 +134,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public Phong_banDto GetListTietBan(int Id , int idDonvi)
+        public Phong_banDto GetListTietBan(int Id, int idDonvi)
         {
-            var dsCa = _context.DM_Cahoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsNgay = _context.DM_Ngayhoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsTiet = _context.DM_Tiethoc.Where(c => c.Id_Donvi == idDonvi).ToList();
-            var dsCaTiet = _context.Ca_Tiethoc.ToList();
-
+            var dsCa = _context.DM_Cahoc.ToList();
             var tietBan = _context.Tiet_ban
                         .Where(tb => tb.Id_phong == Id)
                         .Select(tb => new { tb.Id_ca, tb.Id_thu, tb.Id_tiet })
                         .ToList();
+
+            // Lấy danh sách ngày, tiết từ enum
+            var dsNgay = Enum.GetValues<Ngay>().ToList();
+            var dsTiet = Enum.GetValues<Tiet>().ToList();
+
             var result = new Phong_banDto
             {
                 Id = Id,
@@ -153,16 +154,14 @@ namespace NA_Logic.Repository
                     Id = ca.Id,
                     Ds_Ngay = dsNgay.Select(ngay => new Ngay_banDto
                     {
-                        Id = ngay.Id,
-                        Ds_Tiet = dsTiet
-                            .Where(tiet => dsCaTiet.Any(ct => ct.Id_Ca_hoc == ca.Id && ct.Id_Tiet_hoc == tiet.Id)) 
-                            .Select(tiet => new TietbanDto
-                            {
-                                Id = tiet.Id,
-                                Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
-                                                               td.Id_thu == ngay.Id &&
-                                                               td.Id_tiet == tiet.Id)
-                            }).ToList()
+                        Id = ngay,
+                        Ds_Tiet = dsTiet.Select(tiet => new TietbanDto
+                        {
+                            Id = tiet,
+                            Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
+                                                           td.Id_thu == (int)ngay &&
+                                                           td.Id_tiet == (int)tiet)
+                        }).ToList()
                     }).ToList()
                 }).ToList()
             };

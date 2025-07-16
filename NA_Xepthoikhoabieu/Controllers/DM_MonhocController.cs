@@ -18,13 +18,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IDM_LoaiphonghocRepository _loaiphong;
         private readonly IDM_KhoikienthucRepository _khoikienthuc;
-        public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, IDM_KhoikienthucRepository khoikienthuc)
+        private readonly IDM_CahocRepository _cahoc;
+        public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, IDM_KhoikienthucRepository khoikienthuc, IDM_CahocRepository cahoc)
         {
             _mapper = mapper;
             _monhoc = monhoc;
             _claimHelperRepository = claimHelperRepository;
             _loaiphong = loaiphong;
             _khoikienthuc = khoikienthuc;
+            _cahoc = cahoc;
         }
         [HttpGet]
         [RequireToken]
@@ -223,18 +225,31 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
-                        //check các id
-                        bool isValid = _monhoc.CheckIds_Tiet(ngay.Id, ca.Id, tiet.Id, idDonvi);
+                        var idthu = (int)ngay.Id;
+                        var idtiet = (int)tiet.Id;
+                        //check các validate
+                        if (!Enum.IsDefined(typeof(Ngay), ngay.Id))
+                        {
+                            errors.Add($"Ngày không hợp lệ: {ngay.Id}");
+                            break;
+                        }
+
+                        if (!Enum.IsDefined(typeof(Tiet), tiet.Id))
+                        {
+                            errors.Add($"Tiết không hợp lệ: {tiet.Id}");
+                            break;
+                        }
+                        bool isValid = _cahoc.CheckId(ca.Id);
                         if (!isValid)
                         {
-                            errors.Add($"Dữ liệu không hợp lệ cho Ca: {ca.Id}, Ngày: {ngay.Id}, Tiết: {tiet.Id}");
+                            errors.Add($"Ca không hợp lệ: {ca.Id}");
                             break;
                         }
 
                         if (tiet.Trang_thai == true)
                         {
-                            // Tạo unique key để check trùng
-                            string uniqueKey = $"{monban.Id}_{ca.Id}_{ngay.Id}_{tiet.Id}";
+                            //Tạo unique key để check trùng
+                            string uniqueKey = $"{monban.Id}_{ca.Id}_{idthu}_{idtiet}";
                             //kiểm tra unique tồn tại chưa
                             if (existingCombinations.Contains(uniqueKey))
                             {
@@ -248,8 +263,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                             {
                                 Id_mon = monban.Id,
                                 Id_ca = ca.Id,
-                                Id_thu = ngay.Id,
-                                Id_tiet = tiet.Id
+                                Id_thu = idthu,
+                                Id_tiet = idtiet
                             });
                         }
                     }
