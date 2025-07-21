@@ -212,7 +212,7 @@ namespace NA_Logic.Repository
             var dsCa = _context.DM_Cahoc.ToList();
             var tietBan = _context.Tiet_Tranh_Xep
                         .Where(tb => tb.Id_mon == Id)
-                        .Select(tb => new { tb.Id_ca, tb.Id_thu, tb.Id_tiet })
+                        .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })
                         .ToList();
 
             // Lấy danh sách ngày từ enum
@@ -233,14 +233,14 @@ namespace NA_Logic.Repository
                         {
                             Id = tiet,
                             Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
-                                                           td.Id_thu == (int)ngay &&
-                                                           td.Id_tiet == (int)tiet)
+                                                           td.Thu == (int)ngay &&
+                                                           td.Tiet == (int)tiet)
                         }).ToList()
                     }).ToList()
                 }).ToList()
             };
 
-            return new Mon_banDto { Id = Id, Ds_Ca = result };
+            return result;
         }
         public bool AddTietBan(List<Tiet_tranh_xep> dsTietTranhXep, int idMon)
         {

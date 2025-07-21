@@ -216,16 +216,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             var danhSachTietBan = new List<Tiet_ban>();
             var errors = new List<string>();
             var existingCombinations = new HashSet<string>();
-            var validDays = _ngaydv.GetlistNgaybyDonvi(idDonvi);
             foreach (var ca in phongban.Ds_Ca)
             {
                 foreach (var ngay in ca.Ds_Ngay)
                 {
-                    // Bỏ qua ngày không hợp lệ 
-                    if (!validDays.Contains(ngay.Id))
-                    {
-                        continue; 
-                    }
                     foreach (var tiet in ngay.Ds_Tiet)
                     {
                         var idthu = (int)ngay.Id;
@@ -255,8 +249,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                             {
                                 Id_phong = phongban.Id,
                                 Id_ca = ca.Id,
-                                Id_thu = idthu,
-                                Id_tiet = idtiet
+                                Thu = idthu,
+                                Tiet = idtiet
                             });
                         }
                     }
