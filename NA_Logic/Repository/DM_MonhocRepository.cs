@@ -240,7 +240,7 @@ namespace NA_Logic.Repository
                 }).ToList()
             };
 
-            return result;
+            return new Mon_banDto { Id = Id, Ds_Ca = result };
         }
         public bool AddTietBan(List<Tiet_tranh_xep> dsTietTranhXep, int idMon)
         {

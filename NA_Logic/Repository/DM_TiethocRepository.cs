@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Tiethoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord)
+        public List<DM_Tiethoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -36,16 +36,12 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
-                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int)
-                {
-                    Value = IdDonvi
-                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Tiethoc_List>().FromSqlRaw("EXEC DM_Tiethoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
+                var result = _context.Set<DM_Tiethoc_List>().FromSqlRaw("EXEC DM_Tiethoc_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Tiethoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -193,7 +189,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int idTiet, int idDonvi, int idCa)
+        public bool CheckId(int idTiet,  int idCa)
         {
             if (idTiet <= 0) return false;
             try

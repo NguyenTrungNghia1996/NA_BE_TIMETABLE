@@ -30,7 +30,6 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Tên tiết học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
-        public int Id_Donvi { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một ca học")]
         public List<int> Id_Ca_hoc { get; set; } = new List<int>();
     }

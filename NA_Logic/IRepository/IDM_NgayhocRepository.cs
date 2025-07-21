@@ -10,11 +10,13 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_NgayhocRepository
     {
-        List<DM_Ngayhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord);
+        List<DM_Ngayhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         DM_Ngayhoc GetDetailById(int Id);
+        List<DM_Ngayhoc> GetListNgayhocByDonvi(int idDonvi);
         bool Add(DM_Ngayhoc dm_Ngayhoc);
         bool Update(DM_Ngayhoc dm_Ngayhoc);
         bool Delete(int Id);
-        bool CheckId(int Id, int idDonvi);
+        bool CheckId(int Id);
+        bool CheckIds(IEnumerable<int> ids);
     }
 }

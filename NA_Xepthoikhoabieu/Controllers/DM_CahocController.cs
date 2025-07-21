@@ -15,18 +15,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_CahocRepository _cahoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_CahocController(IMapper mapper, IDM_CahocRepository cahoc, IClaimHelperRepository claimHelperRepository)
+        private readonly IAuthRepository _auth;
+        public DM_CahocController(IMapper mapper, IDM_CahocRepository cahoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth)
         {
             _mapper = mapper;
             _cahoc = cahoc;
             _claimHelperRepository = claimHelperRepository;
+            _auth = auth;
         }
         [HttpGet]
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "") {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _cahoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
@@ -44,9 +44,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
             // Lấy bản ghi từ db
             var detailCahoc = _cahoc.GetDetailById(Id);
             if (detailCahoc == null)
@@ -58,9 +56,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_CahocDto cahoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // mapper data 
             var item = _mapper.Map<DM_Cahoc>(cahoc);
             item.Id = 0;
@@ -80,9 +82,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpPut]
         [RequireToken]
         public IActionResult Update([FromBody]DM_CahocDto cahoc) {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var cahocdb = _cahoc.GetDetailById(cahoc.Id);
             if (!ModelState.IsValid)
@@ -105,9 +111,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             var cahocdb = _cahoc.GetDetailById(id);
             if (cahocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");

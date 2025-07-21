@@ -1,4 +1,5 @@
 ﻿using NA_Entities.Entities.Danhmuc;
+using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace NA_Logic.IRepository
         bool Add(DM_Khoilop dM_Khoilop);
         bool Update(DM_Khoilop dM_Khoilop);
         bool Delete(int Id);
+        List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi);
     }
 }

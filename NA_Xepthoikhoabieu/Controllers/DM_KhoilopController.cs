@@ -65,7 +65,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_KhoilopDto khoilop)
         {
-
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // mapper data 
             var item = _mapper.Map<DM_Khoilop>(khoilop);
             item.Id = 0;
@@ -90,7 +96,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_KhoilopDto khoilop)
         {
-
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var khoilopdb = _khoilop.getDetailById(khoilop.Id);
             if (!ModelState.IsValid)
@@ -118,7 +130,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra bản ghi hợp lệ
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }   // Kiểm tra bản ghi hợp lệ
             var item = _khoilop.getDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
@@ -126,6 +144,19 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("khoiloptheodonvi")]
+        [RequireToken]
+        public IActionResult GetKhoiLopByID()
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Lấy bản ghi từ db
+            var detail = _khoilop.GetKhoilopByDonvi(idDonvi);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho đơn vị có Id= {idDonvi}");
+            return ApiResult.Success(detail, "Thành công");
         }
     }
 }
