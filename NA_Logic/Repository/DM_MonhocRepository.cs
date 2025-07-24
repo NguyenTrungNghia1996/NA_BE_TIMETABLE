@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
@@ -419,6 +420,88 @@ namespace NA_Logic.Repository
             catch
             {
                 return false;
+            }
+        }
+
+        public bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var existingTiet = _context.Monhoc_Khoilop.Where(tb => tb.Id_khoi == idKhoi).ToList();
+
+                //xóa
+                if (existingTiet.Any())
+                {
+                    _context.BulkDelete(existingTiet);
+                }
+                //thêm
+                if (dsMonKhoi != null && dsMonKhoi.Any())
+                {
+                    _context.BulkInsert(dsMonKhoi);
+                }
+
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+
+        public List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int idDonvi)
+        {
+            try
+            {
+                var allMonhoc = _context.Dm_Monhoc.Where(m => m.Id_don_vi == idDonvi).ToList();
+                var dsCa = _context.Ca_Donvi
+                            .Where(cd => cd.Id_don_vi == idDonvi)
+                            .Join(_context.DM_Cahoc,
+                                  cd => cd.Id_ca_hoc,
+                                  ca => ca.Id,
+                                  (cd, ca) => new
+                                  {
+                                      Id = ca.Id,
+                                      Ten = ca.Ten
+                                  })
+                            .ToList();
+                var Monhoc_Khoi = _context.Monhoc_Khoilop
+                    .Where(x => x.Id_khoi == idKhoi && x.Id_ban == idBan)
+                    .ToList();
+
+                var ds_Mon = allMonhoc.Select(mon =>
+                {
+                    var saved = Monhoc_Khoi.FirstOrDefault(x => x.Id_mon == mon.Id);
+                    return new Mon_KhoiDto
+                    {
+                        Id_mon = mon.Id,
+                        Ten_mon = mon.Ten,
+                        ds_Ca = dsCa.Select(ca => new Ca_Khoi_MonDto
+                        {
+                            Id_ca = ca.Id,
+                            Ten_ca = ca.Ten, 
+                            So_tiet = saved?.So_tiet ?? 0,
+                            So_nhom = saved?.So_nhom ?? 0
+                        }).ToList(),
+                        Trang_thai = saved != null
+                    };
+                }).ToList();
+
+                var result = new Monhoc_KhoiLopDto
+                {
+                    Id_khoi = idKhoi ?? 0,
+                    Id_ban = idBan ?? 0,
+                    ds_Mon = ds_Mon
+                };
+
+                return new List<Monhoc_KhoiLopDto> { result };
+            }
+            catch (Exception ex)
+            {
+                // Log exception nếu cần
+                return new List<Monhoc_KhoiLopDto>();
             }
         }
     }

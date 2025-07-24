@@ -60,6 +60,7 @@ namespace NA_Entities.DBContext
         public DbSet<Monhoc_Phonghoc> Monhoc_Phonghoc { get; set; }
         public DbSet<DM_Banhoc> DM_Banhoc { get; set; }
         public DbSet<DM_Banhoc_List> DM_Banhoc_List { get; set; }
+        public DbSet<Monhoc_Khoilop> Monhoc_Khoilop { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();

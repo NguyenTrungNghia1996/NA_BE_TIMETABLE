@@ -78,4 +78,12 @@ namespace NA_Entities.Entities.Dtos
         public int Id_mon { get; set; } = 0;
         public List<int> Id_phong { get; set; } = new List<int>();
     }
+    public class Mon_KhoiDto
+    {
+        public int Id_mon { get;set; } = 0;
+        public string Ten_mon { get; set; } = string.Empty;
+        public List<Ca_Khoi_MonDto> ds_Ca { get; set; } = new List<Ca_Khoi_MonDto>();
+        public bool Trang_thai { get; set; }
+
+    }
 }

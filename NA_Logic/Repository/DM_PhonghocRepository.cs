@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Phonghoc_list> GetList_Paging(int PageIndex, int PageSize, string search, int idDiemtruong,int idDonvi, ref int totalrecord)
+        public List<DM_Phonghoc_list> GetList_Paging(int PageIndex, int PageSize, string search, int idDiemtruong,int idLoaiph, int idDonvi, ref int totalrecord)
         {
             try
             {
@@ -43,6 +43,10 @@ namespace NA_Logic.Repository
                 {
                     Value = idDiemtruong
                 };
+                var paramIdLoaiph = new SqlParameter("idLoaiPhonghoc", SqlDbType.Int)
+                {
+                    Value = idLoaiph
+                };
                 var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
                 {
                     Value = idDonvi
@@ -51,8 +55,8 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Phonghoc_list>().FromSqlRaw("EXEC DM_Phonghoc_GetList_Paging @pageIndex, @pageSize, @search, @idDiemtruong,@idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDiemtruong,paramIdDonvi, paramTotal)
+                var result = _context.Set<DM_Phonghoc_list>().FromSqlRaw("EXEC DM_Phonghoc_GetList_Paging @pageIndex, @pageSize, @search, @idDiemtruong, @idLoaiPhonghoc ,@idDonvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDiemtruong, paramIdLoaiph,paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Phonghoc_list>();
                 totalrecord = (int)paramTotal.Value;

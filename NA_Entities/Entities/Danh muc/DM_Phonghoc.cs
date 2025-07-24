@@ -33,6 +33,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id { get; set; } = 0;
         public string Ten { get; set; } = string.Empty;
         public int Suc_chua { get; set; } = 0;
+        public int Id_Loai_phong_hoc { get;set; }
         public string Ten_loai_phong_hoc { get; set; } = string.Empty;
         public string Ten_diem_truong { get; set; } = string.Empty;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;

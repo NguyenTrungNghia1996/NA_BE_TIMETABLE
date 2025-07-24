@@ -135,5 +135,22 @@ namespace NA_Logic.Repository
                 return new List<Khoilop_byDonvi>();
             }
         }
+        public bool CheckId(int Id)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _context.DM_Khoilop.Any(c => c.Id == Id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIds(IEnumerable<int> ids)
+        {
+            var existingIds = _context.DM_Khoilop.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
     }
 }

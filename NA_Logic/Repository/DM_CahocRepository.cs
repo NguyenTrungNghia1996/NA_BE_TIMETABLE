@@ -111,12 +111,19 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id)
+        public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Cahoc.Any(c => c.Id == Id);
+                var caValid = _dbContext.Ca_Donvi
+                    .AsNoTracking()
+                    .Any(c => c.Id_ca_hoc == Id && c.Id_don_vi == idDonvi);
+                if (caValid)
+                {
+                    return true;
+                }
+                return false;
             }
             catch
             {

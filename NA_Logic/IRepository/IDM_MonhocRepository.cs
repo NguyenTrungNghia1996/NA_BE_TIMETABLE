@@ -30,6 +30,8 @@ namespace NA_Logic.IRepository
         bool CheckIdMonPhongChuyen(int Id, int idDonvi);
         bool CheckMa(string Ma, int idDonvi);
         bool CheckTen(string Ten, int idDonvi);
+        List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int idDonvi);
+        bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi);
 
     }
 }

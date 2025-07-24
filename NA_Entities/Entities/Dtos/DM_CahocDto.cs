@@ -30,5 +30,12 @@ namespace NA_Entities.Entities.Dtos
         //public string Ten { get; set; } = string.Empty;
         public List<Ngay_banDto> Ds_Ngay { get; set; } = new List<Ngay_banDto>();
     }
+    public class Ca_Khoi_MonDto
+    {
+        public int Id_ca { get; set; }
+        public string Ten_ca { get; set; }
+        public int? So_tiet { get; set; } = 0;
+        public int? So_nhom { get; set; } = 0;
+    }
 
 }
