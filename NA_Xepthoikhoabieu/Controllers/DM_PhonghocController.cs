@@ -181,31 +181,30 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Ok("Xóa thành công");
         }
 
-        //[HttpGet("tietban")]
-        //[RequireToken]
-        //public IActionResult GetListTietBan([FromQuery] int Id)
-        //{
-        //    if (Id < 0)
-        //        return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+        [HttpGet("tietban")]
+        [RequireToken]
+        public IActionResult GetListTietBan([FromQuery] int Id)
+        {
+            if (Id < 0)
+                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
-        //    // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-        //    if (idDonvi == 0)
-        //        return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-        //    if (Id > 0)
-        //    {
-        //        var detail = _phonghoc.CheckId(Id, idDonvi);
-        //        if (!detail)
-        //            return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-        //    }
-        //    // Lấy bản ghi từ db
-        //    var result = _phonghoc.GetListTietBan(Id,idDonvi);
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (Id > 0)
+            {
+                var detail = _phonghoc.CheckId(Id, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            }
+            // Lấy bản ghi từ db
+            var result = _phonghoc.GetListTietBan(Id);
+            if (result == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
 
-        //    if (result == null)
-        //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-
-        //    return ApiResult.Success(result, "Thành công");
-        //}
+            return ApiResult.Success(result, "Thành công");
+        }
 
         [HttpPost("tietban")]
         [RequireToken]

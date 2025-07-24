@@ -172,13 +172,14 @@ namespace NA_Logic.Repository
         public Phong_banDto GetListTietBan(int Id)
         {
             var dsCa = _context.DM_Cahoc.ToList();
-            var tietBan = _context.Tiet_ban
-                        .Where(tb => tb.Id_phong == Id)
+            var tietBan = _context.Tiet_Tranh_Xep
+                        .Where(tb => tb.Id_mon == Id)
                         .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })
                         .ToList();
 
-            // Lấy danh sách ngày, tiết từ enum
+            // Lấy danh sách ngày từ enum
             var dsNgay = Enum.GetValues<Ngay>().ToList();
+            // Lấy danh sách tiết từ enum
             var dsTiet = Enum.GetValues<Tiet>().ToList();
 
             var result = new Phong_banDto
