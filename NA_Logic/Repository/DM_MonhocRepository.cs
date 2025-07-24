@@ -212,32 +212,38 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckMa(string Ma, int idDonvi)
+        public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
             {
-                var check = _context.Dm_Monhoc.Any(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
-                if (check)
+                var query = _context.Dm_Monhoc.Where(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
+
+                if (Id.HasValue)
                 {
-                    return false;
+                    query = query.Where(c => c.Id != Id.Value);
                 }
-                return true;
+
+                var check = query.Any();
+                return !check;
             }
             catch
             {
                 return false;
             }
         }
-        public bool CheckTen(string Ten, int idDonvi)
+        public bool CheckTen(string Ten, int idDonvi, int? Id)
         {
             try
             {
-                var check = _context.Dm_Monhoc.Any(c => c.Ten == Ten && c.Id_don_vi == idDonvi);
-                if (check)
+                var query = _context.Dm_Monhoc.Where(c => c.Ten == Ten && c.Id_don_vi == idDonvi);
+
+                if (Id.HasValue)
                 {
-                    return false;
+                    query = query.Where(c => c.Id != Id.Value);
                 }
-                return true;
+
+                var check = query.Any();
+                return !check;
             }
             catch
             {
@@ -377,6 +383,30 @@ namespace NA_Logic.Repository
             catch
             {
                 return new List<int>();
+            }
+        }
+        public bool AddPhong(int Id, List<int> phongId)
+        {
+            try
+            {
+                if (phongId != null && phongId.Count > 0)
+                {
+                    for (int i = 0; i < phongId.Count; i++)
+                    {
+                        var mon_phong = new Monhoc_Phonghoc
+                        {
+                            Id_mon = Id,
+                            Id_phong = phongId[i]
+                        };
+                        _context.Monhoc_Phonghoc.Add(mon_phong);
+                    }
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
         public bool UpdatePhong(int Id, List<int> phongId)

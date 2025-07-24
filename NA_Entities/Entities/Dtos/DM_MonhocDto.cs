@@ -30,6 +30,8 @@ namespace NA_Entities.Entities.Dtos
         public bool La_mon_tu_chon { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
         public List<int> Id_khoi_kien_thuc { get; set; } = new List<int>();
+        public List<int> Id_phong { get; set; } = new List<int>();
+
 
     }
     public class DM_Monhoc_ListDto
@@ -66,17 +68,14 @@ namespace NA_Entities.Entities.Dtos
         public bool La_mon_tu_chon { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
         public List<int> Id_khoi_kien_thuc { get; set; } = new List<int>();
+        public List<int> Id_phong { get; set; } = new List<int>();
+
 
     }
     public class Mon_banDto
     {
         public int Id { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
-    }
-    public class Mon_PhongDto
-    {
-        public int Id_mon { get; set; } = 0;
-        public List<int> Id_phong { get; set; } = new List<int>();
     }
     public class Mon_KhoiDto
     {

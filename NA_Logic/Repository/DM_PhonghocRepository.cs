@@ -126,37 +126,47 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id)
+        public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Phonghoc.Any(c => c.Id == Id);
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+
+                return _context.DM_Phonghoc.Any(c => c.Id == Id && diemTruongIds.Contains(c.Id_Diem_truong));
             }
             catch
             {
                 return false;
             }
         }
-        public bool CheckMa(string Ma)
+        public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
             {
-                var check = _context.DM_Phonghoc.Any(c => c.Ma == Ma );
-                if (!check)
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+
+                var query = _context.DM_Phonghoc.Where(c => c.Ma == Ma && diemTruongIds.Contains(c.Id_Diem_truong));
+
+                if (Id.HasValue)
                 {
-                    return false;
+                    query = query.Where(c => c.Id != Id.Value);
                 }
-                return true;
+
+                var check = query.Any();
+                return !check;
             }
             catch
             {
                 return false;
             }
         }
-        public bool CheckIds(IEnumerable<int> ids)
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi, int IdLoaiPhonghoc)
         {
-            var existingIds = _context.DM_Phonghoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+
+            var existingIds = _context.DM_Phonghoc.Where(c => ids.Contains(c.Id) && diemTruongIds.Contains(c.Id_Diem_truong) && c.Id_Loai_phong_hoc == IdLoaiPhonghoc)
+                                                  .Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
         public Phong_banDto GetListTietBan(int Id)

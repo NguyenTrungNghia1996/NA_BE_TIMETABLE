@@ -9,7 +9,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_CahocRepository
     {
-        List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
+        List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord);
         DM_Cahoc GetDetailById(int Id);
         bool Add(DM_Cahoc dm_cahoc);
         bool Update(DM_Cahoc dm_cahoc);

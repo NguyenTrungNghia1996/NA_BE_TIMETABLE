@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord)
         {
             try
             {
@@ -36,13 +36,16 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
-
+                var paramIddonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Cahoc_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _dbContext.Set<DM_Cahoc_List>().FromSqlRaw("EXEC DM_Cahoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch,paramIddonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Cahoc_List>();
                 totalrecord = (int)paramTotal.Value;

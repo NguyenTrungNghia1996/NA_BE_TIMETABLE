@@ -69,6 +69,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_MonhocDto>(detailCahoc);
             detailDto.Id_khoi_kien_thuc = _monhoc.GetlistKhoikienthucbyMon(Id);
+            detailDto.Id_phong = _monhoc.GetlistPhongByDonvi(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -84,20 +85,24 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id_don_vi = idDonvi;
 
             //kiểm tra mã môn học
-            var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi);
+            var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
                 ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
-            var check_ten = _monhoc.CheckTen(monhoc.Ten, idDonvi);
+            var check_ten = _monhoc.CheckTen(monhoc.Ten, idDonvi, item.Id);
             if (!check_ten)
                 ModelState.AddModelError("Ten", "Tên môn học đã trùng, vui lòng kiểm tra lại");
 
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
+            var check_phong = _phong.CheckIds(monhoc.Id_phong, idDonvi, monhoc.Id_loai_phong_hoc);
+
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_khoikienthuc)
                 ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
+            if (!check_phong)
+                ModelState.AddModelError("Id_phong", "Id phòng không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // thêm
@@ -106,13 +111,19 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             monhoc.Id = item.Id;
             var addMonkhoikienthuc = _monhoc.AddKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
-
+            var addMonphong = _monhoc.AddPhong(monhoc.Id, monhoc.Id_phong);
             if (!addMonkhoikienthuc)
                 return ApiResult.Success(new
                 {
                     item = monhoc
                 },
                 "Tạo môn học thành công, lưu khối kiến thức thất bại");
+            if (!addMonphong)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Tạo môn học thành công, lưu phòng thất bại");
             return ApiResult.Success(new
             {
                 item = monhoc
@@ -127,6 +138,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
             var monhocdb = _monhoc.CheckId(monhoc.Id, idDonvi);
+            if (!monhocdb)
+            {
+                return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
+            }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (monhocdb == null)
@@ -136,31 +151,44 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id_don_vi = idDonvi;
 
             //kiểm tra mã môn học
-            var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi);
+            var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
                 ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
-
+            var check_ten = _monhoc.CheckTen(monhoc.Ten, idDonvi, item.Id);
+            if (!check_ten)
+                ModelState.AddModelError("Ten", "Tên môn học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
+            var check_phong = _phong.CheckIds(monhoc.Id_phong, idDonvi, monhoc.Id_loai_phong_hoc);
+
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_khoikienthuc)
                 ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
+            if (!check_phong)
+                ModelState.AddModelError("Id_phong", "Id phòng không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
             //update
             bool add = _monhoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var editCap = _monhoc.UpdateKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
-
-            if (!editCap)
+            var editkhoi = _monhoc.UpdateKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
+            var editphong = _monhoc.UpdatePhong(monhoc.Id, monhoc.Id_phong);
+            if (!editkhoi)
                 return ApiResult.Success(new
                 {
                     item = monhoc
                 },
                 "Cập nhật môn học thành công, cập nhật khối kiến thức thất bại");
+            if (!editphong)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Cập nhật môn học thành công, cập nhật phòng học thất bại");
 
             return ApiResult.Success(new
             {
@@ -263,7 +291,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                             errors.Add($"Tiết không hợp lệ: {tiet.Id}");
                             break;
                         }
-                        bool isValid = _cahoc.CheckId(ca.Id);
+                        bool isValid = _cahoc.CheckId(ca.Id, idDonvi);
                         if (!isValid)
                         {
                             errors.Add($"Ca không hợp lệ: {ca.Id}");
@@ -303,50 +331,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
 
             return ApiResult.Success(new { id_phong = monban.Id, so_tiet_ban = danhSachTiet.Count }, "Cập nhật tiết tránh xếp thành công");
-        }
-        [HttpGet("chitietphong")]
-        [RequireToken]
-        public IActionResult GetListPhong([FromQuery] int Id)
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (Id <= 0)
-                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
-
-            var monhocdb = _monhoc.CheckIdMonPhongChuyen(Id, idDonvi);
-            if (monhocdb == false)
-                return ApiResult.NotFound("Id_mon không hợp lệ");
-            var detailPhonghoc = _monhoc.GetlistPhongByDonvi(Id);
-            if (detailPhonghoc == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            return ApiResult.Success(detailPhonghoc, "Thành công");
-        }
-        [HttpPost("capnhatphong")]
-        [RequireToken]
-        public IActionResult UpdatePhong([FromBody] Mon_PhongDto monhoc)
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            var monhocdb = _monhoc.CheckIdMonPhongChuyen(monhoc.Id_mon, idDonvi);
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (monhocdb == false)
-                return ApiResult.NotFound("Id_mon không hợp lệ");
-            //kiểm tra id phòng học
-            var check_phonghoc = _phong.CheckIds(monhoc.Id_phong);
-            if (!check_phonghoc)
-                ModelState.AddModelError("Id_phong", "Id phòng học không hợp lệ, vui lòng kiểm tra lại");
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            // thêm
-            var addMonPhong = _monhoc.UpdatePhong(monhoc.Id_mon, monhoc.Id_phong);
-
-            return ApiResult.Success(new
-            {
-                item = monhoc
-            }, "Tạo phòng học cho môn thành công");
         }
 
         [HttpGet("monkhoilop")]
@@ -403,24 +387,25 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (!detail)
                     return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id ban = {monkhoidto.Id_ban}");
             }
+            var errors = new List<string>(); ;
             foreach (var ds_mon in monkhoidto.ds_Mon)
             {
                 foreach(var ds_ca in ds_mon.ds_Ca)
                 {
                     if (ds_mon.Trang_thai == true)
                     {
-                        ////Tạo unique key để check trùng
-                        //string uniqueKey = $"{monban.Id}_{ca.Id}_{idthu}_{idtiet}";
-                        ////kiểm tra unique tồn tại chưa
-                        //if (existingCombinations.Contains(uniqueKey))
-                        //{
-                        //    errors.Add($"Trùng lặp bản ghi");
-                        //    continue;
-                        //}
-                        ////nếu chưa tồn tại thì thêm vào combinations
-                        //existingCombinations.Add(uniqueKey);
                         var check_mon = _monhoc.CheckId(ds_mon.Id_mon, idDonvi);
                         var check_ca = _cahoc.CheckId(ds_ca.Id_ca,idDonvi);
+                        if (!check_mon)
+                        {
+                            errors.Add($"Môn không hợp lệ: {ds_mon.Id_mon}");
+                            break;
+                        }
+                        if (!check_ca)
+                        {
+                            errors.Add($"Ca không hợp lệ: {ds_ca.Id_ca}");
+                            break;
+                        }
                         monkhoi.Add(new Monhoc_Khoilop
                         {
                             Id_ban = monkhoidto.Id_ban,
@@ -433,8 +418,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                     }
                 }
             }
-            //if (errors.Any())
-            //    return ApiResult.BadRequest(string.Join("; ", errors));
+            if (errors.Any())
+                return ApiResult.BadRequest(string.Join("; ", errors));
             //add
             bool result = _monhoc.AddMonKhoi(monkhoi, monkhoidto.Id_khoi);
             if (!result)

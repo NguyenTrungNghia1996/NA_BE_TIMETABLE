@@ -25,11 +25,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "") {
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int idDonvi, [FromQuery] string search = "" ) {
             
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _cahoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _cahoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             var listDto = _mapper.Map<List<DM_Cahoc_ListDto>>(list);

@@ -25,11 +25,12 @@ namespace NA_Logic.IRepository
         bool CheckIds_Tiet(int idNgay, int idCa, int idTiet, int idDonvi);
         bool DeleteTietTranhXep(int Id);
         List<int> GetlistPhongByDonvi(int id);
+        bool AddPhong(int Id, List<int> phongId);
         bool UpdatePhong(int Id, List<int> phongId);
         bool DeletePhong(int Id);
         bool CheckIdMonPhongChuyen(int Id, int idDonvi);
-        bool CheckMa(string Ma, int idDonvi);
-        bool CheckTen(string Ten, int idDonvi);
+        bool CheckMa(string Ma, int idDonvi, int? Id);
+        bool CheckTen(string Ten, int idDonvi, int? Id);
         List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int idDonvi);
         bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi);
 
