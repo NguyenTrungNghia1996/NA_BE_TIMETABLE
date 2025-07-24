@@ -28,6 +28,7 @@ namespace NA_Entities.Entities.Dtos
     public class Ngay_banDto
     {
         public Ngay Id { get; set; } = Ngay.thu_hai;
+        public string Ten { get; set; }
         public List<TietbanDto> Ds_Tiet { get; set; } = new List<TietbanDto>();
     }
 }

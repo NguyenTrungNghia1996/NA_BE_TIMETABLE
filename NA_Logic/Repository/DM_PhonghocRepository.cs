@@ -190,9 +190,11 @@ namespace NA_Logic.Repository
                     Ds_Ngay = dsNgay.Select(ngay => new Ngay_banDto
                     {
                         Id = ngay,
+                        Ten = ngay.GetDisplayName(),
                         Ds_Tiet = dsTiet.Select(tiet => new TietbanDto
                         {
                             Id = tiet,
+                            Ten = tiet.GetDisplayName(),
                             Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
                                                            td.Thu == (int)ngay &&
                                                            td.Tiet == (int)tiet)
