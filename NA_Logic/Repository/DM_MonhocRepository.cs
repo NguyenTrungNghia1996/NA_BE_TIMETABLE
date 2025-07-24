@@ -22,7 +22,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord)
+        public List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idloaiphong,ref int totalrecord)
         {
             try
             {
@@ -42,12 +42,16 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
+                var paramIdLoaiPhong = new SqlParameter("id_loai_phong", SqlDbType.Int)
+                {
+                    Value = idloaiphong
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Monhoc_List>().FromSqlRaw("EXEC DM_Monhoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramTotal)
+                var result = _context.Set<DM_Monhoc_List>().FromSqlRaw("EXEC DM_Monhoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @id_loai_phong, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLoaiPhong, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Monhoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -207,6 +211,55 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckMa(string Ma, int idDonvi)
+        {
+            try
+            {
+                var check = _context.Dm_Monhoc.Any(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
+                if (check)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckTen(string Ten, int idDonvi)
+        {
+            try
+            {
+                var check = _context.Dm_Monhoc.Any(c => c.Ten == Ten && c.Id_don_vi == idDonvi);
+                if (check)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIdMonPhongChuyen(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                var check = _context.Dm_Monhoc.Any(c => c.Id == Id && c.Id_don_vi == idDonvi && c.Id_loai_phong_hoc == 2);
+                if (!check)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public Mon_banDto GetListTietBan(int Id, int idDonvi)
         {
             var dsCa = _context.DM_Cahoc.ToList();
@@ -302,6 +355,63 @@ namespace NA_Logic.Repository
                 if (tietban.Count > 0)
                 {
                     _context.Tiet_Tranh_Xep.RemoveRange(tietban);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<int> GetlistPhongByDonvi(int id)
+        {
+            try
+            {
+                var list = _context.Monhoc_Phonghoc.Where(x => x.Id_mon == id).Select(x => x.Id_phong).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
+            }
+        }
+        public bool UpdatePhong(int Id, List<int> phongId)
+        {
+            try
+            {
+                var del = _context.Monhoc_Phonghoc.Where(x => x.Id_mon == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Monhoc_Phonghoc.RemoveRange(del);
+                }
+                for (int i = 0; i < phongId.Count; i++)
+                {
+                    var phongMon = new Monhoc_Phonghoc
+                    {
+                        Id_mon = Id,
+                        Id_phong = phongId[i]
+                    };
+                    _context.Monhoc_Phonghoc.Add(phongMon);
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeletePhong(int Id)
+        {
+            try
+            {
+                var del = _context.Monhoc_Phonghoc.Where(x => x.Id_mon == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _context.Monhoc_Phonghoc.RemoveRange(del);
                     _context.SaveChanges();
                 }
                 return true;

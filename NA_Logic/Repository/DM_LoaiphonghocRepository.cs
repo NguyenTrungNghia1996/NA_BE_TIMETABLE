@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord)
+        public List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search,  ref int totalrecord)
         {
             try
             {
@@ -28,11 +28,10 @@ namespace NA_Logic.Repository
                 var paramPageIndex = new SqlParameter("pageIndex", SqlDbType.Int) { Value = PageIndex };
                 var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int) { Value = PageSize };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int) { Direction = ParameterDirection.Output };
-                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int) { Value = IdDonvi };
 
                 var result = _context.Set<DM_Loaiphonghoc_List>()
-                    .FromSqlRaw("EXEC DM_Loaiphonghoc_GetList_Paging @pageIndex, @pageSize, @search, @Id_Donvi, @total OUTPUT",
-                        paramPageIndex, paramPageSize, paramSearch,paramIdDonvi, paramTotal)
+                    .FromSqlRaw("EXEC DM_Loaiphonghoc_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
+                        paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Loaiphonghoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -100,12 +99,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id, int idDonvi)
+        public bool CheckId(int Id)
         {
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Loaiphonghoc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+                return _context.DM_Loaiphonghoc.Any(c => c.Id == Id);
             }
             catch
             {

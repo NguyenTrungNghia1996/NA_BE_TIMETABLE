@@ -74,7 +74,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _phonghoc.getDetailById(Id, idDonvi);
+            var detail = _phonghoc.getDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_PhonghocDto>(detail);
@@ -89,10 +89,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
-            addph.Id_Don_vi = idDonvi;
             addph.Id = 0;
+
+            //kiểm tra mã môn học
+            var check_ma = _phonghoc.CheckMa(phonghoc.Ma);
+            if (!check_ma)
+                ModelState.AddModelError("Ma", "Mã phòng học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
-            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
+            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_Loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
@@ -120,16 +124,20 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var phonghocdb = _phonghoc.getDetailById(phonghoc.Id,idDonvi);
+            var phonghocdb = _phonghoc.getDetailById(phonghoc.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (phonghocdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Phonghoc>(phonghoc);
-            item.Id_Don_vi = idDonvi;
+
+            //kiểm tra mã phòng học
+            var check_ma = _phonghoc.CheckMa(phonghoc.Ma);
+            if (!check_ma)
+                ModelState.AddModelError("Ma", "Mã phòng học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
-            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc, idDonvi);
+            var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
             if (!check_loaiphonghoc)
                 ModelState.AddModelError("Id_Loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
@@ -158,7 +166,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var phonghocdb = _phonghoc.getDetailById(id,idDonvi);
+            var phonghocdb = _phonghoc.getDetailById(id);
             if (phonghocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
 
@@ -209,7 +217,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
             // Validate phòng học
-            if (!_phonghoc.CheckId(phongban.Id, idDonvi))
+            if (!_phonghoc.CheckId(phongban.Id))
                 return ApiResult.BadRequest("Phòng học không hợp lệ");
 
             // check id, check trùng

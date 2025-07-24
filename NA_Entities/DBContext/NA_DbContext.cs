@@ -57,6 +57,9 @@ namespace NA_Entities.DBContext
         public DbSet<Ngay_Donvi> Ngay_Donvi    { get; set; }
         public DbSet<Tiet_co_dinh> Tiet_co_dinh { get; set; }
         public DbSet<Tiet_co_dinh_List> Tiet_co_dinh_list { get; set; }
+        public DbSet<Monhoc_Phonghoc> Monhoc_Phonghoc { get; set; }
+        public DbSet<DM_Banhoc> DM_Banhoc { get; set; }
+        public DbSet<DM_Banhoc_List> DM_Banhoc_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -77,6 +80,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Ngayhoc_List>().HasNoKey();
             builder.Entity<DM_Monhoc_List>().HasNoKey();
             builder.Entity<Tiet_co_dinh_List>().HasNoKey();
+            builder.Entity<DM_Banhoc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

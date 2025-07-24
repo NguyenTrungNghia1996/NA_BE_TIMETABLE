@@ -8,32 +8,34 @@ using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/loaiphonghoc")]
+    [Route("api/banhoc")]
     [ApiController]
-    public class DM_LoaiphonghocController : ControllerBase
+    public class DM_BanhocController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IDM_LoaiphonghocRepository _loaiphonghoc;
+        private readonly IDM_BanhocRepository _Banhoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_LoaiphonghocController(IMapper mapper, IDM_LoaiphonghocRepository loaiphonghoc, IClaimHelperRepository claimHelperRepository)
+        private readonly IAuthRepository _auth;
+        private readonly IDM_CaphocRepository _cap;
+        public DM_BanhocController(IMapper mapper, IDM_BanhocRepository Banhoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository cap)
         {
             _mapper = mapper;
-            _loaiphonghoc = loaiphonghoc;
+            _Banhoc = Banhoc;
             _claimHelperRepository = claimHelperRepository;
+            _auth = auth;
+            _cap = cap;
         }
         [HttpGet]
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _loaiphonghoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _Banhoc.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            var listDto = _mapper.Map<List<DM_Loaiphonghoc_ListDto>>(list);
+            var listDto = _mapper.Map<List<DM_Banhoc_ListDto>>(list);
             return ApiResult.Success(new
             {
                 items = listDto,
@@ -45,34 +47,36 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
             // Lấy bản ghi từ db
-            var detail = _loaiphonghoc.GetDetailByID(Id);
-            if (detail == null)
+            var detailBanhoc = _Banhoc.GetDetailById(Id);
+            if (detailBanhoc == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_LoaiphonghocDto>(detail);
+            var detailDto = _mapper.Map<DM_BanhocDto>(detailBanhoc);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Create([FromBody] DM_LoaiphonghocDto loaiphonghoc)
+        public IActionResult Create([FromBody] DM_BanhocDto Banhoc)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             // mapper data 
-            var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
+            var item = _mapper.Map<DM_Banhoc>(Banhoc);
             item.Id = 0;
+            item.Id_don_vi = idDonvi;
+            var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
+            if (!check_cap)
+                ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // add 
-            bool add = _loaiphonghoc.Add(item);
+            bool add = _Banhoc.Add(item);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
-            var itemDto = _mapper.Map<DM_LoaiphonghocDto>(item);
+            var itemDto = _mapper.Map<DM_BanhocDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -81,23 +85,27 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_LoaiphonghocDto loaiphonghoc)
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+        public IActionResult Update([FromBody] DM_BanhocDto Banhoc)
+        {// Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var db = _loaiphonghoc.GetDetailByID(loaiphonghoc.Id);
+            var Banhocdb = _Banhoc.GetDetailById(Banhoc.Id);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (db == null)
+            if (Banhocdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
-            bool add = _loaiphonghoc.Update(item);
+            var item = _mapper.Map<DM_Banhoc>(Banhoc);
+            var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
+            if (!check_cap)
+                ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            bool add = _Banhoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var itemDto = _mapper.Map<DM_LoaiphonghocDto>(item);
+            var itemDto = _mapper.Map<DM_BanhocDto>(item);
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -111,10 +119,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            var item = _loaiphonghoc.GetDetailByID(id);
-            if (item == null)
+            var Banhocdb = _Banhoc.GetDetailById(id);
+            if (Banhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _loaiphonghoc.Deleted(id);
+            var request = _Banhoc.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");

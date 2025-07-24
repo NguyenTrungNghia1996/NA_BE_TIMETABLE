@@ -63,11 +63,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Phonghoc getDetailById(int id, int idDonvi)
+        public DM_Phonghoc getDetailById(int id)
         {
             try
             {
-                var data = _context.DM_Phonghoc.FirstOrDefault(c => c.Id == id && c.Id_Don_vi == idDonvi);
+                var data = _context.DM_Phonghoc.FirstOrDefault(c => c.Id == id );
                 return data;
             }
             catch
@@ -122,19 +122,40 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id, int idDonvi)
+        public bool CheckId(int Id)
         {
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Phonghoc.Any(c => c.Id == Id && c.Id_Don_vi==idDonvi);
+                return _context.DM_Phonghoc.Any(c => c.Id == Id);
             }
             catch
             {
                 return false;
             }
         }
-        public Phong_banDto GetListTietBan(int Id, int idDonvi)
+        public bool CheckMa(string Ma)
+        {
+            try
+            {
+                var check = _context.DM_Phonghoc.Any(c => c.Ma == Ma );
+                if (!check)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIds(IEnumerable<int> ids)
+        {
+            var existingIds = _context.DM_Phonghoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
+        public Phong_banDto GetListTietBan(int Id)
         {
             var dsCa = _context.DM_Cahoc.ToList();
             var tietBan = _context.Tiet_ban
@@ -195,31 +216,31 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckIds_Tietban(int idNgay, int idCa, int idTiet, int idDonvi)
-        {
-            try
-            {
-                var paramIdNgay = new SqlParameter("@IdNgay", SqlDbType.Int) { Value = idNgay };
-                var paramIdCa = new SqlParameter("@IdCa", SqlDbType.Int) { Value = idCa };
-                var paramIdTiet = new SqlParameter("@IdTiet", SqlDbType.Int) { Value = idTiet };
-                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = idDonvi };
+        //public bool CheckIds_Tietban(int idNgay, int idCa, int idTiet)
+        //{
+        //    try
+        //    {
+        //        var paramIdNgay = new SqlParameter("@IdNgay", SqlDbType.Int) { Value = idNgay };
+        //        var paramIdCa = new SqlParameter("@IdCa", SqlDbType.Int) { Value = idCa };
+        //        var paramIdTiet = new SqlParameter("@IdTiet", SqlDbType.Int) { Value = idTiet };
+        //        var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = idDonvi };
 
-                var paramResult = new SqlParameter("@Result", SqlDbType.Bit)
-                {
-                    Direction = ParameterDirection.Output
-                };
+        //        var paramResult = new SqlParameter("@Result", SqlDbType.Bit)
+        //        {
+        //            Direction = ParameterDirection.Output
+        //        };
 
-                _context.Database.ExecuteSqlRaw(
-                    "EXEC CheckIds_Tietban @IdNgay, @IdCa, @IdTiet, @IdDonvi, @Result OUTPUT",
-                    paramIdNgay, paramIdCa, paramIdTiet, paramIdDonvi, paramResult);
+        //        _context.Database.ExecuteSqlRaw(
+        //            "EXEC CheckIds_Tietban @IdNgay, @IdCa, @IdTiet, @IdDonvi, @Result OUTPUT",
+        //            paramIdNgay, paramIdCa, paramIdTiet, paramIdDonvi, paramResult);
 
-                return Convert.ToBoolean(paramResult.Value);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        //        return Convert.ToBoolean(paramResult.Value);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool DeleteTietBan(int Id)
         {
             try

@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_MonhocRepository
     {
-        List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int IdDonvi, ref int totalrecord);
+        List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idloaiphong, ref int totalrecord);
         DM_Monhoc GetDetailById(int id, int idDonvi);
         List<int> GetlistKhoikienthucbyMon(int id);
         bool Add(DM_Monhoc dM_Monhoc);
@@ -24,6 +24,12 @@ namespace NA_Logic.IRepository
         bool AddTietBan(List<Tiet_tranh_xep> dsTietTranhXep, int idMon);
         bool CheckIds_Tiet(int idNgay, int idCa, int idTiet, int idDonvi);
         bool DeleteTietTranhXep(int Id);
+        List<int> GetlistPhongByDonvi(int id);
+        bool UpdatePhong(int Id, List<int> phongId);
+        bool DeletePhong(int Id);
+        bool CheckIdMonPhongChuyen(int Id, int idDonvi);
+        bool CheckMa(string Ma, int idDonvi);
+        bool CheckTen(string Ten, int idDonvi);
 
     }
 }

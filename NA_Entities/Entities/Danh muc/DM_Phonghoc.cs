@@ -10,6 +10,9 @@ namespace NA_Entities.Entities.Danh_muc
     public class DM_Phonghoc
     {
         public int Id { get; set; } = 0;
+        [Required(ErrorMessage = "Mã môn học không được để trống")]
+        [StringLength(200, ErrorMessage = "Tối đa 20 ký tự")]
+        public string Ma { get; set; } = string.Empty;                                                                                     
         [Required(ErrorMessage = "Tên phòng học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
@@ -22,7 +25,6 @@ namespace NA_Entities.Entities.Danh_muc
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_Diem_truong { get; set; }
         public bool Khong_kiem_tra_xung_dot {  get; set; }
-        public int Id_Don_vi { get; set; }
 
     }
     public class DM_Phonghoc_list
