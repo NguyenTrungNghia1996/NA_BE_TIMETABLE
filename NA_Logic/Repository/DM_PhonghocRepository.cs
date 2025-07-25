@@ -169,9 +169,17 @@ namespace NA_Logic.Repository
                                                   .Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
-        public Phong_banDto GetListTietBan(int Id)
+        public Phong_banDto GetListTietBan(int Id, int idDonvi)
         {
-            var dsCa = _context.DM_Cahoc.ToList();
+            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
+                            .Join(_context.DM_Cahoc,
+                                  cd => cd.Id_ca_hoc,
+                                  ca => ca.Id,
+                                  (cd, ca) => new
+                                  {
+                                      Id = ca.Id,
+                                      Ten = ca.Ten
+                                  }).ToList();
             var tietBan = _context.Tiet_Tranh_Xep
                         .Where(tb => tb.Id_mon == Id)
                         .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })

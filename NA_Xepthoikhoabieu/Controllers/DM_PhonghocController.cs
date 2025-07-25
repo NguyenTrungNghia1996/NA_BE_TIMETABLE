@@ -199,7 +199,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                     return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             }
             // Lấy bản ghi từ db
-            var result = _phonghoc.GetListTietBan(Id);
+            var result = _phonghoc.GetListTietBan(Id,idDonvi);
             if (result == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
 
