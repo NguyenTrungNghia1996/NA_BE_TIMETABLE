@@ -131,7 +131,7 @@ namespace NA_Logic.Repository
             return ids.All(id => existingIds.Contains(id));
         }
 
-        public Mon_banDto GetListTietBan(int Id, int idDonvi)
+        public Giaovien_banDto GetListTietBan(int Id, int idDonvi)
         {
             var dsCa = _dbContext.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
                             .Join(_dbContext.DM_Cahoc,
@@ -142,19 +142,22 @@ namespace NA_Logic.Repository
                                       Id = ca.Id,
                                       Ten = ca.Ten
                                   }).ToList();
-            var tietBan = _dbContext.Tiet_Tranh_Xep
-                        .Where(tb => tb.Id_mon == Id)
-                        .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })
+            var tietBan = _dbContext.Giaovien_Tiettranhxep
+                        .Where(tb => tb.Id_giao_vien == Id)
+                        .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
                         .ToList();
-
+            var buoiday = _dbContext.Giaovien_Buoiday.FirstOrDefault(bd => bd.Id_giao_vien == Id);
             // Lấy danh sách ngày từ enum
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             // Lấy danh sách tiết từ enum
             var dsTiet = Enum.GetValues<Tiet>().ToList();
 
-            var result = new Mon_banDto
+            var result = new Giaovien_banDto
             {
-                Id = Id,
+                Id_giao_vien = Id,
+                Id_buoi_day = buoiday.Id,
+                Chi_day_mot_buoi = buoiday.Chi_day_mot_buoi,
+                So_tiet_toi_da = buoiday.So_tiet_toi_da,
                 Ds_Ca = dsCa.Select(ca => new Ca_banDto
                 {
                     Id = ca.Id,
@@ -167,21 +170,21 @@ namespace NA_Logic.Repository
                             Id = tiet,
                             Ten = tiet.GetDisplayName(),
                             Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
-                                                           td.Thu == (int)ngay &&
+                                                           td.Ngay == (int)ngay &&
                                                            td.Tiet == (int)tiet)
                         }).ToList()
                     }).ToList()
                 }).ToList()
-            };
+            }; 
 
             return result;
         }
-        public bool AddTietBan(List<Tiet_tranh_xep> dsTietTranhXep, int idMon)
+        public bool AddTietBan(List<Giaovien_Tiettranhxep> dsTietTranhXep, int Idgv)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                var existingTiet = _dbContext.Tiet_Tranh_Xep.Where(tb => tb.Id_mon == idMon).ToList();
+                var existingTiet = _dbContext.Giaovien_Tiettranhxep.Where(tb => tb.Id_giao_vien == Idgv).ToList();
 
                 //xóa
                 if (existingTiet.Any())
@@ -203,14 +206,17 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool SaveBuoiday(Giaovien_Buoiday gvbd, int idgv)
+        public bool SaveBuoiday(Giaovien_Buoiday gvbd)
         {
             try
             {
-                if (idgv != 0) { 
+                if (gvbd.Id!= 0) { 
                     _dbContext.Giaovien_Buoiday.Update(gvbd);
                 }
-                _dbContext.Giaovien_Buoiday.Add(gvbd);
+                else
+                {
+                    _dbContext.Giaovien_Buoiday.Add(gvbd);
+                }
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -219,6 +225,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public Giaovien_Buoiday GetBuoiday(int id)
+        {
+            try
+            {
+                if (id != 0)
+                {
+                    return null;
+                }
+                var buoiday = _dbContext.Giaovien_Buoiday.FirstOrDefault(bd => bd.Id == id);
+                return buoiday;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
+        }
     }
 }

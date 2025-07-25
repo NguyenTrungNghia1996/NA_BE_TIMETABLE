@@ -17,13 +17,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _cap;
-        public DM_GiaovienController(IMapper mapper, IDM_GiaovienRepository Giaovien, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository cap)
+        private readonly IDM_CahocRepository _cahoc;
+        public DM_GiaovienController(IMapper mapper, IDM_GiaovienRepository Giaovien, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
+                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc)
         {
             _mapper = mapper;
             _Giaovien = Giaovien;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _cap = cap;
+            _cahoc = cahoc;
         }
         [HttpGet]
         [RequireToken]
@@ -126,6 +129,123 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("tiettranhxep")]
+        [RequireToken]
+        public IActionResult GetListTietBan([FromQuery] int Id)
+        {
+            if (Id < 0)
+                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (Id > 0)
+            {
+                var detail = _Giaovien.CheckId(Id, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            }
+            // Lấy bản ghi từ db
+            var result = _Giaovien.GetListTietBan(Id, idDonvi);
+
+            if (result == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+
+            return ApiResult.Success(result, "Thành công");
+        }
+
+        [HttpPost("tiettranhxep")]
+        [RequireToken]
+        public IActionResult Update([FromBody] Giaovien_banDto giaovienban)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            // Validate môn học
+            if (!_Giaovien.CheckId(giaovienban.Id_giao_vien, idDonvi))
+                return ApiResult.BadRequest("Giáo viên học không hợp lệ");
+
+            // check id, check trùng 
+            var danhSachTiet = new List<Giaovien_Tiettranhxep>();
+            var errors = new List<string>();
+            var existingCombinations = new HashSet<string>();
+            var buoiday = new Giaovien_Buoiday
+            {
+                Id = giaovienban.Id_buoi_day,
+                Id_giao_vien = giaovienban.Id_giao_vien,
+                Chi_day_mot_buoi = giaovienban.Chi_day_mot_buoi,
+                So_tiet_toi_da = giaovienban.So_tiet_toi_da
+            };
+
+            foreach (var ca in giaovienban.Ds_Ca)
+            {
+                foreach (var ngay in ca.Ds_Ngay)
+                {
+                    foreach (var tiet in ngay.Ds_Tiet)
+                    {
+                        var idthu = (int)ngay.Id;
+                        var idtiet = (int)tiet.Id;
+                        //check các validate
+                        if (!Enum.IsDefined(typeof(Ngay), ngay.Id))
+                        {
+                            errors.Add($"Ngày không hợp lệ: {ngay.Id}");
+                            break;
+                        }
+
+                        if (!Enum.IsDefined(typeof(Tiet), tiet.Id))
+                        {
+                            errors.Add($"Tiết không hợp lệ: {tiet.Id}");
+                            break;
+                        }
+                        bool isValid = _cahoc.CheckId(ca.Id, idDonvi);
+                        if (!isValid)
+                        {
+                            errors.Add($"Ca không hợp lệ: {ca.Id}");
+                            break;
+                        }
+
+                        if (tiet.Trang_thai == true)
+                        {
+                            //Tạo unique key để check trùng
+                            string uniqueKey = $"{giaovienban.Id_giao_vien}_{ca.Id}_{idthu}_{idtiet}";
+                            //kiểm tra unique tồn tại chưa
+                            if (existingCombinations.Contains(uniqueKey))
+                            {
+                                errors.Add($"Trùng lặp bản ghi");
+                                continue;
+                            }
+                            //nếu chưa tồn tại thì thêm vào combinations
+                            existingCombinations.Add(uniqueKey);
+                            //thêm các tiết trạng thái bằng true vào danh sách tiết bận
+                            danhSachTiet.Add(new Giaovien_Tiettranhxep
+                            {
+                                Id_giao_vien = giaovienban.Id_giao_vien,
+                                Id_ca = ca.Id,
+                                Ngay = idthu,
+                                Tiet = idtiet
+                            });
+                        }
+                    }
+                }
+            }
+            // Kiểm tra có lỗi không
+            if (errors.Any())
+                return ApiResult.BadRequest(string.Join("; ", errors));
+            //add
+            bool addtiettranhxep = _Giaovien.AddTietBan(danhSachTiet, giaovienban.Id_giao_vien);
+            bool addbuoiday = _Giaovien.SaveBuoiday(buoiday);
+            if (!addtiettranhxep)
+                return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
+            if (!addbuoiday)
+            {
+                return ApiResult.NotFound("Cập nhật buổi dạy của giáo viên thất bại");
+            }
+            return ApiResult.Success(new { id_giao_vien = giaovienban.Id_giao_vien, so_tiet_ban = danhSachTiet.Count, buoi_day = buoiday }, 
+                                         "Cập nhật tiết tránh xếp và buổi dạy của giáo viên thành công");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,9 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
+        Giaovien_banDto GetListTietBan(int Id, int idDonvi);
+        bool AddTietBan(List<Giaovien_Tiettranhxep> dsTietTranhXep, int Idgv);
+        bool SaveBuoiday(Giaovien_Buoiday gvbd);
+        Giaovien_Buoiday GetBuoiday(int id);
     }
 }

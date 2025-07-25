@@ -32,7 +32,8 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Giaovien_banDto
     {
-        public int Id { get; set; } = 0;
+        public int Id_giao_vien { get; set; } = 0;
+        public int Id_buoi_day { get; set; } = 0;
         public bool Chi_day_mot_buoi { get; set; } = false;
         public int So_tiet_toi_da { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();

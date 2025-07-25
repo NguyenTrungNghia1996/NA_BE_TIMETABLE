@@ -123,7 +123,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             //check các id
             var check_ban = _banhoc.CheckId(tohopmon.Id_ban, idDonvi);
-            var check_khoi = _banhoc.CheckId(tohopmon.Id_khoi, idDonvi);
+            var check_khoi = _khoilop.CheckKhoilopByDonvi(tohopmon.Id_khoi, idDonvi);
             var check_mon_1 = _monhoc.CheckId(tohopmon.Id_mon_1, idDonvi);
             var check_mon_2 = _monhoc.CheckId(tohopmon.Id_mon_2, idDonvi);
             var check_mon_3 = _monhoc.CheckId(tohopmon.Id_mon_3, idDonvi);
