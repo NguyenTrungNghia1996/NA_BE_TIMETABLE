@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NA_Logic.Repository
 {
@@ -23,7 +24,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<Tiet_co_dinh_List> GetList_Paging(int PageIndex, int PageSize,  int IdDonvi, ref int totalrecord)
+        public List<Tiet_co_dinh_List> GetList_Paging(int PageIndex, int PageSize, int IdDonvi, ref int totalrecord)
         {
             try
             {
@@ -46,7 +47,7 @@ namespace NA_Logic.Repository
                 var result = _dbContext.Set<Tiet_co_dinh_List>().FromSqlRaw("EXEC Tietcodinh_GetList_Paging @pageIndex, @pageSize, @idDonvi, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramIdDonvi, paramTotal)
                     .ToList();
-                
+
                 if (result == null) result = new List<Tiet_co_dinh_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
@@ -60,7 +61,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var tietcodinh = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id );
+                var tietcodinh = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id);
                 return tietcodinh;
             }
             catch (Exception)
@@ -147,12 +148,10 @@ namespace NA_Logic.Repository
         {
             try
             {
-                return _dbContext.Dm_Monhoc
+                var check_mon_ca_khoi = _dbContext.Dm_Monhoc
                     .AsNoTracking()
                     .Where(mon => mon.Id == idMon && mon.Id_don_vi == idDonvi)
                     .Any(mon =>
-                        _dbContext.Ngay_Donvi.AsNoTracking()
-                            .Any(ngay => ngay.Id_ngay == idNgay && ngay.Id_don_vi == idDonvi) &&
                         _dbContext.DM_Cahoc.AsNoTracking()
                             .Any(ca => ca.Id == idCa) &&
                         _dbContext.Cap_Donvi.AsNoTracking()
@@ -161,9 +160,27 @@ namespace NA_Logic.Repository
                                 kl => kl.Id_Cap_hoc,
                                 (cd, kl) => new { cd, kl })
                             .Any(x => x.kl.Id == idKhoi && x.cd.Id_Don_vi == idDonvi) &&
-                        _dbContext.Ca_Tiethoc.AsNoTracking()
-                            .Any(ct => ct.Id_Tiet_hoc == idTiet && ct.Id_Ca_hoc == idCa)
+                            _dbContext.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
+                                .Join(_dbContext.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
+                                .Join(_dbContext.DM_Khoilop.Where(kl => kl.Trang_thai_xoa == false),
+                                      ch => ch.Id, kl => kl.Id_Cap_hoc,
+                                      (ch, kl) => kl.Id)
+                                .Any(id => id == idKhoi)
                     );
+                if (!Enum.IsDefined(typeof(Ngay), idNgay))
+                {
+                    return false;
+                }
+
+                if (!Enum.IsDefined(typeof(Tiet), idTiet))
+                {
+                    return false;
+                }
+                if (!check_mon_ca_khoi)
+                {
+                    return false;
+                }
+                return true;
             }
             catch
             {

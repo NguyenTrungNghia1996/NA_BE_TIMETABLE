@@ -91,7 +91,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
                 foreach (var khoilop in allKhoilop)
                 {
-                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, khoilop.Id, idDonvi);
+                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);
                     if (!isValid)
                     {
                         return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -99,9 +99,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     tietcdList.Add(new Tiet_co_dinh
                     {
                         Id_mon = tietcd.Id_mon,
-                        Ngay = tietcd.Ngay,
+                        Ngay = tietcd.Id_ngay,
                         Id_ca = tietcd.Id_ca,
-                        Tiet = tietcd.Tiet,
+                        Tiet = tietcd.Id_tiet,
                         Id_khoi_lop = khoilop.Id,
 
                     });
@@ -110,7 +110,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu không chọn áp dụng cho tất cả
             else
             {
-                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, tietcd.Id_khoi_lop, idDonvi);
+                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, tietcd.Id_khoi_lop, idDonvi);
                 if (!isValid)
                 {
                     return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -118,9 +118,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 tietcdList.Add(new Tiet_co_dinh
                 {
                     Id_mon = tietcd.Id_mon,
-                    Ngay = tietcd.Ngay,
+                    Ngay = tietcd.Id_ngay,
                     Id_ca = tietcd.Id_ca,
-                    Tiet = tietcd.Tiet,
+                    Tiet = tietcd.Id_tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 });
             }
@@ -163,7 +163,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
                 foreach (var khoilop in allKhoilop)
                 {
-                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, khoilop.Id, idDonvi);
+                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);
                     if (!isValid)
                     {
                         return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -171,9 +171,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     tietcdList.Add(new Tiet_co_dinh
                     {
                         Id_mon = tietcd.Id_mon,
-                        Ngay = tietcd.Ngay,
+                        Ngay = tietcd.Id_ngay,
                         Id_ca = tietcd.Id_ca,
-                        Tiet = tietcd.Tiet,
+                        Tiet = tietcd.Id_tiet,
                         Id_khoi_lop = khoilop.Id,
 
                     });
@@ -183,7 +183,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu chỉ cho 1 khối
             else
             {
-                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, tietcd.Id_khoi_lop, idDonvi);
+                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, tietcd.Id_khoi_lop, idDonvi);
                 if (!isValid)
                 {
                     return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -192,9 +192,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     Id = tietcd.Id,
                     Id_mon = tietcd.Id_mon,
-                    Ngay = tietcd.Ngay,
+                    Ngay = tietcd.Id_ngay,
                     Id_ca = tietcd.Id_ca,
-                    Tiet = tietcd.Tiet,
+                    Tiet = tietcd.Id_tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 };
                 update = _tietcodinh.Update(tietcd_update);
