@@ -71,7 +71,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_DonviDto>(detail);
             detailDto.IdCap = _donvi.GetlistCapbyDonvi(Id);
-            detailDto.Id_ca_hoc = _donvi.GetlistCabyDonvi(Id);
+            detailDto.Id_cahoc = _donvi.GetlistCabyDonvi(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -94,17 +94,17 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 ModelState.AddModelError("IdCap", "Vui lòng chọn ít nhất 1 cấp học");
             }
-            if (donvi.Id_ca_hoc == null || donvi.Id_ca_hoc.Count == 0)
+            if (donvi.Id_cahoc == null || donvi.Id_cahoc.Count == 0)
             {
                 ModelState.AddModelError("Id_ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
-            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_ca_hoc);
+            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
-                ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+                ModelState.AddModelError("Id_cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             //hiển thị lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -114,7 +114,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             donvi.Id = addDonvi.Id;
             var addCapDonvi = _donvi.AddCap(donvi.Id, donvi.IdCap);
-            var addCaDv = _donvi.AddCa(donvi.Id, donvi.Id_ca_hoc);
+            var addCaDv = _donvi.AddCa(donvi.Id, donvi.Id_cahoc);
             if (!addCapDonvi)
                 return ApiResult.Success(new
                 {
