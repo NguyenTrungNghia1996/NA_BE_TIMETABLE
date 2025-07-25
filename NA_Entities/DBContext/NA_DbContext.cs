@@ -61,6 +61,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Banhoc> DM_Banhoc { get; set; }
         public DbSet<DM_Banhoc_List> DM_Banhoc_List { get; set; }
         public DbSet<Monhoc_Khoilop> Monhoc_Khoilop { get; set; }
+        public DbSet<Monhoc_Tohopmon> Monhoc_Tohopmon { get; set; }
+        public DbSet<Monhoc_Tohopmon_List> Monhoc_Tohopmon_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -82,6 +84,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Monhoc_List>().HasNoKey();
             builder.Entity<Tiet_co_dinh_List>().HasNoKey();
             builder.Entity<DM_Banhoc_List>().HasNoKey();
+            builder.Entity<Monhoc_Tohopmon_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

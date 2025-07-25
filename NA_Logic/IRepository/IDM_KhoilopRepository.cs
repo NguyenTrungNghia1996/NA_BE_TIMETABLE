@@ -17,6 +17,7 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi);
         bool CheckId(int Id);
+        bool CheckKhoilopByDonvi(int idKhoilop, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
     }
 }

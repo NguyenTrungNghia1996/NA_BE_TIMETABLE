@@ -488,8 +488,7 @@ namespace NA_Logic.Repository
             try
             {
                 var allMonhoc = _context.Dm_Monhoc.Where(m => m.Id_don_vi == idDonvi).ToList();
-                var dsCa = _context.Ca_Donvi
-                            .Where(cd => cd.Id_don_vi == idDonvi)
+                var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
                             .Join(_context.DM_Cahoc,
                                   cd => cd.Id_ca_hoc,
                                   ca => ca.Id,
@@ -497,8 +496,7 @@ namespace NA_Logic.Repository
                                   {
                                       Id = ca.Id,
                                       Ten = ca.Ten
-                                  })
-                            .ToList();
+                                  }).ToList();
                 var Monhoc_Khoi = _context.Monhoc_Khoilop
                     .Where(x => x.Id_khoi == idKhoi && x.Id_ban == idBan)
                     .ToList();

@@ -147,6 +147,24 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckKhoilopByDonvi(int idKhoilop, int idDonvi)
+        {
+            if (idKhoilop <= 0 || idDonvi <= 0) return false;
+
+            try
+            {
+                return _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
+                                .Join(_context.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
+                                .Join(_context.DM_Khoilop.Where(kl => kl.Trang_thai_xoa == false),
+                                      ch => ch.Id, kl => kl.Id_Cap_hoc,
+                                      (ch, kl) => kl.Id)
+                                .Any(id => id == idKhoilop);
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckIds(IEnumerable<int> ids)
         {
             var existingIds = _context.DM_Khoilop.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();

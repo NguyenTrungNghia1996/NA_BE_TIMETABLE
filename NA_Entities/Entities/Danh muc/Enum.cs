@@ -23,7 +23,6 @@ namespace NA_Entities.Entities.Danh_muc
         thu_bay = 6,       
         [Display(Name = "Chủ nhật")]
         chu_nhat=7
-
     }
     public enum Tiet
     {
@@ -37,6 +36,5 @@ namespace NA_Entities.Entities.Danh_muc
         tiet_tu = 4,       
         [Display(Name = "Tiết năm")]
         tiet_nam = 5,       
-
     }
 }
