@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
+using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace NA_Logic.Repository
                 var result = _dbContext.Set<Tiet_co_dinh_List>().FromSqlRaw("EXEC Tietcodinh_GetList_Paging @pageIndex, @pageSize, @idDonvi, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramIdDonvi, paramTotal)
                     .ToList();
+                
                 if (result == null) result = new List<Tiet_co_dinh_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;

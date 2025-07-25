@@ -43,9 +43,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             var list = _tietcodinh.GetList_Paging(PageIndex, PageSize, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+            var listDto = _mapper.Map<List<Tiet_co_dinh_ListDto>>(list);
+            foreach (var dto in listDto)
+            {
+                dto.Ten_ngay = ((Ngay)dto.Ngay).GetDisplayName();
+                dto.Ten_tiet = ((Tiet)dto.Tiet).GetDisplayName();
+            }
             return ApiResult.Success(new
             {
-                items = list,
+                items = listDto,
                 totalrecord = totalrecord
             },
             "Thành công");
@@ -85,7 +91,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
                 foreach (var khoilop in allKhoilop)
                 {
-                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);
+                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, khoilop.Id, idDonvi);
                     if (!isValid)
                     {
                         return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -93,9 +99,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     tietcdList.Add(new Tiet_co_dinh
                     {
                         Id_mon = tietcd.Id_mon,
-                        Id_ngay = tietcd.Id_ngay,
+                        Ngay = tietcd.Ngay,
                         Id_ca = tietcd.Id_ca,
-                        Id_tiet = tietcd.Id_tiet,
+                        Tiet = tietcd.Tiet,
                         Id_khoi_lop = khoilop.Id,
 
                     });
@@ -104,7 +110,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu không chọn áp dụng cho tất cả
             else
             {
-                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, tietcd.Id_khoi_lop, idDonvi);
+                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, tietcd.Id_khoi_lop, idDonvi);
                 if (!isValid)
                 {
                     return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -112,9 +118,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 tietcdList.Add(new Tiet_co_dinh
                 {
                     Id_mon = tietcd.Id_mon,
-                    Id_ngay = tietcd.Id_ngay,
+                    Ngay = tietcd.Ngay,
                     Id_ca = tietcd.Id_ca,
-                    Id_tiet = tietcd.Id_tiet,
+                    Tiet = tietcd.Tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 });
             }
@@ -157,7 +163,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
                 foreach (var khoilop in allKhoilop)
                 {
-                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);
+                    bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, khoilop.Id, idDonvi);
                     if (!isValid)
                     {
                         return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -165,9 +171,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     tietcdList.Add(new Tiet_co_dinh
                     {
                         Id_mon = tietcd.Id_mon,
-                        Id_ngay = tietcd.Id_ngay,
+                        Ngay = tietcd.Ngay,
                         Id_ca = tietcd.Id_ca,
-                        Id_tiet = tietcd.Id_tiet,
+                        Tiet = tietcd.Tiet,
                         Id_khoi_lop = khoilop.Id,
 
                     });
@@ -177,7 +183,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu chỉ cho 1 khối
             else
             {
-                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, tietcd.Id_khoi_lop, idDonvi);
+                bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Ngay, tietcd.Id_ca, tietcd.Tiet, tietcd.Id_khoi_lop, idDonvi);
                 if (!isValid)
                 {
                     return ApiResult.BadRequest("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin môn học, ngày, ca học, tiết học, khối lớp.");
@@ -186,9 +192,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     Id = tietcd.Id,
                     Id_mon = tietcd.Id_mon,
-                    Id_ngay = tietcd.Id_ngay,
+                    Ngay = tietcd.Ngay,
                     Id_ca = tietcd.Id_ca,
-                    Id_tiet = tietcd.Id_tiet,
+                    Tiet = tietcd.Tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 };
                 update = _tietcodinh.Update(tietcd_update);

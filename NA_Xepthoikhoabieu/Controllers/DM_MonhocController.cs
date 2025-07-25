@@ -379,13 +379,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 var detail = _khoilop.CheckId(monkhoidto.Id_khoi);
                 if (!detail)
-                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id khối = {monkhoidto.Id_khoi}");
+                    return ApiResult.NotFound($"Id khối = {monkhoidto.Id_khoi} không hợp lệ");
             }
             if (monkhoidto.Id_ban > 0)
             {
                 var detail = _ban.CheckId(monkhoidto.Id_ban, idDonvi);
                 if (!detail)
-                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id ban = {monkhoidto.Id_ban}");
+                    return ApiResult.NotFound($"Id ban = {monkhoidto.Id_ban} không hợp lệ");
             }
             var errors = new List<string>(); ;
             foreach (var ds_mon in monkhoidto.ds_Mon)

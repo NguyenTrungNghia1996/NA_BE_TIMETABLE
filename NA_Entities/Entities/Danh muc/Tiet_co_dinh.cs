@@ -10,9 +10,9 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
-        public int Id_ngay { get; set; } = 0;
+        public int Ngay { get; set; } = 0;
         public int Id_ca { get; set; } = 0;
-        public int Id_tiet { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
         public int Id_khoi_lop { get; set; } = 0;
     }
     public class Tiet_co_dinh_List
@@ -22,7 +22,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten_mon_hoc { get; set; } = string.Empty;
         public string Ten_khoi_lop { get; set; } = string.Empty;
         public string Ten_ca_hoc { get; set; } = string.Empty;
-        public string Ten_ngay_hoc { get; set; } = string.Empty;
-        public string Ten_tiet_hoc { get; set; } = string.Empty;
+        public int Ngay { get; set; } 
+        public int Tiet { get; set; }
     }
 }

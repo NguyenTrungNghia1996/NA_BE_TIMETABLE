@@ -470,7 +470,7 @@ namespace NA_Logic.Repository
                 //thêm
                 if (dsMonKhoi != null && dsMonKhoi.Any())
                 {
-                    _context.BulkInsert(dsMonKhoi);
+                    _context.BulkInsertOrUpdate(dsMonKhoi);
                 }
 
                 transaction.Commit();

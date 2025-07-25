@@ -13,11 +13,11 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn môn")]
         public int Id_mon { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ngày")]
-        public int Id_ngay { get; set; } = 0;
+        public int Ngay { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_ca { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn tiết học")]
-        public int Id_tiet { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
         public int Id_khoi_lop { get; set; } = 0;
         public bool Ap_dung_cho_tat_ca_cac_khoi { get; set; } = false;
     }
@@ -28,7 +28,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_mon_hoc { get; set; } = string.Empty;
         public string Ten_khoi_lop { get; set; } = string.Empty;
         public string Ten_ca_hoc { get; set; } = string.Empty;
-        public string Ten_ngay_hoc { get; set; } = string.Empty;
-        public string Ten_tiet_hoc { get; set; } = string.Empty;
+        public int Ngay { get; set; } 
+        public int Tiet { get; set; }
+        public string Ten_ngay { get; set; } = string.Empty;
+        public string Ten_tiet { get; set; } = string.Empty;
     }
 }
