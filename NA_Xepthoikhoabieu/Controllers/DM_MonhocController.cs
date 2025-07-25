@@ -421,7 +421,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
             //add
-            bool result = _monhoc.AddMonKhoi(monkhoi, monkhoidto.Id_khoi);
+            bool result = _monhoc.AddMonKhoi(monkhoi, monkhoidto.Id_khoi, monkhoidto.Id_ban);
             if (!result)
                 return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
 

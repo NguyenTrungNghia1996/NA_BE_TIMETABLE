@@ -202,8 +202,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var result = _phonghoc.GetListTietBan(Id,idDonvi);
             if (result == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-
-            return ApiResult.Success(result, "Thành công");
+            return ApiResult.Success(result, "Th  ành công");
         }
 
         [HttpPost("tietban")]

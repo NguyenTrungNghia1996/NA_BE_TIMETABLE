@@ -463,12 +463,12 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi)
+        public bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi, int idBan)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                var existingTiet = _context.Monhoc_Khoilop.Where(tb => tb.Id_khoi == idKhoi).ToList();
+                var existingTiet = _context.Monhoc_Khoilop.Where(tb => tb.Id_khoi == idKhoi && tb.Id_ban==idBan).ToList();
 
                 //xóa
                 if (existingTiet.Any())
