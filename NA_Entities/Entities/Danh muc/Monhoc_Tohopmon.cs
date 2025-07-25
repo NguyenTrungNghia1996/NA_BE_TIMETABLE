@@ -41,7 +41,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten_ban { get; set; } = string.Empty;
         public string Ten_mon_hoc_1 { get; set; } = string.Empty;
         public string Ten_mon_hoc_2 { get; set; } = string.Empty;
-        public string Ten_mon_hoc_3 { get; set; } = string.Empty;
+        public string? Ten_mon_hoc_3 { get; set; } = string.Empty;
         
     }
 }
