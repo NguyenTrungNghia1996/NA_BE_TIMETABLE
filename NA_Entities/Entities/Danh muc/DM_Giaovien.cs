@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace NA_Entities.Entities.Danh_muc
     public class DM_Giaovien
     {
         public int Id { get; set; } = 0;
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string Ma_giao_vien { get; set; } = string.Empty;
         [Required(ErrorMessage = "Họ và tên đệm không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]

@@ -18,8 +18,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _cap;
         private readonly IDM_CahocRepository _cahoc;
+        private readonly IDM_TochuyenmonRepository _tochuyenmon;
         public DM_GiaovienController(IMapper mapper, IDM_GiaovienRepository Giaovien, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
-                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc)
+                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc,IDM_TochuyenmonRepository tochuyenmon)
         {
             _mapper = mapper;
             _Giaovien = Giaovien;
@@ -27,6 +28,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _cap = cap;
             _cahoc = cahoc;
+            _tochuyenmon = tochuyenmon;
         }
         [HttpGet]
         [RequireToken]
@@ -69,9 +71,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id = 0;
             item.Id_don_vi = idDonvi;
-            //var check_cap = _cap.CheckId(Giaovien.Id_cap_hoc);
-            //if (!check_cap)
-            //    ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <=0)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // add 
@@ -236,16 +238,28 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
             //add
+            bool addbuoiday = false;
             bool addtiettranhxep = _Giaovien.AddTietBan(danhSachTiet, giaovienban.Id_giao_vien);
-            bool addbuoiday = _Giaovien.SaveBuoiday(buoiday);
+            if (buoiday.Chi_day_mot_buoi == true || buoiday.So_tiet_toi_da > 0)
+            {
+                var check = _Giaovien.GetBuoidayTheoGV(buoiday.Id_giao_vien);
+                if (check==null)
+                {
+                    return ApiResult.NotFound("Giáo viên đã tồn tại buổi dạy");
+                }
+                addbuoiday = _Giaovien.SaveBuoiday(buoiday);
+                if (!addbuoiday)
+                {
+                    return ApiResult.NotFound("Cập nhật buổi dạy của giáo viên thất bại");
+                }
+            }
             if (!addtiettranhxep)
                 return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
-            if (!addbuoiday)
-            {
-                return ApiResult.NotFound("Cập nhật buổi dạy của giáo viên thất bại");
-            }
-            return ApiResult.Success(new { id_giao_vien = giaovienban.Id_giao_vien, so_tiet_ban = danhSachTiet.Count, buoi_day = buoiday }, 
+            if(addbuoiday && addtiettranhxep)
+                return ApiResult.Success(new { id_giao_vien = giaovienban.Id_giao_vien, so_tiet_ban = danhSachTiet.Count, buoi_day = buoiday }, 
                                          "Cập nhật tiết tránh xếp và buổi dạy của giáo viên thành công");
+            return ApiResult.Success(new { id_giao_vien = giaovienban.Id_giao_vien, so_tiet_ban = danhSachTiet.Count },
+                                         "Cập nhật tiết tránh xếp của giáo viên thành công");
         }
     }
 }

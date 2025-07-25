@@ -113,6 +113,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool CheckId(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _dbContext.DM_Tochuyenmon.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIds(IEnumerable<int> ids)
+        {
+            var existingIds = _dbContext.DM_Tochuyenmon.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
     }
 }

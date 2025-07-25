@@ -20,6 +20,6 @@ namespace NA_Logic.IRepository
         Giaovien_banDto GetListTietBan(int Id, int idDonvi);
         bool AddTietBan(List<Giaovien_Tiettranhxep> dsTietTranhXep, int Idgv);
         bool SaveBuoiday(Giaovien_Buoiday gvbd);
-        Giaovien_Buoiday GetBuoiday(int id);
+        Giaovien_Buoiday GetBuoidayTheoGV(int id);
     }
 }

@@ -155,7 +155,7 @@ namespace NA_Logic.Repository
             var result = new Giaovien_banDto
             {
                 Id_giao_vien = Id,
-                Id_buoi_day = buoiday.Id,
+                Id_buoi_day = buoiday.Id ,
                 Chi_day_mot_buoi = buoiday.Chi_day_mot_buoi,
                 So_tiet_toi_da = buoiday.So_tiet_toi_da,
                 Ds_Ca = dsCa.Select(ca => new Ca_banDto
@@ -225,7 +225,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public Giaovien_Buoiday GetBuoiday(int id)
+        public Giaovien_Buoiday GetBuoidayTheoGV(int id)
         {
             try
             {
@@ -233,7 +233,7 @@ namespace NA_Logic.Repository
                 {
                     return null;
                 }
-                var buoiday = _dbContext.Giaovien_Buoiday.FirstOrDefault(bd => bd.Id == id);
+                var buoiday = _dbContext.Giaovien_Buoiday.FirstOrDefault(bd => bd.Id_giao_vien == id);
                 return buoiday;
             }
             catch (Exception)
