@@ -155,9 +155,9 @@ namespace NA_Logic.Repository
             var result = new Giaovien_banDto
             {
                 Id_giao_vien = Id,
-                Id_buoi_day = buoiday.Id ,
-                Chi_day_mot_buoi = buoiday.Chi_day_mot_buoi,
-                So_tiet_toi_da = buoiday.So_tiet_toi_da,
+                Id_buoi_day = buoiday?.Id ??0 ,
+                Chi_day_mot_buoi = buoiday?.Chi_day_mot_buoi??false,
+                So_tiet_toi_da = buoiday?.So_tiet_toi_da ??0,
                 Ds_Ca = dsCa.Select(ca => new Ca_banDto
                 {
                     Id = ca.Id,
@@ -225,7 +225,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public Giaovien_Buoiday GetBuoidayTheoGV(int id)
+        public Giaovien_Buoiday GetBuoidayTheoGV(int? id)
         {
             try
             {
@@ -241,6 +241,44 @@ namespace NA_Logic.Repository
                 return null;
             }
 
+        }
+        public List<int> GetMonbyGiaovien (int id)
+        {
+            var mon = _dbContext.Giaovien_Monhoc.Where(c => c.Id_giao_vien == id).Select(c => c.Id_mon).ToList();
+            if (mon == null && mon.Count==0)
+                return new List<int>();
+            return mon;
+        }
+        public bool UpdateMonbyGiaovien (int id, List<int> mon)
+        {
+            using var transaction = _dbContext.Database.BeginTransaction();
+            try
+            {
+                var moncu = _dbContext.Giaovien_Monhoc.Where(c => c.Id_giao_vien == id).ToList();
+                if (moncu != null && moncu.Count > 0)
+                {
+                    _dbContext.BulkDelete(moncu);
+                }
+                var mongv = new List<Giaovien_Monhoc>();
+                if (mon != null && mon.Count > 0)
+                {
+                    for (int i = 0; i < mon.Count; i++)
+                    {
+                        mongv.Add(new Giaovien_Monhoc
+                        {
+                            Id_giao_vien = id,
+                            Id_mon = mon[i],
+                        });
+                    }
+                    _dbContext.BulkInsert(mongv);
+                }
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

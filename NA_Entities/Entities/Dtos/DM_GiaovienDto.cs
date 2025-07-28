@@ -28,14 +28,20 @@ namespace NA_Entities.Entities.Dtos
         public string Ho_va_ho_dem { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
         public int Id_to_chuyen_mon { get; set; } = 0;
+        public string Ten_to_chuyen_mon { get; set; } = string.Empty;
         public int Id_don_vi { get; set; } = 0;
     }
     public class Giaovien_banDto
     {
         public int Id_giao_vien { get; set; } = 0;
-        public int Id_buoi_day { get; set; } = 0;
-        public bool Chi_day_mot_buoi { get; set; } = false;
-        public int So_tiet_toi_da { get; set; } = 0;
+        public int? Id_buoi_day { get; set; } = 0;
+        public bool? Chi_day_mot_buoi { get; set; } = false;
+        public int? So_tiet_toi_da { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
+    }
+    public class Giaovien_MonDto
+    {
+        public int Id { get; set; }
+        public List<int> Id_mon { get; set; } = new List<int>();
     }
 }

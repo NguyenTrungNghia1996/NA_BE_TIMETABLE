@@ -19,8 +19,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CaphocRepository _cap;
         private readonly IDM_CahocRepository _cahoc;
         private readonly IDM_TochuyenmonRepository _tochuyenmon;
+        private readonly IDM_MonhocRepository _monhoc;
         public DM_GiaovienController(IMapper mapper, IDM_GiaovienRepository Giaovien, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
-                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc,IDM_TochuyenmonRepository tochuyenmon)
+                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc,IDM_TochuyenmonRepository tochuyenmon, IDM_MonhocRepository monhoc)
         {
             _mapper = mapper;
             _Giaovien = Giaovien;
@@ -29,6 +30,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _cap = cap;
             _cahoc = cahoc;
             _tochuyenmon = tochuyenmon;
+            _monhoc = monhoc;
         }
         [HttpGet]
         [RequireToken]
@@ -102,9 +104,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
-            //var check_cap = _cap.CheckId(Giaovien.Id_cap_hoc);
-            //if (!check_cap)
-            //    ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
+            var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             bool add = _Giaovien.Update(item);
@@ -260,6 +262,49 @@ namespace NA_Xepthoikhoabieu.Controllers
                                          "Cập nhật tiết tránh xếp và buổi dạy của giáo viên thành công");
             return ApiResult.Success(new { id_giao_vien = giaovienban.Id_giao_vien, so_tiet_ban = danhSachTiet.Count },
                                          "Cập nhật tiết tránh xếp của giáo viên thành công");
+        }
+        [HttpGet("giaovienmonhoc")]
+        [RequireToken]
+        public IActionResult GetMonByGV(int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Lấy bản ghi từ db
+            var detail = _Giaovien.GetMonbyGiaovien(id);
+            if (detail.Count == 0)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {id}");
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("giaovienmonhoc")]
+        [RequireToken]
+        public IActionResult addMon([FromBody] Giaovien_MonDto mongv)
+        {
+            //kiểm tra id đơn vị
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (mongv.Id_mon == null || mongv.Id_mon.Count == 0)
+            {
+                ModelState.AddModelError("Id_mon", "Vui lòng chọn ít nhất 1 môn học");
+            }
+            //kiểm tra id môn
+            var checkmon = _monhoc.CheckIds(mongv.Id_mon, idDonvi);
+            if (!checkmon)
+                ModelState.AddModelError("Id_mon", "Id môn học không hợp lệ, vui lòng kiểm tra lại");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            //add môn
+            var addMonGv = _Giaovien.UpdateMonbyGiaovien(mongv.Id, mongv.Id_mon);
+
+            if (!addMonGv)
+                return ApiResult.Success(new
+                {
+                    item = mongv
+                },
+                "Cập nhật môn cho giáo viên thất bại");
+            return ApiResult.Success(
+             "Cập nhật môn cho giáo viên thành công");
         }
     }
 }

@@ -212,6 +212,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
+        {
+            var existingIds = _context.Dm_Monhoc.Where(c => ids.Contains(c.Id) && c.Id_don_vi==idDonvi).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
         public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try

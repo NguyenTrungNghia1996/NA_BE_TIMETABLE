@@ -67,6 +67,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Giaovien_List> DM_Giaovien_List { get; set; }
         public DbSet<Giaovien_Buoiday> Giaovien_Buoiday { get; set; }
         public DbSet<Giaovien_Tiettranhxep> Giaovien_Tiettranhxep { get; set; }
+        public DbSet<Giaovien_Monhoc> Giaovien_Monhoc { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
