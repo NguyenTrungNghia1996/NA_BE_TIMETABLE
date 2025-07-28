@@ -198,7 +198,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            // Validate môn học
+            // Validate giáo viên
             if (!_Giaovien.CheckId(giaovienban.Id_giao_vien, idDonvi))
                 return ApiResult.BadRequest("Giáo viên học không hợp lệ");
 
@@ -300,8 +300,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _Giaovien.GetMonbyGiaovien(id);
-            if (detail.Count == 0)
+            var detail = _Giaovien.GetMonbyGiaovien(id,idDonvi);
+            if (detail==null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {id}");
             return ApiResult.Success(detail, "Thành công");
         }
@@ -313,26 +313,60 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (mongv.Id_mon == null || mongv.Id_mon.Count == 0)
+            // Validate giáo viên
+            if (!_Giaovien.CheckId(mongv.Id_giao_vien, idDonvi))
+                return ApiResult.BadRequest("Giáo viên học không hợp lệ");
+
+            // check id, check trùng 
+            var danhSachMon = new List<Giaovien_Monhoc>();
+            var errors = new List<string>();
+            var existingCombinations = new HashSet<string>();
+
+            foreach (var mon in mongv.Ds_mon)
             {
-                ModelState.AddModelError("Id_mon", "Vui lòng chọn ít nhất 1 môn học");
+                if (mon.Trang_thai == true)
+                {
+                    //Tạo unique key để check trùng
+                    string uniqueKey = $"{mongv.Id_giao_vien}_{mon.Id_mon}";
+                    //kiểm tra unique tồn tại chưa
+                    if (existingCombinations.Contains(uniqueKey))
+                    {
+                        errors.Add($"Trùng lặp bản ghi");
+                        continue;
+                    }
+                    //nếu chưa tồn tại thì thêm vào combinations
+                    existingCombinations.Add(uniqueKey);
+                    bool isValid = _monhoc.CheckId(mon.Id_mon, idDonvi);
+                    if (!isValid)
+                    {
+                        errors.Add($"Môn học không hợp lệ: {mon.Id_mon}");
+                        break;
+                    }
+
+                    danhSachMon.Add(new Giaovien_Monhoc
+                    {
+                        Id_giao_vien = mongv.Id_giao_vien,
+                        Id_mon = mon.Id_mon
+                    });
+                }
             }
-            //kiểm tra id môn
-            var checkmon = _monhoc.CheckIds(mongv.Id_mon, idDonvi);
-            if (!checkmon)
-                ModelState.AddModelError("Id_mon", "Id môn học không hợp lệ, vui lòng kiểm tra lại");
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            // Kiểm tra có lỗi không
+            if (errors.Any())
+                return ApiResult.BadRequest(string.Join("; ", errors));
             //add môn
-            var addMonGv = _Giaovien.UpdateMonbyGiaovien(mongv.Id, mongv.Id_mon);
+            var addMonGv = _Giaovien.UpdateMonbyGiaovien(danhSachMon, mongv.Id_giao_vien);
 
             if (!addMonGv)
                 return ApiResult.Success(new
                 {
-                    item = mongv
+                    item = mongv,
                 },
                 "Cập nhật môn cho giáo viên thất bại");
-            return ApiResult.Success(
+            return ApiResult.Success(new
+            {
+                id_giao_vien = mongv.Id_giao_vien,
+                so_mon = danhSachMon.Count
+            },
              "Cập nhật môn cho giáo viên thành công");
         }
     }

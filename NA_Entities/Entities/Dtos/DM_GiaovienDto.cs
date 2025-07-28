@@ -42,7 +42,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Giaovien_MonDto
     {
-        public int Id { get; set; }
-        public List<int> Id_mon { get; set; } = new List<int>();
+        public int Id_giao_vien { get; set; }
+        public List<Mon_GiaovienDto> Ds_mon { get; set; } = new List<Mon_GiaovienDto>();
     }
 }

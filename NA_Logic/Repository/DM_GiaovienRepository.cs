@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -321,41 +322,53 @@ namespace NA_Logic.Repository
             }
 
         }
-        public List<int> GetMonbyGiaovien (int id)
+        public Giaovien_MonDto GetMonbyGiaovien (int id, int idDonvi)
         {
-            var mon = _dbContext.Giaovien_Monhoc.Where(c => c.Id_giao_vien == id).Select(c => c.Id_mon).ToList();
-            if (mon == null && mon.Count==0)
-                return new List<int>();
-            return mon;
+            try
+            {
+                var mon = _dbContext.Dm_Monhoc.Where(c => c.Id_don_vi == idDonvi).ToList();
+                var mon_gv = _dbContext.Giaovien_Monhoc.Where(c=>c.Id_giao_vien==id).ToList();
+                var result = new Giaovien_MonDto
+                {
+                    Id_giao_vien = id,
+                    Ds_mon = mon.Select(mon => new Mon_GiaovienDto
+                    {
+                        Id_mon = mon.Id,
+                        Trang_thai = mon_gv.Any(td => td.Id_mon == mon.Id)
+                    }).ToList()
+                };
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
-        public bool UpdateMonbyGiaovien (int id, List<int> mon)
+        public bool UpdateMonbyGiaovien (List<Giaovien_Monhoc> dsGiaovienMon, int Idgv)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                var moncu = _dbContext.Giaovien_Monhoc.Where(c => c.Id_giao_vien == id).ToList();
-                if (moncu != null && moncu.Count > 0)
+                var existingMon = _dbContext.Giaovien_Monhoc.Where(tb => tb.Id_giao_vien == Idgv).ToList();
+
+                //xóa
+                if (existingMon.Any())
                 {
-                    _dbContext.BulkDelete(moncu);
+                    _dbContext.BulkDelete(existingMon);
                 }
-                var mongv = new List<Giaovien_Monhoc>();
-                if (mon != null && mon.Count > 0)
+                //thêm
+                if (dsGiaovienMon != null && dsGiaovienMon.Any())
                 {
-                    for (int i = 0; i < mon.Count; i++)
-                    {
-                        mongv.Add(new Giaovien_Monhoc
-                        {
-                            Id_giao_vien = id,
-                            Id_mon = mon[i],
-                        });
-                    }
-                    _dbContext.BulkInsert(mongv);
+                    _dbContext.BulkInsert(dsGiaovienMon);
                 }
+
                 transaction.Commit();
                 return true;
             }
             catch (Exception ex)
             {
+                transaction.Rollback();
                 return false;
             }
         }

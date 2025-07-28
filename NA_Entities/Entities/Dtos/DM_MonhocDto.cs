@@ -85,4 +85,8 @@ namespace NA_Entities.Entities.Dtos
         public bool Trang_thai { get; set; }
 
     }
+    public class Mon_GiaovienDto {
+        public int Id_mon { get; set; } = 0;
+        public bool Trang_thai { get; set; } = false;
+    }
 }
