@@ -98,6 +98,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Banhoc>(Banhoc);
+            item.Id_don_vi = idDonvi;
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)
                 ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
