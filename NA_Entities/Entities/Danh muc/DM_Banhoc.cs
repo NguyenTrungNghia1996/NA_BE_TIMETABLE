@@ -17,6 +17,7 @@ namespace NA_Entities.Entities.Danh_muc
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghi_chu { get; set; } =string.Empty;
         public int Id_don_vi { get; set; } = 0;
+        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Banhoc_List
     {

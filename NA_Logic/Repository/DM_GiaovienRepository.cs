@@ -55,16 +55,29 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Giaovien GetDetailById(int Id)
+        public DM_Giaovien GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var Giaovien = _dbContext.DM_Giaovien.FirstOrDefault(c => c.Id == Id);
+                var Giaovien = _dbContext.DM_Giaovien.FirstOrDefault(c => c.Id == Id && c.Id_don_vi==idDonvi);
                 return Giaovien;
             }
             catch (Exception)
             {
                 return null;
+            }
+        }
+        public List<int> GetlistDiadiemday(int id)
+        {
+            try
+            {
+                var list = _dbContext.Giaovien_Diadiemday.Where(x => x.Id_giao_vien == id).Select(x => x.Id_diem_truong).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
             }
         }
         public bool Add(DM_Giaovien dm_Giaovien)
@@ -80,12 +93,62 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool AddDiadiemday(int Id, List<int> diemtruongId)
+        {
+            try
+            {
+                if (diemtruongId != null && diemtruongId.Count > 0)
+                {
+                    for (int i = 0; i < diemtruongId.Count; i++)
+                    {
+                        var gvDiemday = new Giaovien_Diadiemday
+                        {
+                            Id_giao_vien = Id,
+                            Id_diem_truong = diemtruongId[i]
+                        };
+                        _dbContext.Giaovien_Diadiemday.Add(gvDiemday);
+                    }
+                    _dbContext.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Update(DM_Giaovien dm_Giaovien)
         {
             try
             {
                 _dbContext.ChangeTracker.Clear();
                 _dbContext.DM_Giaovien.Update(dm_Giaovien);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool UpdateDiadiemday(int Id, List<int> diemtruongId)
+        {
+            try
+            {
+                var del = _dbContext.Giaovien_Diadiemday.Where(x => x.Id_giao_vien == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _dbContext.Giaovien_Diadiemday.RemoveRange(del);
+                }
+                for (int i = 0; i < diemtruongId.Count; i++)
+                {
+                    var gvDiemday = new Giaovien_Diadiemday
+                    {
+                        Id_giao_vien = Id,
+                        Id_diem_truong = diemtruongId[i]
+                    };
+                    _dbContext.Giaovien_Diadiemday.Add(gvDiemday);
+                }
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -112,7 +175,23 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool DeleteDiadiemday (int Id)
+        {
+            try
+            {
+                var del = _dbContext.Giaovien_Diadiemday.Where(x => x.Id_giao_vien == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _dbContext.Giaovien_Diadiemday.RemoveRange(del);
+                    _dbContext.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;

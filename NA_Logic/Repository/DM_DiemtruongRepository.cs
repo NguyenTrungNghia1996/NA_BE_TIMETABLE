@@ -103,7 +103,8 @@ namespace NA_Logic.Repository
                 diemtruong = _dbContext.DM_Diemtruong.Find(Id);
                 if (diemtruong != null)
                 {
-                    _dbContext.DM_Diemtruong.Remove(diemtruong);
+                    diemtruong.Trang_thai_xoa = true;
+                    _dbContext.DM_Diemtruong.Update(diemtruong);
                     _dbContext.SaveChanges();
                 }
                 return true;
@@ -125,6 +126,10 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
+        {
+            var existingIds = _dbContext.DM_Diemtruong.Where(c => ids.Contains(c.Id) && c.Id_Donvi==idDonvi).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
     }
 }

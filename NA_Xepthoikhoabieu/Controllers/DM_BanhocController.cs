@@ -66,6 +66,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Banhoc>(Banhoc);
             item.Id = 0;
             item.Id_don_vi = idDonvi;
+            item.Trang_thai_xoa = false;
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)
                 ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");

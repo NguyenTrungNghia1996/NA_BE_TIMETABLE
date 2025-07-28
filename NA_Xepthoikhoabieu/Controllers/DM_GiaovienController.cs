@@ -20,8 +20,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CahocRepository _cahoc;
         private readonly IDM_TochuyenmonRepository _tochuyenmon;
         private readonly IDM_MonhocRepository _monhoc;
+        private readonly IDM_DiemtruongRepository _diemtruong;
         public DM_GiaovienController(IMapper mapper, IDM_GiaovienRepository Giaovien, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
-                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc,IDM_TochuyenmonRepository tochuyenmon, IDM_MonhocRepository monhoc)
+                                     IDM_CaphocRepository cap, IDM_CahocRepository cahoc,IDM_TochuyenmonRepository tochuyenmon, IDM_MonhocRepository monhoc,
+                                     IDM_DiemtruongRepository diemtruong)
         {
             _mapper = mapper;
             _Giaovien = Giaovien;
@@ -31,6 +33,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _cahoc = cahoc;
             _tochuyenmon = tochuyenmon;
             _monhoc = monhoc;
+            _diemtruong = diemtruong;
         }
         [HttpGet]
         [RequireToken]
@@ -54,12 +57,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             // Lấy bản ghi từ db
-            var detailGiaovien = _Giaovien.GetDetailById(Id);
+            var detailGiaovien = _Giaovien.GetDetailById(Id, idDonvi);
             if (detailGiaovien == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_GiaovienDto>(detailGiaovien);
+            detailDto.Id_diem_truong = _Giaovien.GetlistDiadiemday(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -74,8 +78,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id = 0;
             item.Id_don_vi = idDonvi;
             var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
             if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <=0)
                 ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+            if (!check_diemtruong)
+                ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // add 
@@ -84,6 +91,15 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             // mapper data trả về view
             var itemDto = _mapper.Map<DM_GiaovienDto>(item);
+            bool addDiemtruong = _Giaovien.AddDiadiemday(item.Id,Giaovien.Id_diem_truong);
+            if (!addDiemtruong)
+            {
+                return ApiResult.Success(new
+                {
+                    item = Giaovien
+                },
+                "Tạo giáo viên thành công, lưu điểm trường thất bại");
+            }
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -97,7 +113,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var Giaoviendb = _Giaovien.GetDetailById(Giaovien.Id);
+            var Giaoviendb = _Giaovien.GetDetailById(Giaovien.Id,idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (Giaoviendb == null)
@@ -105,14 +121,26 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
             if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
                 ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+            if (!check_diemtruong)
+                ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             bool add = _Giaovien.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var itemDto = _mapper.Map<DM_GiaovienDto>(item);
+            bool updateDiemtruong = _Giaovien.UpdateDiadiemday(item.Id, Giaovien.Id_diem_truong);
+            if (!updateDiemtruong)
+            {
+                return ApiResult.Success(new
+                {
+                    item = Giaovien
+                },
+                "Tạo giáo viên thành công, lưu điểm trường thất bại");
+            }
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -126,7 +154,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            var Giaoviendb = _Giaovien.GetDetailById(id);
+            var Giaoviendb = _Giaovien.GetDetailById(id, idDonvi);
             if (Giaoviendb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _Giaovien.Delete(id);

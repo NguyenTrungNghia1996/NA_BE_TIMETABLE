@@ -227,7 +227,8 @@ namespace NA_Logic.Repository
                 donvi = _context.DM_Donvi.Find(Id);
                 if (donvi != null)
                 {
-                    _context.DM_Donvi.Remove(donvi);
+                    donvi.Trang_thai_xoa = true;
+                    _context.DM_Donvi.Update(donvi);
                     _context.SaveChanges();
                 }
                 return true;

@@ -23,6 +23,7 @@ namespace NA_Entities.Entities.Danhmuc
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; } = string.Empty;
+        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Donvi_List
     {

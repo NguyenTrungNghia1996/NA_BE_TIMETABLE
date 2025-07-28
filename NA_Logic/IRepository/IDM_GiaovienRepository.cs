@@ -11,10 +11,14 @@ namespace NA_Logic.IRepository
     public interface IDM_GiaovienRepository
     {
         List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
-        DM_Giaovien GetDetailById(int Id);
+        DM_Giaovien GetDetailById(int Id, int idDonvi);
+        List<int> GetlistDiadiemday(int id);
         bool Add(DM_Giaovien dm_Giaovien);
+        bool AddDiadiemday(int Id, List<int> diemtruongId);
         bool Update(DM_Giaovien dm_Giaovien);
+        bool UpdateDiadiemday(int Id, List<int> diemtruongId);
         bool Delete(int Id);
+        bool DeleteDiadiemday(int Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
         Giaovien_banDto GetListTietBan(int Id, int idDonvi);

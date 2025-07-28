@@ -20,6 +20,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn tổ chuyên môn")]
         public int Id_to_chuyen_mon { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
+        public List<int> Id_diem_truong { get; set; } = new List<int>();
     }
     public class DM_Giaovien_ListDto
     {

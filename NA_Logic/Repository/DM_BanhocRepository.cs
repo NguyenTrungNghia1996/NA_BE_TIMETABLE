@@ -100,7 +100,8 @@ namespace NA_Logic.Repository
                 Banhoc = _dbContext.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
                 if (Banhoc != null)
                 {
-                    _dbContext.DM_Banhoc.Remove(Banhoc);
+                    Banhoc.Trang_thai_xoa = true;
+                    _dbContext.DM_Banhoc.Update(Banhoc);
                     _dbContext.SaveChanges();
                 }
                 return true;
