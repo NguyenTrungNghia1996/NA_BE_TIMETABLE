@@ -120,6 +120,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
+            item.Id_don_vi = idDonvi;
             var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
             if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
