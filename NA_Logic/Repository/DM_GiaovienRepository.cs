@@ -334,6 +334,7 @@ namespace NA_Logic.Repository
                     Ds_mon = mon.Select(mon => new Mon_GiaovienDto
                     {
                         Id_mon = mon.Id,
+                        Ten_mon = mon.Ten,
                         Trang_thai = mon_gv.Any(td => td.Id_mon == mon.Id)
                     }).ToList()
                 };
