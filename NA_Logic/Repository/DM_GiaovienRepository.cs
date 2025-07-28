@@ -286,6 +286,24 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool DeleteTietBan(int id)
+        {
+            try
+            {
+                var existingTiet = _dbContext.Giaovien_Tiettranhxep.Where(tb => tb.Id_giao_vien == id).ToList();
+
+                //xóa
+                if (existingTiet.Any())
+                {
+                    _dbContext.BulkDelete(existingTiet);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         public bool SaveBuoiday(Giaovien_Buoiday gvbd)
         {
             try
@@ -322,6 +340,23 @@ namespace NA_Logic.Repository
             }
 
         }
+        public bool DeleteBuoiday(int id)
+        {
+            try
+            {
+                var gvbd = _dbContext.Giaovien_Buoiday.FirstOrDefault(c=>c.Id_giao_vien==id);
+                if (id > 0)
+                {
+                    _dbContext.Giaovien_Buoiday.Remove(gvbd);
+                }
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public Giaovien_MonDto GetMonbyGiaovien (int id, int idDonvi)
         {
             try
@@ -344,7 +379,6 @@ namespace NA_Logic.Repository
             {
                 return null;
             }
-            
         }
         public bool UpdateMonbyGiaovien (List<Giaovien_Monhoc> dsGiaovienMon, int Idgv)
         {
@@ -370,6 +404,23 @@ namespace NA_Logic.Repository
             catch (Exception ex)
             {
                 transaction.Rollback();
+                return false;
+            }
+        }
+        public bool DeleteMonbyGiaovien(int Idgv) {
+            try
+            {
+                var existingMon = _dbContext.Giaovien_Monhoc.Where(tb => tb.Id_giao_vien == Idgv).ToList();
+
+                //xóa
+                if (existingMon.Any())
+                {
+                    _dbContext.BulkDelete(existingMon);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
                 return false;
             }
         }

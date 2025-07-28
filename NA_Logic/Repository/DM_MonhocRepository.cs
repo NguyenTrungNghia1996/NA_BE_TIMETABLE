@@ -496,7 +496,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int idDonvi)
+        public List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan,int idCa, int idDonvi)
         {
             try
             {

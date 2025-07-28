@@ -52,7 +52,8 @@ builder.Services.AddScoped<IDM_MonhocRepository, DM_MonhocRepository>();
 builder.Services.AddScoped<INgay_DonviRepository, Ngay_DonviRepository>();
 builder.Services.AddScoped<ITiet_co_dinhRepository, Tiet_co_dinhRepository>();
 builder.Services.AddScoped<IDM_BanhocRepository,DM_BanhocRepository>();
-builder.Services.AddScoped<ITo_hop_monRepository, To_hop_monRepository>(); 
+builder.Services.AddScoped<ITo_hop_monRepository, To_hop_monRepository>();
+builder.Services.AddScoped<IMon_KhoiRepository, Mon_KhoiRepository>();
 builder.Services.AddScoped<IDM_GiaovienRepository,DM_GiaovienRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

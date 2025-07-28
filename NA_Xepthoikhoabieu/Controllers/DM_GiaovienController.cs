@@ -158,7 +158,16 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Giaoviendb = _Giaovien.GetDetailById(id, idDonvi);
             if (Giaoviendb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            var delete_tietban = _Giaovien.DeleteTietBan(id);
+            var delete_buoiday = _Giaovien.DeleteBuoiday(id);
+            var delete_mon = _Giaovien.DeleteMonbyGiaovien(id);
             var request = _Giaovien.Delete(id);
+            if(!delete_tietban)
+                return ApiResult.NotFound("Xóa tiết bận thất bại");
+            if(!delete_buoiday)
+                return ApiResult.NotFound("Xóa buổi dạy thất bại");
+            if(!delete_mon)
+                return ApiResult.NotFound("Xóa môn thất bại");
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");

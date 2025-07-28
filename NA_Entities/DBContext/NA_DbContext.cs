@@ -63,6 +63,7 @@ namespace NA_Entities.DBContext
         public DbSet<Monhoc_Khoilop> Monhoc_Khoilop { get; set; }
         public DbSet<Monhoc_Tohopmon> Monhoc_Tohopmon { get; set; }
         public DbSet<Monhoc_Tohopmon_List> Monhoc_Tohopmon_List { get; set; }
+        public DbSet<Monhoc_Khoilop_Tiettranhxep> Monhoc_Khoilop_Tiettranhxep { get; set; }
         public DbSet<DM_Giaovien> DM_Giaovien { get; set; }
         public DbSet<DM_Giaovien_List> DM_Giaovien_List { get; set; }
         public DbSet<Giaovien_Buoiday> Giaovien_Buoiday { get; set; }

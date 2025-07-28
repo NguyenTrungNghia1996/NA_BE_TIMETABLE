@@ -27,5 +27,8 @@ namespace NA_Logic.IRepository
         Giaovien_Buoiday GetBuoidayTheoGV(int? id);
         Giaovien_MonDto GetMonbyGiaovien(int id, int idDonvi);
         bool UpdateMonbyGiaovien(List<Giaovien_Monhoc> dsGiaovienMon, int Idgv);
+        bool DeleteMonbyGiaovien(int Idgv);
+        bool DeleteTietBan(int id);
+        bool DeleteBuoiday(int id);
     }
 }
