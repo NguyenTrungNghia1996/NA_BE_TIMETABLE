@@ -30,5 +30,10 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_phong { get; set; } = 0;
         public int Id_ban { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
+        public string Ten_khoi { get;set; } = string.Empty;
+        public string Ten_ban { get;set; } = string.Empty;
+        public string Ten_giao_vien { get;set; } = string.Empty;
+        public string Ten_phong { get;set; } = string.Empty;
+        public string Ten_ca { get;set; } = string.Empty;
     }
 }

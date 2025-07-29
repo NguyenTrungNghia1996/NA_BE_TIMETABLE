@@ -65,6 +65,9 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Giaovien, DM_GiaovienDto>();
             CreateMap<DM_Giaovien_List, DM_Giaovien_ListDto>();
             CreateMap<DM_GiaovienDto, DM_Giaovien>();
+            CreateMap<DM_Lophoc, DM_LophocDto>();
+            CreateMap<DM_LophocDto, DM_Lophoc>();
+            CreateMap<DM_Lophoc_List, DM_Lophoc_ListDto>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();

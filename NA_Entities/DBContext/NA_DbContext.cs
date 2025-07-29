@@ -70,6 +70,9 @@ namespace NA_Entities.DBContext
         public DbSet<Giaovien_Tiettranhxep> Giaovien_Tiettranhxep { get; set; }
         public DbSet<Giaovien_Monhoc> Giaovien_Monhoc { get; set; }
         public DbSet<Giaovien_Diadiemday> Giaovien_Diadiemday { get; set; }
+        public DbSet<DM_Lophoc> DM_Lophoc { get; set; }
+        public DbSet<DM_Lophoc_List> DM_Lophoc_List { get; set; }
+        public DbSet<Lophoc_Tietnghi> Lophoc_Tietnghi { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -93,6 +96,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Banhoc_List>().HasNoKey();
             builder.Entity<Monhoc_Tohopmon_List>().HasNoKey();
             builder.Entity<DM_Giaovien_List>().HasNoKey();
+            builder.Entity<DM_Lophoc_List>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }
