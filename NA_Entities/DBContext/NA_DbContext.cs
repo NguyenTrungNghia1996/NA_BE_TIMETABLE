@@ -73,6 +73,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Lophoc> DM_Lophoc { get; set; }
         public DbSet<DM_Lophoc_List> DM_Lophoc_List { get; set; }
         public DbSet<Lophoc_Tietnghi> Lophoc_Tietnghi { get; set; }
+        public DbSet<Lophoc_Monhoc> Lophoc_Monhoc { get; set; }
+        public DbSet<Lophoc_Monhoc_Tiettranhxep> Lophoc_Monhoc_Tiettranhxep { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();

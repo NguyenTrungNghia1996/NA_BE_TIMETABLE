@@ -123,7 +123,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                var check = _context.DM_Lophoc.Any(dt => dt.Id_don_vi == idDonvi);
+                var check = _context.DM_Lophoc.Any(dt => dt.Id_don_vi == idDonvi && dt.Id == Id);
                 if(check)
                     return true;
                 return false;
@@ -214,11 +214,99 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var tietban = _context.Tiet_ban.Where(c => c.Id_phong == Id).ToList();
+                var tietban = _context.Lophoc_Tietnghi.Where(c => c.Id_lop == Id).ToList();
                 if (tietban.Count > 0)
                 {
-                    _context.Tiet_ban.RemoveRange(tietban);
-                    _context.SaveChanges();
+                    _context.BulkDelete(tietban);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public LopMon_banDto GetListTietBan_MonLop(int Id_lop, int Id_mon, int idDonvi)
+        {
+            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
+                            .Join(_context.DM_Cahoc,
+                                  cd => cd.Id_ca_hoc,
+                                  ca => ca.Id,
+                                  (cd, ca) => new
+                                  {
+                                      Id = ca.Id,
+                                      Ten = ca.Ten
+                                  }).ToList();
+            var tietBan = _context.Lophoc_Monhoc_Tiettranhxep
+                        .Where(tb => tb.Id_lop == Id_lop && tb.Id_mon == Id_mon)
+                        .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
+                        .ToList();
+
+            // Lấy danh sách ngày từ enum
+            var dsNgay = Enum.GetValues<Ngay>().ToList();
+            // Lấy danh sách tiết từ enum
+            var dsTiet = Enum.GetValues<Tiet>().ToList();
+
+            var result = new LopMon_banDto
+            {
+                Id_lop = Id_lop,
+                Id_mon = Id_mon,
+                Ds_Ca = dsCa.Select(ca => new Ca_banDto
+                {
+                    Id = ca.Id,
+                    Ds_Ngay = dsNgay.Select(ngay => new Ngay_banDto
+                    {
+                        Id = ngay,
+                        Ten = ngay.GetDisplayName(),
+                        Ds_Tiet = dsTiet.Select(tiet => new TietbanDto
+                        {
+                            Id = tiet,
+                            Ten = tiet.GetDisplayName(),
+                            Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
+                                                           td.Ngay == (int)ngay &&
+                                                           td.Tiet == (int)tiet)
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+            };
+
+            return result;
+        }
+        public bool AddTietBan_MonLop(List<Lophoc_Monhoc_Tiettranhxep> dsTietBan, int idLop, int idMon)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var existingTietBan = _context.Lophoc_Monhoc_Tiettranhxep.Where(tb => tb.Id_lop == idLop && tb.Id_mon == idMon).ToList();
+
+                //xóa
+                if (existingTietBan.Any())
+                {
+                    _context.BulkDelete(existingTietBan);
+                }
+                //thêm
+                if (dsTietBan != null && dsTietBan.Any())
+                {
+                    _context.BulkInsert(dsTietBan); 
+                }
+
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+        public bool DeleteTietBan_MonLop(int Id_lop, int  Id_mon)
+        {
+            try
+            {
+                var tietban = _context.Lophoc_Monhoc_Tiettranhxep.Where(c => c.Id_lop == Id_lop && c.Id_mon==Id_mon).ToList();
+                if (tietban.Count > 0)
+                {
+                    _context.BulkDelete(tietban);
                 }
                 return true;
             }

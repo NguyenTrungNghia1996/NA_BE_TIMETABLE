@@ -192,7 +192,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Ok("Xóa thành công");
         }
 
-        [HttpGet("tietban")]
+        [HttpGet("tietnghi")]
         [RequireToken]
         public IActionResult GetListTietBan([FromQuery] int Id)
         {
@@ -213,10 +213,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             var result = _Lophoc.GetListTietBan(Id, idDonvi);
             if (result == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            return ApiResult.Success(result, "Th  ành công");
+            return ApiResult.Success(result, "Thành công");
         }
 
-        [HttpPost("tietban")]
+        [HttpPost("tietnghi")]
         [RequireToken]
         public IActionResult Update([FromBody] Lophoc_banDto lopban)
         {
@@ -225,9 +225,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            // Validate phòng học
+            // Validate lớp học
             if (!_Lophoc.CheckId(lopban.Id_lop, idDonvi))
-                return ApiResult.BadRequest("Phòng học không hợp lệ");
+                return ApiResult.BadRequest("Lớp học không hợp lệ");
 
             // check id, check trùng
             var danhSachTietBan = new List<Lophoc_Tietnghi>();
@@ -283,5 +283,6 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success(new { id_lop = lopban.Id_lop, so_tiet_ban = danhSachTietBan.Count }, "Cập nhật tiết bận thành công");
         }
+        
     }
 }
