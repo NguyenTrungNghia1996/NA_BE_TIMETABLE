@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idloaiphong,int id_lop, ref int totalrecord)
+        public List<DM_Monhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idloaiphong, int id_lop, int idKhoi, int idBan, ref int totalrecord)
         {
             try
             {
@@ -51,12 +51,20 @@ namespace NA_Logic.Repository
                 {
                     Value = id_lop
                 };
+                var paramIdKhoi = new SqlParameter("idKhoi", SqlDbType.Int)
+                {
+                    Value = idKhoi
+                };
+                var paramIdBan = new SqlParameter("idBan", SqlDbType.Int)
+                {
+                    Value = idBan
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Monhoc_List>().FromSqlRaw("EXEC DM_Monhoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @id_loai_phong, @id_lop, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLoaiPhong,paramIdLop, paramTotal)
+                var result = _context.Set<DM_Monhoc_List>().FromSqlRaw("EXEC DM_Monhoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @id_loai_phong, @id_lop, @idKhoi, @idBan, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLoaiPhong,paramIdLop, paramIdKhoi,paramIdBan, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Monhoc_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -248,6 +256,25 @@ namespace NA_Logic.Repository
                 var check = _context.Dm_Monhoc.AsNoTracking().Where(lm => lm.Id_don_vi == idDonvi)
                            .Join(_context.Lophoc_Monhoc, lm=>lm.Id, dm => dm.Id_mon, (lm, dm) => new{dm.Id_lop, dm.Id_mon})
                            .Any(x => x.Id_mon==Id && x.Id_lop == Id_lop);
+                if (check)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIdMonKhoi(int Id, int Id_khoi, int Id_ban, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                var check = _context.Dm_Monhoc.AsNoTracking().Where(lm => lm.Id_don_vi == idDonvi)
+                           .Join(_context.Monhoc_Khoilop, lm=>lm.Id, dm => dm.Id_mon, (lm, dm) => new{dm.Id_ban, dm.Id_khoi, dm.Id_mon})
+                           .Any(x => x.Id_mon==Id && x.Id_khoi == Id_khoi && x.Id_ban==Id_ban);
                 if (check)
                 {
                     return true;

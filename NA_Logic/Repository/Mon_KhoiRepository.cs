@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public Monhoc_Khoilop_BanDto GetListTietBan(int Id_mon, int Id_khoi, int idDonvi)
+        public Monhoc_Khoilop_BanDto GetListTietBan(int Id_mon, int Id_khoi, int Id_ban, int idDonvi)
         {
             var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
                             .Join(_context.DM_Cahoc,
@@ -35,7 +35,7 @@ namespace NA_Logic.Repository
                                       Ten = ca.Ten
                                   }).ToList();
             var tietBan = _context.Monhoc_Khoilop_Tiettranhxep
-                        .Where(tb => tb.Id_mon == Id_mon && tb.Id_khoi==Id_khoi)
+                        .Where(tb => tb.Id_mon == Id_mon && tb.Id_khoi==Id_khoi && tb.Id_ban == Id_ban)
                         .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
                         .ToList();
 
@@ -48,6 +48,7 @@ namespace NA_Logic.Repository
             {
                 Id_mon = Id_mon,
                 Id_khoi = Id_khoi,
+                Id_ban = Id_ban,
                 Ds_Ca = dsCa.Select(ca => new Ca_banDto
                 {
                     Id = ca.Id,
@@ -69,12 +70,12 @@ namespace NA_Logic.Repository
 
             return result;
         }
-        public bool AddTietBan(List<Monhoc_Khoilop_Tiettranhxep> dsTietTranhXep, int idMon, int idKhoi)
+        public bool AddTietBan(List<Monhoc_Khoilop_Tiettranhxep> dsTietTranhXep, int idMon, int idKhoi, int idBan)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                var existingTiet = _context.Monhoc_Khoilop_Tiettranhxep.Where(tb => tb.Id_mon == idMon && tb.Id_khoi==idKhoi).ToList();
+                var existingTiet = _context.Monhoc_Khoilop_Tiettranhxep.Where(tb => tb.Id_mon == idMon && tb.Id_khoi==idKhoi && tb.Id_ban==idBan).ToList();
 
                 //xóa
                 if (existingTiet.Any())

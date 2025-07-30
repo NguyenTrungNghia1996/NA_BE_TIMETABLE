@@ -12,8 +12,8 @@ namespace NA_Logic.IRepository
     {
         List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int idDonvi);
         bool AddMonKhoi(List<Monhoc_Khoilop> dsMonKhoi, int idKhoi, int idBan);
-        Monhoc_Khoilop_BanDto GetListTietBan(int Id_mon, int Id_khoi, int idDonvi);
-        bool AddTietBan(List<Monhoc_Khoilop_Tiettranhxep> dsTietTranhXep, int idMon, int idKhoi);
+        Monhoc_Khoilop_BanDto GetListTietBan(int Id_mon, int Id_khoi, int Id_ban, int idDonvi);
+        bool AddTietBan(List<Monhoc_Khoilop_Tiettranhxep> dsTietTranhXep, int idMon, int idKhoi, int idBan);
         bool DeleteTietTranhXep(int Id_mon, int Id_khoi);
     }
 }

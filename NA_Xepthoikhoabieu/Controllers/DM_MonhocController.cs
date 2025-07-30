@@ -42,14 +42,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int id_loai_phong=0, [FromQuery] int id_lop=0, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int id_loai_phong=0, [FromQuery] int id_lop=0, 
+                                            [FromQuery] int id_khoi =0 , [FromQuery] int id_ban=0, [FromQuery] string search = "")
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _monhoc.GetList_Paging(PageIndex, PageSize, search, idDonvi, id_loai_phong,id_lop, ref totalrecord);
+            var list = _monhoc.GetList_Paging(PageIndex, PageSize, search, idDonvi, id_loai_phong,id_lop,id_khoi,id_ban, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             var listDto = _mapper.Map<List<DM_Monhoc_ListDto>>(list);

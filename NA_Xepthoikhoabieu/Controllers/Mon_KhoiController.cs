@@ -128,7 +128,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("tiettranhxep")]
         [RequireToken]
-        public IActionResult GetListTietBan([FromQuery] int Id_mon, int Id_khoi)
+        public IActionResult GetListTietBan([FromQuery] int Id_khoi, [FromQuery] int Id_ban, [FromQuery] int Id_mon)
         {
             if (Id_mon < 0)
                 return ApiResult.BadRequest($"Id_mon {Id_mon} không hợp lệ, vui lòng kiểm tra lại");
@@ -139,42 +139,66 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (Id_mon > 0)
-            {
-                var detail = _monhoc.CheckId(Id_mon, idDonvi);
-                if (!detail)
-                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id_mon = {Id_mon}");
-            }
+            
             if (Id_khoi > 0)
             {
                 var detail = _khoilop.CheckKhoilopByDonvi(Id_khoi, idDonvi);
                 if (!detail)
-                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id_khoi = {Id_khoi}");
+                    return ApiResult.NotFound($"Id_khoi = {Id_khoi} không hợp lệ");
+            }
+            if (Id_ban > 0)
+            {
+                var detail = _ban.CheckId(Id_ban, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id_ban = {Id_ban} không hợp lệ");
+            }
+            if (Id_mon > 0)
+            {
+                var detail = _monhoc.CheckIdMonKhoi(Id_mon, Id_khoi, Id_ban, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id_mon = {Id_mon} không hợp lệ");
             }
             // Lấy bản ghi từ db
-            var result = _monkhoi.GetListTietBan(Id_mon,Id_khoi, idDonvi);
+            var result = _monkhoi.GetListTietBan(Id_mon,Id_khoi, Id_ban, idDonvi);
 
             if (result == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id_mon= {Id_mon} và Id_khoi= {Id_khoi}");
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id_mon= {Id_mon}, Id_khoi= {Id_khoi} và Id_ban = {Id_ban}");
 
             return ApiResult.Success(result, "Thành công");
         }
 
         [HttpPost("tiettranhxep")]
         [RequireToken]
-        public IActionResult Update([FromBody] Mon_banDto monban)
+        public IActionResult Update([FromBody] Monhoc_Khoilop_BanDto monban)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            // Validate môn học
-            if (!_monhoc.CheckId(monban.Id, idDonvi))
+            // Validate môn học, khối, ban
+            if (!_monhoc.CheckIdMonKhoi(monban.Id_mon, monban.Id_khoi, monban.Id_ban, idDonvi))
                 return ApiResult.BadRequest("Môn học không hợp lệ");
-
+            if (monban.Id_khoi > 0)
+            {
+                var detail = _khoilop.CheckId(monban.Id_khoi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id khối = {monban.Id_khoi} không hợp lệ");
+            }
+            if (monban.Id_ban > 0)
+            {
+                var detail = _ban.CheckId(monban.Id_ban, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id ban = {monban.Id_ban} không hợp lệ");
+            }
+            if (monban.Id_mon > 0)
+            {
+                var detail = _monhoc.CheckIdMonKhoi(monban.Id_mon, monban.Id_khoi, monban.Id_ban, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id_mon = {monban.Id_mon} không hợp lệ");
+            }
             // check id, check trùng
-            var danhSachTiet = new List<Tiet_tranh_xep>();
+            var danhSachTiet = new List<Monhoc_Khoilop_Tiettranhxep>();
             var errors = new List<string>();
             var existingCombinations = new HashSet<string>();
             foreach (var ca in monban.Ds_Ca)
@@ -207,7 +231,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                         if (tiet.Trang_thai == true)
                         {
                             //Tạo unique key để check trùng
-                            string uniqueKey = $"{monban.Id}_{ca.Id}_{idthu}_{idtiet}";
+                            string uniqueKey = $"{monban.Id_mon}_{monban.Id_ban}_{monban.Id_khoi}_{ca.Id}_{idthu}_{idtiet}";
                             //kiểm tra unique tồn tại chưa
                             if (existingCombinations.Contains(uniqueKey))
                             {
@@ -217,11 +241,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                             //nếu chưa tồn tại thì thêm vào combinations
                             existingCombinations.Add(uniqueKey);
                             //thêm các tiết trạng thái bằng true vào danh sách tiết bận
-                            danhSachTiet.Add(new Tiet_tranh_xep
+                            danhSachTiet.Add(new Monhoc_Khoilop_Tiettranhxep
                             {
-                                Id_mon = monban.Id,
+                                Id_mon = monban.Id_mon,
+                                Id_ban = monban.Id_ban,
+                                Id_khoi = monban.Id_khoi,
                                 Id_ca = ca.Id,
-                                Thu = idthu,
+                                Ngay = idthu,
                                 Tiet = idtiet
                             });
                         }
@@ -232,11 +258,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
             //add
-            bool result = _monhoc.AddTietBan(danhSachTiet, monban.Id);
+            bool result = _monkhoi.AddTietBan(danhSachTiet, monban.Id_mon, monban.Id_khoi, monban.Id_ban);
             if (!result)
                 return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
 
-            return ApiResult.Success(new { id_phong = monban.Id, so_tiet_ban = danhSachTiet.Count }, "Cập nhật tiết tránh xếp thành công");
+            return ApiResult.Success(new { id_mon = monban.Id_mon, so_tiet_ban = danhSachTiet.Count }, "Cập nhật tiết tránh xếp thành công");
         }
     }
 }

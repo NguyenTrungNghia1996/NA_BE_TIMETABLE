@@ -11,6 +11,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public int Id_khoi { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
+        public int Id_ban { get; set; } = 0;
         public int Id_ca { get; set; } = 0;
         public int Tiet { get; set; } = 0;
         public string Ten_tiet { get; set; } =string.Empty;

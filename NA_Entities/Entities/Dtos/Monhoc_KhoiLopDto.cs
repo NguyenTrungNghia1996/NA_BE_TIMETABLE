@@ -17,6 +17,7 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id_mon { get; set; } = 0;
         public int Id_khoi { get; set; } = 0;
+        public int Id_ban { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
 }
