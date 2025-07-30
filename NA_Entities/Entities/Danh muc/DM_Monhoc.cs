@@ -44,5 +44,14 @@ namespace NA_Entities.Entities.Danh_muc
         public bool La_mon_tu_chon { get; set; } = false;
         public string Ten_loai_phong_hoc { get; set; } = string.Empty;
     }
+    public class MonLop
+    {
+        public int STT { get; set; } = 0;
+        public int Id { get; set; } = 0;
+        public string Ten { get; set; } = string.Empty;
+        public int? So_tiet_phong_chuyen_dung { get; set; } = 0;
+        public int? So_tiet_phong_truyen_thong { get; set; } = 0;
+        public int? Tong_so_tiet { get; set; } = 0;
+    }
 
 }

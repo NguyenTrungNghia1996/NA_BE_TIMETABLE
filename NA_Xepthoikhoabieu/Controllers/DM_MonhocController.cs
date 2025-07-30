@@ -24,9 +24,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_PhonghocRepository _phong;
         private readonly IDM_BanhocRepository _ban;
         private readonly IDM_KhoilopRepository _khoilop;
+        private readonly IDM_LophocRepository _lop;
         public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, 
                                    IDM_KhoikienthucRepository khoikienthuc, IDM_CahocRepository cahoc, IDM_PhonghocRepository phong, IDM_BanhocRepository ban,
-                                   IDM_KhoilopRepository khoilop)
+                                   IDM_KhoilopRepository khoilop, IDM_LophocRepository lop)
         {
             _mapper = mapper;
             _monhoc = monhoc;
@@ -37,6 +38,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _phong = phong;
             _ban = ban;
             _khoilop = khoilop;
+            _lop = lop;
         }
         [HttpGet]
         [RequireToken]
@@ -54,6 +56,30 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Success(new
             {
                 items = listDto,
+                totalrecord = totalrecord
+            },
+            "Thành công");
+        }
+        [HttpGet("monlop")]
+        [RequireToken]
+        public IActionResult GetList_MonLop( [FromQuery] int idLop)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // Lấy danh sách dữ liệu
+            int totalrecord = 0;
+            var check_lop = _lop.CheckId(idLop, idDonvi);
+            if (idLop < 0 || !check_lop)
+            {
+                return ApiResult.BadRequest($"Id_lop: {idLop} không hợp lệ");
+            }
+            var list = _monhoc.GetList_MonLop(idDonvi, idLop);
+            if (list == null || list.Count == 0)
+                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+            return ApiResult.Success(new
+            {
+                items = list,
                 totalrecord = totalrecord
             },
             "Thành công");

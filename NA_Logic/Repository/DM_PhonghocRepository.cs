@@ -140,6 +140,34 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId_Phongchuyendung(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+
+                return _context.DM_Phonghoc.Any(c => c.Id == Id && c.Id_Loai_phong_hoc==2 && diemTruongIds.Contains(c.Id_Diem_truong));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckId_Phongtruyenthong(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+
+                return _context.DM_Phonghoc.Any(c => c.Id == Id && c.Id_Loai_phong_hoc == 1 && diemTruongIds.Contains(c.Id_Diem_truong));
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try

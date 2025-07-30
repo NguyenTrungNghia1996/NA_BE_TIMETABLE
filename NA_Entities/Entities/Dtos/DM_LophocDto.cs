@@ -49,10 +49,4 @@ namespace NA_Entities.Entities.Dtos
         public int Id_lop { get; set; } = 0;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
-    public class LopMon_banDto
-    {
-        public int Id_lop { get; set; } = 0;
-        public int Id_mon { get; set; } = 0;
-        public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
-    }
 }

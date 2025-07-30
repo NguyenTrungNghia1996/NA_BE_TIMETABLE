@@ -67,6 +67,30 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<MonLop> GetList_MonLop(int idDonvi,  int id_lop)
+        {
+            try
+            {
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
+
+                var paramIdLop = new SqlParameter("id_lop", SqlDbType.Int)
+                {
+                    Value = id_lop
+                };
+                var result = _context.Set<MonLop>().FromSqlRaw("EXEC MonLop_GetList @id_lop, @idDonvi",
+                      paramIdLop, paramIdDonvi)
+                    .ToList();
+                if (result == null) result = new List<MonLop>();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
         public DM_Monhoc GetDetailById(int id, int idDonvi)
         {
             try
