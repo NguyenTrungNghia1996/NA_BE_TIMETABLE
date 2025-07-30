@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _context = context;
         }
 
-        public List<DM_Lophoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord)
+        public List<DM_Lophoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idKhoilop, ref int totalrecord)
         {
             try
             {
@@ -43,12 +43,16 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
+                var paramIdKhoi = new SqlParameter("idKhoilop", SqlDbType.Int)
+                {
+                    Value = idKhoilop
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Lophoc_List>().FromSqlRaw("EXEC DM_Lophoc_GetList_Paging @pageIndex, @pageSize, @search ,@idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch,  paramIdDonvi, paramTotal)
+                var result = _context.Set<DM_Lophoc_List>().FromSqlRaw("EXEC DM_Lophoc_GetList_Paging @pageIndex, @pageSize, @search ,@idDonvi, @idKhoilop, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch,  paramIdDonvi, paramIdKhoi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Lophoc_List>();
                 totalrecord = (int)paramTotal.Value;

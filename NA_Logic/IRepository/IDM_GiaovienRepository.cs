@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_GiaovienRepository
     {
-        List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
+        List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, ref int totalrecord);
         DM_Giaovien GetDetailById(int Id, int idDonvi);
         List<int> GetlistDiadiemday(int id);
         bool Add(DM_Giaovien dm_Giaovien);

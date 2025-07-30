@@ -72,7 +72,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var check_lop = _lop.CheckId(idLop, idDonvi);
             if (idLop < 0 || !check_lop)
             {
-                return ApiResult.BadRequest($"Id_lop: {idLop} không hợp lệ");
+                return ApiResult.BadRequest($"IdLop: {idLop} không hợp lệ");
             }
             var list = _monhoc.GetList_MonLop(idDonvi, idLop);
             if (list == null || list.Count == 0)

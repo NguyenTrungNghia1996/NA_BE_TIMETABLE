@@ -69,7 +69,7 @@ namespace NA_Logic.Repository
                 var LopMonCu = _context.Lophoc_Monhoc.Where(tb => tb.Id_lop == idLop).ToList();
 
                 //xóa
-                if (LopMonCu.Any())
+                if (LopMonCu != null && LopMonCu.Any())
                 {
                     _context.BulkDelete(LopMonCu);
                 }
@@ -135,12 +135,6 @@ namespace NA_Logic.Repository
         //    }
         //}
 
-        // Model class cần thêm vào
-        public class ValidationResult
-        {
-            public string Field { get; set; }
-            public bool IsValid { get; set; }
-        }
         public bool DeleteMonLop(int Id_lop)
         {
             try

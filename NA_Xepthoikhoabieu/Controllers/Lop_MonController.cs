@@ -41,12 +41,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var list = _lopmon.GetLopMon(IdLop);
             if (list == null)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-            return ApiResult.Success(new
-            {
-                items = list,
-                totalrecord = totalrecord
-            },
-            "Thành công");
+            return ApiResult.Success(list,"Thành công");
         }
         [HttpPost]
         [RequireToken]
@@ -80,7 +75,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                         errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
                         continue;
                     }
-                    if (mon.Id_phong_chuyen_dung < 0 || !check_phongcd)
+                    if (mon.Id_phong_chuyen_dung  > 0 && !check_phongcd)
                     {
                         errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
                         continue;

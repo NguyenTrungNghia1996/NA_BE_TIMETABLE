@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, ref int totalrecord)
         {
             try
             {
@@ -39,13 +39,21 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi 
+                };
+                var paramIdmon = new SqlParameter("idMon", SqlDbType.Int)
+                {
+                    Value = idMon
+                };
 
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Giaovien_List>().FromSqlRaw("EXEC DM_Giaovien_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _dbContext.Set<DM_Giaovien_List>().FromSqlRaw("EXEC DM_Giaovien_GetList_Paging @pageIndex, @pageSize, @search, @idMon, @idDonvi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch,paramIdmon, paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Giaovien_List>();
                 totalrecord = (int)paramTotal.Value;
