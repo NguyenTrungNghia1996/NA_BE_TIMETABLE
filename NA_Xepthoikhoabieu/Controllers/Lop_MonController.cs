@@ -61,20 +61,21 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 if (mon.Trang_thai == true)
                 {
-                    var check_mon = _mon.CheckIdMonLop(mon.Id_mon,LopMon.Id_lop, idDonvi);
+                    var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
                     var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
                     var check_phongcd = _phong.CheckId_Phongchuyendung(mon.Id_phong_chuyen_dung, idDonvi);
                     var check_phongtt = _phong.CheckId_Phongtruyenthong(mon.Id_phong_truyen_thong, idDonvi);
-                    if (mon.Id_mon < 0 || !check_mon)
-                    {
-                        errors.Add($"Id_mon = {mon.Id_mon} không hợp lệ");
-                        continue;
-                    }
                     if (mon.Id_giao_vien < 0 || !check_gv)
                     {
                         errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
                         continue;
                     }
+                    if (mon.Id_mon < 0 || !check_mon)
+                    {
+                        errors.Add($"Id_mon = {mon.Id_mon} không hợp lệ");
+                        continue;
+                    }
+                    
                     if (mon.Id_phong_chuyen_dung  > 0 && !check_phongcd)
                     {
                         errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
