@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
@@ -130,10 +131,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetListTietBan([FromQuery] int Id_khoi, [FromQuery] int Id_ban, [FromQuery] int Id_mon)
         {
-            if (Id_mon < 0)
-                return ApiResult.BadRequest($"Id_mon {Id_mon} không hợp lệ, vui lòng kiểm tra lại");
-            if (Id_khoi < 0)
-                return ApiResult.BadRequest($"Id_khoi {Id_khoi} không hợp lệ, vui lòng kiểm tra lại");
+            if (Id_khoi <= 0)
+                ModelState.AddModelError("Id_khoi","Vui lòng chọn khối");
+            if (Id_ban <= 0)
+                ModelState.AddModelError("Id_ban", "Vui lòng chọn ban");
+            if (Id_mon <= 0)
+                ModelState.AddModelError("Id_mon", "Vui lòng chọn môn");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
