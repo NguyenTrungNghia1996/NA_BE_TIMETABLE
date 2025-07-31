@@ -61,6 +61,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 if (mon.Trang_thai == true)
                 {
+                    bool check = false;
                     var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
                     var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
                     var check_phongcd = _phong.CheckId_Phongchuyendung(mon.Id_phong_chuyen_dung, idDonvi);
@@ -68,29 +69,33 @@ namespace NA_Xepthoikhoabieu.Controllers
                     if (mon.Id_giao_vien < 0 || !check_gv)
                     {
                         errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
-                        continue;
+                        check=true;
                     }
                     if (mon.Id_mon < 0 || !check_mon)
                     {
                         errors.Add($"Id_mon = {mon.Id_mon} không hợp lệ");
-                        continue;
+                        check = true;
                     }
                     
                     if (mon.Id_phong_chuyen_dung  > 0 && !check_phongcd)
                     {
                         errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
-                        continue;
+                        check=true;
                     }
                     if (mon.Id_phong_truyen_thong < 0 || !check_phongtt)
                     {
-                        errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_truyen_thong} không hợp lệ");
+                        errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
+                        check = true;
+                    }
+                    if (check)
+                    {
                         continue;
                     }
                     string uniqueKey = $"{LopMon.Id_lop}_{mon.Id_mon}_{mon.Id_giao_vien}_{mon.Id_phong_chuyen_dung}_{mon.Id_phong_truyen_thong}";
                     if (existingCombinations.Contains(uniqueKey))
                     {
                         errors.Add("Trùng lặp bản ghi");
-                        continue;
+                        check = true ;
                     }
                     dslopmon.Add(new Lophoc_Monhoc
                     {
