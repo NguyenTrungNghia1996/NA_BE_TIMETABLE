@@ -82,7 +82,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                         errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
                         check=true;
                     }
-                    if (mon.Id_phong_truyen_thong < 0 || !check_phongtt)
+                    if (mon.Id_phong_truyen_thong > 0 || !check_phongtt)
                     {
                         errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
                         check = true;
