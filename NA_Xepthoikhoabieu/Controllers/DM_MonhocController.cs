@@ -126,7 +126,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
             var check_phong = _phong.CheckIds(monhoc.Id_phong, idDonvi, monhoc.Id_loai_phong_hoc);
 
-            if (!check_loaiphonghoc)
+            if (monhoc.Id_loai_phong_hoc >0 &&!check_loaiphonghoc)
                 ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_khoikienthuc)
                 ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
