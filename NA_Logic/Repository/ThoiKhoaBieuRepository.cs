@@ -190,6 +190,7 @@ namespace NA_Logic.Repository
                 var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object_Giaovien @Id_giao_vien, @Id_tkb",
                       paramIdGiaovien, paramIdTkb)
                     .ToList();
+                var tietban = _context.Giaovien_Tiettranhxep.Where(c=> c.Id_giao_vien == idgv).ToList();
                 if (result == null) result = new List<Chitiet_Thoikhoabieu_List>();
                 var teacher = new Object_Giaovien
                 {
@@ -199,7 +200,8 @@ namespace NA_Logic.Repository
                     Ten_giao_vien = result[0].Ten_giao_vien,
                     ds_tiet_phan_cong = new List<Ds_tiet_phan_cong>(),
                     ds_tiet_da_xep = new List<Ds_tiet_da_xep>(),
-                    ds_tiet_chua_xep = new List<Ds_chua_xep>()
+                    ds_tiet_chua_xep = new List<Ds_chua_xep>(),
+                    ds_tiet_tranh_xep = new List<Ds_tiet_tranh_xep>()
                 };
                 foreach (var r in result)
                 {
@@ -246,6 +248,16 @@ namespace NA_Logic.Repository
                             Ngay = r.Ngay
                         });
                     }
+                }
+                foreach (var item in tietban)
+                {
+                    teacher.ds_tiet_tranh_xep.Add(new Ds_tiet_tranh_xep
+                    {
+
+                        Id_ca = item.Id_ca,
+                        Tiet = item.Tiet,
+                        Ngay = item.Ngay
+                    });
                 }
 
                 return teacher;

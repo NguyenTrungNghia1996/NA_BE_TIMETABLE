@@ -48,6 +48,12 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; }
         
     }
+    public class Ds_tiet_tranh_xep
+    {
+        public int Id_ca { get; set; }
+        public int Ngay { get; set; }
+        public int Tiet { get; set; }
+    }
     public class Object_Giaovien
     {
         public int Id_don_vi { get; set; } = 0;
@@ -57,5 +63,6 @@ namespace NA_Entities.Entities.Dtos
         public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
         public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
         public List<Ds_chua_xep> ds_tiet_chua_xep { get; set; } = new List<Ds_chua_xep>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
 }
