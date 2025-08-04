@@ -418,31 +418,6 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckIds_Tiet(int idNgay, int idCa, int idTiet, int idDonvi)
-        {
-            try
-            {
-                var paramIdNgay = new SqlParameter("@IdNgay", SqlDbType.Int) { Value = idNgay };
-                var paramIdCa = new SqlParameter("@IdCa", SqlDbType.Int) { Value = idCa };
-                var paramIdTiet = new SqlParameter("@IdTiet", SqlDbType.Int) { Value = idTiet };
-                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = idDonvi };
-
-                var paramResult = new SqlParameter("@Result", SqlDbType.Bit)
-                {
-                    Direction = ParameterDirection.Output
-                };
-
-                _context.Database.ExecuteSqlRaw(
-                    "EXEC CheckIds_Tietban @IdNgay, @IdCa, @IdTiet, @IdDonvi, @Result OUTPUT",
-                    paramIdNgay, paramIdCa, paramIdTiet, paramIdDonvi, paramResult);
-
-                return Convert.ToBoolean(paramResult.Value);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
         public bool DeleteTietTranhXep(int Id)
         {
             try
@@ -617,7 +592,6 @@ namespace NA_Logic.Repository
             }
             catch (Exception ex)
             {
-                // Log exception nếu cần
                 return new List<Monhoc_KhoiLopDto>();
             }
         }

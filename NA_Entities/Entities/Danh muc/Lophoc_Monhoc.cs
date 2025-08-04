@@ -31,7 +31,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_phong_truyen_thong { get; set; } = 0;
         public string Ten_phong_truyen_thong { get; set; } = string.Empty;
         public int So_tiet_ca_sang_truyen_thong { get; set; } = 0;
-        public int So_tiet_ca_chieu_truyen_thong { get; set; } = 0;
+        public int So_tiet_ca_chieu_truyen_thong { get; set; } = 0; 
         public int So_tiet_ca_sang_phong_chuyen_dung { get; set; } = 0;
         public int So_tiet_ca_chieu_phong_chuyen_dung { get; set; } = 0;
         public bool Trang_thai { get; set; } = false;

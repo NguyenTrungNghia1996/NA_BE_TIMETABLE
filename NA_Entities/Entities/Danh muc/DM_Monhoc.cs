@@ -16,7 +16,6 @@ namespace NA_Entities.Entities.Danh_muc
         [Required(ErrorMessage = "Tên môn học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_loai_phong_hoc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;

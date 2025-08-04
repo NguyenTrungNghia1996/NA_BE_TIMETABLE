@@ -77,6 +77,10 @@ namespace NA_Entities.DBContext
         public DbSet<Lophoc_Monhoc_List> Lophoc_Monhoc_List { get; set; }
         public DbSet<Lophoc_Monhoc_Tiettranhxep> Lophoc_Monhoc_Tiettranhxep { get; set; }
         public DbSet<MonLop> MonLop { get; set; }
+        public DbSet<Danhsach_Thoikhoabieu> Danhsach_Thoikhoabieu { get; set; }
+        public DbSet<Danhsach_ThoikhoabieuList> Danhsach_ThoikhoabieuList { get; set; }
+        public DbSet<Chitiet_Thoikhoabieu> Chitiet_Thoikhoabieu { get; set; }
+        public DbSet<Chitiet_Thoikhoabieu_List> Chitiet_Thoikhoabieu_List { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -103,6 +107,8 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Lophoc_List>().HasNoKey();
             builder.Entity<Lophoc_Monhoc_List>().HasNoKey();
             builder.Entity<MonLop>().HasNoKey();
+            builder.Entity<Chitiet_Thoikhoabieu_List>().HasNoKey();
+            builder.Entity<Danhsach_ThoikhoabieuList>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

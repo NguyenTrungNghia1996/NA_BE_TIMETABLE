@@ -130,7 +130,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_loai_phong_hoc", "Id loại phòng học không hợp lệ, vui lòng kiểm tra lại");
             if (!check_khoikienthuc)
                 ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
-            if (!check_phong)
+            if (monhoc.Id_loai_phong_hoc > 0 && !check_phong)
                 ModelState.AddModelError("Id_phong", "Id phòng không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
