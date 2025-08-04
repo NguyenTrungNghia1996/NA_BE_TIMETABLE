@@ -23,14 +23,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDanhsach_ThoikhoabieuRepository _tkb;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
+        private readonly IDM_GiaovienRepository _giaovien;
 
-        public Danhsach_ThoikhoabieuController(IMapper mapper, IDanhsach_ThoikhoabieuRepository tkb, IClaimHelperRepository claimHelperRepository, IAuthRepository auth
-                                     )
+        public Danhsach_ThoikhoabieuController(IMapper mapper, IDanhsach_ThoikhoabieuRepository tkb, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
+                                     IDM_GiaovienRepository giaovien)
         {
             _mapper = mapper;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _tkb = tkb;
+            _giaovien = giaovien;
         }
         [HttpGet]
         [RequireToken]
@@ -64,8 +66,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _tkb.GetDetailById(Id, idDonvi);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_PhonghocDto>(detail);
-            return ApiResult.Success(detailDto, "Thành công");
+            return ApiResult.Success(detail, "Thành công");
         }
         [HttpGet("chitiet_tkb")]
         [RequireToken]
@@ -80,8 +81,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _tkb.GetDetailTKB(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_PhonghocDto>(detail);
-            return ApiResult.Success(detailDto, "Thành công");
+
+            return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost]
         [RequireToken]
@@ -154,6 +155,25 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("object_gv")]
+        [RequireToken]
+        public IActionResult Get_Oject_giaovien([FromQuery] int Idgv, [FromQuery] int Idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
+            var check_gv = _giaovien.CheckId(Idgv, idDonvi);
+            if (Idgv <= 0 || !check_gv)
+                return ApiResult.BadRequest($"Id giáo viên =  {Idgv} không hợp lệ, vui lòng kiểm tra lại");
+            if (Idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu =  {Idgv} không hợp lệ, vui lòng kiểm tra lại");
+            // Lấy bản ghi từ db
+            var detail = _tkb.Object_giaovien(Idgv, Idtkb);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id giáo viên = {Idgv} và Id thời khoá biểu = {Idtkb}");
+            return ApiResult.Success(detail, "Thành công");
         }
     }
 }

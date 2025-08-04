@@ -16,9 +16,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
-        public int Ten_tiet { get; set; }
+        
         public int Ngay { get; set; }
-        public int Ten_ngay { get; set; }
+        
     }
     public class Ds_tiet_da_xep
     {
@@ -30,9 +30,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
-        public int Ten_tiet { get; set; }
+        
         public int Ngay { get; set; }
-        public int Ten_ngay { get; set; }
+        
     }
     public class Ds_chua_xep
     {
@@ -44,9 +44,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
-        public int Ten_tiet { get; set; }
+        
         public int Ngay { get; set; }
-        public int Ten_ngay { get; set; }
+        
     }
     public class Object_Giaovien
     {

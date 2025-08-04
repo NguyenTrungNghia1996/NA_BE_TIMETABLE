@@ -173,7 +173,7 @@ namespace NA_Logic.Repository
         }
 
         //object giáo viên
-        public Object_Giaovien Object_giaovien(int idgv)
+        public Object_Giaovien Object_giaovien(int idgv, int idtkb)
         {
             try
             {
@@ -181,10 +181,14 @@ namespace NA_Logic.Repository
                 {
                     Value = idgv
                 };
+                var paramIdTkb = new SqlParameter("Id_tkb", SqlDbType.Int)
+                {
+                    Value = idtkb
+                };
 
                 
-                var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object_Giaovien @Id_giao_vien",
-                      paramIdGiaovien)
+                var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object_Giaovien @Id_giao_vien, @Id_tkb",
+                      paramIdGiaovien, paramIdTkb)
                     .ToList();
                 if (result == null) result = new List<Chitiet_Thoikhoabieu_List>();
                 var teacher = new Object_Giaovien
@@ -197,7 +201,6 @@ namespace NA_Logic.Repository
                     ds_tiet_da_xep = new List<Ds_tiet_da_xep>(),
                     ds_tiet_chua_xep = new List<Ds_chua_xep>()
                 };
-
                 foreach (var r in result)
                 {
                     teacher.ds_tiet_phan_cong.Add(new Ds_tiet_phan_cong
@@ -210,9 +213,7 @@ namespace NA_Logic.Repository
                         Ten_phong = r.Ten_phong,
                         Id_ca = r.Id_ca,
                         Tiet = r.Tiet,
-                        Ten_tiet = r.Tiet_thu_may,
-                        Ngay = r.Ngay,
-                        Ten_ngay = r.Ngay
+                        Ngay = r.Ngay
                     });
 
                     if (r.Tiet > 0 && r.Ngay > 0)
@@ -227,9 +228,7 @@ namespace NA_Logic.Repository
                             Ten_phong = r.Ten_phong,
                             Id_ca = r.Id_ca,
                             Tiet = r.Tiet,
-                            Ten_tiet = r.Tiet_thu_may,
-                            Ngay = r.Ngay,
-                            Ten_ngay = r.Ngay
+                            Ngay = r.Ngay
                         });
                     }
                     else if (r.Tiet == 0 && r.Ngay == 0)
@@ -244,9 +243,7 @@ namespace NA_Logic.Repository
                             Ten_phong = r.Ten_phong,
                             Id_ca = r.Id_ca,
                             Tiet = r.Tiet,
-                            Ten_tiet = r.Tiet_thu_may,
-                            Ngay = r.Ngay,
-                            Ten_ngay = r.Ngay
+                            Ngay = r.Ngay
                         });
                     }
                 }
