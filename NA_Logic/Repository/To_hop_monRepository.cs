@@ -42,7 +42,7 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<Monhoc_Tohopmon_List>().FromSqlRaw("EXEC MonTohop_GetList_Paging @pageIndex, @pageSize, @idDonvi, @total OUTPUT",
+                var result = _dbContext.Set<Monhoc_Tohopmon_List>().FromSqlRaw("EXEC MonTohop_GetList_Paging @pageIndex = @pageIndex, @pageSize = @pageSize, @idDonvi = @idDonvi, @total = @total OUTPUT",
                     paramPageIndex, paramPageSize, paramIdDonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<Monhoc_Tohopmon_List>();
@@ -106,6 +106,19 @@ namespace NA_Logic.Repository
                     _dbContext.SaveChanges();
                 }
                 return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckId(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _dbContext.Monhoc_Tohopmon.Join(_dbContext.Dm_Monhoc, thm => thm.Id_mon_1, mh => mh.Id, (thm, mh) => new {thm.Id, mh.Id_don_vi})
+                       .Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {

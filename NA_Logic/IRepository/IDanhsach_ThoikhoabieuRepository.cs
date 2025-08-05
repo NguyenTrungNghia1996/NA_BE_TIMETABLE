@@ -19,6 +19,5 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         bool DeleteDetail(int Id);
         bool CheckId(int Id, int idDonvi);
-        Object_Giaovien Object_giaovien(int idgv, int idtkb);
     }
 }

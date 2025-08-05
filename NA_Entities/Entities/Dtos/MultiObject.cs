@@ -56,15 +56,16 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ds_mon
     {
-        public int Id_mon { get; set; } = 0;
+        public int? Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
     }
     public class Ds_tiet_co_dinh
     {
-        public int Id_ca { get; set;} = 0;
+        public int Id_ca { get; set; } = 0;
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
         public int Id_khoi { get; set; } = 0;
+    }
     public class Object_Giaovien
     {
         public int Id_don_vi { get; set; } = 0;
@@ -83,7 +84,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
-        public List<>
+        public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
     }
     public class Object_Phonghoc
     {
