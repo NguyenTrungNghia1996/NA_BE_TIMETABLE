@@ -32,7 +32,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten { get; set; } = string.Empty;
         public int Id_mon_1 { get; set; } = 0;
         public int Id_mon_2 { get; set; } = 0;
-        public int Id_mon_3 { get; set; } = 0;
+        public int? Id_mon_3 { get; set; } = 0;
         public int So_tiet_toi_da_1_ca { get; set; } = 0;
         public int So_tiet_toi_da_2_ca { get; set; } = 0;
         public int Id_ban { get; set; } = 0;
@@ -42,6 +42,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_mon_hoc_1 { get; set; } = string.Empty;
         public string Ten_mon_hoc_2 { get; set; } = string.Empty;
         public string? Ten_mon_hoc_3 { get; set; } = string.Empty;
+        public int Id_don_vi { get; set; } = 0;
 
     }
 }

@@ -123,7 +123,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (tkbdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            dstkb.Id_don_vi = idDonvi;
             //update
             bool add = _tkb.Update(dstkb);
             if (!add)

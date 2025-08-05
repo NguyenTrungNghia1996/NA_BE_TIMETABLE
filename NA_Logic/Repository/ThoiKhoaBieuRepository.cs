@@ -191,7 +191,7 @@ namespace NA_Logic.Repository
                       paramIdGiaovien, paramIdTkb)
                     .ToList();
                 var tietban = _context.Giaovien_Tiettranhxep.Where(c=> c.Id_giao_vien == idgv).ToList();
-                if (result == null) result = new List<Chitiet_Thoikhoabieu_List>();
+                if (result == null) return null;
                 var teacher = new Object_Giaovien
                 {
                     Id_don_vi = result[0].Id_don_vi,
@@ -267,5 +267,135 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        //object phòng học
+        public Object_Phonghoc Object_phonghoc(int idph, int idtkb)
+        {
+            try
+            {
+                var paramIdphong = new SqlParameter("Id_phong", SqlDbType.Int)
+                {
+                    Value = idph
+                };
+                var paramIdTkb = new SqlParameter("Id_tkb", SqlDbType.Int)
+                {
+                    Value = idtkb
+                };
+
+                
+                var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object_Giaovien @Id_phong, @Id_tkb",
+                      paramIdphong, paramIdTkb)
+                    .ToList();
+                var tietban = _context.Tiet_ban.Where(c=> c.Id_phong == idph).ToList();
+                if (result == null) return null;
+                var room = new Object_Phonghoc
+                {
+                    Id_don_vi = result[0].Id_don_vi,
+                    Ten_don_vi = result[0].Ten_don_vi,
+                    Id_phong = result[0].Id_phong,
+                    Ten_phong = result[0].Ten_phong,
+                    ds_mon_tai_phong = new List<Ds_mon>(),
+                    ds_tiet_tranh_xep = new List<Ds_tiet_tranh_xep>()
+                };
+                foreach (var r in result)
+                {
+                    room.ds_mon_tai_phong.Add(new Ds_mon
+                    {
+                        Id_mon = r.Id_mon,
+                        Ten_mon = r.Ten_mon
+                    });
+                }
+                foreach (var item in tietban)
+                {
+                    room.ds_tiet_tranh_xep.Add(new Ds_tiet_tranh_xep
+                    {
+
+                        Id_ca = item.Id_ca,
+                        Tiet = item.Tiet,
+                        Ngay = item.Thu
+                    });
+                }
+
+                return room;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        //object môn học
+        //public Object_Monhoc Object_monhoc(int idmon, int idtkb)
+        //{
+        //    try
+        //    {
+        //        var paramIdphong = new SqlParameter("Id_phong", SqlDbType.Int)
+        //        {
+        //            Value = idph
+        //        };
+        //        var paramIdTkb = new SqlParameter("Id_tkb", SqlDbType.Int)
+        //        {
+        //            Value = idtkb
+        //        };
+
+                
+        //        var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object_Giaovien @Id_phong, @Id_tkb",
+        //              paramIdphong, paramIdTkb)
+        //            .ToList();
+        //        var tietban = _context.Tiet_ban.Where(c=> c.Id_phong == idph).ToList();
+        //        if (result == null) return null;
+        //        var room = new Object_Phonghoc
+        //        {
+        //            Id_don_vi = result[0].Id_don_vi,
+        //            Ten_don_vi = result[0].Ten_don_vi,
+        //            Id_phong = result[0].Id_phong,
+        //            Ten_phong = result[0].Ten_phong,
+        //            ds_mon_tai_phong = new List<Ds_mon>(),
+        //            ds_tiet_tranh_xep = new List<Ds_tiet_tranh_xep>()
+        //        };
+        //        foreach (var r in result)
+        //        {
+        //            room.ds_mon_tai_phong.Add(new Ds_mon
+        //            {
+        //                Id_mon = r.Id_mon,
+        //                Ten_mon = r.Ten_mon
+        //            });
+        //        }
+        //        foreach (var item in tietban)
+        //        {
+        //            room.ds_tiet_tranh_xep.Add(new Ds_tiet_tranh_xep
+        //            {
+
+        //                Id_ca = item.Id_ca,
+        //                Tiet = item.Tiet,
+        //                Ngay = item.Thu
+        //            });
+        //        }
+
+        //        return room;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
+        //public Object_Tohopmon Object_tohopmon( int idthm, int idDonvi)
+        //{
+        //    var result = _context.Monhoc_Tohopmon.;
+        //    if (result == null)
+        //        return null;
+        //    var tohopmon = new Object_Tohopmon
+        //    {
+        //        Id_don_vi = result[0].Id_don_vi,
+        //        ds_mon = new List<Ds_mon>(),
+        //        So_tiet_toi_da_1_ca = result[0].So_tiet_toi_da_1_ca,
+        //        So_tiet_toi_da_2_ca = result[0].So_tiet_toi_da_2_ca
+        //    };
+        //    foreach( var r in result)
+        //    {
+        //        tohopmon.ds_mon.Add(new Ds_mon() { 
+        //            Id_mon = r.
+        //        })
+        //    }
+
+        //}
     }
 }
