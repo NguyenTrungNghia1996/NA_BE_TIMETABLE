@@ -114,5 +114,49 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id tổ hợp môn = {Idthm}");
             return ApiResult.Success(detail, "Thành công");
         }
+        [HttpGet("lophoc")]
+        [RequireToken]
+        public IActionResult Get_Oject_lophoc([FromQuery] int idlop, [FromQuery] int idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            
+
+            // Lấy bản ghi từ db
+            var detail = _ob.Object_lophoc(idlop, idtkb);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id lớp = {idlop}");
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpGet("monkhoi")]
+        [RequireToken]
+        public IActionResult Get_Oject_monkhoi([FromQuery] int idmon, [FromQuery] int idlop)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+
+            // Lấy bản ghi từ db
+            var detail = _ob.Object_monkhoi(idmon, idlop, idDonvi);
+            if (detail == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpGet("checkgv")]
+        [RequireToken]
+        public IActionResult checkgv(int Ngay, int Tiet, int Ca, int id_giaovien, int id_tkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+
+            // Lấy bản ghi từ db
+            var detail = _ob.Check_gv(Ngay, Tiet,  Ca,  id_giaovien, id_tkb);
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }

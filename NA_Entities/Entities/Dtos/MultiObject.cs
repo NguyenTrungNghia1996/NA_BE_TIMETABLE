@@ -54,6 +54,17 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; }
         public int Tiet { get; set; }
     }
+    public class Ds_tiet_tranh_xep_lop_mon
+    {
+        public int Id_mon { get; set; }
+        public List<Ds_tiet_tranh_xep> Ds_tiet_tranh_xep_monlop { get; set; } = new List<Ds_tiet_tranh_xep>();
+    }
+    public class Ds_tiet_tranh_xep_mon_khoi
+    {
+        public int Id_ca { get; set; }
+        public int Ngay { get; set; }
+        public int Tiet { get; set; }
+    }
     public class Ds_mon
     {
         public int? Id_mon { get; set; } = 0;
@@ -102,5 +113,30 @@ namespace NA_Entities.Entities.Dtos
         public List<Ds_mon> ds_mon { get; set; } = new List<Ds_mon>();
         public int So_tiet_toi_da_1_ca { get; set; } = 0;
         public int So_tiet_toi_da_2_ca { get; set; } = 0;
+    }
+    public class Object_Lophoc
+    {
+        public int Id_don_vi { get; set; } = 0;
+        public string Ten_don_vi { get; set; } = string.Empty;
+        public int Id_lop { get; set; } = 0;
+        public string Ten_lop { get; set; } = string.Empty;
+        public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
+        public List<Ds_tiet_tranh_xep_lop_mon> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep_lop_mon>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+    }
+    public class Object_MonKhoi
+    {
+        public int Id_don_vi { get; set; } = 0;
+        public string Ten_don_vi { get; set; } = string.Empty;
+        public int Id_mon { get; set; } = 0;
+        public string Ten_mon { get; set; } = string.Empty;
+        public int Id_khoi { get; set; } = 0;
+        public string Ten_khoi { get; set; } = string.Empty;
+        public List<Ds_tiet_tranh_xep_mon_khoi> ds_tiet_tranh_xep_mon_khoi { get; set; } = new List<Ds_tiet_tranh_xep_mon_khoi>();
+    }
+    public class Tiethoc
+    {
+        public int Ngay { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
     }
 }

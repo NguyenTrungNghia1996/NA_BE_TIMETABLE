@@ -10,7 +10,7 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; } = 0;
         public int? Id_lop { get; set; } = 0;
-        public int? Id_mon { get; set; } = 0;
+        public int Id_mon { get; set; } = 0;
         public int? Id_giao_vien { get; set; } = 0;
         public int? Id_phong_chuyen_dung { get; set; } = 0;
         public int? Id_phong_truyen_thong { get; set; } = 0;
