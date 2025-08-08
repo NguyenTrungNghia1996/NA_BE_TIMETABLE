@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,12 +78,19 @@ namespace NA_Entities.Entities.Dtos
         public int Tiet { get; set; } = 0;
         public int Id_khoi { get; set; } = 0;
     }
+    public class Ds_vi_tri_xep_duoc
+    {
+        public int Ngay { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
+    }
     public class Object_Giaovien
     {
         public int Id_don_vi { get; set; } = 0;
         public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_giao_vien { get; set; } = 0;
         public string Ten_giao_vien { get; set; } = string.Empty;
+        public bool? Chi_day_mot_buoi { get; set; } = false;
+        public int? So_tiet_toi_da { get; set; } = 0;
         public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
         public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
         public List<Ds_chua_xep> ds_tiet_chua_xep { get; set; } = new List<Ds_chua_xep>();
@@ -94,6 +102,10 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
+        public bool Hoc_cach_ngay { get; set; } = false;
+        public bool Xep_thanh_cap { get; set; } = false;
+        public int So_tiet_toi_da_mot_ca { get; set; } = 0;
+        public int So_tiet_toi_da_hai_ca { get; set; } = 0;
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
         public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
     }
@@ -103,13 +115,16 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_phong { get; set; } = 0;
         public string Ten_phong { get; set; } = string.Empty;
+        public bool Khong_kiem_tra_xung_dot { get; set; } = false;
         public List<Ds_mon> ds_mon_tai_phong { get; set; } = new List<Ds_mon>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
     }
     
     public class Object_Tohopmon 
     {
         public int Id_don_vi { get;set; } = 0;
+        public int Id_to_hop_mon { get; set; } = 0;
         public List<Ds_mon> ds_mon { get; set; } = new List<Ds_mon>();
         public int So_tiet_toi_da_1_ca { get; set; } = 0;
         public int So_tiet_toi_da_2_ca { get; set; } = 0;
@@ -121,7 +136,6 @@ namespace NA_Entities.Entities.Dtos
         public int Id_lop { get; set; } = 0;
         public string Ten_lop { get; set; } = string.Empty;
         public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
-        public List<Ds_tiet_tranh_xep_lop_mon> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep_lop_mon>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_MonKhoi
@@ -138,5 +152,27 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
+    }
+    public class Object_Tiet
+    {
+        public int Id_don_vi { get; set; } = 0;
+        public int Id_tkb { get; set; } = 0;
+        public int Id_lop { get; set; } = 0;
+        public int Id_mon { get; set; } = 0;
+        public int Id_giao_vien { get; set; } = 0;
+        public int Id_phong { get; set; } = 0;
+        public int Id_ca{ get; set; } = 0;
+        public int Ngay { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
+        public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
+    }
+    public class Object_lop_mon {
+        public int Id_don_vi { get; set; } = 0;
+        public string Ten_don_vi { get; set; } = string.Empty;
+        public int Id_lop { get; set; } = 0;
+        public string Ten_lop { get; set; } = string.Empty;
+        public int Id_mon { get; set; } = 0;
+        public string Ten_mon { get; set; } = string.Empty;
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
 }

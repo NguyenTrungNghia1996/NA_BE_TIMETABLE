@@ -96,24 +96,24 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {Idmon}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("tohopmon")]
-        [RequireToken]
-        public IActionResult Get_Oject_Tohopmon([FromQuery] int Idthm)
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        //[HttpGet("tohopmon")]
+        //[RequireToken]
+        //public IActionResult Get_Oject_Tohopmon([FromQuery] int Idthm)
+        //{
+        //    // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        //    if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            var check_thm = _thm.CheckId(Idthm, idDonvi);
-            if (Idthm <= 0 || !check_thm)
-                return ApiResult.BadRequest($"Id tổ hợp môn =  {Idthm} không hợp lệ, vui lòng kiểm tra lại");
+        //    var check_thm = _thm.CheckId(Idthm, idDonvi);
+        //    if (Idthm <= 0 || !check_thm)
+        //        return ApiResult.BadRequest($"Id tổ hợp môn =  {Idthm} không hợp lệ, vui lòng kiểm tra lại");
 
-            // Lấy bản ghi từ db
-            var detail = _ob.Object_tohopmon(Idthm, idDonvi);
-            if (detail == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id tổ hợp môn = {Idthm}");
-            return ApiResult.Success(detail, "Thành công");
-        }
+        //    // Lấy bản ghi từ db
+        //    var detail = _ob.Object_tohopmon(Idthm, idDonvi);
+        //    if (detail == null)
+        //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id tổ hợp môn = {Idthm}");
+        //    return ApiResult.Success(detail, "Thành công");
+        //}
         [HttpGet("lophoc")]
         [RequireToken]
         public IActionResult Get_Oject_lophoc([FromQuery] int idlop, [FromQuery] int idtkb)
@@ -145,9 +145,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("checkgv")]
+        [HttpGet("checkthm")]
         [RequireToken]
-        public IActionResult checkgv(int Ngay, int Tiet, int Ca, int id_giaovien, int id_tkb)
+        public IActionResult Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
@@ -155,7 +155,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
 
             // Lấy bản ghi từ db
-            var detail = _ob.Check_gv(Ngay, Tiet,  Ca,  id_giaovien, id_tkb);
+            var detail = _ob.Check_to_hop_mon(Ngay, Tiet, iddonvi,idmon, idlop, idgv,  id_tkb);
             return ApiResult.Success(detail, "Thành công");
         }
     }

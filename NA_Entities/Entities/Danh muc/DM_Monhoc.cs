@@ -21,10 +21,10 @@ namespace NA_Entities.Entities.Danh_muc
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
+        [Range(1, int.MaxValue, ErrorMessage = "Số tiết tối đa 1 ca phải là số dương")]
         public int So_tiet_toi_da_mot_ca { get; set; } = 0;
         [Required(ErrorMessage = "Số tiết tối đa hai ca không được để trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
+        [Range(1, int.MaxValue, ErrorMessage = "Số tiết tối đa 2 ca phải là số dương")]
         public int So_tiet_toi_da_hai_ca { get; set; } = 0;
         public bool La_mon_tu_chon { get; set; } = false;
         public int Id_don_vi { get; set; }

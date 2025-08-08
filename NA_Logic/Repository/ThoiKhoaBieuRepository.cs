@@ -126,6 +126,41 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public void SetActiveThoiKhoaBieu(int id, int idDonVi)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Đặt tất cả về false cho cùng đơn vị
+                    var allRecords = _context.Danhsach_Thoikhoabieu
+                        .Where(x => x.Id_don_vi == idDonVi)
+                        .ToList();
+
+                    foreach (var record in allRecords)
+                    {
+                        record.Dang_su_dung = false;
+                    }
+
+                    // Đặt bản ghi được chọn thành true
+                    var activeRecord = _context.Danhsach_Thoikhoabieu
+                        .FirstOrDefault(x => x.Id == id);
+
+                    if (activeRecord != null)
+                    {
+                        activeRecord.Dang_su_dung = true;
+                    }
+
+                    _context.SaveChanges();
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
         public bool Delete(int Id)
         {
             try
