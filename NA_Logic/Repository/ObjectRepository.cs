@@ -59,6 +59,8 @@ namespace NA_Logic.Repository
                         Id_phong = item.Id_phong,
                         Tiet_thu_may = item.Tiet_thu_may,
                         Id_ca = item.Id_ca,
+                        Ngay = item.Ngay,
+                        Tiet = item.Tiet,
                         Ds_vi_tri_xep_duoc = new List<Ds_vi_tri_xep_duoc>()
                     });
                 }
