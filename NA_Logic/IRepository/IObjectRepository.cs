@@ -16,5 +16,6 @@ namespace NA_Logic.IRepository
         Object_Lophoc Object_lophoc(int idlop, int idtkb);
         Object_MonKhoi Object_monkhoi(int idmon, int idlop, int idDonvi);
         bool Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb);
+        List<Object_Tiet> ProcessThoiKhoaBieu(int idtkb, int idDonvi);
     }
 }

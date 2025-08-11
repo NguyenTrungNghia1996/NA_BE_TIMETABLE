@@ -161,6 +161,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_mon { get; set; } = 0;
         public int Id_giao_vien { get; set; } = 0;
         public int Id_phong { get; set; } = 0;
+        public int Tiet_thu_may { get; set; } = 0;
         public int Id_ca{ get; set; } = 0;
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
@@ -174,5 +175,13 @@ namespace NA_Entities.Entities.Dtos
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
+    }
+    public class object_tiet_co_dinh
+    {
+        public int Id_mon { get; set;} = 0;
+        public int Id_ca { get; set; } = 0;
+        public int Ngay { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
+        public int Id_lop { get; set; } = 0;
     }
 }

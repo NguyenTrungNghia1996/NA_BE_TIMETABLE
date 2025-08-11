@@ -145,9 +145,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("checkthm")]
+        [HttpGet("tkb")]
         [RequireToken]
-        public IActionResult Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb)
+        public IActionResult tkb( int id_tkb)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
@@ -155,7 +155,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
 
             // Lấy bản ghi từ db
-            var detail = _ob.Check_to_hop_mon(Ngay, Tiet, iddonvi,idmon, idlop, idgv,  id_tkb);
+            var detail = _ob.ProcessThoiKhoaBieu( id_tkb, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
     }
