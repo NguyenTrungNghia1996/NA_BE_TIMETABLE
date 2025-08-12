@@ -23,6 +23,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ds_tiet_da_xep
     {
+        public int Id_giao_vien { get; set; }
         public int Id_mon { get; set; }
         public string Ten_mon { get; set; }
         public int Id_lop { get; set; }
@@ -115,6 +116,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_phong { get; set; } = 0;
         public string Ten_phong { get; set; } = string.Empty;
+        public int Id_loai_phong { get; set; } = 0;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
         public List<Ds_mon> ds_mon_tai_phong { get; set; } = new List<Ds_mon>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
