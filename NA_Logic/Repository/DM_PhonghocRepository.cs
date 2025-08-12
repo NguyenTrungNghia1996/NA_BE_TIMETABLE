@@ -126,7 +126,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId(int Id, int idDonvi)
+        public bool CheckId(int? Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
@@ -140,9 +140,9 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId_Phongchuyendung(int Id, int idDonvi)
+        public bool CheckId_Phongchuyendung(int? Id, int idDonvi)
         {
-            if (Id <= 0) return false;
+            if (Id < 0) return false;
             try
             {
                 var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
@@ -154,9 +154,9 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckId_Phongtruyenthong(int Id, int idDonvi)
+        public bool CheckId_Phongtruyenthong(int? Id, int idDonvi)
         {
-            if (Id <= 0) return false;
+            if (Id < 0) return false;
             try
             {
                 var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();

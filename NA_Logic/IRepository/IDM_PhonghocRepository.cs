@@ -17,9 +17,9 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         Phong_banDto GetListTietBan(int Id, int idDonvi);
         bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong);
-        bool CheckId(int Id, int idDonvi);
-        bool CheckId_Phongchuyendung(int Id, int idDonvi);
-        bool CheckId_Phongtruyenthong(int Id, int idDonvi);
+        bool CheckId(int? Id, int idDonvi);
+        bool CheckId_Phongchuyendung(int? Id, int idDonvi);
+        bool CheckId_Phongtruyenthong(int? Id, int idDonvi);
         //bool CheckIds_Tietban(int idNgay, int idCa, int idTiet);
         bool DeleteTietBan(int Id);
         bool CheckIds(IEnumerable<int> ids, int idDonvi, int IdLoaiPhonghoc);

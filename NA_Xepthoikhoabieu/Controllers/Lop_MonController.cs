@@ -62,27 +62,31 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (mon.Trang_thai == true)
                 {
                     bool check = false;
-                    var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
+                    var check_mon = _mon.CheckIdMonLop(mon.Id_mon, LopMon.Id_lop, idDonvi);
                     var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
-                    var check_phongcd = _phong.CheckId_Phongchuyendung(mon.Id_phong_chuyen_dung, idDonvi);
-                    var check_phongtt = _phong.CheckId_Phongtruyenthong(mon.Id_phong_truyen_thong, idDonvi);
-                    if (mon.Id_giao_vien < 0 || !check_gv)
+                    
+                    var check_phongtt = _phong.CheckId(mon.Id_phong_truyen_thong, idDonvi);
+                    if (!check_gv)
                     {
                         errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
                         check=true;
                     }
-                    if (mon.Id_mon < 0 || !check_mon)
+                    if (!check_mon)
                     {
                         errors.Add($"Id_mon = {mon.Id_mon} không hợp lệ");
                         check = true;
                     }
                     
-                    if (mon.Id_phong_chuyen_dung  > 0 && !check_phongcd)
+                    if (mon.Id_phong_chuyen_dung > 0)
                     {
-                        errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
-                        check=true;
+                        var check_phongcd = _phong.CheckId(mon.Id_phong_chuyen_dung, idDonvi);
+                        if (!check_phongcd)
+                        {
+                            errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
+                            check = true;
+                        }
                     }
-                    if (mon.Id_phong_truyen_thong > 0 && !check_phongtt)
+                    if ( !check_phongtt)
                     {
                         errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
                         check = true;

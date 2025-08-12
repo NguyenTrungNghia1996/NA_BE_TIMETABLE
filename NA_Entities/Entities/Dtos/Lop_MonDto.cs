@@ -17,10 +17,10 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_mon { get; set; } = string.Empty;
         public int Id_giao_vien { get; set; } = 0;
         public string Ten_giao_vien { get; set; } = string.Empty;
-        public int Id_phong_chuyen_dung { get; set; } = 0;
-        public string Ten_phong_chuyen_dung { get; set; } = string.Empty;
-        public int Id_phong_truyen_thong { get; set; } = 0;
-        public string Ten_phong_truyen_thong { get; set; } = string.Empty;
+        public int? Id_phong_chuyen_dung { get; set; } = 0;
+        public string? Ten_phong_chuyen_dung { get; set; } = string.Empty;
+        public int? Id_phong_truyen_thong { get; set; } = 0;
+        public string? Ten_phong_truyen_thong { get; set; } = string.Empty;
         public int So_tiet_ca_sang_truyen_thong { get; set; } = 0;
         public int So_tiet_ca_chieu_truyen_thong { get; set; } = 0;
         public int So_tiet_ca_sang_phong_chuyen_dung { get; set; } = 0;
