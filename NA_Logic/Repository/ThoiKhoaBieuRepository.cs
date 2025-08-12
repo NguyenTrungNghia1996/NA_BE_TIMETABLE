@@ -126,7 +126,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public void SetActiveThoiKhoaBieu(int id, int idDonVi)
+        public bool SetStatus(int id, int idDonVi)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -153,11 +153,13 @@ namespace NA_Logic.Repository
 
                     _context.SaveChanges();
                     transaction.Commit();
+                    return true;
                 }
                 catch
                 {
                     transaction.Rollback();
                     throw;
+                    return false;
                 }
             }
         }

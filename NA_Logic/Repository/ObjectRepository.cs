@@ -819,16 +819,15 @@ namespace NA_Logic.Repository
                     x.Id_lop == objectTiet.Id_lop &&
                     x.Id_mon == objectTiet.Id_mon).ToList();
 
-                if (dsDataXep == null || dsDataXep.Count == 0)
+                if (dsDataXep == null || dsDataXep.Count == 0) 
                     return true;
                 var ngayHomTruoc = ngay - 1;
                 bool coTietHomTruoc = dsDataXep.Any(x => x.Ngay == ngayHomTruoc);
 
-                return !coTietHomTruoc; 
+                return coTietHomTruoc; 
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in CheckHocCachNgay: {ex.Message}");
                 return false;
             }
         }
@@ -841,7 +840,7 @@ namespace NA_Logic.Repository
                 x.Id_lop == objectTiet.Id_lop &&
                 x.Id_mon == objectTiet.Id_mon).ToList();
 
-            if (!CheckHocCachNgay(ngay, objectTiet))
+            if (CheckHocCachNgay(ngay, objectTiet))
             {
                 return false;
             }
@@ -863,7 +862,6 @@ namespace NA_Logic.Repository
                 }
 
                 so_tiet_da_xep_2_ca += so_tiet_da_xep_1_ca;
-                Console.WriteLine($"Ca {ca.Id}: {so_tiet_da_xep_1_ca} tiết");
             }
 
             if (_ObjectMon.So_tiet_toi_da_mot_ca == _ObjectMon.So_tiet_toi_da_hai_ca)

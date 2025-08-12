@@ -98,7 +98,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             //thêm
             bool add = _tkb.Add(dstkb);
             bool adddetail = _tkb.AddChitiet_tkb(dstkb.Id);
-            if (!add)
+            bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
+            if (!add && !changestatus)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             if (!adddetail)
                 return ApiResult.BadRequest("Thêm danh sách thời khoá biểu thành công, thêm chi tiết thời khoá biểu thất bại");
