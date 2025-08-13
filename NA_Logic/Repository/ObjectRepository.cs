@@ -1468,27 +1468,26 @@ namespace NA_Logic.Repository
             return result;
         }
         
-        public Object_Tiet CheckViTriXepDuoc(int id, int idDonvi)
-        {
-            try
-            {
-                var chitiet = _context.Chitiet_Thoikhoabieu.FirstOrDefault(c => c.Id == id);
-                var tiet = Object_tiet(chitiet.Id_tkb);
-                if (tiet == null)
-                {
-                    return new Object_Tiet();
-                }
-                else {
-                    TimViTriXepDuoc(tiet, idDonvi);
-                }
-                return tiet;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
-                return new Object_Tiet();
-            }
-        }
+        //public ObjectTiet_theoLopDto CheckViTriXepDuoc_Lop(ObjectTiet_DaChon tietDachon, int idDonvi)
+        //{
+        //    try
+        //    {
+        //        var tiet = Object_tiet(tietDachon.Id_tkb);
+        //        if (tiet == null)
+        //        {
+        //            return new ObjectTiet_theoLopDto();
+        //        }
+        //        else {
+        //            TimViTriXepDuoc(tiet, idDonvi);
+        //        }
+        //        return tiet;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
+        //        return new Object_Tiet();
+        //    }
+        //}
     }
 }
  
