@@ -193,5 +193,29 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Success(
             "Thêm mới thành công");
         }
+        [HttpPost("timvitri/lop")]
+        [RequireToken]
+        public IActionResult timvitri_lop([FromBody] ObjectTiet_DaChon tietDachon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            // add 
+            var detail = _ob.TimViTriXepDuoc_Lop(tietDachon,idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("update/lop")]
+        [RequireToken]
+        public IActionResult update_doicho_lop([FromBody]ObjectTiet_DaChon tiet1, [FromBody]ObjectTiet_DaChon tiet2)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            // add 
+            var detail = _ob.DoiChoHaiTiet_Lop(tiet1, tiet2, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }
