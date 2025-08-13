@@ -62,7 +62,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (mon.Trang_thai == true)
                 {
                     bool check = false;
-                    var check_mon = _mon.CheckIdMonLop(mon.Id_mon, LopMon.Id_lop, idDonvi);
+                    var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
                     var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
                     
                     var check_phongtt = _phong.CheckId(mon.Id_phong_truyen_thong, idDonvi);
