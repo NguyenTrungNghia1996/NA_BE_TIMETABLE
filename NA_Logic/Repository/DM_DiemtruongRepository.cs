@@ -63,7 +63,7 @@ namespace NA_Logic.Repository
                 var diemtruong = _dbContext.DM_Diemtruong.FirstOrDefault(c => c.Id == Id && c.Id_Donvi == Id_Donvi);
                 return diemtruong;
             }
-            catch (Exception)
+            catch (Exception) 
             {
                 return null;
             }

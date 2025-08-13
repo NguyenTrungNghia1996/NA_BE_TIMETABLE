@@ -141,7 +141,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             // Lấy bản ghi từ db
             var detail = _ob.Object_monkhoi(idmon, idlop, idDonvi);
-            if (detail == null)
+            if (detail == null) 
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
             return ApiResult.Success(detail, "Thành công");
         }
