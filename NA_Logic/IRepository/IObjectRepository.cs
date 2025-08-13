@@ -9,13 +9,14 @@ namespace NA_Logic.IRepository
 {
     public interface IObjectRepository
     {
-        Object_Giaovien Object_giaovien(int idgv, int idtkb);
-        Object_Monhoc Object_monhoc(int idmon, int idDonvi);
-        Object_Phonghoc Object_phonghoc(int idph, int idtkb);
-        List<Object_Tohopmon> Object_tohopmon(int idmon,int idlop, int idDonvi);
-        Object_Lophoc Object_lophoc(int idlop, int idtkb);
-        Object_MonKhoi Object_monkhoi(int idmon, int idlop, int idDonvi);
-        bool Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb);
-        List<ObjectTietDto> ProcessThoiKhoaBieu(int idtkb, int idDonvi);
+        //Object_Giaovien Object_giaovien(int idgv, int idtkb);
+        //Object_Monhoc Object_monhoc(int idmon, int idDonvi);
+        //Object_Phonghoc Object_phonghoc(int idph, int idtkb);
+        //List<Object_Tohopmon> Object_tohopmon(int idmon,int idlop, int idDonvi);
+        //Object_Lophoc Object_lophoc(int idlop, int idtkb);
+        //Object_MonKhoi Object_monkhoi(int idmon, int idlop, int idDonvi);
+        //bool Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb);
+        bool ProcessThoiKhoaBieu(int idtkb, int idDonvi);
+        ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb);
     }
 }

@@ -157,20 +157,22 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Object_Tiet
     {
-        public int Id_don_vi { get; set; } = 0;
+        public int Id { get; set; }
+        public int? Id_don_vi { get; set; } = 0;
         public int Id_tkb { get; set; } = 0;
-        public int Id_lop { get; set; } = 0;
-        public string Ten_lop { get; set; } = string.Empty;
-        public int Id_mon { get; set; } = 0;
-        public string Ten_mon { get; set; } = string.Empty;
-        public int Id_giao_vien { get; set; } = 0;
-        public string Ten_giao_vien { get; set; } = string.Empty;
-        public int Id_phong { get; set; } = 0;
-        public string Ten_phong { get; set; } = string.Empty;
+        public int? Id_lop { get; set; } = 0;
+        public string? Ten_lop { get; set; } = string.Empty;
+        public int? Id_mon { get; set; } = 0;
+        public string? Ten_mon { get; set; } = string.Empty;
+        public int? Id_giao_vien { get; set; } = 0;
+        public string? Ten_giao_vien { get; set; } = string.Empty;
+        public int? Id_phong { get; set; } = 0;
+        public string? Ten_phong { get; set; } = string.Empty;
         public int Tiet_thu_may { get; set; } = 0;
         public int Id_ca{ get; set; } = 0;
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
+        public bool Khoa { get; set; } = false;
         public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
     }
     public class Object_lop_mon {

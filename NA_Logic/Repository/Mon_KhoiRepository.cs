@@ -165,19 +165,24 @@ namespace NA_Logic.Repository
 
                 var ds_Mon = allMonhoc.Select(mon =>
                 {
-                    var saved = Monhoc_Khoi.FirstOrDefault(x => x.Id_mon == mon.Id);
                     return new Mon_KhoiDto
                     {
                         Id_mon = mon.Id,
                         Ten_mon = mon.Ten,
-                        ds_Ca = dsCa.Select(ca => new Ca_Khoi_MonDto
+                        ds_Ca = dsCa.Select(ca =>
                         {
-                            Id_ca = ca.Id,
-                            Ten_ca = ca.Ten,
-                            So_tiet = saved?.So_tiet ?? 0,
-                            So_nhom = saved?.So_nhom ?? 0
+                            var saved = Monhoc_Khoi
+                                .FirstOrDefault(x => x.Id_mon == mon.Id && x.Id_ca == ca.Id);
+
+                            return new Ca_Khoi_MonDto
+                            {
+                                Id_ca = ca.Id,
+                                Ten_ca = ca.Ten,
+                                So_tiet = saved?.So_tiet ?? 0,
+                                So_nhom = saved?.So_nhom ?? 0
+                            };
                         }).ToList(),
-                        Trang_thai = saved != null
+                        Trang_thai = Monhoc_Khoi.Any(x => x.Id_mon == mon.Id)
                     };
                 }).ToList();
 
