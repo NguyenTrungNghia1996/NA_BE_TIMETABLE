@@ -91,10 +91,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id = 0;
 
-            //kiểm tra mã môn học
-            var check_ma = _phonghoc.CheckMa(phonghoc.Ma, idDonvi, addph.Id);
-            if (!check_ma)
-                ModelState.AddModelError("Ma", "Mã phòng học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
@@ -132,10 +128,6 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Phonghoc>(phonghoc);
 
-            //kiểm tra mã phòng học
-            var check_ma = _phonghoc.CheckMa(phonghoc.Ma, idDonvi, item.Id);
-            if (!check_ma)
-                ModelState.AddModelError("Ma", "Mã phòng học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
