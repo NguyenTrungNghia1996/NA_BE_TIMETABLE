@@ -54,9 +54,13 @@ namespace NA_Logic.Repository
                         Id_don_vi = item.Id_don_vi,
                         Id_tkb = item.Id_tkb,
                         Id_lop = item.Id_lop,
+                        Ten_lop = item.Ten_lop,
                         Id_mon = item.Id_mon,
+                        Ten_mon = item.Ten_mon,
                         Id_giao_vien = item.Id_giao_vien,
+                        Ten_giao_vien = item.Ten_giao_vien,
                         Id_phong = item.Id_phong,
+                        Ten_phong = item.Ten_phong,
                         Tiet_thu_may = item.Tiet_thu_may,
                         Id_ca = item.Id_ca,
                         Ngay = item.Ngay,
@@ -996,19 +1000,19 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public List<Object_Tiet> ProcessThoiKhoaBieu(int idtkb, int idDonvi)
+        public List<ObjectTietDto> ProcessThoiKhoaBieu(int idtkb, int idDonvi)
         {
             try
             {
                 // 1. Load tất cả tiết cần xếp
                 var dsTietGoc = Object_tiet(idtkb);
-                var dsTietChuaXep = dsTietGoc?.Where(t => t.Ngay == 0 && t.Tiet == 0).ToList() ?? new List<Object_Tiet>();
+                var dsTietChuaXep = new List<Object_Tiet>(dsTietGoc);
                 
                 var dsTietDaXep = new List<Object_Tiet>();
                 var dsTietBoqua = new List<Object_Tiet>();
                 if (dsTietGoc == null || dsTietGoc.Count == 0)
                 {
-                    return new List<Object_Tiet>();
+                    return new List<ObjectTietDto>();
                 }
 
                 // 2. Xử lý tiết cố định trước
@@ -1020,7 +1024,7 @@ namespace NA_Logic.Repository
                     if (tietCoDinh != null)
                     {
                         LoadObjectsFromTiet(tiet);
-                        if (_ObjectPhong.Id_loai_phong == 1)
+                        if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                         {
                             bool updateSuccess = UpdateTiet(tiet, tietCoDinh.Ngay, tietCoDinh.Tiet);
 
@@ -1052,7 +1056,6 @@ namespace NA_Logic.Repository
                     {
                         TimViTriXepDuoc(tiet, idDonvi);
                     }
-
                     // b2: Lọc các tiết có thể xếp được (vị trí > 0), nếu vị trí = 0 thì thêm vào ds bỏ qua
                     var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
                     var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
@@ -1069,8 +1072,6 @@ namespace NA_Logic.Repository
                     {
                         break;
                     }
-
-                    
                     // b3: Sắp xếp theo thứ tự số vị trí xếp được và lấy tiết đầu tiên
                     var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
                     var tietCanXep = dsTietSorted.First();
@@ -1105,16 +1106,37 @@ namespace NA_Logic.Repository
                     }
                 }
                 // Kết hợp kết quả cuối cùng
-                var ketQua = new List<Object_Tiet>();
-                ketQua.AddRange(dsTietDaXep);
-                //ketQua.AddRange(dsTietChuaXep);
+                //var ketQua = new List<Object_Tiet>();
+                //ketQua.AddRange(dsTietDaXep);
                 //ketQua.AddRange(dsTietBoqua);
-                return ketQua;
+                var result = dsTietGoc
+                .GroupBy(t => t.Id_lop)
+                .Select(group => new ObjectTietDto
+                {
+                    Id_lop = group.Key,
+                    Ten_lop = group.First().Ten_lop,
+                    timetable = group.Select(t => new tkb_theo_lop
+                    {
+                        Id_don_vi = t.Id_don_vi,
+                        Id_tkb = t.Id_tkb,
+                        Id_mon = t.Id_mon,
+                        Ten_mon = t.Ten_mon,
+                        Id_giao_vien = t.Id_giao_vien,
+                        Ten_giao_vien = t.Ten_giao_vien,
+                        Id_phong = t.Id_phong,
+                        Ten_phong = t.Ten_phong ?? "Không cần phòng",
+                        Tiet_thu_may = t.Tiet_thu_may,
+                        Id_ca = t.Id_ca,
+                        Ngay = t.Ngay,
+                        Tiet = t.Tiet
+                    }).ToList()
+                }).ToList();
+                return result;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
-                return new List<Object_Tiet>();
+                return new List<ObjectTietDto>();
             }
         }
     }

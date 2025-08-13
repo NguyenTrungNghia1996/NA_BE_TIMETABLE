@@ -16,7 +16,7 @@ using NetTopologySuite.Index.HPRtree;
 namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
-    [Route("api/object")]
+    [Route("api/tkb")]
     public class ObjectController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -42,7 +42,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _thm = thm;
             _tkb = tkb;
         }
-        [HttpGet("giaovien")]
+        [HttpGet("object/giaovien")]
         [RequireToken]
         public IActionResult Get_Oject_giaovien([FromQuery] int Idgv, [FromQuery] int Idtkb)
         {
@@ -61,7 +61,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id giáo viên = {Idgv} và Id thời khoá biểu = {Idtkb}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("phong")]
+        [HttpGet("object/phong")]
         [RequireToken]
         public IActionResult Get_Oject_Phonghoc([FromQuery] int Idph, [FromQuery] int Idtkb)
         {
@@ -80,7 +80,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id phòng học = {Idph} và Id thời khoá biểu = {Idtkb}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("mon")]
+        [HttpGet("object/mon")]
         [RequireToken]
         public IActionResult Get_Oject_mon([FromQuery] int Idmon)
         {
@@ -114,7 +114,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id tổ hợp môn = {Idthm}");
         //    return ApiResult.Success(detail, "Thành công");
         //}
-        [HttpGet("lophoc")]
+        [HttpGet("object/lop")]
         [RequireToken]
         public IActionResult Get_Oject_lophoc([FromQuery] int idlop, [FromQuery] int idtkb)
         {
@@ -130,7 +130,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id lớp = {idlop}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("monkhoi")]
+        [HttpGet("object/monkhoi")]
         [RequireToken]
         public IActionResult Get_Oject_monkhoi([FromQuery] int idmon, [FromQuery] int idlop)
         {
@@ -145,17 +145,20 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("tkb")]
+        [HttpGet]
         [RequireToken]
-        public IActionResult tkb( int id_tkb)
+        public IActionResult tkb(int Idtkb)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
+            var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
+            if (Idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
-            var detail = _ob.ProcessThoiKhoaBieu( id_tkb, idDonvi);
+            var detail = _ob.ProcessThoiKhoaBieu(Idtkb, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
     }
