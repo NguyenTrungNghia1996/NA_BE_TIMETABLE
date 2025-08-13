@@ -65,7 +65,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                     var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
                     var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
                     
-                    var check_phongtt = _phong.CheckId(mon.Id_phong_truyen_thong, idDonvi);
+                    
                     if (!check_gv)
                     {
                         errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
@@ -86,10 +86,15 @@ namespace NA_Xepthoikhoabieu.Controllers
                             check = true;
                         }
                     }
-                    if ( !check_phongtt)
+                    if ( mon.Id_phong_truyen_thong > 0)
                     {
-                        errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
-                        check = true;
+                        var check_phongtt = _phong.CheckId(mon.Id_phong_truyen_thong, idDonvi);
+                        if (!check_phongtt)
+                        {
+                            errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
+                            check = true;
+                        }
+                        
                     }
                     if (check)
                     {
