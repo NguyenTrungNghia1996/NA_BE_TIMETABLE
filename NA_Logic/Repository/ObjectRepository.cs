@@ -1533,7 +1533,12 @@ namespace NA_Logic.Repository
                                       dsViTriXepDuoc.Any(vt =>
                                           vt.Ngay == tietInTimetable.Ngay &&
                                           vt.Tiet == tietInTimetable.Tiet);
-                    tietInTimetable.isDrag = isDragable;
+
+                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
+                                          tietInTimetable.Ngay == ngay &&
+                                          tietInTimetable.Tiet == tietSo;
+
+                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
                 }
 
                 return tkbBase;
@@ -1620,7 +1625,12 @@ namespace NA_Logic.Repository
                                       dsViTriXepDuoc.Any(vt =>
                                           vt.Ngay == tietInTimetable.Ngay &&
                                           vt.Tiet == tietInTimetable.Tiet);
-                    tietInTimetable.isDrag = isDragable;
+
+                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
+                                          tietInTimetable.Ngay == ngay &&
+                                          tietInTimetable.Tiet == tietSo;
+
+                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
                 }
 
                 return tkbBase;
