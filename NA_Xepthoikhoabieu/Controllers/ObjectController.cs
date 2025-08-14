@@ -245,5 +245,17 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _ob.DoiChoHaiTiet_Lop(tietDaChon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
+        [HttpPost("update/giaovien")]
+        [RequireToken]
+        public IActionResult update_doicho_giaovien([FromBody] ObjectTiet_theoGVDto tietDaChon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            // add 
+            var detail = _ob.DoiChoHaiTiet_GV(tietDaChon, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }

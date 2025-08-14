@@ -1174,11 +1174,9 @@ namespace NA_Logic.Repository
                 return null;
             }
 
-            // Lấy thông tin đơn vị từ tiết đầu tiên
             var firstTiet = tiet.First();
             int idDonvi = firstTiet.Id_don_vi ?? 0;
 
-            // Lấy danh sách ca của đơn vị
             var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == 1)
                              .Join(_context.DM_Cahoc,
                                    cd => cd.Id_ca_hoc,
@@ -1189,10 +1187,8 @@ namespace NA_Logic.Repository
                                        Ten = ca.Ten
                                    }).ToList();
 
-            // Lấy danh sách tiết tránh xếp của lớp
             var tietTranhXep = _context.Lophoc_Tietnghi.Where(c => c.Id_lop == id_lop).ToList();
 
-            // Lấy danh sách ngày và tiết từ enum
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
 
@@ -1204,7 +1200,6 @@ namespace NA_Logic.Repository
                 ds_chua_xep = new List<tkb_theo_lop>()
             };
 
-            // Tạo flat structure từ hierarchy logic
             foreach (var ca in dsCa)
             {
                 foreach (var ngay in dsNgay)
@@ -1277,8 +1272,6 @@ namespace NA_Logic.Repository
                             tietItem.isLock = false;
                             tietItem.isDrag = false;
                             tietItem.isRest = false;
-
-                            // Có thể comment dòng này nếu không muốn hiển thị tiết trống
                             result.timetable.Add(tietItem);
                         }
                     }
@@ -1329,11 +1322,9 @@ namespace NA_Logic.Repository
                 return null;
             }
 
-            // Lấy thông tin đơn vị từ tiết đầu tiên
             var firstTiet = tiet.First();
             int idDonvi = firstTiet.Id_don_vi ?? 0;
 
-            // Lấy danh sách ca của đơn vị
             var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == 1)
                              .Join(_context.DM_Cahoc,
                                    cd => cd.Id_ca_hoc,
@@ -1346,7 +1337,6 @@ namespace NA_Logic.Repository
 
             var tietTranhXep = _context.Giaovien_Tiettranhxep.Where(c => c.Id_giao_vien == id_gv).ToList();
 
-            // Lấy danh sách ngày và tiết từ enum
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
 
@@ -1358,7 +1348,6 @@ namespace NA_Logic.Repository
                 ds_chua_xep = new List<tkb_theo_giaovien>()
             };
 
-            // Tạo flat structure từ hierarchy logic
             foreach (var ca in dsCa)
             {
                 foreach (var ngay in dsNgay)
@@ -1431,8 +1420,6 @@ namespace NA_Logic.Repository
                             tietItem.isLock = false;
                             tietItem.isDrag = false;
                             tietItem.isRest = false;
-
-                            // Có thể comment dòng này nếu không muốn hiển thị tiết trống
                             result.timetable.Add(tietItem);
                         }
                     }
@@ -1648,24 +1635,19 @@ namespace NA_Logic.Repository
         {
             try
             {
-                // Validation đầu vào
                 if (tietDachon?.timetable == null || tietDachon.timetable.Count < 2)
                 {
-                    Console.WriteLine("Phải có ít nhất 2 tiết trong timetable để đổi chỗ");
                     return new ObjectTiet_theoLopDto();
                 }
 
-                // Lấy 2 tiết đầu tiên trong timetable
                 var tiet1 = tietDachon.timetable[0];
                 var tiet2 = tietDachon.timetable[1];
 
                 if (tiet1 == null || tiet2 == null)
                 {
-                    Console.WriteLine("Một trong hai tiết truyền vào là null");
                     return new ObjectTiet_theoLopDto();
                 }
 
-                // Lấy thông tin vị trí hiện tại của 2 tiết
                 int ngay1 = tiet1.Ngay;
                 int tietSo1 = tiet1.Tiet;
                 int ngay2 = tiet2.Ngay;
@@ -1695,91 +1677,86 @@ namespace NA_Logic.Repository
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
 
-                // Đổi chỗ: Update tiết 1 vào vị trí của tiết 2, và ngược lại
-                bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2); // Tiết 1 vào vị trí tiết 2
-                bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1); // Tiết 2 vào vị trí tiết 1
+                // Đổi chỗ
+                bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2); 
+                bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1); 
 
                 if (!updateTiet1 || !updateTiet2)
                 {
-                    Console.WriteLine("Không thể cập nhật một trong hai tiết");
                     return new ObjectTiet_theoLopDto();
                 }
 
-                // Cập nhật lại vị trí trong object gốc để kiểm tra
-                tiet1.Ngay = ngay2;
-                tiet1.Tiet = tietSo2;
-                tiet2.Ngay = ngay1;
-                tiet2.Tiet = tietSo1;
-
-                // Kiểm tra vị trí xếp được sau khi đổi chỗ
                 var ketQuaCheckViTri = TimViTriXepDuoc_Lop(tietDachon, idDonvi);
                 return ketQuaCheckViTri;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in DoiChoHaiTiet_Lop: {ex.Message}");
                 return new ObjectTiet_theoLopDto();
             }
         }
-        //public ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_DaChon tiet1, ObjectTiet_DaChon tiet2, int idDonvi)
-        //{
-        //    try
-        //    {
-        //        // Validation đầu vào
-        //        if (tiet1 == null || tiet2 == null)
-        //        {
-        //            Console.WriteLine("Một trong hai tiết truyền vào là null");
-        //            return new ObjectTiet_theoGVDto();
-        //        }
-        //        int ngay1 = tiet1.Ngay ?? 0;
-        //        int tietSo1 = tiet1.Tiet ?? 0;
-        //        int ngay2 = tiet2.Ngay ?? 0;
-        //        int tietSo2 = tiet2.Tiet ?? 0;
+        public ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
+        {
+            try
+            {
+                if (tietDachon?.timetable == null || tietDachon.timetable.Count < 2)
+                {
+                    return new ObjectTiet_theoGVDto();
+                }
 
-        //        // Tạo Object_Tiet từ ObjectTiet_DaChon
-        //        var objectTiet1 = new Object_Tiet
-        //        {
-        //            Id_tkb = tiet1.Id_tkb,
-        //            Id_lop = tiet1.Id_lop ?? 0,
-        //            Id_mon = tiet1.Id_mon ?? 0,
-        //            Id_giao_vien = tiet1.Id_giao_vien ?? 0,
-        //            Id_phong = tiet1.Id_phong ?? 0,
-        //            Id_ca = tiet1.Id_ca ?? 0,
-        //            Tiet_thu_may = tiet1.Tiet_thu_may ?? 0
-        //        };
+                var tiet1 = tietDachon.timetable[0];
+                var tiet2 = tietDachon.timetable[1];
 
-        //        var objectTiet2 = new Object_Tiet
-        //        {
-        //            Id_tkb = tiet2.Id_tkb,
-        //            Id_lop = tiet2.Id_lop ?? 0,
-        //            Id_mon = tiet2.Id_mon ?? 0,
-        //            Id_giao_vien = tiet2.Id_giao_vien ?? 0,
-        //            Id_phong = tiet2.Id_phong ?? 0,
-        //            Id_ca = tiet2.Id_ca ?? 0,
-        //            Tiet_thu_may = tiet2.Tiet_thu_may ?? 0
-        //        };
+                if (tiet1 == null || tiet2 == null)
+                {
+                    return new ObjectTiet_theoGVDto();
+                }
 
-        //        bool updateTiet1 = UpdateTiet(objectTiet1, ngay1, tietSo1);
-        //        bool updateTiet2 = UpdateTiet(objectTiet2, ngay2, tietSo2); 
+                int ngay1 = tiet1.Ngay;
+                int tietSo1 = tiet1.Tiet;
+                int ngay2 = tiet2.Ngay;
+                int tietSo2 = tiet2.Tiet;
 
-        //        if (!updateTiet1 || !updateTiet2)
-        //        {
-        //            return new ObjectTiet_theoGVDto();
-        //        }
+                // Tạo Object_Tiet từ tiết 1
+                var objectTiet1 = new Object_Tiet
+                {
+                    Id_tkb = tiet1.Id_tkb,
+                    Id_lop = tiet1.Id_lop, 
+                    Id_mon = tiet1.Id_mon,
+                    Id_giao_vien = tietDachon.Id_giao_vien,
+                    Id_phong = tiet1.Id_phong,
+                    Id_ca = tiet1.Id_ca,
+                    Tiet_thu_may = tiet1.Tiet_thu_may
+                };
 
-        //        tiet1.Ngay = ngay1;
-        //        tiet1.Tiet = tietSo1;
+                // Tạo Object_Tiet từ tiết 2  
+                var objectTiet2 = new Object_Tiet
+                {
+                    Id_tkb = tiet2.Id_tkb,
+                    Id_lop = tiet2.Id_lop,
+                    Id_mon = tiet2.Id_mon,
+                    Id_giao_vien = tietDachon.Id_giao_vien,
+                    Id_phong = tiet2.Id_phong,
+                    Id_ca = tiet2.Id_ca,
+                    Tiet_thu_may = tiet2.Tiet_thu_may
+                };
 
-        //        var ketQuaCheckViTri = TimViTriXepDuoc_GV(tiet1, idDonvi);
+                // Đổi chỗ
+                bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2); 
+                bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1); 
 
-        //        return ketQuaCheckViTri;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error in DoiChoHaiTiet: {ex.Message}");
-        //        return new ObjectTiet_theoGVDto();
-        //    }
-        //}
+                if (!updateTiet1 || !updateTiet2)
+                {
+                    return new ObjectTiet_theoGVDto();
+                }
+
+                var ketQuaCheckViTri = TimViTriXepDuoc_GV(tietDachon, idDonvi);
+                return ketQuaCheckViTri;
+            }
+            catch (Exception ex)
+            {
+                return new ObjectTiet_theoGVDto();
+            }
+        }
     }
 }
  

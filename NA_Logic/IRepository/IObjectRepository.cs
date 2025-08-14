@@ -22,6 +22,6 @@ namespace NA_Logic.IRepository
         ObjectTiet_theoLopDto TimViTriXepDuoc_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
         ObjectTiet_theoGVDto TimViTriXepDuoc_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
         ObjectTiet_theoLopDto DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
-        //ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_DaChon tiet1, ObjectTiet_DaChon tiet2, int idDonvi);
+        ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
     }
 }
