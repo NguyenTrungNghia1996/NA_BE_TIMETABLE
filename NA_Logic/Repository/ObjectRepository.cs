@@ -795,6 +795,82 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
+        public void TimViTriXepDuoc_Lop(Object_Tiet objectTiet, int idDonvi)
+        {
+            try
+            {
+                objectTiet.Ds_vi_tri_xep_duoc.Clear();
+                LoadObjectsFromTiet(objectTiet, idDonvi);
+
+                if (_ObjectMon == null || _ObjectGiaovien == null)
+                    return;
+
+                var tietban = DsTietTranhXep(objectTiet);
+                int caTietHoc = objectTiet.Id_ca;
+                var ds_tiet_da_xep_gv = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+
+                for (int ngay = 1; ngay <= 7; ngay++)
+                {
+                    for (int tiet = 1; tiet <= 5; tiet++)
+                    {
+                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
+
+                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey))
+                            continue;
+                        else
+                        {
+                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            {
+                                Ngay = ngay,
+                                Tiet = tiet,
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                objectTiet.Ds_vi_tri_xep_duoc.Clear();
+            }
+        }
+        public void TimViTriXepDuoc_GV(Object_Tiet objectTiet, int idDonvi)
+        {
+            try
+            {
+                objectTiet.Ds_vi_tri_xep_duoc.Clear();
+                LoadObjectsFromTiet(objectTiet, idDonvi);
+
+                if (_ObjectMon == null || _ObjectGiaovien == null)
+                    return;
+
+                var tietban = DsTietTranhXep(objectTiet);
+                int caTietHoc = objectTiet.Id_ca;
+                var ds_tiet_da_xep_phong = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+
+                for (int ngay = 1; ngay <= 7; ngay++)
+                {
+                    for (int tiet = 1; tiet <= 5; tiet++)
+                    {
+                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
+
+                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                            continue;
+                        else
+                        {
+                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            {
+                                Ngay = ngay,
+                                Tiet = tiet,
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                objectTiet.Ds_vi_tri_xep_duoc.Clear();
+            }
+        }
 
         private HashSet<string> DsTietTranhXep(Object_Tiet objectTiet)
         {
@@ -1496,7 +1572,7 @@ namespace NA_Logic.Repository
                     var tietGoc = dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
                     if (tietGoc != null)
                     {
-                        TimViTriXepDuoc(tietGoc, idDonvi);
+                        TimViTriXepDuoc_Lop(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null)
                         {
                             foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
@@ -1512,7 +1588,7 @@ namespace NA_Logic.Repository
                     var cacTietCuaLop = dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
-                        TimViTriXepDuoc(tietGoc, idDonvi);
+                        TimViTriXepDuoc_Lop(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
                             foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
@@ -1583,7 +1659,7 @@ namespace NA_Logic.Repository
                     var tietGoc = dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
                     if (tietGoc != null)
                     {
-                        TimViTriXepDuoc(tietGoc, idDonvi);
+                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
                             foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
@@ -1599,7 +1675,7 @@ namespace NA_Logic.Repository
                     var cacTietCuaLop = dsTietGoc.Where(t => t.Id_lop == idGV && t.Id_ca == idCa).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
-                        TimViTriXepDuoc(tietGoc, idDonvi);
+                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null)
                         {
                             foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
