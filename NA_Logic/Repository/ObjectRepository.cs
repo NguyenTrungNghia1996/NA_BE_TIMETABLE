@@ -1223,7 +1223,7 @@ namespace NA_Logic.Repository
                         {
                             Id_chitiet = tietHoc?.Id ?? 0,
                             Id_don_vi = idDonvi,
-                            Id_tkb = tietHoc?.Id_tkb ?? 0,
+                            Id_tkb = idtkb,
                             Id_ca = ca.Id,
                             Ngay = (int)ngay,
                             Tiet = (int)tietEnum,
@@ -1371,7 +1371,7 @@ namespace NA_Logic.Repository
                         {
                             Id_chitiet = tietHoc?.Id ?? 0,
                             Id_don_vi = idDonvi,
-                            Id_tkb = tietHoc?.Id_tkb ?? 0,
+                            Id_tkb = idtkb,
                             Id_ca = ca.Id,
                             Ngay = (int)ngay,
                             Tiet = (int)tietEnum,
