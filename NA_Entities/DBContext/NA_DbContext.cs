@@ -81,6 +81,7 @@ namespace NA_Entities.DBContext
         public DbSet<Danhsach_ThoikhoabieuList> Danhsach_ThoikhoabieuList { get; set; }
         public DbSet<Chitiet_Thoikhoabieu> Chitiet_Thoikhoabieu { get; set; }
         public DbSet<Chitiet_Thoikhoabieu_List> Chitiet_Thoikhoabieu_List { get; set; }
+        public DbSet<Ds_tiet_tranh_xep> Ds_tiet_tranh_xep { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -109,6 +110,7 @@ namespace NA_Entities.DBContext
             builder.Entity<MonLop>().HasNoKey();
             builder.Entity<Chitiet_Thoikhoabieu_List>().HasNoKey();
             builder.Entity<Danhsach_ThoikhoabieuList>().HasNoKey();
+            builder.Entity<Ds_tiet_tranh_xep>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

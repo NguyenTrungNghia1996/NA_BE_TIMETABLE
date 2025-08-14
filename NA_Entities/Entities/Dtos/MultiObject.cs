@@ -50,16 +50,11 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; }
         
     }
-    public class Ds_tiet_tranh_xep
-    {
-        public int Id_ca { get; set; }
-        public int Ngay { get; set; }
-        public int Tiet { get; set; }
-    }
+    
     public class Ds_tiet_tranh_xep_lop_mon
     {
         public int Id_mon { get; set; }
-        public List<Ds_tiet_tranh_xep> Ds_tiet_tranh_xep_monlop { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> Ds_tiet_tranh_xep_monlop { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Ds_tiet_tranh_xep_mon_khoi
     {
@@ -95,7 +90,7 @@ namespace NA_Entities.Entities.Dtos
         public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
         public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
         public List<Ds_chua_xep> ds_tiet_chua_xep { get; set; } = new List<Ds_chua_xep>();
-        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_Monhoc
     {
@@ -107,7 +102,7 @@ namespace NA_Entities.Entities.Dtos
         public bool Xep_thanh_cap { get; set; } = false;
         public int So_tiet_toi_da_mot_ca { get; set; } = 0;
         public int So_tiet_toi_da_hai_ca { get; set; } = 0;
-        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
         public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
     }
     public class Object_Phonghoc
@@ -119,7 +114,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_loai_phong { get; set; } = 0;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
         public List<Ds_mon> ds_mon_tai_phong { get; set; } = new List<Ds_mon>();
-        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
         public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
     }
     
@@ -138,7 +133,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_lop { get; set; } = 0;
         public string Ten_lop { get; set; } = string.Empty;
         public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
-        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_MonKhoi
     {
@@ -182,7 +177,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_lop { get; set; } = string.Empty;
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
-        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class object_tiet_co_dinh
     {

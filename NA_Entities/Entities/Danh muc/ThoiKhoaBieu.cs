@@ -26,4 +26,10 @@ namespace NA_Entities.Entities.Danh_muc
         public bool Dang_su_dung { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
     }
+    public class Ds_tiet_tranh_xep
+    {
+        public int Id_ca { get; set; }
+        public int Ngay { get; set; }
+        public int Tiet { get; set; }
+    }
 }
