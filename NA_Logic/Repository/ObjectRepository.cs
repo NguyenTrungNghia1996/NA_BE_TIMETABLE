@@ -703,7 +703,7 @@ namespace NA_Logic.Repository
                     foreach (var mon in dsmon)
                     {
                          int so_tiet_1_mon_1_ca = ds_da_xep.Where(c => c.Id_lop == idlop && c.Id_mon == mon.Id_mon && c.Id_ca == ca.Id_ca_hoc && c.Ngay == Ngay).Count();
-                        so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca;
+                        so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca+1;
                     }
                     if (so_tiet_da_xep_1_ca > ob_thm.So_tiet_toi_da_1_ca)
                     {
@@ -969,7 +969,7 @@ namespace NA_Logic.Repository
             {
                 int so_tiet_da_xep_1_ca = 0;
                 int so_tiet_1_mon_1_ca = dsDataXep?.Where(c => c.Id_ca == ca.Id_ca_hoc && c.Ngay == ngay).Count() ?? 0;
-                so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca;
+                so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca + 1;
 
                 if (so_tiet_da_xep_1_ca > _ObjectMon.So_tiet_toi_da_mot_ca)
                 {
