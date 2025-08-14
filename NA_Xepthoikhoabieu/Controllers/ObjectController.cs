@@ -211,7 +211,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost("timvitri/lop")]
         [RequireToken]
-        public IActionResult timvitri_lop([FromBody] ObjectTiet_DaChon tietDachon)
+        public IActionResult timvitri_lop([FromBody] ObjectTiet_theoLopDto tietDachon)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
@@ -223,27 +223,27 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost("timvitri/giaovien")]
         [RequireToken]
-        public IActionResult timvitri_giaovien([FromBody] ObjectTiet_DaChon tietDachon)
+        public IActionResult timvitri_giaovien([FromBody] ObjectTiet_theoGVDto tietDachon)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
             // add 
-            var detail = _ob.TimViTriXepDuoc_GV(tietDachon,idDonvi);
+            var detail = _ob.TimViTriXepDuoc_GV(tietDachon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
-        //[HttpPost("update/lop")]
-        //[RequireToken]
-        //public IActionResult update_doicho_lop([FromBody]ObjectTiet_DaChon tiet1, [FromBody]ObjectTiet_DaChon tiet2)
-        //{
-        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-        //    if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-        //    // mapper data 
+        [HttpPost("update/lop")]
+        [RequireToken]
+        public IActionResult update_doicho_lop([FromBody] ObjectTiet_theoLopDto tietDaChon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
 
-        //    // add 
-        //    var detail = _ob.DoiChoHaiTiet_Lop(tiet1, tiet2, idDonvi);
-        //    return ApiResult.Success(detail, "Thành công");
-        //}
+            // add 
+            var detail = _ob.DoiChoHaiTiet_Lop(tietDaChon, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }
