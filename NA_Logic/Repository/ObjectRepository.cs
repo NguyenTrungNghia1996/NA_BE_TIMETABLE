@@ -1609,7 +1609,12 @@ namespace NA_Logic.Repository
                                       dsViTriXepDuoc.Any(vt =>
                                           vt.Ngay == tietInTimetable.Ngay &&
                                           vt.Tiet == tietInTimetable.Tiet);
-                    tietInTimetable.isDrag = isDragable;
+
+                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
+                                          tietInTimetable.Ngay == ngay &&
+                                          tietInTimetable.Tiet == tietSo;
+
+                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
                 }
 
                 return tkbBase;
@@ -1672,8 +1677,8 @@ namespace NA_Logic.Repository
                 // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaLop = dsTietGoc.Where(t => t.Id_lop == idGV && t.Id_ca == idCa).ToList();
-                    foreach (var tietGoc in cacTietCuaLop)
+                    var cacTietCuaGV = dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa).ToList();
+                    foreach (var tietGoc in cacTietCuaGV)
                     {
                         TimViTriXepDuoc_GV(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null)
@@ -1696,7 +1701,12 @@ namespace NA_Logic.Repository
                                       dsViTriXepDuoc.Any(vt =>
                                           vt.Ngay == tietInTimetable.Ngay &&
                                           vt.Tiet == tietInTimetable.Tiet);
-                    tietInTimetable.isDrag = isDragable;
+
+                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
+                                          tietInTimetable.Ngay == ngay &&
+                                          tietInTimetable.Tiet == tietSo;
+
+                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
                 }
 
                 return tkbBase;
