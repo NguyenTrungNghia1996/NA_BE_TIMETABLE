@@ -169,9 +169,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            //var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
-            //if (Idtkb <= 0 || !check_tkb)
-            //    return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
+            var check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
             var detail = _ob.GetTkbByLop(idLop, idtkb);
@@ -185,9 +185,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            //var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
-            //if (Idtkb <= 0 || !check_tkb)
-            //    return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
+            var check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
             var detail = _ob.GetTkbByGiaovien(idGV, idtkb);
@@ -201,6 +201,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
+            var check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.ProcessThoiKhoaBieu(idtkb,idDonvi);
             if (!add)
@@ -215,9 +218,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // mapper data 
-
-            // add 
+ 
             var detail = _ob.TimViTriXepDuoc_byLop(tietDachon,idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
@@ -227,9 +228,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // mapper data 
-
-            // add 
+            
             var detail = _ob.TimViTriXepDuoc_byGV(tietDachon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }

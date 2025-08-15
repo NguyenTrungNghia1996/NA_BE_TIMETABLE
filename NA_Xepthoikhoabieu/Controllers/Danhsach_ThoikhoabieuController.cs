@@ -127,7 +127,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             dstkb.Id_don_vi = idDonvi;
             //update
             bool add = _tkb.Update(dstkb);
-            if (!add)
+            bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
+            if (!add && !changestatus)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             return ApiResult.Success(new
             {
