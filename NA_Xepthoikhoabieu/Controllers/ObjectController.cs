@@ -122,7 +122,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
         //    if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            
+
 
         //    // Lấy bản ghi từ db
         //    var detail = _ob.Object_lophoc(idlop, idtkb);
@@ -145,22 +145,22 @@ namespace NA_Xepthoikhoabieu.Controllers
         //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id môn = {idmon}");
         //    return ApiResult.Success(detail, "Thành công");
         //}
-        //[HttpGet]
-        //[RequireToken]
-        //public IActionResult tkb(int Idtkb)
-        //{
-        //    // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-        //    if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        [HttpGet("test")]
+        [RequireToken]
+        public IActionResult tkb(int Idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-        //    var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
-        //    if (Idtkb <= 0 || !check_tkb)
-        //        return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
+            var check_tkb = _tkb.CheckId(Idtkb, idDonvi);
+            if (Idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
-        //    // Lấy bản ghi từ db
-        //    var detail = _ob.ProcessThoiKhoaBieu(Idtkb, idDonvi);
-        //    return ApiResult.Success(detail, "Thành công");
-        //}
+            // Lấy bản ghi từ db
+            var detail = _ob.LoadObjectsFromTiet_Test(Idtkb, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
         [HttpGet("lop")]
         [RequireToken]
         public IActionResult tkb_lop(int idLop, int idtkb)

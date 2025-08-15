@@ -29,7 +29,18 @@ namespace NA_Logic.Repository
         private Object_lop_mon _ObjectLopMon;
         private Object_MonKhoi _ObjectMonKhoi;
         private List<Object_Tohopmon> _ObjectTohopmon;
+        private List<object_tiet_co_dinh> _ObjectTietcodinh;
         private List<Object_Tiet> _dsTietGoc;
+
+        private List<Object_Monhoc> _dsObjectMon;
+        private List<Object_Lophoc> _dsObjectLop;
+        private List<Object_Giaovien> _dsObjectGiaovien;
+        private List<Object_Phonghoc> _dsObjectPhong;
+        private List<Object_lop_mon> _dsObjectLopMon;
+        private List<Object_MonKhoi> _dsObjectMonKhoi;
+        private List<Object_Tohopmon> _dsObjectTohopmon;
+        private List<object_tiet_co_dinh> _dsObjectTietcodinh;
+
         public ObjectRepository(NA_DbContext context)
         {
             _context = context;
@@ -133,10 +144,7 @@ namespace NA_Logic.Repository
                 if (result == null) return null;
                 var teacher = new Object_Giaovien
                 {
-                    Id_don_vi = result[0].Id_don_vi??0,
-                    Ten_don_vi = result[0].Ten_don_vi,
                     Id_giao_vien = result[0].Id_giao_vien ?? 0,
-                    Ten_giao_vien = result[0].Ten_giao_vien,
                     Chi_day_mot_buoi = giaovien?.Chi_day_mot_buoi ?? false,
                     So_tiet_toi_da = giaovien?.So_tiet_toi_da ?? 0,
                     //ds_tiet_phan_cong = new List<Ds_tiet_phan_cong>(),
@@ -282,15 +290,12 @@ namespace NA_Logic.Repository
 
                 var subject = new Object_Monhoc
                 {
-                    Id_don_vi = monhoc.Id_don_vi,
-                    Ten_don_vi = monhoc.Ten_don_vi,
                     Id_mon = monhoc.Id_mon,
-                    Ten_mon = monhoc.Ten_mon,
                     Hoc_cach_ngay = monhoc.Hoc_cach_ngay,
                     Xep_thanh_cap = monhoc.Xep_thanh_cap,
                     So_tiet_toi_da_mot_ca = monhoc.So_tiet_toi_da_1_ca,
                     So_tiet_toi_da_hai_ca = monhoc.So_tiet_toi_da_2_ca,
-                    ds_tiet_co_dinh = new List<Ds_tiet_co_dinh>(),
+                    //ds_tiet_co_dinh = new List<Ds_tiet_co_dinh>(),
                     //ds_tiet_tranh_xep = new List<Ds_tiet_tranh_xep>()
                 };
                 //foreach (var r in tietcodinh)
@@ -321,100 +326,99 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<Object_Tohopmon> Object_tohopmon(int? idmon, int? idlop, int? idDonvi)
-        {
-            try
-            {
-                var lop = _context.DM_Lophoc.FirstOrDefault(c=>c.Id == idlop);
-                int idkhoi = lop.Id_khoi;
-                int idban = lop.Id_ban;
-                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
-                {
-                    Value = idDonvi 
-                };
-                var paramIdMon = new SqlParameter("id_mon", SqlDbType.Int)
-                {
-                    Value = idmon 
-                };
-                var paramIdkhoi = new SqlParameter("id_khoi", SqlDbType.Int)
-                {
-                    Value = idkhoi 
-                };
-                var paramIdban = new SqlParameter("id_ban", SqlDbType.Int)
-                {
-                    Value = idban 
-                };
-                var result = _context.Set<Monhoc_Tohopmon_List>().FromSqlRaw("EXEC MonTohop_GetList_Paging  @idDonvi = @idDonvi, @id_mon = @id_mon, @id_khoi = @id_khoi, @id_ban = @id_ban",
-                                paramIdDonvi, paramIdMon, paramIdkhoi, paramIdban).ToList();
+        //public List<Object_Tohopmon> Object_tohopmon(int? idmon, int? idlop, int? idDonvi)
+        //{
+        //    try
+        //    {
+        //        var lop = _context.DM_Lophoc.FirstOrDefault(c=>c.Id == idlop);
+        //        int idkhoi = lop.Id_khoi;
+        //        int idban = lop.Id_ban;
+        //        var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+        //        {
+        //            Value = idDonvi 
+        //        };
+        //        var paramIdMon = new SqlParameter("id_mon", SqlDbType.Int)
+        //        {
+        //            Value = idmon 
+        //        };
+        //        var paramIdkhoi = new SqlParameter("id_khoi", SqlDbType.Int)
+        //        {
+        //            Value = idkhoi 
+        //        };
+        //        var paramIdban = new SqlParameter("id_ban", SqlDbType.Int)
+        //        {
+        //            Value = idban 
+        //        };
+        //        var result = _context.Set<Monhoc_Tohopmon_List>().FromSqlRaw("EXEC MonTohop_GetList_Paging  @idDonvi = @idDonvi, @id_mon = @id_mon, @id_khoi = @id_khoi, @id_ban = @id_ban",
+        //                        paramIdDonvi, paramIdMon, paramIdkhoi, paramIdban).ToList();
         
-                if (result == null || result.Count == 0) 
-                    return new List<Object_Tohopmon>();
+        //        if (result == null || result.Count == 0) 
+        //            return new List<Object_Tohopmon>();
 
-                var listTohopmon = new List<Object_Tohopmon>();
+        //        var listTohopmon = new List<Object_Tohopmon>();
 
-                var groupedResult = result.GroupBy(r => r.Id);
+        //        var groupedResult = result.GroupBy(r => r.Id);
 
-                foreach (var group in groupedResult)
-                {
-                    var firstItem = group.First();
-                    var tohopmon = new Object_Tohopmon
-                    {
-                        Id_don_vi = firstItem.Id_don_vi,
-                        Id_to_hop_mon = firstItem.Id,
-                        ds_mon = new List<Ds_mon>(),
-                        So_tiet_toi_da_1_ca = firstItem.So_tiet_toi_da_1_ca,
-                        So_tiet_toi_da_2_ca = firstItem.So_tiet_toi_da_2_ca
-                    };
+        //        foreach (var group in groupedResult)
+        //        {
+        //            var firstItem = group.First();
+        //            var tohopmon = new Object_Tohopmon
+        //            {
+        //                Id_to_hop_mon = firstItem.Id,
+        //                ds_mon = new List<Ds_mon>(),
+        //                So_tiet_toi_da_1_ca = firstItem.So_tiet_toi_da_1_ca,
+        //                So_tiet_toi_da_2_ca = firstItem.So_tiet_toi_da_2_ca
+        //            };
 
-                    foreach (var r in group)
-                    {
-                        if (r.Id_mon_1 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_1))
-                        {
-                            if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_1))
-                            {
-                                tohopmon.ds_mon.Add(new Ds_mon
-                                {
-                                    Id_mon = r.Id_mon_1,
-                                    Ten_mon = r.Ten_mon_hoc_1
-                                });
-                            }
-                        }
+        //            foreach (var r in group)
+        //            {
+        //                if (r.Id_mon_1 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_1))
+        //                {
+        //                    if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_1))
+        //                    {
+        //                        tohopmon.ds_mon.Add(new Ds_mon
+        //                        {
+        //                            Id_mon = r.Id_mon_1,
+        //                            Ten_mon = r.Ten_mon_hoc_1
+        //                        });
+        //                    }
+        //                }
 
-                        if (r.Id_mon_2 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_2))
-                        {
-                            if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_2))
-                            {
-                                tohopmon.ds_mon.Add(new Ds_mon
-                                {
-                                    Id_mon = r.Id_mon_2,
-                                    Ten_mon = r.Ten_mon_hoc_2
-                                });
-                            }
-                        }
+        //                if (r.Id_mon_2 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_2))
+        //                {
+        //                    if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_2))
+        //                    {
+        //                        tohopmon.ds_mon.Add(new Ds_mon
+        //                        {
+        //                            Id_mon = r.Id_mon_2,
+        //                            Ten_mon = r.Ten_mon_hoc_2
+        //                        });
+        //                    }
+        //                }
 
-                        if (r.Id_mon_3 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_3))
-                        {
-                            if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_3))
-                            {
-                                tohopmon.ds_mon.Add(new Ds_mon
-                                {
-                                    Id_mon = r.Id_mon_3,
-                                    Ten_mon = r.Ten_mon_hoc_3
-                                });
-                            }
-                        }
-                    }
+        //                if (r.Id_mon_3 > 0 && !string.IsNullOrEmpty(r.Ten_mon_hoc_3))
+        //                {
+        //                    if (!tohopmon.ds_mon.Any(m => m.Id_mon == r.Id_mon_3))
+        //                    {
+        //                        tohopmon.ds_mon.Add(new Ds_mon
+        //                        {
+        //                            Id_mon = r.Id_mon_3,
+        //                            Ten_mon = r.Ten_mon_hoc_3
+        //                        });
+        //                    }
+        //                }
+        //            }
 
-                    listTohopmon.Add(tohopmon);
-                }
+        //            listTohopmon.Add(tohopmon);
+        //        }
 
-                return listTohopmon;
-            }
-            catch (Exception)
-            {
-                return new List<Object_Tohopmon>();
-            }
-        }
+        //        return listTohopmon;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new List<Object_Tohopmon>();
+        //    }
+        //}
         //object lớp học
         //public Object_Lophoc Object_lophoc(int? idlop, int idtkb)
         //{
@@ -584,26 +588,399 @@ namespace NA_Logic.Repository
                 //    return;
                 //}
 
-                _ObjectMon = Object_monhoc(objectTiet.Id_mon, idDonvi);
-                //_ObjectLop = Object_lophoc(objectTiet.Id_lop, objectTiet.Id_tkb);
-                _ObjectGiaovien = Object_giaovien(objectTiet.Id_giao_vien, objectTiet.Id_tkb);
-                //if (objectTiet.Id_phong == 0)
-                //{
-                //    _ObjectPhong = null;
-                //}
-                //else
-                //{
-                //    _ObjectPhong = Object_phonghoc(objectTiet.Id_phong, objectTiet.Id_tkb);
-                //}
-                //_ObjectLopMon = Object_lopmon(objectTiet.Id_mon, objectTiet.Id_lop, objectTiet.Id_don_vi);
-                //_ObjectMonKhoi = Object_monkhoi(objectTiet.Id_mon, objectTiet.Id_lop, objectTiet.Id_don_vi);
-                _ObjectTohopmon = Object_tohopmon(objectTiet.Id_mon, objectTiet.Id_lop, objectTiet.Id_don_vi);
+                _ObjectMon = _dsObjectMon.FirstOrDefault(c=> c.Id_mon == objectTiet.Id_mon);
+                _ObjectLop = _dsObjectLop.FirstOrDefault(c=> c.Id_lop == objectTiet.Id_lop);
+                _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == objectTiet.Id_giao_vien);
+                if (objectTiet.Id_phong == 0)
+                {
+                    _ObjectPhong = null;
+                }
+                else
+                {
+                    _ObjectPhong = _dsObjectPhong.FirstOrDefault(c=>c.Id_phong == objectTiet.Id_phong);
+                }
+                _ObjectLopMon = _dsObjectLopMon.FirstOrDefault(c=>c.Id_lop == objectTiet.Id_lop && c.Id_mon == objectTiet.Id_mon);
+                //_ObjectMonKhoi = _dsObjectMonKhoi.FirstOrDefault(c=>c.Id_mon = objectTiet.Id_mon && c.Id_ban == _);
+                //_ObjectTohopmon = Object_tohopmon(objectTiet.Id_mon, objectTiet.Id_lop, objectTiet.Id_don_vi);
             }
             catch (Exception ex)
             {
                 return;
             }
         }
+        public void LoadObjectsFromTiet_Test(int idTkb, int idDonvi)
+        {
+            try
+            {
+                var ob_tiet = new List<Object_Tiet>();
+                var ob_giaovien = new List<Object_Giaovien>();
+                var gv_tietnghi = new List<(int Id_giao_vien, int Id_ca, int Ngay, int Tiet)>();
+                var ob_mon = new List<Object_Monhoc>();
+                var mh_tietnghi = new List<(int Id_mon, int Id_ca, int Ngay, int Tiet)>();
+                var ob_phong = new List<Object_Phonghoc>();
+                var ph_tietnghi = new List<(int Id_phong, int Id_ca, int Thu, int Tiet)>();
+                var ob_thm = new List<Object_Tohopmon>();
+                var ob_lop = new List<Object_Lophoc>();
+                var lh_tietnghi = new List<(int Id_lop, int Id_ca, int Thu, int Tiet)>();
+                var ob_lopmon = new List<Object_lop_mon>();
+                var lopmon_tietnghi = new List<(int Id_lop, int Id_mon, int Id_ca, int Thu, int Tiet)>();
+                var ob_monkhoi = new List<Object_MonKhoi>();
+                var mk_tietnghi = new List<(int Id_mon, int Id_khoi, int Id_ban, int Id_ca, int Thu, int Tiet)>();
+                var tietcodinh = new List<object_tiet_co_dinh>();
+
+                using (var cmd = _context.Database.GetDbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "Test";
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Thêm tham số
+                    var p1 = cmd.CreateParameter();
+                    p1.ParameterName = "@idDonvi";
+                    p1.Value = idDonvi;
+                    cmd.Parameters.Add(p1);
+
+                    var p2 = cmd.CreateParameter();
+                    p2.ParameterName = "@@idTkb";
+                    p2.Value = idTkb;
+                    cmd.Parameters.Add(p2);
+
+                    _context.Database.OpenConnection();
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            ob_tiet.Add(new Object_Tiet
+                            {
+                                Id = reader.GetInt32(0),
+                                Id_don_vi = reader.GetInt32(11),
+                                Id_tkb = reader.GetInt32(2),
+                                Id_ca = reader.GetInt32(2),
+                                Id_giao_vien = reader.GetInt32(4),
+                                Ten_giao_vien = !reader.IsDBNull(5) ? reader.GetString(5) : "",
+                                Id_lop = reader.GetInt32(6),
+                                Ten_lop = !reader.IsDBNull(7)?reader.GetString(7) : "",
+                                Id_mon = reader.GetInt32(0),
+                                Ten_mon = !reader.IsDBNull (8)?reader.GetString(8) :"",
+                                Id_phong = reader.GetInt32(9),
+                                Ten_phong = !reader.IsDBNull(10)? reader.GetString(10) :"",
+                                Tiet_thu_may = reader.GetInt32(12),
+                                Ngay = reader.GetInt32(13),
+                                Tiet = reader.GetInt32(14),
+                                Khoa = reader.GetBoolean(15)
+                            });
+                        }
+
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            ob_giaovien.Add(new Object_Giaovien
+                            {
+                                Id_giao_vien = reader.GetInt32(0),
+                                Chi_day_mot_buoi = reader.GetBoolean(1),
+                                So_tiet_toi_da = reader.GetInt32(2),
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            gv_tietnghi.Add((
+                                reader.GetInt32(0), 
+                                reader.GetInt32(1), 
+                                reader.GetInt32(2), 
+                                reader.GetInt32(3)  
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read()) {
+                            ob_mon.Add(new Object_Monhoc
+                            {
+                                Id_mon = reader.GetInt32(0),
+                                Hoc_cach_ngay = reader.GetBoolean(1),
+                                Xep_thanh_cap = reader.GetBoolean(2),
+                                So_tiet_toi_da_mot_ca = reader.GetInt32(3),
+                                So_tiet_toi_da_hai_ca = reader.GetInt32(4),
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            mh_tietnghi.Add((
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetInt32(2),
+                                reader.GetInt32(3)
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read()) {
+                            ob_phong.Add(new Object_Phonghoc
+                            {
+                                Id_phong = reader.GetInt32(0),
+                                Id_loai_phong = reader.GetInt32(1),
+                                Khong_kiem_tra_xung_dot = reader.GetBoolean(2)
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            ph_tietnghi.Add((
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetInt32(2),
+                                reader.GetInt32(3)
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read()) {
+                            ob_thm.Add(new Object_Tohopmon
+                            {
+                                Id_to_hop_mon = reader.GetInt32(0),
+                                Id_mon_1 = reader.GetInt32(2),
+                                Id_mon_2 = reader.GetInt32(3),
+                                Id_mon_3 = reader.GetInt32(4),
+                                So_tiet_toi_da_1_ca = reader.GetInt32(5),
+                                So_tiet_toi_da_2_ca = reader.GetInt32(6),
+                                Id_ban = reader.GetInt32(7),
+                                Id_khoi = reader.GetInt32(8)
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read()) {
+                            ob_lop.Add(new Object_Lophoc
+                            {
+                                Id_lop = reader.GetInt32(0),
+                                Id_ban = reader.GetInt32(1),
+                                Id_khoi = reader.GetInt32(2)
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            lh_tietnghi.Add((
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetInt32(2),
+                                reader.GetInt32(3)
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read()) {
+                            ob_lopmon.Add(new Object_lop_mon
+                            {
+                                Id_lop = reader.GetInt32(0),
+                                Id_mon = reader.GetInt32(1)
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            lopmon_tietnghi.Add((
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetInt32(2),
+                                reader.GetInt32(3),
+                                reader.GetInt32(4)
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            ob_monkhoi.Add(new Object_MonKhoi
+                            {
+                                Id_mon = reader.GetInt32(0),
+                                Id_khoi = reader.GetInt32(1),
+                                Id_ban = reader.GetInt32(2)
+                            });
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            mk_tietnghi.Add((
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetInt32(2),
+                                reader.GetInt32(3),
+                                reader.GetInt32(4),
+                                reader.GetInt32(5)
+                            ));
+                        }
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            tietcodinh.Add(new object_tiet_co_dinh
+                            {
+                                Id_mon = reader.GetInt32(0),
+                                Id_ca = reader.GetInt32(1),
+                                Ngay = reader.GetInt32(2),
+                                Tiet = reader.GetInt32(3),
+                                Id_lop = reader.GetInt32(4)
+                            });
+                        }
+
+                    }
+                }
+
+                for (int i = 0; i < ob_giaovien.Count; i++)
+                {
+                    var gv = ob_giaovien[i];
+                    gv.ds_tiet_tranh_xep = gv_tietnghi
+                        .Where(t => t.Id_giao_vien == gv.Id_giao_vien)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Ngay,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+
+                for (int i = 0; i < ob_giaovien.Count; i++)
+                {
+                    var gv = ob_giaovien[i];
+                    gv.ds_tiet_phan_cong = ob_tiet
+                        .Where(t => t.Id_giao_vien == gv.Id_giao_vien)
+                        .Select(t => new Ds_tiet_phan_cong
+                        {
+                            Id_mon = t.Id_mon,
+                            Ten_mon = t.Ten_mon,
+                            Id_lop = t.Id_lop,
+                            Ten_lop = t.Ten_lop,
+                            Id_phong = t.Id_phong,
+                            Ten_phong = t.Ten_phong,
+                            Id_ca = t.Id_ca,
+                            Tiet = t.Tiet,
+                            Ngay = t.Ngay
+                        })
+                        .ToList();
+                }
+                for (int i = 0; i < ob_giaovien.Count; i++)
+                {
+                    var gv = ob_giaovien[i];
+                    gv.ds_tiet_da_xep = ob_tiet
+                        .Where(t=> t.Ngay > 0 && t.Tiet > 0)
+                        .Select(t => new Ds_tiet_da_xep
+                        {
+                            Id_giao_vien = t.Id_giao_vien,
+                            Id_mon = t.Id_mon,
+                            Ten_mon = t.Ten_mon,
+                            Id_lop = t.Id_lop,
+                            Ten_lop = t.Ten_lop,
+                            Id_phong = t.Id_phong,
+                            Ten_phong = t.Ten_phong,
+                            Id_ca = t.Id_ca,
+                            Tiet = t.Tiet,
+                            Ngay = t.Ngay
+                        })
+                        .ToList();
+                }
+                for (int i = 0; i < ob_giaovien.Count; i++)
+                {
+                    var gv = ob_giaovien[i];
+                    gv.ds_tiet_chua_xep = ob_tiet
+                        .Where(t=> t.Ngay > 0 && t.Tiet > 0)
+                        .Select(t => new Ds_chua_xep
+                        {
+                            Id_giao_vien = t.Id_giao_vien,
+                            Id_mon = t.Id_mon,
+                            Ten_mon = t.Ten_mon,
+                            Id_lop = t.Id_lop,
+                            Ten_lop = t.Ten_lop,
+                            Id_phong = t.Id_phong,
+                            Ten_phong = t.Ten_phong,
+                            Id_ca = t.Id_ca,
+                            Tiet = t.Tiet,
+                            Ngay = t.Ngay
+                        })
+                        .ToList();
+                }
+
+                for (int i = 0; i < ob_mon.Count; i++)
+                {
+                    var mh = ob_mon[i];
+                    mh.ds_tiet_tranh_xep = mh_tietnghi
+                        .Where(t => t.Id_mon == mh.Id_mon)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Ngay,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+
+                for (int i = 0; i < ob_phong.Count; i++)
+                {
+                    var ph = ob_phong[i];
+                    ph.ds_tiet_tranh_xep = ph_tietnghi
+                        .Where(t => t.Id_phong == ph.Id_phong)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Thu,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+
+                for (int i = 0; i < ob_lop.Count; i++)
+                {
+                    var lh = ob_lop[i];
+                    lh.ds_tiet_tranh_xep = lh_tietnghi
+                        .Where(t => t.Id_lop == lh.Id_lop)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Thu,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+                for (int i = 0; i < ob_lopmon.Count; i++)
+                {
+                    var lm = ob_lopmon[i];
+                    lm.ds_tiet_tranh_xep_lop_mon = lopmon_tietnghi
+                        .Where(t => t.Id_mon == lm.Id_mon && t.Id_lop == lm.Id_lop)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Thu,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+                for (int i = 0; i < ob_monkhoi.Count; i++)
+                {
+                    var mk = ob_monkhoi[i];
+                    mk.ds_tiet_tranh_xep_mon_khoi = mk_tietnghi
+                        .Where(t => t.Id_mon == mk.Id_mon && t.Id_ban == mk.Id_ban && t.Id_khoi == mk.Id_khoi)
+                        .Select(t => new Ds_tiet_tranh_xep
+                        {
+                            Id_ca = t.Id_ca,
+                            Ngay = t.Thu,
+                            Tiet = t.Tiet
+                        })
+                        .ToList();
+                }
+                _dsTietGoc = ob_tiet;
+                _dsObjectGiaovien = ob_giaovien;
+                _dsObjectMon = ob_mon;
+                _dsObjectPhong = ob_phong;
+                _dsObjectLop = ob_lop;
+                _dsObjectLopMon = ob_lopmon;
+                _dsObjectMonKhoi = ob_monkhoi;
+                _dsObjectTohopmon = ob_thm;
+                _dsObjectTietcodinh = tietcodinh;
+
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
+       
+
         public bool Check_gv(int Ngay, int Tiet, int Ca, int? id_giaovien, int? idphong, int id_tkb)
         {
             var object_gv = _ObjectGiaovien;
@@ -692,7 +1069,7 @@ namespace NA_Logic.Repository
             var check = false;
             foreach (var ob_thm in list_thm)
             {
-                var dsmon = ob_thm.ds_mon;
+                //var dsmon = ob_thm.ds_mon;
                 int so_tiet_da_xep_2_ca = 0;
 
                 var ds_ca = _context.Ca_Donvi.Where(c => c.Id_don_vi == iddonvi).ToList();
@@ -700,11 +1077,11 @@ namespace NA_Logic.Repository
                 foreach (var ca in ds_ca)
                 {
                     int so_tiet_da_xep_1_ca = 0;
-                    foreach (var mon in dsmon)
-                    {
-                         int so_tiet_1_mon_1_ca = ds_da_xep.Where(c => c.Id_lop == idlop && c.Id_mon == mon.Id_mon && c.Id_ca == ca.Id_ca_hoc && c.Ngay == Ngay).Count();
-                        so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca+1;
-                    }
+                    //foreach (var mon in dsmon)
+                    //{
+                    //     int so_tiet_1_mon_1_ca = ds_da_xep.Where(c => c.Id_lop == idlop && c.Id_mon == mon.Id_mon && c.Id_ca == ca.Id_ca_hoc && c.Ngay == Ngay).Count();
+                    //    so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca+1;
+                    //}
                     if (so_tiet_da_xep_1_ca > ob_thm.So_tiet_toi_da_1_ca)
                     {
                         check = true;

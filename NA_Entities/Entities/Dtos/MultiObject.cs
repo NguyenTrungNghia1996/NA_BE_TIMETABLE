@@ -9,11 +9,11 @@ namespace NA_Entities.Entities.Dtos
 {
     public class Ds_tiet_phan_cong
     {
-        public int Id_mon { get; set; }
+        public int? Id_mon { get; set; }
         public string Ten_mon { get; set; }
-        public int Id_lop { get; set; }
+        public int? Id_lop { get; set; }
         public string Ten_lop { get; set; }
-        public int Id_phong { get; set; }
+        public int? Id_phong { get; set; }
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
@@ -23,12 +23,12 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ds_tiet_da_xep
     {
-        public int Id_giao_vien { get; set; }
-        public int Id_mon { get; set; }
+        public int? Id_giao_vien { get; set; }
+        public int? Id_mon { get; set; }
         public string Ten_mon { get; set; }
-        public int Id_lop { get; set; }
+        public int? Id_lop { get; set; }
         public string Ten_lop { get; set; }
-        public int Id_phong { get; set; }
+        public int? Id_phong { get; set; }
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
@@ -38,11 +38,12 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ds_chua_xep
     {
-        public int Id_mon { get; set; }
+        public int? Id_giao_vien { get; set; }
+        public int? Id_mon { get; set; }
         public string Ten_mon { get; set; }
-        public int Id_lop { get; set; }
+        public int? Id_lop { get; set; }
         public string Ten_lop { get; set; }
-        public int Id_phong { get; set; }
+        public int? Id_phong { get; set; }
         public string Ten_phong { get; set; }
         public int Id_ca { get; set; }
         public int Tiet { get; set; }
@@ -79,71 +80,67 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
     }
+    public class Ds_tiet_tranh_xep
+    {
+        public int Id_ca { get; set; }
+        public int Ngay { get; set; }
+        public int Tiet { get; set; }
+    }
     public class Object_Giaovien
     {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
-        public int Id_giao_vien { get; set; } = 0;
-        public string Ten_giao_vien { get; set; } = string.Empty;
+        public int? Id_giao_vien { get; set; } = 0;
         public bool? Chi_day_mot_buoi { get; set; } = false;
         public int? So_tiet_toi_da { get; set; } = 0;
         public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
         public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
         public List<Ds_chua_xep> ds_tiet_chua_xep { get; set; } = new List<Ds_chua_xep>();
-        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_Monhoc
     {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_mon { get; set; } = 0;
-        public string Ten_mon { get; set; } = string.Empty;
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         public int So_tiet_toi_da_mot_ca { get; set; } = 0;
         public int So_tiet_toi_da_hai_ca { get; set; } = 0;
-        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
-        public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
     }
     public class Object_Phonghoc
     {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_phong { get; set; } = 0;
-        public string Ten_phong { get; set; } = string.Empty;
         public int Id_loai_phong { get; set; } = 0;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
         public List<Ds_mon> ds_mon_tai_phong { get; set; } = new List<Ds_mon>();
-        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
-        public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        //public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
     }
     
     public class Object_Tohopmon 
     {
-        public int Id_don_vi { get;set; } = 0;
         public int Id_to_hop_mon { get; set; } = 0;
-        public List<Ds_mon> ds_mon { get; set; } = new List<Ds_mon>();
+        public int Id_mon_1 { get; set; } = 0;
+        public int Id_mon_2 { get; set; } = 0;
+        public int Id_mon_3 { get; set; } = 0;
         public int So_tiet_toi_da_1_ca { get; set; } = 0;
         public int So_tiet_toi_da_2_ca { get; set; } = 0;
+        public int Id_ban { get; set; } = 0;
+        public int Id_khoi { get; set; } = 0;
     }
     public class Object_Lophoc
     {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_lop { get; set; } = 0;
-        public string Ten_lop { get; set; } = string.Empty;
-        public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
-        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
+        public int Id_ban { get; set; } = 0;
+        public int Id_khoi { get; set; } = 0; 
+        //public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_MonKhoi
     {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
         public int Id_mon { get; set; } = 0;
-        public string Ten_mon { get; set; } = string.Empty;
         public int Id_khoi { get; set; } = 0;
-        public string Ten_khoi { get; set; } = string.Empty;
-        public List<Ds_tiet_tranh_xep_mon_khoi> ds_tiet_tranh_xep_mon_khoi { get; set; } = new List<Ds_tiet_tranh_xep_mon_khoi>();
+        public int Id_ban { get; set; } = 0;
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_mon_khoi { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Tiethoc
     {
@@ -170,14 +167,11 @@ namespace NA_Entities.Entities.Dtos
         public bool Khoa { get; set; } = false;
         public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
     }
-    public class Object_lop_mon {
-        public int Id_don_vi { get; set; } = 0;
-        public string Ten_don_vi { get; set; } = string.Empty;
+    public class Object_lop_mon 
+    {
         public int Id_lop { get; set; } = 0;
-        public string Ten_lop { get; set; } = string.Empty;
         public int Id_mon { get; set; } = 0;
-        public string Ten_mon { get; set; } = string.Empty;
-        //public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep_lop_mon { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class object_tiet_co_dinh
     {
