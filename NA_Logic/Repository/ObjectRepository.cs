@@ -833,6 +833,24 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
+        public bool CheckViTriXepDuoc_Lop(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet)
+        {
+            try
+            {
+                var tietban = DsTietTranhXep(objectTiet);
+                var ds_tiet_da_xep_gv = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+
+                var slotKey = $"{Ngay}_{Ca}_{Tiet}";
+
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey))
+                    return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         public void TimViTriXepDuoc_GV(Object_Tiet objectTiet, int idDonvi)
         {
             try
@@ -871,7 +889,22 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
-
+        public bool CheckViTriXepDuoc_GV(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet)
+        {
+            try
+            {
+                var tietban = DsTietTranhXep(objectTiet);
+                var ds_tiet_da_xep_phong = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var slotKey = $"{Ngay}_{Ca}_{Tiet}";
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                    return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         private HashSet<string> DsTietTranhXep(Object_Tiet objectTiet)
         {
             //var tietTranhXep = new HashSet<string>();
@@ -1532,7 +1565,7 @@ namespace NA_Logic.Repository
             return result;
         }
 
-        public ObjectTiet_theoLopDto TimViTriXepDuoc_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
+        public ObjectTiet_theoLopDto TimViTriXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
         {
             try
             {
@@ -1624,7 +1657,7 @@ namespace NA_Logic.Repository
                 return new ObjectTiet_theoLopDto();
             }
         }
-        public ObjectTiet_theoGVDto TimViTriXepDuoc_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
+        public ObjectTiet_theoGVDto TimViTriXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
         {
             try
             {
@@ -1717,13 +1750,13 @@ namespace NA_Logic.Repository
             }
         }
 
-        public ObjectTiet_theoLopDto DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
+        public (bool success, ObjectTiet_theoLopDto result) DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
         {
             try
             {
                 if (tietDachon?.timetable == null || tietDachon.timetable.Count < 2)
                 {
-                    return new ObjectTiet_theoLopDto();
+                    return (false, new ObjectTiet_theoLopDto());
                 }
 
                 var tiet1 = tietDachon.timetable[0];
@@ -1731,7 +1764,7 @@ namespace NA_Logic.Repository
 
                 if (tiet1 == null || tiet2 == null)
                 {
-                    return new ObjectTiet_theoLopDto();
+                    return (false, new ObjectTiet_theoLopDto());
                 }
 
                 int ngay1 = tiet1.Ngay;
@@ -1762,31 +1795,55 @@ namespace NA_Logic.Repository
                     Id_ca = tiet2.Id_ca,
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
-
-                // Đổi chỗ
-                bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2); 
-                bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1); 
-
-                if (!updateTiet1 || !updateTiet2)
+                bool check = true;
+                if( objectTiet1.Id_mon == 0)
                 {
-                    return new ObjectTiet_theoLopDto();
+                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                }
+                else if(objectTiet2.Id_mon == 0)
+                {
+                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                }
+                else
+                {
+                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    if(check_t1 && check_t2)
+                    {
+                        check = true;
+                    }
+                    check = false;
                 }
 
-                var ketQuaCheckViTri = TimViTriXepDuoc_Lop(tietDachon, idDonvi);
-                return ketQuaCheckViTri;
+                if (check)
+                {
+                    // Đổi chỗ
+                    bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
+                    bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+
+                    if (!updateTiet1 || !updateTiet2)
+                    {
+                        return (false, new ObjectTiet_theoLopDto());
+                    }
+
+                    var ketQuaCheckViTri = TimViTriXepDuoc_byLop(tietDachon, idDonvi);
+                    return (true, ketQuaCheckViTri);
+                }
+
+                return (false, new ObjectTiet_theoLopDto());
             }
             catch (Exception ex)
             {
-                return new ObjectTiet_theoLopDto();
+                return (false, new ObjectTiet_theoLopDto());
             }
         }
-        public ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
+        public (bool success, ObjectTiet_theoGVDto result) DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
         {
             try
             {
                 if (tietDachon?.timetable == null || tietDachon.timetable.Count < 2)
                 {
-                    return new ObjectTiet_theoGVDto();
+                    return (false, new ObjectTiet_theoGVDto());
                 }
 
                 var tiet1 = tietDachon.timetable[0];
@@ -1794,7 +1851,7 @@ namespace NA_Logic.Repository
 
                 if (tiet1 == null || tiet2 == null)
                 {
-                    return new ObjectTiet_theoGVDto();
+                    return (false, new ObjectTiet_theoGVDto());
                 }
 
                 int ngay1 = tiet1.Ngay;
@@ -1826,21 +1883,46 @@ namespace NA_Logic.Repository
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
 
-                // Đổi chỗ
-                bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2); 
-                bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1); 
-
-                if (!updateTiet1 || !updateTiet2)
+                bool check = true;
+                if (objectTiet1.Id_mon == 0)
                 {
-                    return new ObjectTiet_theoGVDto();
+                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                }
+                else if (objectTiet2.Id_mon == 0)
+                {
+                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                }
+                else
+                {
+                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    if (check_t1 && check_t2)
+                    {
+                        check = true;
+                    }
+                    check = false;
                 }
 
-                var ketQuaCheckViTri = TimViTriXepDuoc_GV(tietDachon, idDonvi);
-                return ketQuaCheckViTri;
+                if (check)
+                {
+                    // Đổi chỗ
+                    bool updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
+                    bool updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+
+                    if (!updateTiet1 || !updateTiet2)
+                    {
+                        return (false, new ObjectTiet_theoGVDto());
+                    }
+
+                    var ketQuaCheckViTri = TimViTriXepDuoc_byGV(tietDachon, idDonvi);
+                    return (true, ketQuaCheckViTri);
+                }
+
+                return (false, new ObjectTiet_theoGVDto());
             }
             catch (Exception ex)
             {
-                return new ObjectTiet_theoGVDto();
+                return (false, new ObjectTiet_theoGVDto());
             }
         }
     }

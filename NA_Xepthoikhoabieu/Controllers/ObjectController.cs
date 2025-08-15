@@ -218,7 +218,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
 
             // add 
-            var detail = _ob.TimViTriXepDuoc_Lop(tietDachon,idDonvi);
+            var detail = _ob.TimViTriXepDuoc_byLop(tietDachon,idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost("timvitri/giaovien")]
@@ -230,7 +230,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
 
             // add 
-            var detail = _ob.TimViTriXepDuoc_GV(tietDachon, idDonvi);
+            var detail = _ob.TimViTriXepDuoc_byGV(tietDachon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost("update/lop")]
@@ -242,7 +242,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
 
             // add 
-            var detail = _ob.DoiChoHaiTiet_Lop(tietDaChon, idDonvi);
+            var (success, detail) = _ob.DoiChoHaiTiet_Lop(tietDaChon, idDonvi);
+            if (!success)
+            {
+                return ApiResult.Success(detail, "Thất bại");
+            }
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost("update/giaovien")]
@@ -254,7 +258,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
 
             // add 
-            var detail = _ob.DoiChoHaiTiet_GV(tietDaChon, idDonvi);
+            var (success, detail) = _ob.DoiChoHaiTiet_GV(tietDaChon, idDonvi);
+            if (!success)
+            {
+                return ApiResult.Success(detail, "Thất bại");
+            }
             return ApiResult.Success(detail, "Thành công");
         }
     }

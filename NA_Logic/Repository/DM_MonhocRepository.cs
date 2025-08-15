@@ -88,7 +88,7 @@ namespace NA_Logic.Repository
                 {
                     Value = id_lop
                 };
-                var result = _context.Set<MonLop>().FromSqlRaw("EXEC MonLop_GetList @id_lop, @idDonvi",
+                var result = _context.Set<MonLop>().FromSqlRaw("EXEC GetMonByLop @id_lop, @idDonvi",
                       paramIdLop, paramIdDonvi)
                     .ToList();
                 if (result == null) result = new List<MonLop>();

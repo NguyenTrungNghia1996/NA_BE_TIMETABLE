@@ -19,9 +19,9 @@ namespace NA_Logic.IRepository
         bool ProcessThoiKhoaBieu(int idtkb, int idDonvi);
         ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb);
         ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb);
-        ObjectTiet_theoLopDto TimViTriXepDuoc_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
-        ObjectTiet_theoGVDto TimViTriXepDuoc_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
-        ObjectTiet_theoLopDto DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
-        ObjectTiet_theoGVDto DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
+        ObjectTiet_theoLopDto TimViTriXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
+        ObjectTiet_theoGVDto TimViTriXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
+        (bool success, ObjectTiet_theoLopDto result) DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
+        (bool success, ObjectTiet_theoGVDto result) DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
     }
 }
