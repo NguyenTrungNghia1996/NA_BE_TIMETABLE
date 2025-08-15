@@ -208,8 +208,8 @@ namespace NA_Logic.Repository
                                       Id = ca.Id,
                                       Ten = ca.Ten
                                   }).ToList();
-            var tietBan = _context.Tiet_Tranh_Xep
-                        .Where(tb => tb.Id_mon == Id)
+            var tietBan = _context.Tiet_ban
+                        .Where(tb => tb.Id_phong == Id)
                         .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })
                         .ToList();
 
