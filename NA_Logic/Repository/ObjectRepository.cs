@@ -1624,12 +1624,12 @@ namespace NA_Logic.Repository
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
-                            foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
+                            bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri =>
+                                viTri.Ngay == ngay && viTri.Tiet == tietSo);
+
+                            if (coViTriTrung)
                             {
-                                if (viTri.Ngay == ngay && viTri.Tiet == tietSo)
-                                {
-                                    dsViTriXepDuoc.Add((viTri.Ngay, viTri.Tiet));
-                                }
+                                dsViTriXepDuoc.Add((tietGoc.Ngay, tietGoc.Tiet));
                             }
                         }
                     }
