@@ -837,8 +837,9 @@ namespace NA_Logic.Repository
         {
             try
             {
+                Object_Giaovien ob_gv = Object_giaovien(objectTiet.Id_giao_vien, objectTiet.Id_tkb);
                 var tietban = DsTietTranhXep(objectTiet);
-                var ds_tiet_da_xep_gv = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_gv = ob_gv.ds_tiet_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
 
                 var slotKey = $"{Ngay}_{Ca}_{Tiet}";
 
@@ -893,6 +894,7 @@ namespace NA_Logic.Repository
         {
             try
             {
+                Object_Giaovien ob_gv = Object_giaovien(objectTiet.Id_giao_vien, objectTiet.Id_tkb);
                 var tietban = DsTietTranhXep(objectTiet);
                 var ds_tiet_da_xep_phong = _ObjectGiaovien.ds_tiet_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var slotKey = $"{Ngay}_{Ca}_{Tiet}";
@@ -1812,7 +1814,10 @@ namespace NA_Logic.Repository
                     {
                         check = true;
                     }
-                    check = false;
+                    else
+                    {
+                        check = false;
+                    }    
                 }
 
                 if (check)
@@ -1886,21 +1891,24 @@ namespace NA_Logic.Repository
                 bool check = true;
                 if (objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    check = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
                 }
                 else if (objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    check = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
                 }
                 else
                 {
-                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
-                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
                     if (check_t1 && check_t2)
                     {
                         check = true;
                     }
-                    check = false;
+                    else
+                    {
+                        check = false;
+                    }
                 }
 
                 if (check)
