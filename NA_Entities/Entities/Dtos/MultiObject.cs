@@ -92,8 +92,8 @@ namespace NA_Entities.Entities.Dtos
         public bool? Chi_day_mot_buoi { get; set; } = false;
         public int? So_tiet_toi_da { get; set; } = 0;
         public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
-        public List<Ds_tiet_da_xep> ds_tiet_da_xep { get; set; } = new List<Ds_tiet_da_xep>();
-        public List<Ds_chua_xep> ds_tiet_chua_xep { get; set; } = new List<Ds_chua_xep>();
+        public List<Object_Tiet> ds_tiet_da_xep { get; set; } = new List<Object_Tiet>();
+        public List<Object_Tiet> ds_tiet_chua_xep { get; set; } = new List<Object_Tiet>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
     public class Object_Monhoc
@@ -180,5 +180,9 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
         public int Id_lop { get; set; } = 0;
+    }
+    public class Object_ca
+    {
+        public int Id_ca { get; set; } = 0;
     }
 }
