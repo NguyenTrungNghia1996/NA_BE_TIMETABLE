@@ -2091,7 +2091,7 @@ namespace NA_Logic.Repository
                 int idMon = tiet.Id_mon;
                 int idGiaoVien = tiet.Id_giao_vien;
                 int idPhong = tiet.Id_phong;
-
+                
                 var dsTietGoc = List_Object_tiet(idTkb);
                 if (dsTietGoc == null || dsTietGoc.Count == 0)
                 {
@@ -2141,22 +2141,17 @@ namespace NA_Logic.Repository
                         }
                     }
                 }
-
+                dsViTriXepDuoc.Add((ngay, tietSo));
                 // Cập nhật isDrag cho các tiết trong tkbBase
-                foreach (var tietInTimetable in tkbBase.ds_chua_xep)
+                foreach (var tietdaxep in tkbBase.timetable)
                 {
-                    bool isDragable = tietInTimetable.Id_ca == idCa &&
+                    bool isDrag = tietdaxep.Id_ca == idCa &&
                                       dsViTriXepDuoc.Any(vt =>
-                                          vt.Ngay == tietInTimetable.Ngay &&
-                                          vt.Tiet == tietInTimetable.Tiet);
+                                          vt.Ngay == tietdaxep.Ngay &&
+                                          vt.Tiet == tietdaxep.Tiet);
 
-                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
-                                          tietInTimetable.Ngay == ngay &&
-                                          tietInTimetable.Tiet == tietSo;
-
-                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
+                    tietdaxep.isDrag = isDrag;
                 }
-
                 return tkbBase;
             }
             catch (Exception ex)
@@ -2214,18 +2209,14 @@ namespace NA_Logic.Repository
                 
 
                 // Cập nhật isDrag cho các tiết trong tkbBase
-                foreach (var tietInTimetable in tkbBase.timetable)
+                foreach (var tietchuaxep in tkbBase.ds_chua_xep)
                 {
-                    bool isDragable = tietInTimetable.Id_ca == idCa &&
+                    bool isDragable = tietchuaxep.Id_ca == idCa &&
                                       dsViTriXepDuoc.Any(vt =>
-                                          vt.Ngay == tietInTimetable.Ngay &&
-                                          vt.Tiet == tietInTimetable.Tiet);
+                                          vt.Ngay == tietchuaxep.Ngay &&
+                                          vt.Tiet == tietchuaxep.Tiet);
 
-                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
-                                          tietInTimetable.Ngay == ngay &&
-                                          tietInTimetable.Tiet == tietSo;
-
-                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
+                    tietchuaxep.isDrag = isDragable;
                 }
 
                 return tkbBase;
@@ -2357,22 +2348,18 @@ namespace NA_Logic.Repository
                         }
                     }
                 }
-
+                dsViTriXepDuoc.Add((ngay, tietSo));
                 // Cập nhật isDrag cho các tiết trong tkbBase
-                foreach (var tietInTimetable in tkbBase.timetable)
+                foreach (var tietdaxep in tkbBase.timetable)
                 {
-                    bool isDragable = tietInTimetable.Id_ca == idCa &&
+                    bool isDragable = tietdaxep.Id_ca == idCa &&
                                       dsViTriXepDuoc.Any(vt =>
-                                          vt.Ngay == tietInTimetable.Ngay &&
-                                          vt.Tiet == tietInTimetable.Tiet);
+                                          vt.Ngay == tietdaxep.Ngay &&
+                                          vt.Tiet == tietdaxep.Tiet);
 
-                    bool isSelectedTiet = tietInTimetable.Id_chitiet == idChitiet &&
-                                          tietInTimetable.Ngay == ngay &&
-                                          tietInTimetable.Tiet == tietSo;
 
-                    tietInTimetable.isDrag = isDragable || isSelectedTiet;
+                    tietdaxep.isDrag = isDragable;
                 }
-
                 return tkbBase;
             }
             catch (Exception ex)

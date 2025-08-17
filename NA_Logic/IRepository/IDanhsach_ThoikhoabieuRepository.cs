@@ -11,7 +11,7 @@ namespace NA_Logic.IRepository
     public interface IDanhsach_ThoikhoabieuRepository
     {
         List<Danhsach_ThoikhoabieuList> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord);
-        Danhsach_Thoikhoabieu GetDetailById(int Id, int idDonvi);
+        ThoiKhoaBieu_Detail GetDetailById(int Id, int idDonvi);
         List<Chitiet_Thoikhoabieu> GetDetailTKB(int Id);
         bool Add(Danhsach_Thoikhoabieu ds_thoikhoabieu);
         bool AddChitiet_tkb(int Id);
