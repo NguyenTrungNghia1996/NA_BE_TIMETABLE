@@ -58,18 +58,30 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Danhsach_Thoikhoabieu GetDetailById(int Id, int idDonvi)
+        public ThoiKhoaBieu_Detail GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var Giaovien = _context.Danhsach_Thoikhoabieu.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
-                return Giaovien;
+                var tkb = _context.Danhsach_Thoikhoabieu.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
+                var tiet = _context.Chitiet_Thoikhoabieu.Where(c => c.Id_tkb == Id).ToList();
+                ThoiKhoaBieu_Detail tkb_detail = new ThoiKhoaBieu_Detail(){
+                    Id = tkb.Id,
+                    Ten = tkb.Ten,
+                    Dang_su_dung = tkb.Dang_su_dung,
+                    Id_don_vi = idDonvi,
+                    Trang_thai_xep = tkb.Trang_thai_xep,
+                    Tong_tat_ca_tiet = tiet.Count(),
+                    Tong_tiet_da_xep = tiet.Where(c => c.Ngay > 0 && c.Tiet > 0).Count(),
+                    Tong_tiet_chua_xep = tiet.Where(c => c.Ngay == 0 && c.Tiet == 0).Count()
+                };
+                return tkb_detail;
             }
             catch (Exception)
             {
                 return null;
             }
         }
+        
         public List<Chitiet_Thoikhoabieu> GetDetailTKB(int Id)
         {
             try
@@ -119,6 +131,27 @@ namespace NA_Logic.Repository
                 _context.ChangeTracker.Clear();
                 _context.Danhsach_Thoikhoabieu.Update(danhsach_Thoikhoabieu);
                 _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool Huy_KQ(int Id)
+        {
+            try
+            {
+                var del = _context.Chitiet_Thoikhoabieu.Where(x => x.Id_tkb == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    foreach (var item in del)
+                    {
+                        item.Ngay = 0;
+                        item.Tiet = 0; 
+                    }
+                    _context.BulkUpdate(del);
+                }
                 return true;
             }
             catch

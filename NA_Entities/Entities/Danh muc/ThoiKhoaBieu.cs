@@ -15,6 +15,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; } = string.Empty;
         public bool Dang_su_dung { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
+        public bool Trang_thai_xep { get; set; } = false;
     }
     public class Danhsach_ThoikhoabieuList
     {
@@ -25,6 +26,17 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; } = string.Empty;
         public bool Dang_su_dung { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
+        public bool Trang_thai_xep { get; set; } = false;
     }
-    
+    public class ThoiKhoaBieu_Detail
+    {
+        public int Id { get; set; } = 0;
+        public string Ten { get; set; } = string.Empty;
+        public bool Dang_su_dung { get; set; } = false;
+        public int Id_don_vi { get; set; } = 0;
+        public bool Trang_thai_xep { get; set; } = false;
+        public int Tong_tat_ca_tiet { get; set; } = 0;
+        public int Tong_tiet_da_xep { get; set; } = 0;
+        public int Tong_tiet_chua_xep { get; set; } = 0;
+    }
 }
