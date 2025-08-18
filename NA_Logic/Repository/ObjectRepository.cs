@@ -603,6 +603,36 @@ namespace NA_Logic.Repository
                 return;
             }
         }
+        public void LoadObjectsFromTiet_TietBan(Object_Tiet objectTiet, int? idDonvi)
+        {
+            try
+            {
+                if (objectTiet == null)
+                {
+                    return;
+                }
+
+                _ObjectMon = _dsObjectMon.FirstOrDefault(c => c.Id_mon == objectTiet.Id_mon);
+                _ObjectLop = _dsObjectLop.FirstOrDefault(c => c.Id_lop == objectTiet.Id_lop);
+                _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == objectTiet.Id_giao_vien);
+                if (objectTiet.Id_phong == 0)
+                {
+                    _ObjectPhong = null;
+                }
+                else
+                {
+                    _ObjectPhong = _dsObjectPhong.FirstOrDefault(c => c.Id_phong == objectTiet.Id_phong);
+                }
+                _ObjectLopMon = _dsObjectLopMon.FirstOrDefault(c => c.Id_lop == objectTiet.Id_lop && c.Id_mon == objectTiet.Id_mon);
+                _ObjectMonKhoi = _dsObjectMonKhoi.FirstOrDefault(c => c.Id_mon == objectTiet.Id_mon && c.Id_ban == _ObjectLop.Id_ban && c.Id_khoi == _ObjectLop.Id_khoi);
+                _ObjectTohopmon = _dsObjectTohopmon.Where(c => c.Id_ban == _ObjectLop.Id_ban && c.Id_khoi == _ObjectLop.Id_khoi &&
+                                                                                (c.Id_mon_1 == objectTiet.Id_mon || c.Id_mon_2 == objectTiet.Id_mon || c.Id_mon_3 == objectTiet.Id_mon)).ToList();
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
         public void LoadObjectsPhongFromTiet(Object_Tiet objectTiet)
         {
             try
@@ -2024,6 +2054,7 @@ namespace NA_Logic.Repository
             try
             {
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 int caTietHoc = objectTiet.Id_ca;
@@ -2053,11 +2084,12 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
-        public bool CheckViTriXepDuoc_Lop(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet)
+        public bool CheckViTriXepDuoc_Lop(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet, int idDonvi)
         {
             try
             {
                 var tietban = DsTietTranhXep(objectTiet);
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 _dsTietGoc = List_Object_tiet(objectTiet.Id_tkb);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
@@ -2094,9 +2126,9 @@ namespace NA_Logic.Repository
                 int idPhong = tiet.Id_phong;
                 bool isRest = tiet.isRest;
                 bool isLock = tiet.isLock;
+                LoadObjectsFromTiet_Test(idTkb, idDonvi);
 
-                var dsTietGoc = List_Object_tiet(idTkb);
-                if (dsTietGoc == null || dsTietGoc.Count == 0)
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new ObjectTiet_theoLopDto();
                 }
@@ -2115,7 +2147,7 @@ namespace NA_Logic.Repository
                 // TH1: objectTiet_DaChon có đủ thông tin
                 if (idMon > 0)
                 {
-                    var tietGoc = dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
+                    var tietGoc = _dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
                     if (tietGoc != null)
                     {
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2131,7 +2163,7 @@ namespace NA_Logic.Repository
                 // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaLop = dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa).ToList();
+                    var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2182,8 +2214,8 @@ namespace NA_Logic.Repository
                 int ngay = tiet.Ngay;
                 int tietSo = tiet.Tiet;
 
-                var dsTietGoc = List_Object_tiet(idTkb);
-                if (dsTietGoc == null || dsTietGoc.Count == 0)
+                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new List<Object_Tiet>();
                 }
@@ -2196,8 +2228,8 @@ namespace NA_Logic.Repository
 
                 var dsViTriXepDuoc = new List<(int Ngay, int Tiet)>();
                 var tietChuaXep = new List<Object_Tiet>();
-                // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
-                var cacTietCuaLop = dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa && t.Ngay == 0 && t.Tiet ==0).ToList();
+
+                var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa && t.Ngay == 0 && t.Tiet ==0).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2242,7 +2274,7 @@ namespace NA_Logic.Repository
             {
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
-
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var tietban = DsTietTranhXep(objectTiet);
                 int caTietHoc = objectTiet.Id_ca;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
@@ -2271,10 +2303,11 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
-        public bool CheckViTriXepDuoc_GV(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet)
+        public bool CheckViTriXepDuoc_GV(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet, int idDonvi)
         {
             try
             {
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var tietban = DsTietTranhXep(objectTiet);
                 _dsTietGoc = List_Object_tiet(objectTiet.Id_tkb);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
@@ -2310,8 +2343,9 @@ namespace NA_Logic.Repository
                 int idPhong = tiet.Id_phong ?? 0;
                 bool isRest = tiet.isRest;
                 bool isLock = tiet.isLock;
-                var dsTietGoc = List_Object_tiet(idTkb);
-                if (dsTietGoc == null || dsTietGoc.Count == 0)
+
+                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new ObjectTiet_theoGVDto();
                 }
@@ -2330,7 +2364,7 @@ namespace NA_Logic.Repository
                 // TH1: objectTiet_DaChon có đủ thông tin
                 if (idMon > 0)
                 {
-                    var tietGoc = dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
+                    var tietGoc = _dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
                     if (tietGoc != null)
                     {
                         TimViTriXepDuoc_GV(tietGoc, idDonvi);
@@ -2346,7 +2380,7 @@ namespace NA_Logic.Repository
                 // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaGV = dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa).ToList();
+                    var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa).ToList();
                     foreach (var tietGoc in cacTietCuaGV)
                     {
                         TimViTriXepDuoc_GV(tietGoc, idDonvi);
@@ -2401,8 +2435,8 @@ namespace NA_Logic.Repository
                 int idlop = tiet.Id_lop ?? 0;
                 int idPhong = tiet.Id_phong ?? 0;
 
-                var dsTietGoc = List_Object_tiet(idTkb);
-                if (dsTietGoc == null || dsTietGoc.Count == 0)
+                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new List<Object_Tiet>();
                 }
@@ -2416,7 +2450,7 @@ namespace NA_Logic.Repository
                 var dsViTriXepDuoc = new List<(int Ngay, int Tiet)>();
                 var tietChuaXep = new List<Object_Tiet>();
 
-                var cacTietCuaGV = dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa && t.Ngay == 0 && t.Tiet == 0).ToList();
+                var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa && t.Ngay == 0 && t.Tiet == 0).ToList();
                 foreach (var tietGoc in cacTietCuaGV)
                 {
                     TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2500,19 +2534,20 @@ namespace NA_Logic.Repository
                     Id_ca = tiet2.Id_ca,
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
+                LoadObjectsFromTiet_Test(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
                 if( objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                 }
                 else if(objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet,idDonvi);
                 }
                 else
                 {
-                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
-                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if(check_t1 && check_t2)
                     {
                         check = true;
@@ -2590,20 +2625,20 @@ namespace NA_Logic.Repository
                     Id_ca = tiet2.Id_ca,
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
-
+                LoadObjectsFromTiet_Test(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
                 if (objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
+                    check = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                 }
                 else if (objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    check = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                 }
                 else
                 {
-                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet);
-                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet);
+                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if (check_t1 && check_t2)
                     {
                         check = true;

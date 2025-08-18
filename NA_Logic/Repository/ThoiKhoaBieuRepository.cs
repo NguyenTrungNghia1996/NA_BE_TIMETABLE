@@ -258,5 +258,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool checkId_chitiet(int Id, int idDonvi)
+        {
+            if(Id <= 0) return false;
+            try
+            {
+                bool ct =  _context.Chitiet_Thoikhoabieu.Join(_context.Danhsach_Thoikhoabieu, c=>c.Id_tkb, d=>d.Id, (c,d) => new {Id = c.Id, Id_donvi = d.Id_don_vi}).Any(x=>x.Id==Id && x.Id_donvi==idDonvi);
+                return ct;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

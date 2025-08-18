@@ -22,5 +22,6 @@ namespace NA_Logic.IRepository
         bool DeleteDetail(int Id);
         bool CheckId(int Id, int idDonvi);
         bool Huy_KQ(int Id);
+        bool checkId_chitiet(int Id, int idDonvi);
     }
 }
