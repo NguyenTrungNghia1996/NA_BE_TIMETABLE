@@ -16,9 +16,12 @@ namespace NA_Logic.IRepository
         bool Add(Danhsach_Thoikhoabieu ds_thoikhoabieu);
         bool AddChitiet_tkb(int Id);
         bool Update(Danhsach_Thoikhoabieu danhsach_Thoikhoabieu);
+        bool Update_TrangThaiXep(int idtkb);
         bool SetStatus(int id, int idDonVi);
         bool Delete(int Id);
         bool DeleteDetail(int Id);
         bool CheckId(int Id, int idDonvi);
+        bool Huy_KQ(int Id);
+        bool checkId_chitiet(int Id, int idDonvi);
     }
 }
