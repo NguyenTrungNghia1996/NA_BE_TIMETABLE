@@ -345,6 +345,29 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             return ApiResult.Success("Thành công");
         }
+        [HttpPost("xeptheomon")]
+        [RequireToken]
+        public IActionResult Xeptheomon([FromBody]Xep_tkb xeptkb)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
 
+            var check_tkb = _tkb.CheckId(xeptkb.Id_tkb, idDonvi);
+            if (xeptkb.Id_tkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {xeptkb.Id_tkb} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool add = _ob.Xeptkb_byMon(xeptkb.Ids, xeptkb.Id_tkb, idDonvi);
+            //bool update = _tkb.Update_TrangThaiXep(id_tkb);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
+            if (!add)
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+
+            return ApiResult.Success(
+            "Xếp thời khoá biểu thành công");
+        }
     }
 }

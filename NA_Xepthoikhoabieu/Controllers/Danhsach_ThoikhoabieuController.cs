@@ -84,7 +84,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success(detail, "Thành công");
         }
-        [HttpGet("huykq")]
+        [HttpPut("huykq")]
         [RequireToken]
         public IActionResult Huy_KQ([FromQuery] int Id)
         {
