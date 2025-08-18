@@ -206,11 +206,16 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.ProcessThoiKhoaBieu(idtkb,idDonvi);
+            bool update = _tkb.Update_TrangThaiXep(idtkb);
+            if (!update)
+            {
+                return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            }
             if (!add)
-                return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
  
             return ApiResult.Success(
-            "Thêm mới thành công");
+            "Xếp thời khoá biểu thành công");
         }
         [HttpPost("timvitri/lop")]
         [RequireToken]
@@ -230,6 +235,26 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             
             var detail = _ob.TimViTriXepDuoc_byGV(tietDachon, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("timtiet/lop")]
+        [RequireToken]
+        public IActionResult timtiet_lop([FromBody] ObjectTiet_theoLopDto tietDachon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
+            var detail = _ob.TimTietXepDuoc_byLop(tietDachon, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("timtiet/giaovien")]
+        [RequireToken]
+        public IActionResult timtiet_giaovien([FromBody] ObjectTiet_theoGVDto tietDachon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
+            var detail = _ob.TimTietXepDuoc_byGV(tietDachon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost("update/lop")]
@@ -263,6 +288,86 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Success(detail, "Thất bại");
             }
             return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPut("huytiet")]
+        [RequireToken]
+        public IActionResult huytiet([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            bool success = _ob.HuyXep(id);
+            if (!success)
+            {
+                return ApiResult.Success( "Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPut("khoatiet")]
+        [RequireToken]
+        public IActionResult khoatiet([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.KhoaTiet(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPut("huykhoa")]
+        [RequireToken]
+        public IActionResult huykhoa([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.HuyKhoa(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPost("xeptheomon")]
+        [RequireToken]
+        public IActionResult Xeptheomon([FromBody]Xep_tkb xeptkb)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_tkb = _tkb.CheckId(xeptkb.Id_tkb, idDonvi);
+            if (xeptkb.Id_tkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {xeptkb.Id_tkb} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool add = _ob.Xeptkb_byMon(xeptkb.Ids, xeptkb.Id_tkb, idDonvi);
+            //bool update = _tkb.Update_TrangThaiXep(id_tkb);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
+            if (!add)
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+
+            return ApiResult.Success(
+            "Xếp thời khoá biểu thành công");
         }
     }
 }

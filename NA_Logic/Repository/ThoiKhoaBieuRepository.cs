@@ -138,6 +138,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Update_TrangThaiXep(int idtkb)
+        {
+            try
+            {
+                _context.ChangeTracker.Clear();
+                var danhsach_Thoikhoabieu = _context.Danhsach_Thoikhoabieu.Find(idtkb);
+                danhsach_Thoikhoabieu.Trang_thai_xep = true;
+                _context.Danhsach_Thoikhoabieu.Update(danhsach_Thoikhoabieu);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Huy_KQ(int Id)
         {
             try
@@ -236,6 +252,19 @@ namespace NA_Logic.Repository
             try
             {
                 return _context.Danhsach_Thoikhoabieu.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool checkId_chitiet(int Id, int idDonvi)
+        {
+            if(Id <= 0) return false;
+            try
+            {
+                bool ct =  _context.Chitiet_Thoikhoabieu.Join(_context.Danhsach_Thoikhoabieu, c=>c.Id_tkb, d=>d.Id, (c,d) => new {Id = c.Id, Id_donvi = d.Id_don_vi}).Any(x=>x.Id==Id && x.Id_donvi==idDonvi);
+                return ct;
             }
             catch
             {
