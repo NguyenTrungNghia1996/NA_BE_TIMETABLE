@@ -24,5 +24,10 @@ namespace NA_Logic.IRepository
         ObjectTiet_theoGVDto TimViTriXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
         (bool success, ObjectTiet_theoLopDto result) DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
         (bool success, ObjectTiet_theoGVDto result) DoiChoHaiTiet_GV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
+        List<Object_Tiet> TimTietXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
+        List<Object_Tiet> TimTietXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
+        bool KhoaTiet(int id);
+        bool HuyKhoa(int id);
+        bool HuyXep(int id);
     }
 }

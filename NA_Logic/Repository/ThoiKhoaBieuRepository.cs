@@ -138,6 +138,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Update_TrangThaiXep(int idtkb)
+        {
+            try
+            {
+                _context.ChangeTracker.Clear();
+                var danhsach_Thoikhoabieu = _context.Danhsach_Thoikhoabieu.Find(idtkb);
+                danhsach_Thoikhoabieu.Trang_thai_xep = true;
+                _context.Danhsach_Thoikhoabieu.Update(danhsach_Thoikhoabieu);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Huy_KQ(int Id)
         {
             try
