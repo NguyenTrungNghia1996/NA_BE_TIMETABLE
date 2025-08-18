@@ -29,6 +29,7 @@ namespace NA_Logic.IRepository
         bool KhoaTiet(int id);
         bool HuyKhoa(int id);
         bool HuyXep(int id);
+        bool UpdateTietChuaXep(Object_Tiet tietDachon, int idDonvi);
         bool Xeptkb_byMon(List<int> idmon, int idtkb, int idDonvi);
     }
 }
