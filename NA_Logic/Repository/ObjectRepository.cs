@@ -2267,6 +2267,114 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Xeptkb_byLopMon(List<Sotiet_LopMonDto> dsLopMon, int idtkb, int idDonvi)
+        {
+            try
+            {
+                // 1. Load tất cả tiết cần xếp
+                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
+                {
+                    return false;
+                }
+                var dsTietChuaXep = new List<Object_Tiet>();
+                var dsTietDaXep = new List<Object_Tiet>();
+                var dsTietBoqua = new List<Object_Tiet>();
+
+                foreach (var lopDto in dsLopMon)
+                {
+                    int idLop = lopDto.Id_lop;
+                    foreach (var mon in lopDto.ds_mon)
+                    {
+                        int idMon = mon.Id_mon;
+                        dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == idLop && c.Id_mon == idMon && c.Ngay == 0 && c.Tiet == 0));
+                        dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == idLop && c.Id_mon == idMon && c.Ngay > 0 && c.Tiet > 0));
+                    }
+                }
+
+                // 2. Xử lý tiết cố định trước
+                var dsTietCoDinh = _dsObjectTietcodinh;
+                for ( int i = 0; i<dsTietChuaXep.Count; i++)
+                {
+                    var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == dsTietChuaXep[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+
+                    if (tietCoDinh != null)
+                    {
+                        LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                        if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                        {
+                            _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                            _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                            dsTietChuaXep.Remove(_dsTietGoc[i]);
+                            dsTietDaXep.Add(_dsTietGoc[i]);
+                        }
+
+                    }
+                }
+
+                //3. lặp đến khi ds chưa xếp = 0
+                int vongLap = 0;
+                while (dsTietChuaXep.Count > 0)
+                {
+                    vongLap++;
+
+                    //b1: Tìm vị trí xếp được cho tất cả tiết chưa xếp
+                    for(int i=0; i<dsTietChuaXep.Count; i++)
+                    {
+                        TimViTriXepDuoc(dsTietChuaXep[i], idDonvi, dsTietDaXep, dsTietChuaXep);
+                    }
+                    // b2: Lọc các tiết có thể xếp được (vị trí > 0), nếu vị trí = 0 thì thêm vào ds bỏ qua
+                    var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
+                    var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
+
+                    if (dsTietKhongTheXep != null && dsTietKhongTheXep.Count > 0)
+                    {
+                        for(int i=0; i<dsTietKhongTheXep.Count;i++)
+                        {
+                            dsTietBoqua.Add(dsTietKhongTheXep[i]);
+                            dsTietChuaXep.Remove(dsTietKhongTheXep[i]);
+                        }
+                    }
+                    if (dsTietCoTheXep.Count == 0)
+                    {
+                        break;
+                    }
+                    // b3: Sắp xếp theo thứ tự số vị trí xếp được và lấy tiết đầu tiên
+                    var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
+                    var tietCanXep = dsTietSorted.First();
+                    //b4: check xếp thành cặp
+                    if (CheckXepCap(tietCanXep))
+                    {
+                        if (TryXepCap(tietCanXep, dsTietChuaXep, dsTietDaXep, dsTietBoqua))
+                        {
+                            continue;
+                        }
+                    }
+                    // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Ngay = viTriChon.Ngay;
+                    tietCanXep.Tiet = viTriChon.Tiet;
+                    dsTietChuaXep.Remove(tietCanXep);
+                    dsTietDaXep.Add(tietCanXep);
+                    if (vongLap > 1000)
+                    {
+                        Console.WriteLine("Dừng thuật toán sau 1000 vòng lặp để tránh lặp vô hạn");
+                        break;
+                    }
+                }
+                bool update = UpdateListTiet(dsTietDaXep);
+                if (update)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
+                return false;
+            }
+        }
         public ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb)
         {
             _dsTietGoc = List_Object_tiet(idtkb);

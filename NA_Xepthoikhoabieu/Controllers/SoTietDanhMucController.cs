@@ -87,5 +87,21 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _sotiet.GetSotiet_Giaovien(idDonvi,idtkb);
             return ApiResult.Success(detail, "Thành công");
         }
+        [HttpGet("lopmon")]
+        [RequireToken]
+        public IActionResult GetList_LopMon([FromQuery] int idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            var check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
+
+            // Lấy bản ghi từ db
+            var detail = _sotiet.GetSotiet_LopMon(idDonvi, idtkb);
+            return ApiResult.Success(detail, "Thành công");
+        }
     }
 }

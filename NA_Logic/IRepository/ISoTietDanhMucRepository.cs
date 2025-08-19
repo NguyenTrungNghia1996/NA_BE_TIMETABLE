@@ -13,5 +13,6 @@ namespace NA_Logic.IRepository
         List<Sotiet_Lop> GetSotiet_Lop(int idDonvi, int id_tkb);
         List<Sotiet_Phong> GetSotiet_Phong(int idDonvi, int id_tkb);
         List<Sotiet_Giaovien> GetSotiet_Giaovien(int idDonvi, int id_tkb);
+        List<Sotiet_LopMonDto> GetSotiet_LopMon(int idDonvi, int id_tkb);
     }
 }
