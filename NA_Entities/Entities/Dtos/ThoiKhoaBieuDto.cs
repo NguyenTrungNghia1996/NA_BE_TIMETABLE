@@ -22,4 +22,18 @@ namespace NA_Entities.Entities.Dtos
         public int Id_tkb { get; set; } = 0;
         public List<int> Ids { get; set; } = new List<int>();
     }
+    public class Ds_mon_bylop
+    {
+        public int Id_mon { get; set; }
+    }
+    public class Ds_lop
+    {
+        public int Id_lop { get; set; }
+        public List<Ds_mon_bylop> Ds_mon { get; set; } = new List<Ds_mon_bylop>();
+    }
+    public class Xep_LopMon 
+    {
+        public int Id_tkb { get; set; } = 0;
+        public List<Ds_lop> Ds_lop { get; set;} = new List<Ds_lop>();
+    }
 }

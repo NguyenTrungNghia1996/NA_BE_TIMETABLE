@@ -1,4 +1,5 @@
-﻿using NA_Entities.Entities.Dtos;
+﻿using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,5 +37,6 @@ namespace NA_Logic.IRepository
         bool Xeptkb_byPhong(List<int> idphong, int idtkb, int idDonvi);
         bool Xeptkb_byPhongCN(int idtkb, int idDonvi);
         bool Xeptkb_byGVCN( int idtkb, int idDonvi);
+        bool Xeptkb_byLopMon(List<Sotiet_LopMonDto> dsLopMon, int idtkb, int idDonvi);
     }
 }
