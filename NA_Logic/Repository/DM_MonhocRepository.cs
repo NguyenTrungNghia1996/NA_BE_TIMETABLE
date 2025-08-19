@@ -99,6 +99,30 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<Sotiet_Mon> GetSotiet_MonLop(int idDonvi,  int id_tkb)
+        {
+            try
+            {
+                var paramIdDonvi = new SqlParameter("Id_Donvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
+
+                var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
+                {
+                    Value = id_tkb
+                };
+                var result = _context.Set<Sotiet_Mon>().FromSqlRaw("EXEC Get_ListMon_SoTiet @Id_tkb, @Id_Donvi",
+                      paramIdtkb, paramIdDonvi)
+                    .ToList();
+                if (result == null) result = new List<Sotiet_Mon>();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
         public DM_Monhoc GetDetailById(int id, int idDonvi)
         {
             try
