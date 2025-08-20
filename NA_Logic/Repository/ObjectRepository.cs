@@ -1486,7 +1486,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                //thêm
+
                 if (ds_tiet != null && ds_tiet.Any())
                 {
                     var chitietlist = ds_tiet.Select(tiet => new Chitiet_Thoikhoabieu
@@ -2719,14 +2719,14 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 int caTietHoc = objectTiet.Id_ca;
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-
+                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int ngay = 1; ngay <= 7; ngay++)
                 {
                     for (int tiet = 1; tiet <= 5; tiet++)
                     {
                         var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
 
-                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey))
+                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey)||ds_co_dinh.Contains(slotKey))
                             continue;
                         else
                         {
@@ -2879,10 +2879,14 @@ namespace NA_Logic.Repository
                 // Cập nhật isDrag cho các tiết trong tkbBase
                 foreach (var tietdaxep in tkbBase.timetable)
                 {
-                    bool isDrag = tietdaxep.Id_ca == idCa &&
-                                      dsViTriXepDuoc.Any(vt =>
-                                          vt.Ngay == tietdaxep.Ngay &&
-                                          vt.Tiet == tietdaxep.Tiet);
+                    bool isDrag = false;
+                    if (!tietdaxep.isLock)
+                    {
+                        isDrag = tietdaxep.Id_ca == idCa &&
+                                       dsViTriXepDuoc.Any(vt =>
+                                           vt.Ngay == tietdaxep.Ngay &&
+                                           vt.Tiet == tietdaxep.Tiet);
+                    }
 
                     tietdaxep.isDrag = isDrag;
                 }
@@ -3089,14 +3093,14 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 int caTietHoc = objectTiet.Id_ca;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-
+                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int ngay = 1; ngay <= 7; ngay++)
                 {
                     for (int tiet = 1; tiet <= 5; tiet++)
                     {
                         var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
 
-                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey)||ds_co_dinh.Contains(slotKey))
                             continue;
                         else
                         {
@@ -3211,12 +3215,14 @@ namespace NA_Logic.Repository
                 // Cập nhật isDrag cho các tiết trong tkbBase
                 foreach (var tietdaxep in tkbBase.timetable)
                 {
-                    bool isDragable = tietdaxep.Id_ca == idCa &&
-                                      dsViTriXepDuoc.Any(vt =>
-                                          vt.Ngay == tietdaxep.Ngay &&
-                                          vt.Tiet == tietdaxep.Tiet);
-
-
+                    bool isDragable = false;
+                    if (!tietdaxep.isLock)
+                    {
+                        isDragable = tietdaxep.Id_ca == idCa &&
+                                       dsViTriXepDuoc.Any(vt =>
+                                           vt.Ngay == tietdaxep.Ngay &&
+                                           vt.Tiet == tietdaxep.Tiet);
+                    }
                     tietdaxep.isDrag = isDragable;
                 }
                 return tkbBase;
@@ -3323,7 +3329,8 @@ namespace NA_Logic.Repository
                 int tietSo1 = tiet1.Tiet;
                 int ngay2 = tiet2.Ngay;
                 int tietSo2 = tiet2.Tiet;
-
+                bool lock1 = tiet1.isLock;
+                bool lock2 = tiet2.isLock;
                 // Tạo Object_Tiet từ tiết 1
                 var objectTiet1 = new Object_Tiet
                 {
@@ -3333,7 +3340,7 @@ namespace NA_Logic.Repository
                     Id_giao_vien = tiet1.Id_giao_vien,
                     Id_phong = tiet1.Id_phong,
                     Id_ca = tiet1.Id_ca,
-                    Tiet_thu_may = tiet1.Tiet_thu_may
+                    Tiet_thu_may = tiet1.Tiet_thu_may,
                 };
 
                 // Tạo Object_Tiet từ tiết 2  
@@ -3354,6 +3361,7 @@ namespace NA_Logic.Repository
                 if( objectTiet1.Id_mon == 0)
                 {
                     check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
+
                     if (check)
                     {
                         updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
@@ -3371,7 +3379,7 @@ namespace NA_Logic.Repository
                 {
                     var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                     var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
-                    if(check_t1 && check_t2)
+                    if(check_t1 && check_t2 && !lock1 && !lock2)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
                         updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
@@ -3422,7 +3430,8 @@ namespace NA_Logic.Repository
                 int tietSo1 = tiet1.Tiet;
                 int ngay2 = tiet2.Ngay;
                 int tietSo2 = tiet2.Tiet;
-
+                bool lock1 = tiet1.isLock;
+                bool lock2 = tiet2.isLock;
                 // Tạo Object_Tiet từ tiết 1
                 var objectTiet1 = new Object_Tiet
                 {
@@ -3478,7 +3487,7 @@ namespace NA_Logic.Repository
                 {
                     var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                     var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
-                    if (check_t1 && check_t2)
+                    if (check_t1 && check_t2 && !lock1&&!lock2))
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
                         updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
@@ -3530,9 +3539,14 @@ namespace NA_Logic.Repository
                     return false;
                 }
                 var tiet = _context.Chitiet_Thoikhoabieu.FirstOrDefault(c => c.Id == id);
-                if(tiet != null)
+                var ds_tiet = _context.Chitiet_Thoikhoabieu.Where(c => c.Id_mon == tiet.Id_mon).ToList();
+                if (ds_tiet != null && ds_tiet.Any())
                 {
-                    tiet.Khoa = true;
+                    foreach (var item in ds_tiet)
+                    {
+                        item.Khoa = true;
+                    }
+
                     _context.SaveChanges();
                     return true;
                 }
@@ -3552,9 +3566,14 @@ namespace NA_Logic.Repository
                     return false;
                 }
                 var tiet = _context.Chitiet_Thoikhoabieu.FirstOrDefault(c => c.Id == id);
-                if(tiet != null)
+                var ds_tiet = _context.Chitiet_Thoikhoabieu.Where(c => c.Id_mon == tiet.Id_mon).ToList();
+                if (ds_tiet != null && ds_tiet.Any())
                 {
-                    tiet.Khoa = false;
+                    foreach (var item in ds_tiet)
+                    {
+                        item.Khoa = false;
+                    }
+
                     _context.SaveChanges();
                     return true;
                 }
