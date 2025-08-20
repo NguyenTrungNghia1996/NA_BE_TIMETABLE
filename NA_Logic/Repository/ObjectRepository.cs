@@ -2719,7 +2719,7 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 int caTietHoc = objectTiet.Id_ca;
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").Distinct().ToList();
                 for (int ngay = 1; ngay <= 7; ngay++)
                 {
                     for (int tiet = 1; tiet <= 5; tiet++)
@@ -3487,7 +3487,7 @@ namespace NA_Logic.Repository
                 {
                     var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                     var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
-                    if (check_t1 && check_t2 && !lock1&&!lock2))
+                    if (check_t1 && check_t2 && !lock1&&!lock2)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
                         updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
