@@ -2940,7 +2940,6 @@ namespace NA_Logic.Repository
                                       dsViTriXepDuoc.Any(vt =>
                                           vt.Ngay == tietdaxep.Ngay &&
                                           vt.Tiet == tietdaxep.Tiet);
-
                     tietdaxep.isDrag = isDrag;
                 }
                 return tkbBase;
