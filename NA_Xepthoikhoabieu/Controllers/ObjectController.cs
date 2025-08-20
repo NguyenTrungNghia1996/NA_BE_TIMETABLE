@@ -193,6 +193,22 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _ob.GetTkbByGiaovien(idGV, idtkb);
             return ApiResult.Success(detail, "Thành công");
         }
+        [HttpGet("tietchuaxep")]
+        [RequireToken]
+        public IActionResult tkb_tietchuaxep(int idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            var check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (idtkb <= 0 || !check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
+
+            // Lấy bản ghi từ db
+            var detail = _ob.GetTietChuaXep(idtkb);
+            return ApiResult.Success(detail, "Thành công");
+        }
         [HttpPost]
         [RequireToken]
         public IActionResult Create(int idtkb)
@@ -227,6 +243,16 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _ob.TimViTriXepDuoc_byLop(tietDachon,idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
+        [HttpPost("timvitri/chuaxep/lop")]
+        [RequireToken]
+        public IActionResult timvitri_chuaxep_lop([FromBody] ObjectTiet_theoLopDto tietDachon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+ 
+            var detail = _ob.TimViTriXepDuoc_TietChuaXep_byLop(tietDachon,idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
         [HttpPost("timvitri/giaovien")]
         [RequireToken]
         public IActionResult timvitri_giaovien([FromBody] ObjectTiet_theoGVDto tietDachon)
@@ -235,6 +261,16 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             
             var detail = _ob.TimViTriXepDuoc_byGV(tietDachon, idDonvi);
+            return ApiResult.Success(detail, "Thành công");
+        }
+        [HttpPost("timvitri/chuaxep/giaovien")]
+        [RequireToken]
+        public IActionResult timvitri_chuaxep_giaovien([FromBody] ObjectTiet_theoGVDto tietDachon)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
+            var detail = _ob.TimViTriXepDuoc_TietChuaXep_byGV(tietDachon, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpPost("timtiet/lop")]

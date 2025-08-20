@@ -38,5 +38,8 @@ namespace NA_Logic.IRepository
         bool Xeptkb_byPhongCN(int idtkb, int idDonvi);
         bool Xeptkb_byGVCN( int idtkb, int idDonvi);
         bool Xeptkb_byLopMon(List<Sotiet_LopMonDto> dsLopMon, int idtkb, int idDonvi);
+        List<Object_Tiet> GetTietChuaXep(int idtkb);
+        ObjectTiet_theoLopDto TimViTriXepDuoc_TietChuaXep_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
+        ObjectTiet_theoGVDto TimViTriXepDuoc_TietChuaXep_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
     }
 }
