@@ -394,7 +394,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool success = _ob.KhoaTiet_Mon(id);
-            if (!success)
+            if (!success) 
             {
                 return ApiResult.Success("Thất bại");
             }
