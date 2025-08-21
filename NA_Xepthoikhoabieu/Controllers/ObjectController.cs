@@ -381,6 +381,82 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             return ApiResult.Success("Thành công");
         }
+        [HttpPut("khoatiet/mon")]
+        [RequireToken]
+        public IActionResult khoatiet_mon([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.KhoaTiet_Mon(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPut("huykhoa/mon")]
+        [RequireToken]
+        public IActionResult huykhoa_mon([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.HuyKhoa_Mon(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPut("khoatiet/giaovien")]
+        [RequireToken]
+        public IActionResult khoatiet_giaovien([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.KhoaTiet_GV(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPut("huykhoa/giaovien")]
+        [RequireToken]
+        public IActionResult huykhoa_gv([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool success = _ob.HuyKhoa_GV(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
         [HttpPut("update")]
         [RequireToken]
         public IActionResult Update([FromBody] Object_Tiet tiet)
