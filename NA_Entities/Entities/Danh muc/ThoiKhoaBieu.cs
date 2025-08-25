@@ -39,4 +39,15 @@ namespace NA_Entities.Entities.Danh_muc
         public int Tong_tiet_da_xep { get; set; } = 0;
         public int Tong_tiet_chua_xep { get; set; } = 0;
     }
+    public class Export
+    {
+        public string Ten_truong { get; set; }
+        public string Ten_lop { get; set; }
+        public string Ten_mon { get; set; }
+        public string Ten_giao_vien { get; set; }
+        public string Ten_phong { get; set; }
+        public int Id_ca { get; set; }
+        public int Ngay { get; set; }
+        public int Tiet { get; set; }
+    }
 }

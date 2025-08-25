@@ -86,6 +86,7 @@ namespace NA_Entities.DBContext
         public DbSet<Sotiet_Mon> Sotiet_Mon { get; set; }
         public DbSet<Sotiet_Phong> Sotiet_Phong { get; set; }
         public DbSet<Sotiet_LopMon> Sotiet_LopMon { get; set; }
+        public DbSet<Export> Export { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Auth_Users_List>().HasNoKey();
@@ -119,6 +120,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Sotiet_Mon>().HasNoKey();
             builder.Entity<Sotiet_Phong>().HasNoKey();
             builder.Entity<Sotiet_LopMon>().HasNoKey();
+            builder.Entity<Export>().HasNoKey();
             base.OnModelCreating(builder);
         }
     }

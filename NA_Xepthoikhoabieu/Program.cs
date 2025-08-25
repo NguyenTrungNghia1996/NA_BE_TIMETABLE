@@ -60,6 +60,7 @@ builder.Services.AddScoped<ILop_MonRepository,Lop_MonRepository>();
 builder.Services.AddScoped<IDanhsach_ThoikhoabieuRepository, ThoiKhoaBieuRepository>();
 builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
 builder.Services.AddScoped<ISoTietDanhMucRepository, SoTietDanhMucRepository>();
+builder.Services.AddScoped<IExportExcelRepository, ExportExcelRepository>();
 
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

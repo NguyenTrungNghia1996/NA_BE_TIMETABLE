@@ -26,8 +26,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpGet]
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
-
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            
+            int idDonvi = 0;
+            if (!checkIsAdmin)
+            {
+                idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _cahoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
