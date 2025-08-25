@@ -56,7 +56,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
-                var fileName = $"ThoiKhoaBieu_Lop_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var fileName = $"ThoiKhoaBieu_Giaovien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
 
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
