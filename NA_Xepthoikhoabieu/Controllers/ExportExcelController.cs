@@ -35,6 +35,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
                 var fileName = $"ThoiKhoaBieu_Lop_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
 
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -57,6 +60,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
                 var fileName = $"ThoiKhoaBieu_Giaovien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
 
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -78,8 +84,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
-                var fileName = $"ThoiKhoaBieu_Lop_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-
+                var fileName = $"ThoiKhoaBieu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition",$"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     fileName);
