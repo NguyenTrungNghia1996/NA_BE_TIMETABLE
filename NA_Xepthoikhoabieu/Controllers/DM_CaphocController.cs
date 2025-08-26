@@ -19,16 +19,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IClaimHelperRepository _clamHelperRepository;
         private readonly IAuthRepository _auth;
+        private readonly ICheckTenRepository _checkten;
         public DM_CaphocController(IMapper mapper,
                                    IDM_CaphocRepository caphocRepository,
                                    IClaimHelperRepository clamHelperRepository,
-                                   IAuthRepository auth
+                                   IAuthRepository auth, ICheckTenRepository checkten
                                 )
         {
             _caphocRepository = caphocRepository;
             _mapper = mapper;
             _clamHelperRepository = clamHelperRepository;
             _auth = auth;
+            _checkten = checkten;
         }
         // Get list Caphoc paging
         [HttpGet]
@@ -76,6 +78,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+            bool checkten = _checkten.CheckTrungTen<DM_Caphoc>(caphoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // mapper data 
             var item = _mapper.Map<DM_Caphoc>(caphoc);
             item.Id = 0;
