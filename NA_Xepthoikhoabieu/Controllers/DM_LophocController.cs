@@ -84,8 +84,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (!_Lophoc.Check_limit(idDonvi))
-                return ApiResult.BadRequest("Bạn đã đạt giới hạn 8 lớp");
+            bool check_env = _claimHelperRepository.IsDemoSite();
+            if (check_env)
+            {
+                if (!_Lophoc.Check_limit(idDonvi))
+                    return ApiResult.BadRequest("Bạn đã đạt giới hạn 8 lớp");
+            }
+            
             // mapper data 
             var addph = _mapper.Map<DM_Lophoc>(Lophoc);
             addph.Id = 0;

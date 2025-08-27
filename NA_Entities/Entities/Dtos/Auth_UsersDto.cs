@@ -41,4 +41,8 @@ namespace NA_Entities.Entities.Dtos
     {
         public List<Auth_Roles_PermissionDto> Permission { get; set; } = new List<Auth_Roles_PermissionDto>();
     }
+    public class Register { 
+        public string Ten_truong { get; set; }
+        public string Dia_chi { get; set; }
+    }
 }

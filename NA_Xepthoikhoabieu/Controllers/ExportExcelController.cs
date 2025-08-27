@@ -29,20 +29,22 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
-                //var excelBytes = _export.ExportExcel_Class(idtkb);
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                var excelBytes = _export.ExportExcel_Class(idtkb);
 
-                //if (excelBytes == null)
-                //    return NotFound("Không có dữ liệu thời khóa biểu");
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
 
-                //var fileName = $"ThoiKhoaBieu_Lop_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-                ////header
-                //Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
-                //Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                var fileName = $"ThoiKhoaBieu_Lop_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
 
-                //return File(excelBytes,
-                //    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                //    fileName);
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
             }
             catch (Exception ex)
             {
@@ -55,20 +57,22 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
-                //var excelBytes = _export.ExportExcel_Teacher(idtkb);
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                var excelBytes = _export.ExportExcel_Teacher(idtkb);
 
-                //if (excelBytes == null)
-                //    return NotFound("Không có dữ liệu thời khóa biểu");
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
 
-                //var fileName = $"ThoiKhoaBieu_Giaovien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-                ////header
-                //Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
-                //Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                var fileName = $"ThoiKhoaBieu_Giaovien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
 
-                //return File(excelBytes,
-                //    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                //    fileName);
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
             }
             catch (Exception ex)
             {
@@ -81,20 +85,22 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
 
-                //var excelBytes = _export.ExportExcel_TKB(idtkb);
+                var excelBytes = _export.ExportExcel_TKB(idtkb);
 
-                //if (excelBytes == null)
-                //    return NotFound("Không có dữ liệu thời khóa biểu");
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
 
-                //var fileName = $"ThoiKhoaBieu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-                ////header
-                //Response.Headers.Append("Content-Disposition",$"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
-                //Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
-                //return File(excelBytes,
-                //    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                //    fileName);
+                var fileName = $"ThoiKhoaBieu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
             }
             catch (Exception ex)
             {
