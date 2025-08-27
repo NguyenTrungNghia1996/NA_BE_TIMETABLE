@@ -18,9 +18,9 @@ docker-build-and-push:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_MERGE_REQUEST_STATE == "merged"'
+    - if: '$CI_COMMIT_BRANCH == "dev_demo" && $CI_MERGE_REQUEST_STATE == "merged"'
       when: on_success
-    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_COMMIT_BRANCH == "dev_demo" && $CI_PIPELINE_SOURCE == "push"'
       when: on_success
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
@@ -54,7 +54,7 @@ docker-cleanup:
   image: docker:latest
   needs: ["docker-build-and-push"]
   rules:
-    - if: '$CI_COMMIT_BRANCH == "dev"'
+    - if: '$CI_COMMIT_BRANCH == "dev_demo"'
   script:
     - |
       TAG_LATEST="latest"
@@ -74,10 +74,10 @@ docker-deploy:
   image: docker:latest
   needs: ["docker-build-and-push"]
   rules:
-    - if: '$CI_COMMIT_BRANCH == "dev"'
+    - if: '$CI_COMMIT_BRANCH == "dev_demo"'
       when: on_success
   before_script:
     - sudo docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - echo "Deploying frontend service using Docker Compose as root..."
-    - sudo bash -c "cd /root/docker/na_thoikhoabieu && docker compose pull thoikhoabieu && docker compose up -d thoikhoabieu"
+    - sudo bash -c "cd /root/docker/na_thoikhoabieu_demo && docker compose pull thoikhoabieudemo && docker compose up -d thoikhoabieudemo"

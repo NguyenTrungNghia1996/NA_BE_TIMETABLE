@@ -103,7 +103,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool Check_limit(int idDonvi)
+        {
+            try
+            {
+                var soluong = _context.DM_Lophoc.Count(c => c.Id_don_vi == idDonvi);
+                if (soluong < 8)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try
