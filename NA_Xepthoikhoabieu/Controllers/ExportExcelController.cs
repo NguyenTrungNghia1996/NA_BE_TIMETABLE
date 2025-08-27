@@ -29,7 +29,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 //var excelBytes = _export.ExportExcel_Class(idtkb);
 
                 //if (excelBytes == null)
@@ -55,7 +55,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 //var excelBytes = _export.ExportExcel_Teacher(idtkb);
 
                 //if (excelBytes == null)
@@ -81,7 +81,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
-                return BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                return ApiResult.BadRequest("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
 
                 //var excelBytes = _export.ExportExcel_TKB(idtkb);
 
