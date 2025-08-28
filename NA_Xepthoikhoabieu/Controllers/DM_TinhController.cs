@@ -22,7 +22,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
         }
         [HttpGet]
-        [RequireToken]
         public IActionResult GetList()
         {
             // Lấy danh sách dữ liệu

@@ -34,7 +34,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         // Get list Caphoc paging
         [HttpGet]
-        [RequireToken]
         public IActionResult Getlist_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
             

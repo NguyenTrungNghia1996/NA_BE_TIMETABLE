@@ -24,7 +24,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
         }
         [HttpGet]
-        [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
             int idUser = _claimHelperRepository.GetUserId(User);
             // kiểm tra nếu là admin thì được truy cập
