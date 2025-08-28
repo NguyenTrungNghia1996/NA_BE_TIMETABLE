@@ -101,6 +101,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool RegisterUser(Auth_Users user)
+        {
+            try
+            {
+                string hashPassword = _passwordhash.HashPassword(user.Password);
+                user.Password = hashPassword;
+                _context.Auth_Users.Add(user);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool AddUserToRoles(int userId, List<int> rolesId)
         {
             try

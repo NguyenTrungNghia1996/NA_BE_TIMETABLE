@@ -41,8 +41,28 @@ namespace NA_Entities.Entities.Dtos
     {
         public List<Auth_Roles_PermissionDto> Permission { get; set; } = new List<Auth_Roles_PermissionDto>();
     }
-    public class Register { 
+    public class Register {
+        [Required(ErrorMessage = "Tên trường không được để trống")]
         public string Ten_truong { get; set; }
+        [Required(ErrorMessage = "Tỉnh không được để trống")]
+        public int Id_tinh { get; set; }
+        [Required(ErrorMessage = "Địa chỉ không được để trống")]
         public string Dia_chi { get; set; }
+        [Required(ErrorMessage = "Người liên hệ không được để trống")]
+        public string Nguoi_lien_he { get; set; }
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số")]
+        public string So_dien_thoai { get; set; }
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Tên tài khoản không được để trống")]
+        public string Ten_tai_khoan { get; set; }
+        public List<int> Id_ca { get; set; } = new List<int>();
+        public List<int> Id_cap { get; set; } = new List<int>();
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        public string Mat_khau { get; set; }
+        [Required(ErrorMessage = "Nhập lại mật khẩu không được để trống")]
+        public string Nhap_lai_mat_khau { get; set; }
     }
 }

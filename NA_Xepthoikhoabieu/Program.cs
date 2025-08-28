@@ -62,6 +62,7 @@ builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
 builder.Services.AddScoped<ISoTietDanhMucRepository, SoTietDanhMucRepository>();
 builder.Services.AddScoped<IExportExcelRepository, ExportExcelRepository>();
 builder.Services.AddScoped<ICheckTenRepository, CheckTenRepository>();
+builder.Services.AddScoped<IDM_TinhRepository, DM_TinhRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("Không tồn tại key"));

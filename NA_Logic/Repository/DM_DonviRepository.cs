@@ -104,6 +104,19 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        //public bool Add_Demo(DM_Donvi_Demo dm_donvi)
+        //{
+        //    try
+        //    {
+        //        _context.DM_Donvi_Demo.Add(dm_donvi);
+        //        _context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool AddCap(int Id, List<int> capId)
         {
             try

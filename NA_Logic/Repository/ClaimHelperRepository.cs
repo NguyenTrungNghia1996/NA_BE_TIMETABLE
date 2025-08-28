@@ -102,7 +102,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        private bool IsDemoSite()
+        public bool IsDemoSite()
         {
             var env = _configuration.GetSection("Environment").Value ?? "Development";
             return env.Equals("Demo", StringComparison.OrdinalIgnoreCase);

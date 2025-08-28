@@ -34,13 +34,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Getlist_Pageing([FromQuery] int PageIndex = 0, [FromQuery] int PageSize = 0, [FromQuery] string search = "")
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            //int idUser = _claimHelperRepository.GetUserId(User);
+            //// kiểm tra nếu là admin thì được truy cập
+            //bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            //if (!checkIsAdmin)
+            //{
+            //    return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            //}
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _menus.GetList_Pagging(PageIndex, PageSize, search, ref totalrecord);
@@ -59,13 +59,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             if (id <= 0)
                 return ApiResult.BadRequest($"Id {id} không hợp lệ, vui lòng kiểm tra lại");
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            //int idUser = _claimHelperRepository.GetUserId(User);
+            //// kiểm tra nếu là admin thì được truy cập
+            //bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            //if (!checkIsAdmin)
+            //{
+            //    return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            //}
 
             // Lấy bản ghi từ db
             var detailMenu = _menus.GetDetailByID(id);
