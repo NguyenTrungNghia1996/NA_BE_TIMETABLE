@@ -13,5 +13,6 @@ namespace NA_Logic.IRepository
         int GetUserId(ClaimsPrincipal user);
         bool CheckIdDonvi(ClaimsPrincipal user);
         bool CheckUserExists(ClaimsPrincipal user);
+        bool IsDemoSite();
     }
 }

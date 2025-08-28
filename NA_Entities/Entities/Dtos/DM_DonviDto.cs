@@ -47,6 +47,8 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Địa chỉ không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string? Diachi { get; set; }
+        public int Id_tinh { get; set; } = 0;
+        public string Nguoi_lien_he { get; set; } = string.Empty;
         [Required(ErrorMessage = "Số điện thoại không được để trống")]
         [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số")]

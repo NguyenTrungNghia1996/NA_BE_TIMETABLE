@@ -15,6 +15,7 @@ namespace NA_Logic.IRepository
 
         List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         bool Add(DM_Donvi dm_donvi);
+        //bool Add_Demo(DM_Donvi_Demo dm_donvi);
         bool Update(DM_Donvi dm_donvi);
         bool UpdateCap(int Id, List<int> capId);
         bool UpdateCa(int Id, List<int> caId);

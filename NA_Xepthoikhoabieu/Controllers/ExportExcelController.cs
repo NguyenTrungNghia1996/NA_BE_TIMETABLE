@@ -29,6 +29,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 var excelBytes = _export.ExportExcel_Class(idtkb);
 
                 if (excelBytes == null)
@@ -54,6 +57,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 var excelBytes = _export.ExportExcel_Teacher(idtkb);
 
                 if (excelBytes == null)
@@ -79,6 +85,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             try
             {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+
                 var excelBytes = _export.ExportExcel_TKB(idtkb);
 
                 if (excelBytes == null)
@@ -86,7 +96,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
                 var fileName = $"ThoiKhoaBieu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 //header
-                Response.Headers.Append("Content-Disposition",$"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
                 Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

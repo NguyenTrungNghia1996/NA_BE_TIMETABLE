@@ -15,6 +15,7 @@ namespace NA_Logic.IRepository
         Auth_Users FindUserById(int id);
         bool checkIsAdmin(int id);
         bool CreateUser(Auth_Users user);
+        bool RegisterUser(Auth_Users user);
         bool AddUserToRoles(int userId, List<int> rolesId);
         bool UpdateUser(Auth_Users user);
         bool UpdateUserToRoles(int userId, List<int> rolesId);

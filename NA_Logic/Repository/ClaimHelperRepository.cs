@@ -1,19 +1,22 @@
+using Microsoft.Extensions.Configuration;
+using NA_Entities.DBContext;
+using NA_Logic.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using NA_Entities.DBContext;
-using NA_Logic.IRepository;
 
 namespace NA_Logic.Repository
 {
     public class ClaimHelperRepository : IClaimHelperRepository
     {
         private readonly NA_DbContext _context;
-        public ClaimHelperRepository(NA_DbContext context)
+        private readonly IConfiguration _configuration;
+        public ClaimHelperRepository(NA_DbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
         public int GetIdDonvi(ClaimsPrincipal user)
         {
@@ -98,6 +101,11 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+        }
+        public bool IsDemoSite()
+        {
+            var env = _configuration.GetSection("Environment").Value ?? "Dev";
+            return env.Equals("Demo", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
