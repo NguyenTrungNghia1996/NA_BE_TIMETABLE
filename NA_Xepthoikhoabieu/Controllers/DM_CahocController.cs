@@ -26,14 +26,27 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpGet]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
             int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            
+
             int idDonvi = 0;
-            if (!checkIsAdmin)
+            // Lấy danh sách dữ liệu
+            int totalrecord = 0;
+            var list = _cahoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
+            if (list == null || list.Count == 0)
+                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+            var listDto = _mapper.Map<List<DM_Cahoc_ListDto>>(list);
+            return ApiResult.Success(new
             {
-                idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            }
+                items = listDto,
+                totalrecord = totalrecord
+            },
+            "Thành công");
+        }
+        [HttpGet("catheodonvi")]
+        [RequireToken]
+        public IActionResult GetList_CabyDV([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
+            int idUser = _claimHelperRepository.GetUserId(User);
+
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _cahoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
