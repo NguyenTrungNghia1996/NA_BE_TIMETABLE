@@ -25,8 +25,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
-            int idUser = _claimHelperRepository.GetUserId(User);
-
             int idDonvi = 0;
             // Lấy danh sách dữ liệu
             int totalrecord = 0;

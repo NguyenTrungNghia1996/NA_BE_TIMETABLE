@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NA_Entities.DBContext
 {
     public class NA_DbContext : DbContext
     {
-        public NA_DbContext(DbContextOptions<NA_DbContext> options) : base(options) { }
+        private readonly IConfiguration _configuration;
+        public NA_DbContext(DbContextOptions<NA_DbContext> options, IConfiguration configuration) : base(options) {
+            _configuration = configuration;
+        }
         public DbSet<Auth_Users> Auth_Users { get; set; }
         public DbSet<Auth_Users_List> Auth_Users_List { get; set; }
         public DbSet<DM_Caphoc> DM_Caphoc { get; set; }
@@ -124,6 +130,21 @@ namespace NA_Entities.DBContext
             builder.Entity<Sotiet_Phong>().HasNoKey();
             builder.Entity<Sotiet_LopMon>().HasNoKey();
             builder.Entity<Export>().HasNoKey();
+            var environment = _configuration["Environment"];
+            var isTestEnvironment = environment == "Test";
+
+            builder.Entity<DM_Donvi>(entity =>
+            {
+                entity.ToTable("dm_donvi");
+
+                if (isTestEnvironment)
+                {
+
+                    entity.Ignore(e => e.Id_tinh);
+                    entity.Ignore(e => e.Nguoi_lien_he);
+                }
+            
+            });
             base.OnModelCreating(builder);
         }
     }
