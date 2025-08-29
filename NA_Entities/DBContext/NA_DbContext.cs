@@ -131,19 +131,14 @@ namespace NA_Entities.DBContext
             builder.Entity<Sotiet_LopMon>().HasNoKey();
             builder.Entity<Export>().HasNoKey();
             var environment = _configuration["Environment"];
-            var isTestEnvironment = environment == "Test";
-
+            var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
             {
-                entity.ToTable("dm_donvi");
-
-                if (isTestEnvironment)
+                if (!isdemo)
                 {
-
                     entity.Ignore(e => e.Id_tinh);
                     entity.Ignore(e => e.Nguoi_lien_he);
                 }
-            
             });
             base.OnModelCreating(builder);
         }
