@@ -11,7 +11,7 @@ namespace NA_Logic.IRepository
     public interface  IDM_KhoilopRepository
     {
         DM_Khoilop getDetailById(int id);
-        List<DM_Khoilop_List> GetList_Paging(int PageIndex, int PageSize, string search,int idDonvi, ref int totalrecord);
+        List<DM_Khoilop_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         bool Add(DM_Khoilop dM_Khoilop);
         bool Update(DM_Khoilop dM_Khoilop);
         bool Delete(int Id);

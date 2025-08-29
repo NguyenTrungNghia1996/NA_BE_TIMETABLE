@@ -36,17 +36,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            int idDonvi = 0;
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            }
+
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            var list = _khoilop.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
+            var list = _khoilop.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             var listDto = _mapper.Map<List<DM_Khoilop_ListDto>>(list);
