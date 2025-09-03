@@ -2025,6 +2025,7 @@ namespace NA_Logic.Repository
                             {
                                 objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
                                 {
+                                    Ca = dsCa[i].Id_ca,
                                     Ngay = ngay,
                                     Tiet = tiet,
                                 });
@@ -2065,6 +2066,7 @@ namespace NA_Logic.Repository
                             {
                                 objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
                                 {
+                                    Ca = dsCa[i].Id_ca,
                                     Ngay = ngay,
                                     Tiet = tiet,
                                 });
@@ -2405,6 +2407,7 @@ namespace NA_Logic.Repository
                             {
                                 objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
                                 {
+                                    Ca = dsCa[i].Id_ca,
                                     Ngay = ngay,
                                     Tiet = tiet,
                                 });
