@@ -90,7 +90,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id = 0;
-
+            addph.Ma = phonghoc.Ten;
+            //kiểm tra mã môn học
+            var check_ma = _phonghoc.CheckMa(addph.Ma, idDonvi, addph.Id);
+            if (!check_ma)
+                ModelState.AddModelError("Ma", "Mã phòng đã trùng, vui lòng kiểm tra lại");
+            //var check_ten = _phonghoc.CheckTen(phonghoc.Ten, idDonvi, item.Id);
+            //if (!check_ten)
+            //    ModelState.AddModelError("Ten", "Tên môn học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);

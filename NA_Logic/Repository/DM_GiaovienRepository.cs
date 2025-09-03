@@ -1,4 +1,5 @@
-﻿using EFCore.BulkExtensions;
+﻿using DocumentFormat.OpenXml.InkML;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -93,6 +94,9 @@ namespace NA_Logic.Repository
         {
             try
             {
+                int count = _dbContext.DM_Giaovien.Count(c=> c.Id_don_vi == dm_Giaovien.Id_don_vi);
+                string ma = $"ABC-{(count + 1):D5}";
+                dm_Giaovien.Ma_giao_vien = ma;
                 _dbContext.DM_Giaovien.Add(dm_Giaovien);
                 _dbContext.SaveChanges();
                 return true;
@@ -195,6 +199,25 @@ namespace NA_Logic.Repository
                     _dbContext.SaveChanges();
                 }
                 return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckMa(string Ma, int idDonvi, int? Id)
+        {
+            try
+            {
+                var query = _dbContext.DM_Giaovien.Where(c => c.Ma_giao_vien == Ma && c.Id_don_vi == idDonvi);
+
+                if (Id.HasValue)
+                {
+                    query = query.Where(c => c.Id != Id.Value);
+                }
+
+                var check = query.Any();
+                return !check;
             }
             catch
             {
