@@ -222,11 +222,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.ProcessThoiKhoaBieu(idtkb,idDonvi);
-            bool update = _tkb.Update_TrangThaiXep(idtkb);
-            if (!update)
-            {
-                return ApiResult.NotFound("Cập nhật trạng thái không thành công");
-            }
+            //bool update = _tkb.Update_TrangThaiXep(idtkb);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
             if (!add)
                 return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
  

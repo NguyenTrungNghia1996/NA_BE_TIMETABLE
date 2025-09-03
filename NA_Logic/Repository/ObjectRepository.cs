@@ -844,6 +844,7 @@ namespace NA_Logic.Repository
         {
             try
             {
+                LoadObjectsMonFromTiet(tiet);
                 if (_ObjectMon == null || !_ObjectMon.Xep_thanh_cap)
                 {
                     return false;
@@ -873,6 +874,7 @@ namespace NA_Logic.Repository
 
         private bool TryXepCap(Object_Tiet tietCanXep, List<Object_Tiet> dsTietChuaXep, List<Object_Tiet> dsTietDaXep, List<Object_Tiet> dsTietBoqua)
         {
+            LoadObjectsMonFromTiet(tietCanXep);
             // tìm tiết đã xếp
             var tietDaXep = dsTietDaXep.FirstOrDefault(t =>
                 t.Id_mon == tietCanXep.Id_mon && t.Id_lop == tietCanXep.Id_lop &&
@@ -882,11 +884,12 @@ namespace NA_Logic.Repository
             if (tietDaXep != null)
             {
                 // Tìm vị trí liền kề với tiết đã xếp
-                var vtLienKe = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt =>
+                var vtLienKe = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt => vt.Ca == tietDaXep.Id_ca &&
                     vt.Ngay == tietDaXep.Ngay && (vt.Tiet == tietDaXep.Tiet - 1 || vt.Tiet == tietDaXep.Tiet + 1));
 
-                if (vtLienKe != null && UpdateTiet(tietCanXep, vtLienKe.Ngay, vtLienKe.Tiet))
+                if (vtLienKe != null && UpdateTiet(tietCanXep, vtLienKe.Ca, vtLienKe.Ngay, vtLienKe.Tiet))
                 {
+                    tietCanXep.Id_ca = vtLienKe.Ca;
                     tietCanXep.Ngay = vtLienKe.Ngay;
                     tietCanXep.Tiet = vtLienKe.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -898,7 +901,7 @@ namespace NA_Logic.Repository
             // tìm tiết chưa xếp để ghép cặp
             var tietGhepCap = dsTietChuaXep.FirstOrDefault(t =>
                 t.Id_mon == tietCanXep.Id_mon && t.Id_lop == tietCanXep.Id_lop &&
-                t.Id_phong == tietCanXep.Id_phong && t.Id_ca == tietCanXep.Id_ca &&
+                t.Id_phong == tietCanXep.Id_phong &&
                 t.Id_giao_vien == tietCanXep.Id_giao_vien && t != tietCanXep);
 
             // nếu không có tiết để ghép thì cho tiết hiện tại vào ds bỏ qua
@@ -912,10 +915,11 @@ namespace NA_Logic.Repository
             // thử ghép cặp
             foreach (var vt in tietCanXep.Ds_vi_tri_xep_duoc)
             {
-                if (tietGhepCap.Ds_vi_tri_xep_duoc.Any(v => v.Ngay == vt.Ngay && v.Tiet == vt.Tiet + 1))
+                if (tietGhepCap.Ds_vi_tri_xep_duoc.Any(v => v.Ca == vt.Ca && v.Ngay == vt.Ngay && v.Tiet == vt.Tiet + 1))
                 {
-                    if (UpdateTiet(tietCanXep, vt.Ngay, vt.Tiet) && UpdateTiet(tietGhepCap, vt.Ngay, vt.Tiet + 1))
+                    if (UpdateTiet(tietCanXep,vt.Ca, vt.Ngay, vt.Tiet) && UpdateTiet(tietGhepCap, vt.Ca, vt.Ngay, vt.Tiet + 1))
                     {
+                        tietCanXep.Id_ca = vt.Ca; tietGhepCap.Id_ca = vt.Ca;
                         tietCanXep.Ngay = vt.Ngay; tietCanXep.Tiet = vt.Tiet;
                         tietGhepCap.Ngay = vt.Ngay; tietGhepCap.Tiet = vt.Tiet + 1;
 
@@ -950,9 +954,11 @@ namespace NA_Logic.Repository
                         Tiet_thu_may = tiet.Tiet_thu_may,
                         Ngay = tiet.Ngay,
                         Tiet = tiet.Tiet,
-                        Khoa = tiet.Khoa
+                        Khoa = tiet.Khoa 
                     }).ToList();
-                    _context.BulkUpdate(chitietlist);
+                    var chitiet = chitietlist.Where(c => c.Id_ca > 0).ToList();
+                    if(chitiet !=null)
+                        _context.BulkUpdate(chitiet);
                 }
                 return true;
             }
@@ -962,7 +968,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        private bool UpdateTiet(Object_Tiet tiet, int ngay, int tietSo)
+        private bool UpdateTiet(Object_Tiet tiet, int Id_ca, int ngay, int tietSo)
         {
             try
             {
@@ -979,6 +985,7 @@ namespace NA_Logic.Repository
                 {
                     record.Ngay = ngay;
                     record.Tiet = tietSo;
+                    record.Id_ca = Id_ca;
                     _context.SaveChanges();
                     return true;
                 }
@@ -1002,9 +1009,9 @@ namespace NA_Logic.Repository
                 {
                     return false;
                 }
-                var dsTietChuaXep = _dsTietGoc.Where(c => c.Ngay == 0 && c.Tiet == 0).ToList();
+                var dsTietChuaXep = _dsTietGoc.Where(c => c.Id_ca == 0).ToList();
 
-                var dsTietDaXep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
+                var dsTietDaXep = _dsTietGoc.Where(c => c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0).ToList();
                 var dsTietBoqua = new List<Object_Tiet>();
 
                 //3. lặp đến khi ds chưa xếp = 0
@@ -2001,27 +2008,31 @@ namespace NA_Logic.Repository
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
-                int caTietHoc = objectTiet.Id_ca;
+                var dsCa = _dsCa;
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").Distinct().ToList();
-                for (int ngay = 1; ngay <= 7; ngay++)
+                for(int i=0; i < dsCa.Count; i++)
                 {
-                    for (int tiet = 1; tiet <= 5; tiet++)
+                    for (int ngay = 1; ngay <= 7; ngay++)
                     {
-                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
-
-                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey)||ds_co_dinh.Contains(slotKey))
-                            continue;
-                        else
+                        for (int tiet = 1; tiet <= 5; tiet++)
                         {
-                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
+
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_co_dinh.Contains(slotKey))
+                                continue;
+                            else
                             {
-                                Ngay = ngay,
-                                Tiet = tiet,
-                            });
+                                objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                                {
+                                    Ngay = ngay,
+                                    Tiet = tiet,
+                                });
+                            }
                         }
                     }
                 }
+                
             }
             catch (Exception ex)
             {
@@ -2036,25 +2047,28 @@ namespace NA_Logic.Repository
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
-                int caTietHoc = objectTiet.Id_ca;
+                var dsCa = _dsCa;
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                for (int ngay = 1; ngay <= 7; ngay++)
+                for (int i = 0; i < dsCa.Count; i++)
                 {
-                    for (int tiet = 1; tiet <= 5; tiet++)
+                    for (int ngay = 1; ngay <= 7; ngay++)
                     {
-                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
-
-                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey))
-                            continue;
-                        else
+                        for (int tiet = 1; tiet <= 5; tiet++)
                         {
-                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
+
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey))
+                                continue;
+                            else
                             {
-                                Ngay = ngay,
-                                Tiet = tiet,
-                            });
+                                objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                                {
+                                    Ngay = ngay,
+                                    Tiet = tiet,
+                                });
+                            }
                         }
                     }
                 }
@@ -2374,27 +2388,31 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var tietban = DsTietTranhXep(objectTiet);
-                int caTietHoc = objectTiet.Id_ca;
+                var dsCa = _dsCa;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                for (int ngay = 1; ngay <= 7; ngay++)
+                for(int i = 0; i<dsCa.Count; i++)
                 {
-                    for (int tiet = 1; tiet <= 5; tiet++)
+                    for (int ngay = 1; ngay <= 7; ngay++)
                     {
-                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
-
-                        if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey)||ds_co_dinh.Contains(slotKey))
-                            continue;
-                        else
+                        for (int tiet = 1; tiet <= 5; tiet++)
                         {
-                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
+
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_co_dinh.Contains(slotKey))
+                                continue;
+                            else
                             {
-                                Ngay = ngay,
-                                Tiet = tiet,
-                            });
+                                objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                                {
+                                    Ngay = ngay,
+                                    Tiet = tiet,
+                                });
+                            }
                         }
                     }
                 }
+                
             }
             catch (Exception ex)
             {
@@ -2609,8 +2627,10 @@ namespace NA_Logic.Repository
 
                 int ngay1 = tiet1.Ngay;
                 int tietSo1 = tiet1.Tiet;
+                int ca1 = tiet1.Id_ca;
                 int ngay2 = tiet2.Ngay;
                 int tietSo2 = tiet2.Tiet;
+                int ca2 = tiet2.Id_ca;
                 bool lock1 = tiet1.isLock;
                 bool lock2 = tiet2.isLock;
                 // Tạo Object_Tiet từ tiết 1
@@ -2646,7 +2666,7 @@ namespace NA_Logic.Repository
 
                     if (check)
                     {
-                        updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+                        updateTiet2 = UpdateTiet(objectTiet2,ca1, ngay1, tietSo1);
                     }
                 }
                 else if(objectTiet2.Id_mon == 0)
@@ -2654,7 +2674,7 @@ namespace NA_Logic.Repository
                     check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet,idDonvi);
                     if (check)
                     {
-                        updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
+                        updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
                     }
                 }
                 else
@@ -2663,8 +2683,8 @@ namespace NA_Logic.Repository
                     var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if(check_t1 && check_t2 && !lock1 && !lock2)
                     {
-                        updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
-                        updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+                        updateTiet1 = UpdateTiet(objectTiet1, ca1, ngay2, tietSo2);
+                        updateTiet2 = UpdateTiet(objectTiet2, ca2, ngay1, tietSo1);
                     }
                     else
                     {
@@ -2710,8 +2730,10 @@ namespace NA_Logic.Repository
 
                 int ngay1 = tiet1.Ngay;
                 int tietSo1 = tiet1.Tiet;
+                int ca1 = tiet1.Id_ca;
                 int ngay2 = tiet2.Ngay;
                 int tietSo2 = tiet2.Tiet;
+                int ca2 = tiet2.Id_ca;
                 bool lock1 = tiet1.isLock;
                 bool lock2 = tiet2.isLock;
                 // Tạo Object_Tiet từ tiết 1
@@ -2746,7 +2768,7 @@ namespace NA_Logic.Repository
                     check = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
                     if (check)
                     {
-                        updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+                        updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
                     }
                     else
                     {
@@ -2758,7 +2780,7 @@ namespace NA_Logic.Repository
                     check = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if (check)
                     {
-                        updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
+                        updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
                     }
                     else
                     {
@@ -2771,8 +2793,8 @@ namespace NA_Logic.Repository
                     var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if (check_t1 && check_t2 && !lock1&&!lock2)
                     {
-                        updateTiet1 = UpdateTiet(objectTiet1, ngay2, tietSo2);
-                        updateTiet2 = UpdateTiet(objectTiet2, ngay1, tietSo1);
+                        updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
+                        updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
                     }
                     else
                     {
@@ -2799,7 +2821,7 @@ namespace NA_Logic.Repository
             try
             {
 
-                bool updateTiet1 = UpdateTiet(tietDachon, tietDachon.Ngay, tietDachon.Tiet);
+                bool updateTiet1 = UpdateTiet(tietDachon, tietDachon.Id_ca, tietDachon.Ngay, tietDachon.Tiet);
 
                 if (!updateTiet1)
                 {
