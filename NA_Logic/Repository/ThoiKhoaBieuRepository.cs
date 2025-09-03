@@ -113,7 +113,7 @@ namespace NA_Logic.Repository
             try
             {
                 var paramIdTkb = new SqlParameter("@IdTKB", SqlDbType.Int) { Value = Id };
-                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = Id };
+                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = iddonvi };
 
                 var paramResult = new SqlParameter("@Result", SqlDbType.Bit) { Direction = ParameterDirection.Output };
 
