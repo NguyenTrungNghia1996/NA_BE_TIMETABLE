@@ -108,15 +108,16 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool AddChitiet_tkb(int Id)
+        public bool AddChitiet_tkb(int Id, int iddonvi)
         {
             try
             {
                 var paramIdTkb = new SqlParameter("@IdTKB", SqlDbType.Int) { Value = Id };
+                var paramIdDonvi = new SqlParameter("@IdDonvi", SqlDbType.Int) { Value = Id };
 
                 var paramResult = new SqlParameter("@Result", SqlDbType.Bit) { Direction = ParameterDirection.Output };
 
-                _context.Database.ExecuteSqlRaw("EXEC InsertChitietTKB @IdTKB, @Result OUTPUT", paramIdTkb, paramResult);
+                _context.Database.ExecuteSqlRaw("EXEC InsertChitietTKB @IdTKB, @IdDonvi, @Result OUTPUT", paramIdTkb, paramIdDonvi, paramResult);
                 return Convert.ToBoolean(paramResult.Value);
             }
             catch(Exception) 

@@ -15,9 +15,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_LoaiphonghocRepository _loaiphonghoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_LoaiphonghocController(IMapper mapper, IDM_LoaiphonghocRepository loaiphonghoc, IClaimHelperRepository claimHelperRepository)
+        private readonly IAuthRepository _auth;
+        public DM_LoaiphonghocController(IMapper mapper, IAuthRepository auth, IDM_LoaiphonghocRepository loaiphonghoc, IClaimHelperRepository claimHelperRepository)
         {
             _mapper = mapper;
+            _auth = auth;
             _loaiphonghoc = loaiphonghoc;
             _claimHelperRepository = claimHelperRepository;
         }
@@ -59,9 +61,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Create([FromBody] DM_LoaiphonghocDto loaiphonghoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             // mapper data 
@@ -83,9 +89,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] DM_LoaiphonghocDto loaiphonghoc)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra bản ghi hợp lệ
             var db = _loaiphonghoc.GetDetailByID(loaiphonghoc.Id);
             if (!ModelState.IsValid)
@@ -108,9 +118,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             var item = _loaiphonghoc.GetDetailByID(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");

@@ -643,28 +643,32 @@ namespace NA_Logic.Repository
                     return;
 
                 var tietban = DsTietTranhXep(objectTiet);
-                int caTietHoc = objectTiet.Id_ca;
-
-                // Duyệt trực tiếp và check luôn - chỉ 1 lần duyệt
-                for (int ngay = 1; ngay <= 7; ngay++)
+                var dsCa = _dsCa;
+                for(int i = 0; i< dsCa.Count; i++)
                 {
-                    for (int tiet = 1; tiet <= 5; tiet++)
+                    // Duyệt trực tiếp và check luôn - chỉ 1 lần duyệt
+                    for (int ngay = 1; ngay <= 7; ngay++)
                     {
-                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
-
-                        if (tietban.Contains(slotKey))
-                            continue;
-
-                        if (CheckDieuKienConLai(ngay, tiet, caTietHoc, objectTiet, ds_da_xep))
+                        for (int tiet = 1; tiet <= 5; tiet++)
                         {
-                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
+
+                            if (tietban.Contains(slotKey))
+                                continue;
+
+                            if (CheckDieuKienConLai(ngay, tiet, dsCa[i].Id_ca, objectTiet, ds_da_xep))
                             {
-                                Ngay = ngay,
-                                Tiet = tiet,
-                            });
+                                objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                                {
+                                    Ca = dsCa[i].Id_ca,
+                                    Ngay = ngay,
+                                    Tiet = tiet,
+                                });
+                            }
                         }
                     }
                 }
+                
             }
             catch (Exception ex)
             {
@@ -682,25 +686,28 @@ namespace NA_Logic.Repository
                     return;
                 var tietTranhXep = new HashSet<string>();
                 AddTietTranhXep(tietTranhXep, _ObjectMon?.ds_tiet_tranh_xep) ;
-                int caTietHoc = objectTiet.Id_ca;
-
-                // Duyệt trực tiếp và check luôn - chỉ 1 lần duyệt
-                for (int ngay = 1; ngay <= 7; ngay++)
+                var dsCa = _dsCa;
+                for (int i = 0; i < ds_da_xep.Count; i++)
                 {
-                    for (int tiet = 1; tiet <= 5; tiet++)
+                    // Duyệt trực tiếp và check luôn - chỉ 1 lần duyệt
+                    for (int ngay = 1; ngay <= 7; ngay++)
                     {
-                        var slotKey = $"{ngay}_{caTietHoc}_{tiet}";
-
-                        if (tietTranhXep.Contains(slotKey))
-                            continue;
-
-                        if (CheckMonHoc(ngay, tiet, caTietHoc, objectTiet, ds_da_xep))
+                        for (int tiet = 1; tiet <= 5; tiet++)
                         {
-                            objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                            var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
+
+                            if (tietTranhXep.Contains(slotKey))
+                                continue;
+
+                            if (CheckMonHoc(ngay, tiet, dsCa[i].Id_ca, objectTiet, ds_da_xep))
                             {
-                                Ngay = ngay,
-                                Tiet = tiet,
-                            });
+                                objectTiet.Ds_vi_tri_xep_duoc.Add(new Ds_vi_tri_xep_duoc
+                                {
+                                    Ca = dsCa[i].Id_ca,
+                                    Ngay = ngay,
+                                    Tiet = tiet,
+                                });
+                            }
                         }
                     }
                 }
@@ -1040,6 +1047,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);

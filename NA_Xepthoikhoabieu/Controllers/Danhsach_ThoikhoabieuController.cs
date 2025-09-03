@@ -113,7 +113,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             dstkb.Id_don_vi = idDonvi;
             //thêm
             bool add = _tkb.Add(dstkb);
-            bool adddetail = _tkb.AddChitiet_tkb(dstkb.Id);
+            bool adddetail = _tkb.AddChitiet_tkb(dstkb.Id, idDonvi);
             bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
             if (!add && !changestatus)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");

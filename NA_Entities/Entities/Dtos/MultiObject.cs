@@ -77,6 +77,7 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Ds_vi_tri_xep_duoc
     {
+        public int Ca { get; set; } = 0;
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
     }
