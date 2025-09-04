@@ -2341,7 +2341,7 @@ namespace NA_Logic.Repository
                 var dsViTriXepDuoc = new List<(int Ca,int Ngay, int Tiet)>();
                 var tietChuaXep = new List<Object_Tiet>();
 
-                var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == 0 && t.Ngay == 0 && t.Tiet == 0).ToList();
+                var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Ngay == 0 && t.Tiet == 0).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2570,7 +2570,7 @@ namespace NA_Logic.Repository
                 var dsViTriXepDuoc = new List<(int Ca, int Ngay, int Tiet)>();
                 var tietChuaXep = new List<Object_Tiet>();
 
-                var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == 0 && t.Ngay == 0 && t.Tiet == 0).ToList();
+                var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Ngay == 0 && t.Tiet == 0).ToList();
                 foreach (var tietGoc in cacTietCuaGV)
                 {
                     TimViTriXepDuoc_Lop(tietGoc, idDonvi);
