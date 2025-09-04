@@ -122,6 +122,7 @@ namespace NA_Logic.Repository
             input = Regex.Replace(input, "[ùúụủũưừứựửữ]", "u");
             input = Regex.Replace(input, "[ỳýỵỷỹ]", "y");
             input = Regex.Replace(input, "[đĐ]", "d");
+            input = Regex.Replace(input, "[/]", "_");
 
             return string.Join("", input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                        .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
