@@ -47,7 +47,7 @@ namespace NA_Logic.Repository
                                     diemTruongLookup[ma] = ten;
                             }
                         }
-                        break; // Chỉ cần 1 sheet điểm trường
+                        break;
                     }
                 }
 
@@ -104,7 +104,7 @@ namespace NA_Logic.Repository
                         sheetData.Add(rowData);
                     }
 
-                    result[worksheet.Name] = sheetData;
+                    result[ConvertToPascalCase(worksheet.Name)] = sheetData;
                 }
             }
 
@@ -121,7 +121,7 @@ namespace NA_Logic.Repository
             input = Regex.Replace(input, "[òóọỏõôồốộổỗơờớợởỡ]", "o");
             input = Regex.Replace(input, "[ùúụủũưừứựửữ]", "u");
             input = Regex.Replace(input, "[ỳýỵỷỹ]", "y");
-            input = Regex.Replace(input, "[đ]", "d");
+            input = Regex.Replace(input, "[đĐ]", "d");
 
             return string.Join("", input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                        .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
