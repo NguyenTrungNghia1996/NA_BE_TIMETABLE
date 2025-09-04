@@ -978,7 +978,6 @@ namespace NA_Logic.Repository
                                          x.Id_mon == tiet.Id_mon &&
                                          x.Id_giao_vien == tiet.Id_giao_vien &&
                                          x.Id_phong == tiet.Id_phong &&
-                                         x.Id_ca == tiet.Id_ca &&
                                          x.Tiet_thu_may == tiet.Tiet_thu_may);
 
                 if (record != null)
