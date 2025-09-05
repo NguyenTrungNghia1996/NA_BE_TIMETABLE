@@ -144,7 +144,7 @@ namespace NA_Logic.Repository
                 var json = ConvertExcelToJson(stream); 
                 var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
                 var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
-                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar) { Direction = ParameterDirection.Output };
+                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
                 _context.Database.ExecuteSqlRaw("EXEC [InsertFromAccess] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
 

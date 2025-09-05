@@ -34,7 +34,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 bool result = false;
                 using (var stream = file.OpenReadStream())
                 {
-                    result = _file.ImportExcelToDb(stream,idDonvi);
+                    result = _file.ImportExcelToDb(stream, idDonvi);
                 }
                 if (!result)
                     return ApiResult.BadRequest("Import thất bại");
