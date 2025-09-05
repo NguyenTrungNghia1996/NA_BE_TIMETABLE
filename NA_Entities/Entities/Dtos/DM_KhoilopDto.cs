@@ -9,7 +9,7 @@ namespace NA_Entities.Entities.Dtos
     public class DM_KhoilopDto
     {
         public int Id { get; set; } = 0;
-        [Required(ErrorMessage = "Tên đơn vị không được để trống")]
+        [Required(ErrorMessage = "Tên khối lớp không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
 

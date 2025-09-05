@@ -25,5 +25,7 @@ namespace NA_Logic.IRepository
         bool DeleteCa(int Id);
         bool AddCap(int Id, List<int> capId);
         bool AddCa(int Id, List<int> caId);
+
+        bool CheckTrungTen( string ten, int? excludeId = null);
     }
 }

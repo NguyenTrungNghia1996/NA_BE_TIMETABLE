@@ -118,7 +118,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Khoikienthuc.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+                return _dbContext.DM_Khoikienthuc.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {
@@ -127,7 +127,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Khoikienthuc.Where(c => ids.Contains(c.Id) && c.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Khoikienthuc.Where(c => ids.Contains(c.Id) && c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
     }

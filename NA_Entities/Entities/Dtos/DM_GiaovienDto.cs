@@ -14,7 +14,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Họ và tên đệm không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ho_va_ho_dem { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Tên đệm không được để trống")]
+        [Required(ErrorMessage = "Tên không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn tổ chuyên môn")]

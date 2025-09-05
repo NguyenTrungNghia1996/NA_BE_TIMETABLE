@@ -24,5 +24,6 @@ namespace NA_Logic.IRepository
         bool DeleteTietBan(int Id);
         bool CheckIds(IEnumerable<int> ids, int idDonvi, int IdLoaiPhonghoc);
         bool CheckMa(string Ma, int idDonvi, int? Id);
+        bool CheckTrungTen(int idDonvi, string ten, int? excludeId = null);
     }
 }

@@ -15,11 +15,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_DiemtruongRepository _diemtruong;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_DiemtruongController(IMapper mapper, IDM_DiemtruongRepository diemtruong, IClaimHelperRepository claimHelperRepository)
+        private readonly IValidateRepository _validate;
+        public DM_DiemtruongController(IMapper mapper, IDM_DiemtruongRepository diemtruong, IClaimHelperRepository claimHelperRepository, IValidateRepository validate)
         {
             _mapper = mapper;
             _diemtruong = diemtruong;
             _claimHelperRepository = claimHelperRepository;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -70,9 +72,16 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             // mapper data 
             var item = _mapper.Map<DM_Diemtruong>(diemtruong);
-            item.Id_Donvi = idDonvi;
+            item.Id_don_vi = idDonvi;
             item.Id = 0;
             item.Trang_thai_xoa = false;
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Diemtruong>(idDonvi, diemtruong.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên điểm trường đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // add 
             bool add = _diemtruong.Add(item);
             if (!add)
@@ -99,9 +108,15 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (diemtruongdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Diemtruong>(idDonvi, diemtruong.Ten, diemtruong.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên điểm trường đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var item = _mapper.Map<DM_Diemtruong>(diemtruong);
-            item.Id_Donvi = idDonvi;
+            item.Id_don_vi = idDonvi;
             bool add = _diemtruong.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");

@@ -10,12 +10,11 @@ namespace NA_Entities.Entities.Dtos
     public class DM_KhoikienthucDto
     {
         public int Id { get; set; } = 0;
-        [Required(ErrorMessage = "Tên ca học không được để trống")]
+        [Required(ErrorMessage = "Tên khối kiến thức không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string? Ghi_chu { get; set; }
-        public int Id_Donvi { get; set; } = 0;
     }
     public class DM_Khoikienthuc_ListDto
     {
@@ -23,6 +22,5 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ten { get; set; } = string.Empty;
         public string? Ghi_chu { get; set; }
-        public int Id_Donvi { get; set; } = 0;
     }
 }

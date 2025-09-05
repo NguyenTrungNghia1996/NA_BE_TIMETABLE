@@ -1,9 +1,13 @@
 ﻿using ClosedXML.Excel;
 using ClosedXML.Excel;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using NA_Entities.DBContext;
 using NA_Logic.IRepository;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,6 +16,11 @@ namespace NA_Logic.Repository
 {
     public class FileImportRepository: IFileImportRepository
     {
+        private readonly NA_DbContext _context;
+        public FileImportRepository(NA_DbContext context)
+        {
+            _context = context;
+        }
         public string ConvertExcelToJson(Stream stream)
         {
             var result = new Dictionary<string, List<Dictionary<string, object>>>();
@@ -126,6 +135,26 @@ namespace NA_Logic.Repository
 
             return string.Join("", input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                        .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
+        }
+
+        public bool ImportExcelToDb(Stream stream, int idDonvi)
+        {
+            try
+            {
+                var json = ConvertExcelToJson(stream); 
+                var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
+                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar) { Direction = ParameterDirection.Output };
+
+                _context.Database.ExecuteSqlRaw("EXEC [InsertFromAccess] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
+
+                var errorMessage = paramMessage.Value?.ToString() ?? "";
+                return errorMessage == "success";
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

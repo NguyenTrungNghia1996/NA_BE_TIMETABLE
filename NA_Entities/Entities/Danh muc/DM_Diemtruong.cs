@@ -17,7 +17,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Diachi { get; set; } 
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string? Ghichu { get; set; }
-        public int Id_Donvi { get; set; }
+        public int Id_don_vi { get; set; }
         public bool Trang_thai_xoa { get; set; } = false;
 
     }
@@ -28,6 +28,6 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; }=string.Empty;
         public string DiaChi { get; set; } = string.Empty;
         public string Ghichu { get; set; } =string.Empty;
-        public int Id_Donvi { get; set; }
+        public int Id_don_vi { get; set; }
     }
 }

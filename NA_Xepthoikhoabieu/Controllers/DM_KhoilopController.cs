@@ -24,13 +24,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IAuthRepository _auth;
         private readonly IDM_CahocRepository _cahocRepository;
         private readonly IDM_CaphocRepository _caphocRepository;
-        public DM_KhoilopController(IMapper mapper, IDM_KhoilopRepository khoilop, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository caphocRepository)
+        private readonly IValidateRepository _validate;
+        public DM_KhoilopController(IMapper mapper, IDM_KhoilopRepository khoilop, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
+            IDM_CaphocRepository caphocRepository, IValidateRepository validate)
         {
             _mapper = mapper;
             _khoilop = khoilop;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _caphocRepository = caphocRepository;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -77,6 +80,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Khoilop>(khoilop);
             item.Id = 0;
             item.Trang_thai_xoa = false;
+            bool checkten = _validate.CheckTrungTen<DM_Khoilop>(khoilop.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên khối lớp đã tồn tại");
+            }
+
             var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
@@ -112,6 +121,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Khoilop>(khoilop);
+            bool checkten = _validate.CheckTrungTen<DM_Khoilop>(khoilop.Ten, khoilop.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
+            }
+
             var checkcaphoc = _caphocRepository.CheckId(item.Id_Cap_hoc);
             if (!checkcaphoc)
                 ModelState.AddModelError("Id_Caphoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");

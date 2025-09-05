@@ -61,7 +61,7 @@ builder.Services.AddScoped<IDanhsach_ThoikhoabieuRepository, ThoiKhoaBieuReposit
 builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
 builder.Services.AddScoped<ISoTietDanhMucRepository, SoTietDanhMucRepository>();
 builder.Services.AddScoped<IExportExcelRepository, ExportExcelRepository>();
-builder.Services.AddScoped<ICheckTenRepository, CheckTenRepository>();
+builder.Services.AddScoped<IValidateRepository, ValidateRepository>();
 builder.Services.AddScoped<IDM_TinhRepository, DM_TinhRepository>();
 builder.Services.AddScoped<IFileImportRepository, FileImportRepository>();
 // Đọc cấu hình từ appsettings.json

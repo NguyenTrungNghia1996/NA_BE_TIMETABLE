@@ -10,12 +10,12 @@ namespace NA_Entities.Entities.Dtos
     public class DM_BanhocDto
     {
         public int Id { get; set; } = 0;
-        [Required(ErrorMessage = "Tên ca học không được để trống")]
+        [Required(ErrorMessage = "Tên ban học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_cap_hoc { get; set; } = 0;
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string Ghi_chu { get; set; } = string.Empty;
+        public string Ghichu { get; set; } = string.Empty;
         public int Id_don_vi { get; set; } = 0;
 
     }

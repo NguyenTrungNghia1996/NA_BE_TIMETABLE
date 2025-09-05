@@ -131,7 +131,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
 
                 return _context.DM_Phonghoc.Any(c => c.Id == Id && diemTruongIds.Contains(c.Id_Diem_truong));
             }
@@ -145,7 +145,7 @@ namespace NA_Logic.Repository
             if (Id < 0) return false;
             try
             {
-                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
 
                 return _context.DM_Phonghoc.Any(c => c.Id == Id && c.Id_Loai_phong_hoc==2 && diemTruongIds.Contains(c.Id_Diem_truong));
             }
@@ -159,7 +159,7 @@ namespace NA_Logic.Repository
             if (Id < 0) return false;
             try
             {
-                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
 
                 return _context.DM_Phonghoc.Any(c => c.Id == Id && c.Id_Loai_phong_hoc == 1 && diemTruongIds.Contains(c.Id_Diem_truong));
             }
@@ -172,7 +172,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+                var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
 
                 var query = _context.DM_Phonghoc.Where(c => c.Ma == Ma && diemTruongIds.Contains(c.Id_Diem_truong));
 
@@ -189,9 +189,25 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckTrungTen(int idDonvi ,string ten, int? excludeId = null)
+        {
+            var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";
+
+            var sql = excludeId == null
+                ? $"SELECT Ten FROM DM_Phonghoc p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id where dt.Id_don_vi = {idDonvi} "
+                : $"SELECT Ten FROM DM_Phonghoc  p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id WHERE dt.Id_don_vi = {idDonvi} and Id != {excludeId}";
+
+            var ds_ten = _context.Database.SqlQueryRaw<string>(sql).ToList();
+
+            return ds_ten.Any(existingName =>
+            {
+                var ten_tontai = existingName?.Trim().ToLower().Replace(" ", "") ?? "";
+                return ten_input == ten_tontai;
+            });
+        }
         public bool CheckIds(IEnumerable<int> ids, int idDonvi, int IdLoaiPhonghoc)
         {
-            var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_Donvi == idDonvi).Select(c => c.Id).ToList();
+            var diemTruongIds = _context.DM_Diemtruong.Where(dt => dt.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
 
             var existingIds = _context.DM_Phonghoc.Where(c => ids.Contains(c.Id) && diemTruongIds.Contains(c.Id_Diem_truong) && c.Id_Loai_phong_hoc == IdLoaiPhonghoc)
                                                   .Select(c => c.Id).ToList();

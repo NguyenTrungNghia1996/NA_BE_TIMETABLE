@@ -28,8 +28,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_PhonghocRepository _phong;
         private readonly IDM_GiaovienRepository _giaovien;
         private readonly IDM_KhoilopRepository _khoilop;
+        private readonly IValidateRepository _validate;
         public DM_LophocController(IMapper mapper, IDM_LophocRepository Lophoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                     IDM_GiaovienRepository giaovien, IDM_CahocRepository cahoc, IDM_BanhocRepository ban, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop)
+                                     IDM_GiaovienRepository giaovien, IDM_CahocRepository cahoc, IDM_BanhocRepository ban, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop, IValidateRepository validate)
         {
             _mapper = mapper;
             _Lophoc = Lophoc;
@@ -40,6 +41,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _giaovien = giaovien;
             _cahoc = cahoc;
             _khoilop = khoilop;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -113,7 +115,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_gvcn", "Id giáo viên không hợp lệ, vui lòng kiểm tra lại");
             if (!check_ca)
                 ModelState.AddModelError("Id_ca", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
-            
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lophoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên lớp học đã tồn tại");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //thêm
@@ -161,6 +168,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_gvcn", "Id giáo viên không hợp lệ, vui lòng kiểm tra lại");
             if (!check_ca)
                 ModelState.AddModelError("Id_ca", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lophoc.Ten, Lophoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên lớp học đã tồn tại");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

@@ -16,12 +16,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_LoaiphonghocRepository _loaiphonghoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
-        public DM_LoaiphonghocController(IMapper mapper, IAuthRepository auth, IDM_LoaiphonghocRepository loaiphonghoc, IClaimHelperRepository claimHelperRepository)
+        private readonly IValidateRepository _validate;
+        public DM_LoaiphonghocController(IMapper mapper, IAuthRepository auth, IDM_LoaiphonghocRepository loaiphonghoc, IClaimHelperRepository claimHelperRepository, IValidateRepository validate)
         {
             _mapper = mapper;
             _auth = auth;
             _loaiphonghoc = loaiphonghoc;
             _claimHelperRepository = claimHelperRepository;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -70,6 +72,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+            bool checkten = _validate.CheckTrungTen<DM_Loaiphonghoc>(loaiphonghoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên loại phòng học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // mapper data 
             var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
             item.Id = 0;
@@ -102,7 +111,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (db == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool checkten = _validate.CheckTrungTen<DM_Loaiphonghoc>(loaiphonghoc.Ten, loaiphonghoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên loại phòng học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var item = _mapper.Map<DM_Loaiphonghoc>(loaiphonghoc);
             bool add = _loaiphonghoc.Update(item);
             if (!add)

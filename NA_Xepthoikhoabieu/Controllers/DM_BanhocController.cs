@@ -17,13 +17,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _cap;
-        public DM_BanhocController(IMapper mapper, IDM_BanhocRepository Banhoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository cap)
+        private readonly IValidateRepository _validate;
+        public DM_BanhocController(IMapper mapper, IDM_BanhocRepository Banhoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IDM_CaphocRepository cap, IValidateRepository validate)
         {
             _mapper = mapper;
             _Banhoc = Banhoc;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _cap = cap;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -68,6 +70,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id = 0;
             item.Id_don_vi = idDonvi;
             item.Trang_thai_xoa = false;
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Banhoc>(idDonvi,Banhoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên ban học đã tồn tại");
+            }
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)
                 ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
@@ -100,6 +107,11 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Banhoc>(Banhoc);
             item.Id_don_vi = idDonvi;
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Banhoc>(idDonvi, Banhoc.Ten, Banhoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên ban học đã tồn tại");
+            }
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)
                 ModelState.AddModelError("Id_cap_hoc", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");

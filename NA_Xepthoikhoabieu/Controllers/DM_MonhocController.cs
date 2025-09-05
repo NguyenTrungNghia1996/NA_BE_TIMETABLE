@@ -25,9 +25,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_BanhocRepository _ban;
         private readonly IDM_KhoilopRepository _khoilop;
         private readonly IDM_LophocRepository _lop;
+        private readonly IValidateRepository _validate;
         public DM_MonhocController(IMapper mapper, IDM_MonhocRepository monhoc, IClaimHelperRepository claimHelperRepository, IDM_LoaiphonghocRepository loaiphong, 
                                    IDM_KhoikienthucRepository khoikienthuc, IDM_CahocRepository cahoc, IDM_PhonghocRepository phong, IDM_BanhocRepository ban,
-                                   IDM_KhoilopRepository khoilop, IDM_LophocRepository lop)
+                                   IDM_KhoilopRepository khoilop, IDM_LophocRepository lop, IValidateRepository validate)
         {
             _mapper = mapper;
             _monhoc = monhoc;
@@ -39,6 +40,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _ban = ban;
             _khoilop = khoilop;
             _lop = lop;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -117,9 +119,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
                 ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
-            var check_ten = _monhoc.CheckTen(monhoc.Ten, idDonvi, item.Id);
-            if (!check_ten)
-                ModelState.AddModelError("Ten", "Tên môn học đã trùng, vui lòng kiểm tra lại");
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên môn học đã tồn tại");
+            }
 
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
@@ -132,6 +136,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_khoi_kien_thuc", "Id khối kiến thức không hợp lệ, vui lòng kiểm tra lại");
             if (monhoc.Id_loai_phong_hoc > 0 && !check_phong)
                 ModelState.AddModelError("Id_phong", "Id phòng không hợp lệ, vui lòng kiểm tra lại");
+           
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // thêm
@@ -183,9 +188,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
                 ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
-            var check_ten = _monhoc.CheckTen(monhoc.Ten, idDonvi, item.Id);
-            if (!check_ten)
-                ModelState.AddModelError("Ten", "Tên môn học đã trùng, vui lòng kiểm tra lại");
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten, monhoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên môn học đã tồn tại");
+            }
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);

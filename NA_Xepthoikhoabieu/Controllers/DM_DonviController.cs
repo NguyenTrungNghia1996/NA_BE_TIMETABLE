@@ -25,7 +25,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IDM_NgayhocRepository _ngayhocRepository;
         private readonly IDM_CahocRepository _cahocRepository;
-        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,  IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository, IDM_CahocRepository cahocRepository)
+        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,  
+            IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository, IDM_CahocRepository cahocRepository)
         {
             _mapper = mapper;
             _donvi = donvi;
@@ -106,6 +107,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
                 ModelState.AddModelError("Id_cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên đơn vị đã tồn tại");
+            }
             //hiển thị lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -170,6 +176,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
                 ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, donvi.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên đơn vị đã tồn tại");
+            }
             //hiển thị thông báo lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

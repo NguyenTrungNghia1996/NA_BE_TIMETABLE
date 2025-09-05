@@ -104,6 +104,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckTrungTen(string ten, int? excludeId = null)
+        {
+            var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";
+
+            var sql = excludeId == null
+                ? $"SELECT TenDonvi FROM DM_Donvi "
+                : $"SELECT TenDonvi FROM DM_Donvi  WHERE  and Id != {excludeId}";
+
+            var ds_ten = _context.Database.SqlQueryRaw<string>(sql).ToList();
+
+            return ds_ten.Any(existingName =>
+            {
+                var ten_tontai = existingName?.Trim().ToLower().Replace(" ", "") ?? "";
+                return ten_input == ten_tontai;
+            });
+        }
         //public bool Add_Demo(DM_Donvi_Demo dm_donvi)
         //{
         //    try

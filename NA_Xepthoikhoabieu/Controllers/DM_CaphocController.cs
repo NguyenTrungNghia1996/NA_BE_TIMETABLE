@@ -19,18 +19,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IClaimHelperRepository _clamHelperRepository;
         private readonly IAuthRepository _auth;
-        private readonly ICheckTenRepository _checkten;
+        private readonly IValidateRepository _valid;
         public DM_CaphocController(IMapper mapper,
                                    IDM_CaphocRepository caphocRepository,
                                    IClaimHelperRepository clamHelperRepository,
-                                   IAuthRepository auth, ICheckTenRepository checkten
+                                   IAuthRepository auth, IValidateRepository valid
                                 )
         {
             _caphocRepository = caphocRepository;
             _mapper = mapper;
             _clamHelperRepository = clamHelperRepository;
             _auth = auth;
-            _checkten = checkten;
+            _valid = valid;
         }
         // Get list Caphoc paging
         [HttpGet]
@@ -77,7 +77,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            bool checkten = _checkten.CheckTrungTen<DM_Caphoc>(caphoc.Ten);
+            bool checkten = _valid.CheckTrungTen<DM_Caphoc>(caphoc.Ten);
             if (checkten)
             {
                 ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
@@ -117,7 +117,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (caphocdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool checkten = _valid.CheckTrungTen<DM_Caphoc>(caphoc.Ten, caphoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var item = _mapper.Map<DM_Caphoc>(caphoc);
             bool add = _caphocRepository.Update(item);
             if (!add)

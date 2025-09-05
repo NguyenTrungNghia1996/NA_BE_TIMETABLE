@@ -15,11 +15,13 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IMapper _mapper;
         private readonly IDM_KhoikienthucRepository _khoikienthuc;
         private readonly IClaimHelperRepository _claimHelperRepository;
-        public DM_KhoikienthucController(IMapper mapper, IDM_KhoikienthucRepository khoikienthuc, IClaimHelperRepository claimHelperRepository)
+        private readonly IValidateRepository _validate;
+        public DM_KhoikienthucController(IMapper mapper, IDM_KhoikienthucRepository khoikienthuc, IClaimHelperRepository claimHelperRepository, IValidateRepository validate)
         {
             _mapper = mapper;
             _khoikienthuc = khoikienthuc;
             _claimHelperRepository = claimHelperRepository;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -65,7 +67,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
             item.Id = 0;
-            item.Id_Donvi = idDonvi;
+            item.Id_don_vi = idDonvi;
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Khoikienthuc>(idDonvi,khoikienthuc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên khối kiến thức đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // add 
             bool add = _khoikienthuc.Add(item);
             if (!add)
@@ -91,9 +100,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (db == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Khoikienthuc>(idDonvi, khoikienthuc.Ten, khoikienthuc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên khối kiến thức đã tồn tại");
+            }
             var item = _mapper.Map<DM_Khoikienthuc>(khoikienthuc);
-            item.Id_Donvi = idDonvi;
+            item.Id_don_vi = idDonvi;
             bool add = _khoikienthuc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");

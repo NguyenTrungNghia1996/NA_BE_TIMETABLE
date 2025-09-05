@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NA_Logic.IRepository;
+using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
@@ -21,18 +22,22 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _file = file;
         }
-        [HttpPost("convert")]
+        [HttpPost("import")]
         public IActionResult ConvertExcelToJson(IFormFile file)
         {
             try
             {
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
                 string jsonString;
-
+                bool result = false;
                 using (var stream = file.OpenReadStream())
                 {
-                    jsonString = _file.ConvertExcelToJson(stream);
+                    result = _file.ImportExcelToDb(stream,idDonvi);
                 }
-                return Ok(jsonString);
+                if (!result)
+                    return ApiResult.BadRequest("Import thất bại");
+                return ApiResult.Success("Import thành công");
             }
             catch (Exception ex)
             {

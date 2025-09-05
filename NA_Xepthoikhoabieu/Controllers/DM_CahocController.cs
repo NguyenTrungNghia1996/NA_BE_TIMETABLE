@@ -16,12 +16,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_CahocRepository _cahoc;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
-        public DM_CahocController(IMapper mapper, IDM_CahocRepository cahoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth)
+        private readonly IValidateRepository _validate;
+        public DM_CahocController(IMapper mapper, IDM_CahocRepository cahoc, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IValidateRepository validate)
         {
             _mapper = mapper;
             _cahoc = cahoc;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
+            _validate = validate;
         }
         [HttpGet]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "" ) {
@@ -85,6 +87,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Cahoc>(cahoc);
             item.Id = 0;
             item.Trang_thai_xoa = false;
+            bool checkten = _validate.CheckTrungTen<DM_Cahoc>(cahoc.Ten);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên ca học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             // add 
             bool add = _cahoc.Add(item);
             if (!add)
@@ -113,7 +122,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (cahocdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool checkten = _validate.CheckTrungTen<DM_Cahoc>(cahoc.Ten, cahoc.Id);
+            if (checkten)
+            {
+                ModelState.AddModelError("Ten", "Tên ca học đã tồn tại");
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var item = _mapper.Map<DM_Cahoc>(cahoc);
             bool add = _cahoc.Update(item);
             if (!add)

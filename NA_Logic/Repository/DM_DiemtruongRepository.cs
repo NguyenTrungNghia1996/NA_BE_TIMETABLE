@@ -60,7 +60,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var diemtruong = _dbContext.DM_Diemtruong.FirstOrDefault(c => c.Id == Id && c.Id_Donvi == Id_Donvi && c.Trang_thai_xoa == false);
+                var diemtruong = _dbContext.DM_Diemtruong.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == Id_Donvi && c.Trang_thai_xoa == false);
                 return diemtruong;
             }
             catch (Exception) 
@@ -119,7 +119,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Diemtruong.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+                return _dbContext.DM_Diemtruong.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {
@@ -128,7 +128,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Diemtruong.Where(c => ids.Contains(c.Id) && c.Id_Donvi==idDonvi).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Diemtruong.Where(c => ids.Contains(c.Id) && c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
     }

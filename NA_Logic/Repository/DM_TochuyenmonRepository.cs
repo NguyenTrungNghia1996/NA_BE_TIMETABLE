@@ -56,11 +56,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Tochuyenmon GetDetailById(int Id)
+        public DM_Tochuyenmon GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var item = _dbContext.DM_Tochuyenmon.FirstOrDefault(c => c.Id == Id);
+                var item = _dbContext.DM_Tochuyenmon.FirstOrDefault(c => c.Id == Id && c.Id_don_vi==idDonvi);
                 return item;
             }
             catch (Exception)
@@ -118,7 +118,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Tochuyenmon.Any(c => c.Id == Id && c.Id_Donvi == idDonvi);
+                return _dbContext.DM_Tochuyenmon.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {
