@@ -56,11 +56,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Khoikienthuc GetDetailById(int Id)
+        public DM_Khoikienthuc GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var item = _dbContext.DM_Khoikienthuc.FirstOrDefault(c => c.Id == Id);
+                var item = _dbContext.DM_Khoikienthuc.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
                 return item;
             }
             catch (Exception)
