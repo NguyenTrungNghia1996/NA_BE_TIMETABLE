@@ -25,7 +25,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; }
         public string Ten { get; set; }
         public string Ten_cap { get; set; }
-        public string Ghi_chu { get; set; }
+        public string Ghichu { get; set; }
         public int Id_don_vi { get;set; }
     }
 }
