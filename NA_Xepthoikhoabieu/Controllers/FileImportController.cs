@@ -23,6 +23,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _file = file;
         }
         [HttpPost("import")]
+        [RequireToken]
         public IActionResult ConvertExcelToJson(IFormFile file)
         {
             try
