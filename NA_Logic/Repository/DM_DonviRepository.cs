@@ -110,7 +110,7 @@ namespace NA_Logic.Repository
 
             var sql = excludeId == null
                 ? $"SELECT TenDonvi FROM DM_Donvi "
-                : $"SELECT TenDonvi FROM DM_Donvi  WHERE  and Id != {excludeId}";
+                : $"SELECT TenDonvi FROM DM_Donvi  WHERE  Id != {excludeId}";
 
             var ds_ten = _context.Database.SqlQueryRaw<string>(sql).ToList();
 
