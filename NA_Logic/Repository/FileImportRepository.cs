@@ -24,14 +24,18 @@ namespace NA_Logic.Repository
         public string ConvertExcelToJson(Stream stream)
         {
             var result = new Dictionary<string, List<Dictionary<string, object>>>();
-            var diemTruongLookup = new Dictionary<string, string>(); // Mã -> Tên
+            var diemTruongLookup = new Dictionary<string, string>(); 
+            var tkbLookup = new Dictionary<string, string>();
 
             using (var workbook = new XLWorkbook(stream))
             {
-                // Bước 1: Tìm và đọc sheet điểm trường trước
+                // Bước 1: Tìm và đọc các sheet lookup trước
                 foreach (var worksheet in workbook.Worksheets)
                 {
-                    if (worksheet.Name.ToLower().Contains("điểm") || worksheet.Name.ToLower().Contains("diem"))
+                    var sheetNameLower = worksheet.Name.ToLower();
+
+                    // Xử lý sheet điểm trường
+                    if (sheetNameLower.Contains("điểm") || sheetNameLower.Contains("diem"))
                     {
                         var range = worksheet.RangeUsed();
                         if (range == null || range.RowCount() <= 1) continue;
@@ -56,7 +60,42 @@ namespace NA_Logic.Repository
                                     diemTruongLookup[ma] = ten;
                             }
                         }
-                        break;
+                    }
+
+                    // Xử lý sheet TKB
+                    else if (sheetNameLower.Contains("tkb") || sheetNameLower.Contains("thời khóa biểu"))
+                    {
+                        var range = worksheet.RangeUsed();
+                        if (range == null || range.RowCount() <= 1) continue;
+
+                        int headerRow = 1;
+                        // Check nếu có "mã tkb" ở row 1 thì skip
+                        var firstCell = range.Cell(1, 1).GetString().ToLower();
+                        if (firstCell.Contains("mã tkb") || firstCell.Contains("ma tkb"))
+                        {
+                            headerRow = 2;
+                        }
+
+                        // Tìm cột mã và tên từ header row
+                        int maCol = -1, tenCol = -1;
+                        for (int col = 1; col <= range.ColumnCount(); col++)
+                        {
+                            var header = range.Cell(headerRow, col).GetString().ToLower();
+                            if (header.Contains("mã")) maCol = col;
+                            if (header.Contains("tên")) tenCol = col;
+                        }
+
+                        // Đọc lookup data
+                        if (maCol > 0 && tenCol > 0)
+                        {
+                            for (int row = headerRow + 1; row <= range.RowCount(); row++)
+                            {
+                                var ma = range.Cell(row, maCol).GetString().Trim();
+                                var ten = range.Cell(row, tenCol).GetString().Trim();
+                                if (!string.IsNullOrEmpty(ma))
+                                    tkbLookup[ma] = ten;
+                            }
+                        }
                     }
                 }
 
@@ -68,26 +107,45 @@ namespace NA_Logic.Repository
 
                     if (range == null || range.RowCount() <= 1) continue;
 
-                    // Lấy headers
+                    var sheetNameLower = worksheet.Name.ToLower();
+                    int headerRow = 1;
+                    string maTKB = null;
+
+                    // Check nếu là sheet có TKB (kiểm tra cell A1)
+                    var firstCell = range.Cell(1, 1).GetString().ToLower();
+                    if (firstCell.Contains("mã tkb") || firstCell.Contains("ma tkb"))
+                    {
+                        headerRow = 3; 
+                        maTKB = range.Cell(1, 2).GetString().Trim();
+                    }
+
+                    // Lấy headers từ headerRow
                     var headers = new List<string>();
                     int maDiemTruongCol = -1;
+                    int maTkbCol = -1;
 
                     for (int col = 1; col <= range.ColumnCount(); col++)
                     {
-                        var header = range.Cell(1, col).GetString().Trim();
+                        var header = range.Cell(headerRow, col).GetString().Trim();
                         var headerLower = header.ToLower();
 
-                        // Tìm cột mã điểm trường
                         if (headerLower.Contains("mã") && headerLower.Contains("điểm"))
                             maDiemTruongCol = col;
+
+                        if (headerLower.Contains("mã") && headerLower.Contains("tkb"))
+                            maTkbCol = col;
+
+                        if (string.IsNullOrEmpty(header))
+                            header = $"Column{col}";
 
                         headers.Add(ConvertToPascalCase(header));
                     }
 
-                    // Đọc data
-                    for (int row = 2; row <= range.RowCount(); row++)
+                    // Đọc data từ headerRow + 1
+                    for (int row = headerRow + 1; row <= range.RowCount(); row++)
                     {
                         var rowData = new Dictionary<string, object>();
+                        bool isEmptyRow = true;
 
                         for (int col = 1; col <= range.ColumnCount(); col++)
                         {
@@ -99,8 +157,17 @@ namespace NA_Logic.Repository
                             else
                                 value = cell.GetString().Trim();
 
+                            if (!string.IsNullOrEmpty(value.ToString()))
+                                isEmptyRow = false;
+
                             rowData[headers[col - 1]] = value;
                         }
+
+                        if (isEmptyRow) continue;
+
+                        var firstColValue = rowData[headers[0]].ToString().ToLower();
+                        if (firstColValue.Contains("tiết") || firstColValue.Contains("tiet"))
+                            continue;
 
                         // Thêm tên điểm trường nếu có
                         if (maDiemTruongCol > 0)
@@ -108,6 +175,22 @@ namespace NA_Logic.Repository
                             var ma = range.Cell(row, maDiemTruongCol).GetString().Trim();
                             if (diemTruongLookup.ContainsKey(ma))
                                 rowData["TenDiemTruong"] = diemTruongLookup[ma];
+                        }
+
+                        // Thêm tên TKB nếu có
+                        if (maTkbCol > 0)
+                        {
+                            var ma = range.Cell(row, maTkbCol).GetString().Trim();
+                            if (tkbLookup.ContainsKey(ma))
+                                rowData["TenTKB"] = tkbLookup[ma];
+                        }
+
+                        // Thêm mã TKB từ header nếu có
+                        if (!string.IsNullOrEmpty(maTKB))
+                        {
+                            rowData["MaTKB"] = maTKB;
+                            if (tkbLookup.ContainsKey(maTKB))
+                                rowData["TenTKB"] = tkbLookup[maTKB];
                         }
 
                         sheetData.Add(rowData);
