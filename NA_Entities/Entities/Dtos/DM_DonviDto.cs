@@ -36,6 +36,8 @@ namespace NA_Entities.Entities.Dtos
         public string Diachi { get; set; } = string.Empty;
         public string Sodienthoai { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string Ten_cap { get; set; } = string.Empty;
+        public string Ten_ca { get; set; } = string.Empty;
 
     }
     public class DM_Donvi_updateDto
