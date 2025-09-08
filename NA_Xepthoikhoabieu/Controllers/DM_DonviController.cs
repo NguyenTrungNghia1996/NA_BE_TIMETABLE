@@ -111,7 +111,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên đơn vị đã tồn tại");
+                return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
             }
             //hiển thị lỗi
             if (!ModelState.IsValid)
@@ -180,7 +180,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, donvi.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên đơn vị đã tồn tại");
+                return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
             }
             //hiển thị thông báo lỗi
             if (!ModelState.IsValid)

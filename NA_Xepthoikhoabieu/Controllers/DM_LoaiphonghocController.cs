@@ -76,7 +76,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen<DM_Loaiphonghoc>(loaiphonghoc.Ten);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên loại phòng học đã tồn tại");
+                return ApiResult.BadRequest("Tên loại phòng học đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -115,7 +115,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen<DM_Loaiphonghoc>(loaiphonghoc.Ten, loaiphonghoc.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên loại phòng học đã tồn tại");
+                return ApiResult.BadRequest("Tên loại phòng học đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

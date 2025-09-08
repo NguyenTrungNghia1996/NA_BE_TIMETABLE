@@ -78,7 +78,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Diemtruong>(idDonvi, diemtruong.Ten);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên điểm trường đã tồn tại");
+                return ApiResult.BadRequest("Tên điểm trường đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -111,7 +111,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Diemtruong>(idDonvi, diemtruong.Ten, diemtruong.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên điểm trường đã tồn tại");
+                return ApiResult.BadRequest("Tên điểm trường đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

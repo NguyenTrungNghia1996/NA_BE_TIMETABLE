@@ -74,7 +74,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Banhoc>(idDonvi,Banhoc.Ten);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên ban học đã tồn tại");
+               return ApiResult.BadRequest("Tên ban học đã tồn tại");
             }
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)
@@ -111,7 +111,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Banhoc>(idDonvi, Banhoc.Ten, Banhoc.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên ban học đã tồn tại");
+                return ApiResult.BadRequest("Tên ban học đã tồn tại");
             }
             var check_cap = _cap.CheckId(Banhoc.Id_cap_hoc);
             if (!check_cap)

@@ -81,7 +81,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _valid.CheckTrungTen<DM_Caphoc>(caphoc.Ten);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
+                return ApiResult.BadRequest("Tên cấp học đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -121,7 +121,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _valid.CheckTrungTen<DM_Caphoc>(caphoc.Ten, caphoc.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên cấp học đã tồn tại");
+                return ApiResult.BadRequest("Tên cấp học đã tồn tại");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
