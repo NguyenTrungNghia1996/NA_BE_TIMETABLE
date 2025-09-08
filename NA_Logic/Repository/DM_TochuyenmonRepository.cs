@@ -101,11 +101,19 @@ namespace NA_Logic.Repository
             {
                 DM_Tochuyenmon item = new DM_Tochuyenmon();
                 item = _dbContext.DM_Tochuyenmon.Find(Id);
-                if (item != null)
+                if (item == null)
                 {
+                    return false;
+                }
+                bool check = _dbContext.DM_Giaovien.Any(c => c.Id_to_chuyen_mon == Id);
+                if (check)
+                {
+                    throw new Exception("Tổ chuyên môn đã có ràng buộc, không thể xoá");
+                }
+
                     _dbContext.DM_Tochuyenmon.Remove(item);
                     _dbContext.SaveChanges();
-                }
+
                 return true;
             }
             catch

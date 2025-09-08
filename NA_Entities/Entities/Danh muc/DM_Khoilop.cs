@@ -10,7 +10,7 @@ namespace NA_Entities.Entities.Danhmuc
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên đơn vị không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(200, ErrorMessage = "Tối đa 20 ký tự")]
         public string Ten { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng chọn cấp học")]

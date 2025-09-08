@@ -11,13 +11,14 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên đơn vị không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(100, ErrorMessage = "Tối đa 100 ký tự")]
+        [MinLength(20, ErrorMessage = "Ít nhất 20 ký tự")]
         public string TenDonvi { get; set; } = string.Empty;
         [Required(ErrorMessage = "Địa chỉ không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string? Diachi { get; set; }
         [Required(ErrorMessage = "Số điện thoại không được để trống")]
-        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
+        [StringLength(12, ErrorMessage = "Tối đa 12 ký tự")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số")]
         public string Sodienthoai { get; set; } = string.Empty;
         [Required(ErrorMessage = "Email không được để trống")]
@@ -50,7 +51,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id_tinh { get; set; } = 0;
         public string Nguoi_lien_he { get; set; } = string.Empty;
         [Required(ErrorMessage = "Số điện thoại không được để trống")]
-        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
+        [StringLength(12, ErrorMessage = "Tối đa 12 ký tự")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số")]
         public string Sodienthoai { get; set; } = string.Empty;
         [Required(ErrorMessage = "Email không được để trống")]

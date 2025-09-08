@@ -87,11 +87,19 @@ namespace NA_Logic.Repository
             {
                 DM_Loaiphonghoc item = new DM_Loaiphonghoc();
                 item = _context.DM_Loaiphonghoc.Find(Id);
-                if (item != null)
+                if (item == null)
                 {
+                    return false;
+                }
+                bool check = _context.Dm_Monhoc.Any(c=>c.Id_loai_phong_hoc == Id)
+                           || _context.DM_Phonghoc.Any(p=>p.Id_Loai_phong_hoc== Id);
+                if (check)
+                {
+                    throw new Exception("Loại phòng học đã có ràng buộc, không thể xoá");
+                }
                     _context.DM_Loaiphonghoc.Remove(item);
                     _context.SaveChanges();
-                }
+
                 return true;
             }
             catch

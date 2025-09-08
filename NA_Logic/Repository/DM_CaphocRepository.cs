@@ -87,12 +87,16 @@ namespace NA_Logic.Repository
             {
                 DM_Caphoc item = new DM_Caphoc();
                 item = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
-                if (item != null)
-                {
-                    item.Trang_thai_xoa = true;
-                    _context.DM_Caphoc.Update(item);
+                if(item == null) 
+                    return false;
+                bool check = _context.Cap_Donvi.Any(c=>c.Id_Cap_hoc == Id)
+                             || _context.DM_Banhoc.Any(c=>c.Id_cap_hoc == Id)
+                             || _context.DM_Khoilop.Any(c=>c.Id_Cap_hoc== Id);
+                if (check)
+                    throw new Exception("Cấp học đã có ràng buộc, không thể xoá");
+
+                    _context.DM_Caphoc.Remove(item);
                     _context.SaveChanges();
-                }
                 return true;
             }
             catch

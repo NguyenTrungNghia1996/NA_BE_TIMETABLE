@@ -63,6 +63,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
             int totalrecord = 0;
+            search = search.Trim();
             var list = _auth.GetListUsers_Paging(PageIndex, PageSize, search, ref totalrecord);
             return ApiResult.Success(new
             {

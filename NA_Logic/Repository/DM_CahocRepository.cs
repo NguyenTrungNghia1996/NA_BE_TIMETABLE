@@ -101,12 +101,26 @@ namespace NA_Logic.Repository
             {
                 DM_Cahoc cahoc = new DM_Cahoc();
                 cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
-                if (cahoc != null)
-                {
-                    cahoc.Trang_thai_xoa = true;
-                    _dbContext.DM_Cahoc.Update(cahoc);
-                    _dbContext.SaveChanges();
+                if (cahoc == null) { 
+                    return false;
                 }
+                bool check = _dbContext.Database.SqlQueryRaw<int>($@"
+                             select 1 from Ca_Donvi where Id_ca_hoc = {Id}
+                             union select 1 from Chitiet_Thoikhoabieu where Id_ca = {Id} 
+                             union select 1 from DM_Lophoc where Id_ca = {Id}
+                             union select 1 from Giaovien_Tiettranhxep  where Id_ca = {Id}
+                             union select 1 from Lophoc_Monhoc_Tiettranhxep  where Id_ca = {Id}
+                             union select 1 from Lophoc_Tietnghi  where Id_ca = {Id}
+                             union select 1 from Monhoc_Khoilop  where Id_ca = {Id}
+                             union select 1 from Monhoc_Khoilop_Tiettranhxep  where Id_ca = {Id}
+                             union select 1 from Tiet_ban  where Id_ca = {Id}
+                             union select 1 from Tiet_tranh_xep  where Id_ca = {Id}
+                             union select 1 from Tiet_co_dinh  where Id_ca = {Id}").First() == 1;
+                if (check)
+                    throw new Exception("Ca học đã có ràng buộc, không thể xoá");
+
+                    _dbContext.DM_Cahoc.Remove(cahoc);
+                    _dbContext.SaveChanges();
                 return true;
             }
             catch

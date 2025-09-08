@@ -101,12 +101,18 @@ namespace NA_Logic.Repository
             {
                 DM_Diemtruong diemtruong = new DM_Diemtruong();
                 diemtruong = _dbContext.DM_Diemtruong.Find(Id);
-                if (diemtruong != null)
+                if (diemtruong == null)
+                    { return false; }
+                bool check = _dbContext.DM_Phonghoc.Any(c => c.Id_Diem_truong == Id)
+                             || _dbContext.Giaovien_Diadiemday.Any(c => c.Id_diem_truong == Id);
+                if (check)
                 {
-                    diemtruong.Trang_thai_xoa = true;
-                    _dbContext.DM_Diemtruong.Update(diemtruong);
-                    _dbContext.SaveChanges();
+                    throw new Exception("Điểm trường đã có ràng buộc, không thể xoá");
                 }
+
+                    _dbContext.DM_Diemtruong.Remove(diemtruong);
+                    _dbContext.SaveChanges();
+
                 return true;
             }
             catch

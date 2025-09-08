@@ -103,9 +103,16 @@ namespace NA_Logic.Repository
                 item = _dbContext.DM_Khoikienthuc.Find(Id);
                 if (item != null)
                 {
-                    _dbContext.DM_Khoikienthuc.Remove(item);
-                    _dbContext.SaveChanges();
+                    return false;
                 }
+                bool check = _dbContext.Mon_Khoikienthuc.Any(c => c.Id_khoi_kien_thuc == Id);
+                if (check)
+                {
+                    throw new Exception("Khối kiến thức đã có ràng buộc, không thể xoá");
+                }
+
+                _dbContext.DM_Khoikienthuc.Remove(item);
+                _dbContext.SaveChanges();
                 return true;
             }
             catch

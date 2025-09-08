@@ -39,6 +39,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
+            search = search.Trim();
             var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok("Không tồn tại bản ghi hợp nào");

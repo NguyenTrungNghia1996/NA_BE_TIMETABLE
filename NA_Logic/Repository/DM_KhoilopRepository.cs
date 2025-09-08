@@ -98,12 +98,21 @@ namespace NA_Logic.Repository
             {
                 DM_Khoilop item = new DM_Khoilop();
                 item = _context.DM_Khoilop.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
-                if (item != null)
+                if (item == null)
                 {
-                    item.Trang_thai_xoa = true;
-                    _context.DM_Khoilop.Update(item);
-                    _context.SaveChanges();
+                    return false;
                 }
+                bool check = _context.Tiet_co_dinh.Any(c => c.Id_khoi_lop == Id)
+                            || _context.Monhoc_Khoilop.Any(c => c.Id_khoi == Id)
+                            || _context.DM_Lophoc.Any(c => c.Id_khoi == Id)
+                            || _context.Monhoc_Tohopmon.Any(c=>c.Id_khoi == Id);
+                if (check)
+                {
+                    throw new Exception("Khối lớp đã có ràng buộc, không thể xoá");
+                }
+
+                    _context.DM_Khoilop.Remove(item);
+                    _context.SaveChanges();
                 return true;
             }
             catch

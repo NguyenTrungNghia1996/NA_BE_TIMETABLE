@@ -100,14 +100,24 @@ namespace NA_Logic.Repository
         {
             try
             {
-                DM_Banhoc Banhoc = new DM_Banhoc();
-                Banhoc = _dbContext.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
-                if (Banhoc != null)
+                var banhoc = _dbContext.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
+
+                if (banhoc == null)
                 {
-                    Banhoc.Trang_thai_xoa = true;
-                    _dbContext.DM_Banhoc.Update(Banhoc);
-                    _dbContext.SaveChanges();
+                    return false;
                 }
+
+                bool check = _dbContext.DM_Lophoc.Any(c => c.Id_ban == Id)
+                                   || _dbContext.Monhoc_Khoilop.Any(c => c.Id_ban == Id)
+                                   || _dbContext.Monhoc_Tohopmon.Any(c => c.Id_ban == Id);
+
+                if (check)
+                {
+                    throw new Exception("Ban học đã có ràng buộc, không thể xoá");
+                }
+
+                _dbContext.DM_Banhoc.Remove(banhoc);
+                _dbContext.SaveChanges();
                 return true;
             }
             catch

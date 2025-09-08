@@ -11,7 +11,7 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên tổ chuyên môn không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string? Ghi_chu { get; set; }

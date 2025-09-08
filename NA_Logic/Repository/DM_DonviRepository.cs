@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -256,10 +256,27 @@ namespace NA_Logic.Repository
                 donvi = _context.DM_Donvi.Find(Id);
                 if (donvi != null)
                 {
-                    donvi.Trang_thai_xoa = true;
-                    _context.DM_Donvi.Update(donvi);
-                    _context.SaveChanges();
+                    return false;
                 }
+
+                bool check = _context.Database.SqlQueryRaw<int>($@"
+                             select 1 from Ca_Donvi where Id_don_vi = {Id}
+                             union select 1 from Cap_Donvi where Id_Don_vi = {Id}
+                             union select 1 from Danhsach_Thoikhoabieu where Id_don_vi = {Id}
+                             union select 1 from DM_Banhoc where Id_don_vi ={Id}
+                             union select 1 from DM_Diemtruong where Id_don_vi = {Id}
+                             union select 1 from DM_Giaovien where Id_don_vi = {Id}
+                             union select 1 from Auth_Users where Id_Donvi = {Id}
+                             union select 1 from DM_Khoikienthuc where Id_don_vi = {Id}
+                             union select 1 from DM_Lophoc where Id_don_vi = {Id}
+                             union select 1 from DM_Monhoc where Id_don_vi = {Id}
+                             union select 1 from DM_Tochuyenmon where Id_don_vi = {Id}").First() == 1;
+                if (check)
+                    throw new Exception("Đơn vị đã có ràng buộc, không thể xoá");
+
+                    _context.DM_Donvi.Remove(donvi);
+                    _context.SaveChanges();
+
                 return true;
             }
             catch
