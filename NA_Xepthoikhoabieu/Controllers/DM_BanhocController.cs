@@ -138,9 +138,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Banhocdb = _Banhoc.GetDetailById(id);
             if (Banhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _Banhoc.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _Banhoc.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
     }

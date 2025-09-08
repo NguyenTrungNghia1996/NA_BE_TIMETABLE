@@ -95,29 +95,27 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id)
+        public (bool success, string message) Delete(int Id)
         {
             try
             {
                 DM_Khoikienthuc item = new DM_Khoikienthuc();
                 item = _dbContext.DM_Khoikienthuc.Find(Id);
-                if (item != null)
+                if (item == null)
                 {
-                    return false;
+                    return (false, "Bản ghi không tồn tại");
                 }
                 bool check = _dbContext.Mon_Khoikienthuc.Any(c => c.Id_khoi_kien_thuc == Id);
                 if (check)
-                {
-                    throw new Exception("Khối kiến thức đã có ràng buộc, không thể xoá");
-                }
+                    return (false, "Khối kiến thức đã có ràng buộc, không thể xoá");
 
                 _dbContext.DM_Khoikienthuc.Remove(item);
                 _dbContext.SaveChanges();
-                return true;
+                return (true, "Xoá thành công");
             }
-            catch
+            catch (Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
         public bool CheckId(int Id, int idDonvi)

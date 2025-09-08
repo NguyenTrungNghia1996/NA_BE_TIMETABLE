@@ -81,27 +81,27 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Deleted(int Id)
+        public (bool success, string message) Delete(int Id)
         {
             try
             {
                 DM_Caphoc item = new DM_Caphoc();
                 item = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
-                if(item == null) 
-                    return false;
+                if(item == null)
+                    return (false, "Bản ghi không tồn tại");
                 bool check = _context.Cap_Donvi.Any(c=>c.Id_Cap_hoc == Id)
                              || _context.DM_Banhoc.Any(c=>c.Id_cap_hoc == Id)
                              || _context.DM_Khoilop.Any(c=>c.Id_Cap_hoc== Id);
                 if (check)
-                    throw new Exception("Cấp học đã có ràng buộc, không thể xoá");
+                    return (false, "Cấp học đã có ràng buộc, không thể xoá");
 
-                    _context.DM_Caphoc.Remove(item);
+                _context.DM_Caphoc.Remove(item);
                     _context.SaveChanges();
-                return true;
+                return (true,"Xoá thành công");
             }
-            catch
+            catch (Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
         public bool CheckId(int Id)

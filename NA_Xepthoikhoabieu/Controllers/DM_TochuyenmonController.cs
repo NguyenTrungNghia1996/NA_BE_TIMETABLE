@@ -130,9 +130,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _tochuyenmon.GetDetailById(id, idDonvi);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _tochuyenmon.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _tochuyenmon.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
     }

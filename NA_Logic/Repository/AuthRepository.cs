@@ -231,21 +231,26 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool DeleteUsers_Roles(int idUser)
+        public (bool success, string message) DeleteUsers_Roles(int idUser)
         {
             try
             {
                 var del = _context.Auth_Users_Roles.Where(x => x.Id_Users == idUser).ToList();
+                var check = _context.Auth_Users.Any(c => c.Id == idUser && c.IsActive == true);
+                if (check)
+                {
+                    return (false, "Tài khoản đang hoạt động");
+                }
                 if (del != null && del.Count > 0)
                 {
                     _context.Auth_Users_Roles.RemoveRange(del);
                     _context.SaveChanges();
                 }
-                return true;
+                return (true, "Xoá thành công");
             }
-            catch
+            catch (Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}"); ;
             }
         }
         public bool CheckUser_DonviExists(int id)

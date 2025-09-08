@@ -81,7 +81,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Deleted(int Id)
+        public (bool success, string message) Delete(int Id)
         {
             try
             {
@@ -89,22 +89,21 @@ namespace NA_Logic.Repository
                 item = _context.DM_Loaiphonghoc.Find(Id);
                 if (item == null)
                 {
-                    return false;
+                    return  (false, "Bản ghi không tồn tại"); ;
                 }
                 bool check = _context.Dm_Monhoc.Any(c=>c.Id_loai_phong_hoc == Id)
                            || _context.DM_Phonghoc.Any(p=>p.Id_Loai_phong_hoc== Id);
                 if (check)
-                {
-                    throw new Exception("Loại phòng học đã có ràng buộc, không thể xoá");
-                }
-                    _context.DM_Loaiphonghoc.Remove(item);
+                    return (false, "Loại phòng học đã có ràng buộc, không thể xoá");
+
+                _context.DM_Loaiphonghoc.Remove(item);
                     _context.SaveChanges();
 
-                return true;
+                return (true, "Xoá thành công");
             }
-            catch
+            catch (Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
         public bool CheckId(int Id)

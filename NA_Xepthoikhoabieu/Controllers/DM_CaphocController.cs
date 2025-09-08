@@ -151,9 +151,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var caphocdb = _caphocRepository.GetDetailByID(id);        
             if (caphocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _caphocRepository.Deleted(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _caphocRepository.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
     }

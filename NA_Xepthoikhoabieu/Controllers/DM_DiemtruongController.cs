@@ -138,9 +138,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var diemtruongdb = _diemtruong.GetDetailById(id, idDonvi);
             if (diemtruongdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _diemtruong.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _diemtruong.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
     }

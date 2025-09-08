@@ -157,9 +157,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _khoilop.getDetailById(id);
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _khoilop.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _khoilop.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
         [HttpGet("khoiloptheodonvi")]

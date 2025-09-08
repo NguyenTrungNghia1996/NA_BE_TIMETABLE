@@ -13,7 +13,7 @@ namespace NA_Logic.IRepository
         List<DM_Loaiphonghoc_List> GetList_Paging(int PageIndex, int PageSize, string search,  ref int totalrecord);
         bool Add(DM_Loaiphonghoc dM_Loaiphonghoc);
         bool Update(DM_Loaiphonghoc dM_Loaiphonghoc);
-        bool Deleted(int Id);
+        (bool success, string message) Delete(int Id);
         bool CheckId(int Id);
     }
 }

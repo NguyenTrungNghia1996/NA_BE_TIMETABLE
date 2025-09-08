@@ -13,7 +13,7 @@ namespace NA_Logic.IRepository
         DM_Cahoc GetDetailById(int Id);
         bool Add(DM_Cahoc dm_cahoc);
         bool Update(DM_Cahoc dm_cahoc);
-        bool Delete(int Id);
+        (bool success, string message) Delete(int Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
     }

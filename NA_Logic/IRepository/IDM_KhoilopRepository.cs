@@ -14,7 +14,7 @@ namespace NA_Logic.IRepository
         List<DM_Khoilop_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         bool Add(DM_Khoilop dM_Khoilop);
         bool Update(DM_Khoilop dM_Khoilop);
-        bool Delete(int Id);
+        (bool success, string message) Delete(int Id);
         List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi);
         bool CheckId(int Id);
         bool CheckKhoilopByDonvi(int idKhoilop, int idDonvi);

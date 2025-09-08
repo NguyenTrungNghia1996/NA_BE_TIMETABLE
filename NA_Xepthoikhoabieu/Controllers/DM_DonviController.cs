@@ -224,17 +224,19 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (donvidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
 
-            var request = _donvi.Delete(id);
-            var deleteCap = _donvi.DeleteCap(id);
+            var (success, message) = _donvi.DeleteCap(id);
+            
+            var delete = _donvi.Delete(id);
             var deleteCa = _donvi.DeleteCa(id);
             //xóa
-            if (!deleteCap)
-                return ApiResult.NotFound("Xóa các cấp học lỗi");
+            if (!success)
+                return ApiResult.BadRequest(message);
             if (!deleteCa)
-                return ApiResult.NotFound("Xóa các ca học lỗi");
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.NotFound("Xóa các cấp học lỗi");
+            if (!delete)
+                return ApiResult.NotFound("Xóa đơn vị thất bại");
             
+
             return ApiResult.Ok("Xóa đơn vị thành công");
         }
         

@@ -20,8 +20,8 @@ namespace NA_Logic.IRepository
         bool UpdateCap(int Id, List<int> capId);
         bool UpdateCa(int Id, List<int> caId);
 
-        bool Delete(int Id);
-        bool DeleteCap(int Id);
+         bool Delete(int Id);
+        (bool success, string message) DeleteCap(int Id);
         bool DeleteCa(int Id);
         bool AddCap(int Id, List<int> capId);
         bool AddCa(int Id, List<int> caId);

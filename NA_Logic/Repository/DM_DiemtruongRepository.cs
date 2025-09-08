@@ -95,29 +95,27 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int Id)
+        public (bool success, string message) Delete(int Id)
         {
             try
             {
                 DM_Diemtruong diemtruong = new DM_Diemtruong();
                 diemtruong = _dbContext.DM_Diemtruong.Find(Id);
                 if (diemtruong == null)
-                    { return false; }
+                    { return (false, "Bản ghi không tồn tại"); }
                 bool check = _dbContext.DM_Phonghoc.Any(c => c.Id_Diem_truong == Id)
                              || _dbContext.Giaovien_Diadiemday.Any(c => c.Id_diem_truong == Id);
                 if (check)
-                {
-                    throw new Exception("Điểm trường đã có ràng buộc, không thể xoá");
-                }
+                    return (false, "Điểm trường đã có ràng buộc, không thể xoá");
 
-                    _dbContext.DM_Diemtruong.Remove(diemtruong);
+                _dbContext.DM_Diemtruong.Remove(diemtruong);
                     _dbContext.SaveChanges();
 
-                return true;
+                return (true, "Xoá thành công");
             }
-            catch
+            catch (Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
         public bool CheckId(int Id, int idDonvi)

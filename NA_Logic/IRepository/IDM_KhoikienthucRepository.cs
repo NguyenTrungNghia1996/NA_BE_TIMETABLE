@@ -13,7 +13,7 @@ namespace NA_Logic.IRepository
         DM_Khoikienthuc GetDetailById(int Id, int idDonvi);
         bool Add(DM_Khoikienthuc dM_Khoikienthuc);
         bool Update(DM_Khoikienthuc dM_Khoikienthuc);
-        bool Delete(int Id);
+        (bool success, string message) Delete(int Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids, int idDonvi);
     }

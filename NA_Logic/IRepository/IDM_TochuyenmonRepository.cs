@@ -13,7 +13,7 @@ namespace NA_Logic.IRepository
         DM_Tochuyenmon GetDetailById(int Id, int idDonvi);
         bool Add(DM_Tochuyenmon dM_Tochuyenmon);
         bool Update(DM_Tochuyenmon dM_Tochuyenmon);
-        bool Delete(int Id);
+        (bool success, string message) Delete(int Id);
         bool CheckId(int Id, int idDonvi);
     }
 }

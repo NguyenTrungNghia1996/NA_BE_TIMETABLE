@@ -155,9 +155,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var cahocdb = _cahoc.GetDetailById(id);
             if (cahocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _cahoc.Delete(id);
-            if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+            var (success, message) = _cahoc.Delete(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             return ApiResult.Ok("Xóa thành công");
         }
     }

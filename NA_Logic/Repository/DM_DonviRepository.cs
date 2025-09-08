@@ -254,13 +254,27 @@ namespace NA_Logic.Repository
             {
                 DM_Donvi donvi = new DM_Donvi();
                 donvi = _context.DM_Donvi.Find(Id);
-                if (donvi != null)
+                if (donvi == null)
                 {
                     return false;
                 }
+                _context.DM_Donvi.Remove(donvi);
+                    _context.SaveChanges();
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return  false;
+            }
+        }
+        public (bool success, string message) DeleteCap(int Id)
+        {
+            try
+            {
+                var del = _context.Cap_Donvi.Where(x => x.Id_Don_vi == Id).ToList();
                 bool check = _context.Database.SqlQueryRaw<int>($@"
-                             select 1 from Ca_Donvi where Id_don_vi = {Id}
+                             select 1 as Value from Ca_Donvi where Id_don_vi = {Id}
                              union select 1 from Cap_Donvi where Id_Don_vi = {Id}
                              union select 1 from Danhsach_Thoikhoabieu where Id_don_vi = {Id}
                              union select 1 from DM_Banhoc where Id_don_vi ={Id}
@@ -270,35 +284,20 @@ namespace NA_Logic.Repository
                              union select 1 from DM_Khoikienthuc where Id_don_vi = {Id}
                              union select 1 from DM_Lophoc where Id_don_vi = {Id}
                              union select 1 from DM_Monhoc where Id_don_vi = {Id}
-                             union select 1 from DM_Tochuyenmon where Id_don_vi = {Id}").First() == 1;
+                             union select 1 from DM_Tochuyenmon where Id_don_vi = {Id}").Any();
+
                 if (check)
-                    throw new Exception("Đơn vị đã có ràng buộc, không thể xoá");
-
-                    _context.DM_Donvi.Remove(donvi);
-                    _context.SaveChanges();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public bool DeleteCap(int Id)
-        {
-            try
-            {
-                var del = _context.Cap_Donvi.Where(x => x.Id_Don_vi == Id).ToList();
+                    return (false, "Đơn vị đã có ràng buộc, không thể xoá");
                 if (del != null && del.Count > 0)
                 {
                     _context.Cap_Donvi.RemoveRange(del);
                     _context.SaveChanges();
                 }
-                return true;
+                return (true,"Xoá thành công");
             }
-            catch
+            catch(Exception ex) 
             {
-                return false;
+                return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
         public bool DeleteCa(int Id)

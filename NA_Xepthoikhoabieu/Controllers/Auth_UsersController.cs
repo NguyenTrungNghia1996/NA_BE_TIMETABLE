@@ -1,13 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Auth;
+using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Xepthoikhoabieu.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
@@ -294,13 +295,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (detailUser == null) return ApiResult.NotFound($"Không tồn tại user có id = {id}");
 
             // Xóa nhóm quyền
+            var (success, message) = _auth.DeleteUsers_Roles(id);
+            if (!success)
+                return ApiResult.BadRequest(message);
             var request = _auth.DeleteUser(id);
             if (!request)
                 return ApiResult.NotFound("Xóa tài khoản lỗi");
-            // edit nhóm quyền          
-            var deleteRoles = _auth.DeleteUsers_Roles(id);
-            if (!deleteRoles)
-                return ApiResult.NotFound("Xóa nhóm quyền tài khoản lỗi");
             return ApiResult.Ok("Xóa tài khoản thành công");
         }
 
