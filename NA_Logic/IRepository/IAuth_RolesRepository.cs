@@ -20,5 +20,6 @@ namespace NA_Logic.IRepository
         bool AddPermission(List<Auth_Roles_Permissions> list_permssions);
         Auth_Roles_Permissions FindPermissionById(int id);
         bool DeletePermissionbyRoleId(int idRole);
+        (bool result, string message) CheckContraints(int id);
     }
 }

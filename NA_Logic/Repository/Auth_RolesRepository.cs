@@ -10,6 +10,7 @@ using NA_Entities.DBContext;
 using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NuGet.Common;
 
 namespace NA_Logic.Repository
 {
@@ -87,6 +88,8 @@ namespace NA_Logic.Repository
             {
                 Auth_Roles item = new Auth_Roles();
                 item = _context.Auth_Roles.Find(id);
+                if(item==null)
+                    return false;
                 if (item != null)
                 {
                     _context.Auth_Roles.Remove(item);
@@ -205,6 +208,24 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+        }
+        public (bool result, string message) CheckContraints (int id)
+        {
+            try
+            {
+                var check = _context.Auth_Roles_Permissions.Any(c => c.Id_Roles == id)
+                            || _context.Auth_Users_Roles.Any(x => x.Id_Roles == id);
+                if (check)
+                {
+                    return (false, "Nhóm quyền đã có ràng buộc, không thể xoá");
+                }
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false,$"Lỗi hệ thống: { ex.Message}");
+            }
+
         }
     }
 }
