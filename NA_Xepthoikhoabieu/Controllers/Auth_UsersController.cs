@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -276,6 +277,27 @@ namespace NA_Xepthoikhoabieu.Controllers
                 item = user
             }, "Cập nhật tài khoản thành công");
         }
+
+        [HttpPost("changePassword")]
+        [RequireToken]
+        public IActionResult ChangePassword([FromBody] Change_Password password)
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            var user = _auth.FindUserById(idUser);
+            // Check validation
+            var validPassword = _passwordHasher.VerifyPassword(user.Password, password.Mat_khau_cu);
+            if (!validPassword)
+                return ApiResult.Unauthorized("Mật khẩu không chính xác");
+
+            if (password.Mat_khau_moi!=password.Xac_nhan_mat_khau)
+                return ApiResult.BadRequest("Xác nhận mật khẩu không chính xác");
+
+            user.Password = password.Mat_khau_moi;
+            var request = _auth.UpdatePassword(user);
+            if (!request)
+                return ApiResult.NotFound("Đổi mật khẩu không thành công");
+            return ApiResult.Success("Đổi mật khẩu thành công");
+        }
         //
         // Update new user
         [HttpDelete]
@@ -352,6 +374,26 @@ namespace NA_Xepthoikhoabieu.Controllers
             };
             return ApiResult.Success(detailDto,
             "Thành công");
+        }
+        [HttpPost("resetPassword")]
+        [RequireToken]
+        public IActionResult ResetPassword([FromQuery] int id)
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
+            var detailUser = _auth.FindUserById(id);
+            if (detailUser == null) return ApiResult.NotFound($"Không tồn tại user có id = {id}");
+
+            var request = _auth.ResetPassword(id);
+            if (!request)
+                return ApiResult.NotFound("Khôi phục mật khẩu không thành công");
+            
+            return ApiResult.Success("Khôi phục mật khẩu thành công");
         }
     }
 }

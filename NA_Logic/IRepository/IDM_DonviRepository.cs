@@ -12,7 +12,7 @@ namespace NA_Logic.IRepository
         DM_Donvi getDetailById(int id);
         List<int> GetlistCapbyDonvi(int id);
         List<int> GetlistCabyDonvi(int id);
-
+        List<DM_Donvi> GetDonviChuaCoTaikhoan();
         List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
         bool Add(DM_Donvi dm_donvi);
         //bool Add_Demo(DM_Donvi_Demo dm_donvi);

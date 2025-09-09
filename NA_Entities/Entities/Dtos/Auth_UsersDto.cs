@@ -37,6 +37,15 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một nhóm người dùng")]
         public List<int> IdRoles { get; set; } = new List<int>();
     }
+    public class Change_Password
+    {
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu cũ")]
+        public string Mat_khau_cu { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu mới")]
+        public string Mat_khau_moi { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập xác nhận mật khẩu")]
+        public string Xac_nhan_mat_khau { get; set; }
+    }
     public class Auth_PermissionDto
     {
         public List<Auth_Roles_PermissionDto> Permission { get; set; } = new List<Auth_Roles_PermissionDto>();
