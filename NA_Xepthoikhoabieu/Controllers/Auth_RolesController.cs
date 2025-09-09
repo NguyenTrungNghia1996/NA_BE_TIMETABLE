@@ -178,6 +178,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var roledb = _role.GetDetailByID(id);
             if (roledb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            var (result, message) = _role.CheckContraints(id);
+            if (!result)
+            {
+                return ApiResult.BadRequest(message);
+            }
             var delPermission = _role.DeletePermissionbyRoleId(id);
             if (!delPermission)
                 return ApiResult.NotFound("Xóa thất bại, vui lòng kiểm tra lại");

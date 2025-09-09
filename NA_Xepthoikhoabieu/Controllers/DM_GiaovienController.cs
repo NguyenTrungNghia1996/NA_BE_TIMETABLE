@@ -87,11 +87,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
-            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten);
-            if (checkten)
-            {
-                ModelState.AddModelError("Ten", "Tên giáo viên đã tồn tại");
-            }
+            //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten);
+            //if (checkten)
+            //{
+            //    ModelState.AddModelError("Ten", "Tên giáo viên đã tồn tại");
+            //}
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -131,17 +131,18 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id_don_vi = idDonvi;
+            item.Ma_giao_vien = Giaoviendb.Ma_giao_vien;
             var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
             if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
                 ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
-            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten, Giaovien.Id);
-            if (checkten)
-            {
-                ModelState.AddModelError("Ten", "Tên giáo viên đã tồn tại");
-            }
+            //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten, Giaovien.Id);
+            //if (checkten)
+            //{
+            //    ModelState.AddModelError("Ten", "Tên giáo viên đã tồn tại");
+            //}
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             bool add = _Giaovien.Update(item);
