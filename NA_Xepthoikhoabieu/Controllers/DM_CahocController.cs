@@ -30,6 +30,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = 0;
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
+            search = search.Trim();
             var list = _cahoc.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
