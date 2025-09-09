@@ -188,6 +188,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool UpdatePassword(Auth_Users user)
+        {
+            try
+            {
+                string hashPassword = _passwordhash.HashPassword(user.Password);
+                user.Password = hashPassword;
+                _context.Auth_Users.Update(user);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool UpdateUserToRoles(int userId, List<int> rolesId)
         {
             try
@@ -263,6 +278,26 @@ namespace NA_Logic.Repository
                               where user.Id == id
                               select user).Any();
                 return exists;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool ResetPassword(int id)
+        {
+            try
+            {
+                var getPass = _configuration.GetSection("Password").Value;
+                if (getPass == null) getPass = "12345";
+                string hashPassword = _passwordhash.HashPassword(getPass);
+                var user = _context.Auth_Users.Find(id);
+                if(user ==null) return false;
+
+                user.Password = hashPassword;
+                _context.Auth_Users.Update(user);
+                _context.SaveChanges();
+                return true;
             }
             catch
             {

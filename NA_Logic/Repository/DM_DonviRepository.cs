@@ -91,6 +91,16 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<DM_Donvi> GetDonviChuaCoTaikhoan()
+        {
+            var query = from donvi in _context.DM_Donvi
+                        join user in _context.Auth_Users on donvi.Id equals user.Id_Donvi into userGroup
+                        from user in userGroup.DefaultIfEmpty()
+                        where user == null
+                        select donvi;
+
+            return query.ToList();
+        }
         public bool Add(DM_Donvi dm_donvi)
         {
             try

@@ -76,6 +76,24 @@ namespace NA_Xepthoikhoabieu.Controllers
             detailDto.Id_cahoc = _donvi.GetlistCabyDonvi(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
+        [HttpGet("donvichuacotaikhoan")]
+        [RequireToken]
+        public IActionResult GetDonviChuaCoTaiKhoan()
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
+
+            // Lấy bản ghi từ db
+            var list = _donvi.GetDonviChuaCoTaikhoan();
+            if (list == null || list.Count == 0)
+                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+
+            return ApiResult.Success(list, "Thành công");
+        }
         [HttpPost]
         [RequireToken]
         public IActionResult Create([FromBody] DM_DonviDto donvi)
