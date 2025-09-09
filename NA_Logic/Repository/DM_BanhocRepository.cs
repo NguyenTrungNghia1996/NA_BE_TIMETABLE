@@ -61,7 +61,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var Banhoc = _dbContext.DM_Banhoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa== false);
+                var Banhoc = _dbContext.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
                 return Banhoc;
             }
             catch (Exception)

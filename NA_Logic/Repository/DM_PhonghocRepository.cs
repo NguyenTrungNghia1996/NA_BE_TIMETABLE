@@ -194,8 +194,8 @@ namespace NA_Logic.Repository
             var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";
 
             var sql = excludeId == null
-                ? $"SELECT Ten FROM DM_Phonghoc p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id where dt.Id_don_vi = {idDonvi} "
-                : $"SELECT Ten FROM DM_Phonghoc  p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id WHERE dt.Id_don_vi = {idDonvi} and Id != {excludeId}";
+                ? $"SELECT p.Ten FROM DM_Phonghoc p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id where dt.Id_don_vi = {idDonvi} "
+                : $"SELECT p.Ten FROM DM_Phonghoc  p join DM_Diemtruong dt on p.Id_Diem_truong = dt.Id WHERE dt.Id_don_vi = {idDonvi} and p.Id != {excludeId}";
 
             var ds_ten = _context.Database.SqlQueryRaw<string>(sql).ToList();
 

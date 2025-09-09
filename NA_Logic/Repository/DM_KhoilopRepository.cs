@@ -57,7 +57,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var data = _context.DM_Khoilop.FirstOrDefault(c => c.Id == id && c.Trang_thai_xoa == false);
+                var data = _context.DM_Khoilop.FirstOrDefault(c => c.Id == id );
                 return data;
             }
             catch
@@ -97,7 +97,7 @@ namespace NA_Logic.Repository
             try
             {
                 DM_Khoilop item = new DM_Khoilop();
-                item = _context.DM_Khoilop.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                item = _context.DM_Khoilop.FirstOrDefault(c => c.Id == Id);
                 if (item == null)
                 {
                     return (false, "Bản ghi không tồn tại");
@@ -124,7 +124,7 @@ namespace NA_Logic.Repository
             {
                 var list = _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
                                     .Join(_context.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
-                                    .Join(_context.DM_Khoilop.Where(kl => kl.Trang_thai_xoa == false),
+                                    .Join(_context.DM_Khoilop,
                                           ch => ch.Id, kl => kl.Id_Cap_hoc,
                                           (ch, kl) => new Khoilop_byDonvi
                                           {
@@ -162,7 +162,7 @@ namespace NA_Logic.Repository
             {
                 return _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
                                 .Join(_context.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
-                                .Join(_context.DM_Khoilop.Where(kl => kl.Trang_thai_xoa == false),
+                                .Join(_context.DM_Khoilop,
                                       ch => ch.Id, kl => kl.Id_Cap_hoc,
                                       (ch, kl) => kl.Id)
                                 .Any(id => id == idKhoilop);

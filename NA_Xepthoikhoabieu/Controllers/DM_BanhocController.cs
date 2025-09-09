@@ -70,7 +70,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Banhoc>(Banhoc);
             item.Id = 0;
             item.Id_don_vi = idDonvi;
-            item.Trang_thai_xoa = false;
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Banhoc>(idDonvi,Banhoc.Ten);
             if (checkten)
             {

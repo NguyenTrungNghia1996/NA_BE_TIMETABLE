@@ -162,7 +162,7 @@ namespace NA_Logic.Repository
                             .Any(x => x.kl.Id == idKhoi && x.cd.Id_Don_vi == idDonvi) &&
                             _dbContext.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
                                 .Join(_dbContext.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
-                                .Join(_dbContext.DM_Khoilop.Where(kl => kl.Trang_thai_xoa == false),
+                                .Join(_dbContext.DM_Khoilop,
                                       ch => ch.Id, kl => kl.Id_Cap_hoc,
                                       (ch, kl) => kl.Id)
                                 .Any(id => id == idKhoi)

@@ -60,7 +60,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                var cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id);
                 return cahoc;
             }
             catch(Exception) 
@@ -100,7 +100,7 @@ namespace NA_Logic.Repository
             try
             {
                 DM_Cahoc cahoc = new DM_Cahoc();
-                cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                cahoc = _dbContext.DM_Cahoc.FirstOrDefault(c => c.Id == Id);
                 if (cahoc == null) {
                     return (false, "Bản ghi không tồn tại");
                 }

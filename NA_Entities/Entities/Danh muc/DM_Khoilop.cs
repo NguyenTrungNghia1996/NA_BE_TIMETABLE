@@ -17,7 +17,6 @@ namespace NA_Entities.Entities.Danhmuc
         public int Id_Cap_hoc { get; set; }
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ghi_chu { get; set; } = string.Empty ;
-        public bool Trang_thai_xoa { get; set; } = false;
     }
     public class DM_Khoilop_List
     {

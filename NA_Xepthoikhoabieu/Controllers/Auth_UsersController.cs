@@ -162,8 +162,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 Nguoi_lien_he = user.Nguoi_lien_he,
                 Id_tinh = user.Id_tinh,
                 Sodienthoai = user.So_dien_thoai,
-                Email = user.Email,
-                Trang_thai_xoa = false
+                Email = user.Email
             };
             //check chọn ca, cấp
             if (user.Id_cap == null || user.Id_cap.Count == 0)

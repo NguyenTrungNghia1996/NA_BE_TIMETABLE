@@ -60,7 +60,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var diemtruong = _dbContext.DM_Diemtruong.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == Id_Donvi && c.Trang_thai_xoa == false);
+                var diemtruong = _dbContext.DM_Diemtruong.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == Id_Donvi);
                 return diemtruong;
             }
             catch (Exception) 

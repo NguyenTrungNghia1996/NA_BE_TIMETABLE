@@ -80,7 +80,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<DM_Khoilop>(khoilop);
             item.Id = 0;
-            item.Trang_thai_xoa = false;
             bool checkten = _validate.CheckTrungTen<DM_Khoilop>(khoilop.Ten);
             if (checkten)
             {

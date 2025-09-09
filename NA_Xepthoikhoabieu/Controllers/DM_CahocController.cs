@@ -88,7 +88,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<DM_Cahoc>(cahoc);
             item.Id = 0;
-            item.Trang_thai_xoa = false;
             bool checkten = _validate.CheckTrungTen<DM_Cahoc>(cahoc.Ten);
             if (checkten)
             {

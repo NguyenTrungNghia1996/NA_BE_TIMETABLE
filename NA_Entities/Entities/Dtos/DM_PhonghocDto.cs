@@ -10,7 +10,7 @@ namespace NA_Entities.Entities.Dtos
     public class DM_PhonghocDto
     {
         public int Id { get; set; } = 0;
-        //public string Ma { get; set; } = string.Empty;
+        public string Ma { get; set; } = string.Empty;
         [Required(ErrorMessage = "Tên phòng học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
