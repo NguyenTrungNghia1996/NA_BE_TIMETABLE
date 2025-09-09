@@ -101,6 +101,17 @@ namespace NA_Logic.Repository
 
             return query.ToList();
         }
+        public bool CheckDonviChuaCoTaikhoan(int id)
+        {
+            var query = from donvi in _context.DM_Donvi
+                        join user in _context.Auth_Users on donvi.Id equals user.Id_Donvi into userGroup
+                        from user in userGroup.DefaultIfEmpty()
+                        where user == null
+                        select donvi;
+            var list = query.ToList();
+            bool check = list.Any(c => c.Id == id);
+            return check;
+        }
         public bool Add(DM_Donvi dm_donvi)
         {
             try
