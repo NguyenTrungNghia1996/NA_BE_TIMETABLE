@@ -25,7 +25,6 @@ namespace NA_Entities.Entities.Danhmuc
         public string Email { get; set; } = string.Empty;
         public int Id_tinh { get; set; } = 0;
         public string Nguoi_lien_he { get; set; } = string.Empty;
-        public bool Trang_thai_xoa { get; set; } = false;
     }
     //public class DM_Donvi_Demo
     //{

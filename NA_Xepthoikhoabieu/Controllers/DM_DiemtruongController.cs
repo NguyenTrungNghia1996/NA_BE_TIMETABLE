@@ -74,7 +74,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Diemtruong>(diemtruong);
             item.Id_don_vi = idDonvi;
             item.Id = 0;
-            item.Trang_thai_xoa = false;
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Diemtruong>(idDonvi, diemtruong.Ten);
             if (checkten)
             {

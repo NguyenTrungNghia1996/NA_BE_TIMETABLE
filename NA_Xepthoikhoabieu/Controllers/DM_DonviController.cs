@@ -91,7 +91,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var addDonvi = _mapper.Map<DM_Donvi>(donvi);
             addDonvi.Id = 0;
-            addDonvi.Trang_thai_xoa = false;
             //check chọn ca, cấp
             if (donvi.IdCap == null || donvi.IdCap.Count == 0)
             {

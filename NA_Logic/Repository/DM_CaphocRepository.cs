@@ -46,7 +46,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                var caphoc = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id);
                 return caphoc;
             }
             catch
@@ -86,7 +86,7 @@ namespace NA_Logic.Repository
             try
             {
                 DM_Caphoc item = new DM_Caphoc();
-                item = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id && c.Trang_thai_xoa == false);
+                item = _context.DM_Caphoc.FirstOrDefault(c => c.Id == Id);
                 if(item == null)
                     return (false, "Bản ghi không tồn tại");
                 bool check = _context.Cap_Donvi.Any(c=>c.Id_Cap_hoc == Id)
@@ -109,7 +109,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Caphoc.Any(c => c.Id == Id && c.Trang_thai_xoa==false);
+                return _context.DM_Caphoc.Any(c => c.Id == Id);
             }
             catch
             {
@@ -118,7 +118,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids)
         {
-            var existingIds = _context.DM_Caphoc.Where(c => ids.Contains(c.Id) && c.Trang_thai_xoa == false).Select(c => c.Id).ToList();
+            var existingIds = _context.DM_Caphoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
     }
