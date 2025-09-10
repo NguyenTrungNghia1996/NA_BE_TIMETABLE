@@ -96,8 +96,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!check_ma)
                 ModelState.AddModelError("Ma", "Mã phòng đã trùng, vui lòng kiểm tra lại");
             var check_ten = _phonghoc.CheckTrungTen( idDonvi,phonghoc.Ten);
-            if (!check_ten)
-                ModelState.AddModelError("Ten", "Tên phòng học đã trùng, vui lòng kiểm tra lại");
+            if (check_ten)
+                return ApiResult.BadRequest( "Tên phòng học đã trùng, vui lòng kiểm tra lại");
             //kiểm tra id loại phòng và điểm trường
             var check_loaiphonghoc = _loaiphonghoc.CheckId(phonghoc.Id_Loai_phong_hoc);
             var check_diemtruong = _diemtruong.CheckId(phonghoc.Id_Diem_truong, idDonvi);
