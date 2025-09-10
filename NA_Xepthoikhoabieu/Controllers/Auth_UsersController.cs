@@ -287,7 +287,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Check validation
             var validPassword = _passwordHasher.VerifyPassword(user.Password, password.Mat_khau_cu);
             if (!validPassword)
-                return ApiResult.Unauthorized("Mật khẩu không chính xác");
+                return ApiResult.BadRequest("Mật khẩu không chính xác");
 
             if (password.Mat_khau_moi!=password.Xac_nhan_mat_khau)
                 return ApiResult.BadRequest("Xác nhận mật khẩu không chính xác");
