@@ -122,7 +122,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên môn học đã tồn tại");
+                return ApiResult.BadRequest("Tên môn học đã tồn tại");
             }
 
             //kiểm tra id loại phòng học và khối kiến thức
@@ -191,7 +191,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten, monhoc.Id);
             if (checkten)
             {
-                ModelState.AddModelError("Ten", "Tên môn học đã tồn tại");
+                return ApiResult.BadRequest("Tên môn học đã tồn tại");
             }
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
