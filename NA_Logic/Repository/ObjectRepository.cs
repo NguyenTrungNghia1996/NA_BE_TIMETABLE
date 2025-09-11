@@ -2009,7 +2009,6 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").Distinct().ToList();
                 for(int i=0; i < dsCa.Count; i++)
                 {
                     for (int ngay = 1; ngay <= 7; ngay++)
@@ -2392,7 +2391,6 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                var ds_co_dinh = _dsObjectTietcodinh.Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for(int i = 0; i<dsCa.Count; i++)
                 {
                     for (int ngay = 1; ngay <= 7; ngay++)
@@ -3000,6 +2998,7 @@ namespace NA_Logic.Repository
                 var tiet = _context.Chitiet_Thoikhoabieu.FirstOrDefault(c => c.Id == id);
                 if(tiet != null)
                 {
+                    tiet.Id_ca = 0;
                     tiet.Ngay = 0;
                     tiet.Tiet = 0;
                     _context.SaveChanges();
