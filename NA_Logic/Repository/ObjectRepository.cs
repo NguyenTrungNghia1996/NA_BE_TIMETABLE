@@ -2017,7 +2017,7 @@ namespace NA_Logic.Repository
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
 
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_co_dinh.Contains(slotKey))
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey))
                                 continue;
                             else
                             {
@@ -2399,7 +2399,7 @@ namespace NA_Logic.Repository
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
 
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_co_dinh.Contains(slotKey))
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
                                 continue;
                             else
                             {
