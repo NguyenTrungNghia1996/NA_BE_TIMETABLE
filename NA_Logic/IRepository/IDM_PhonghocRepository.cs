@@ -25,5 +25,6 @@ namespace NA_Logic.IRepository
         bool CheckIds(IEnumerable<int> ids, int idDonvi, int IdLoaiPhonghoc);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool CheckTrungTen(int idDonvi, string ten, int? excludeId = null);
+        (bool success, string message) checkContraints(int Id);
     }
 }
