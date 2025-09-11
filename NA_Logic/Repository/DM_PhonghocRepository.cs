@@ -67,11 +67,20 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Phonghoc getDetailById(int id)
+        public DM_Phonghoc getDetailById(int id, int idDonvi)
         {
             try
             {
-                var data = _context.DM_Phonghoc.FirstOrDefault(c => c.Id == id );
+
+                var data = _context.DM_Phonghoc
+                            .Join(_context.DM_Diemtruong,
+                                  d => d.Id_Diem_truong,
+                                  c => c.Id,
+                                  (d, c) => new { PhongHoc = d, DiemTruong = c })
+                            .Where(x => x.PhongHoc.Id == id && x.DiemTruong.Id_don_vi == idDonvi)
+                            .Select(x => x.PhongHoc)
+                            .FirstOrDefault();
+
                 return data;
             }
             catch
