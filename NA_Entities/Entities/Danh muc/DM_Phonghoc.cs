@@ -14,7 +14,7 @@ namespace NA_Entities.Entities.Danh_muc
         [Required(ErrorMessage = "Mã phòng không được để trống")]
         public string Ma { get; set; } = string.Empty;                                                                                     
         [Required(ErrorMessage = "Tên phòng học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Sức chứa không được để trống")]
         [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
