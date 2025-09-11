@@ -24,7 +24,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost("import")]
         [RequireToken]
-        public IActionResult ConvertExcelToJson(IFormFile file)
+        public IActionResult Import(IFormFile file)
         {
             try
             {
@@ -39,6 +39,27 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (!result)
                     return ApiResult.BadRequest("Import thất bại");
                 return ApiResult.Success("Import thành công");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+        [HttpPost("exceltojson")]
+        [RequireToken]
+        public IActionResult ConvertExcelToJson(IFormFile file)
+        {
+            try
+            {
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+                string jsonString;
+                bool result = false;
+                using (var stream = file.OpenReadStream())
+                {
+                    jsonString = _file.ConvertExcelToJson(stream);
+                }
+                return Ok(jsonString);
             }
             catch (Exception ex)
             {
