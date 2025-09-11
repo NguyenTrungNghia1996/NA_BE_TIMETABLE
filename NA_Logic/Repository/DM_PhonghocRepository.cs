@@ -340,9 +340,6 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var phong = _context.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
-                if (phong == null)
-                    return (false, "Bản ghi không tồn tại");
 
                 bool check = _context.DM_Lophoc.Any(c => c.Id_phong == Id)
                                    || _context.Monhoc_Phonghoc.Any(c => c.Id_phong == Id)
