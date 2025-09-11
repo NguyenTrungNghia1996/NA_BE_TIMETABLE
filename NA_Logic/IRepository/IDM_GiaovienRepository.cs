@@ -19,6 +19,7 @@ namespace NA_Logic.IRepository
         bool UpdateDiadiemday(int Id, List<int> diemtruongId);
         bool Delete(int Id);
         bool DeleteDiadiemday(int Id);
+        bool checkContraints(int Id);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);

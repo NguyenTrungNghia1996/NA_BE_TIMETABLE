@@ -205,6 +205,24 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool checkContraints(int Id)
+        {
+            try
+            {
+                bool check = _dbContext.DM_Lophoc.Any(c => c.Id_gvcn == Id)
+                                   || _dbContext.Lophoc_Monhoc.Any(c => c.Id_giao_vien == Id)
+                                   || _dbContext.Chitiet_Thoikhoabieu.Any(c => c.Id_giao_vien == Id);
+
+                if (check)
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return true;
+            }
+        }
         public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
