@@ -327,5 +327,28 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public (bool success, string message) checkContraints(int Id)
+        {
+            try
+            {
+                var phong = _context.DM_Banhoc.FirstOrDefault(c => c.Id == Id);
+                if (phong == null)
+                    return (false, "Bản ghi không tồn tại");
+
+                bool check = _context.DM_Lophoc.Any(c => c.Id_phong == Id)
+                                   || _context.Monhoc_Phonghoc.Any(c => c.Id_phong == Id)
+                                   || _context.Lophoc_Monhoc.Any(c => c.Id_phong_chuyen_dung == Id || c.Id_phong_truyen_thong==Id)
+                                   || _context.Chitiet_Thoikhoabieu.Any(c=>c.Id_phong==Id);
+
+                if (check)
+                    return (false, "Phòng học đã có ràng buộc, không thể xoá");
+
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
     }
 }

@@ -170,7 +170,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             var phonghocdb = _phonghoc.getDetailById(id);
             if (phonghocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-
+            //check ràng buộc
+            var (check,message) = _phonghoc.checkContraints(id);
+            if (!check)
+                return ApiResult.BadRequest(message);
             //xóa tiết bận
             var tietban = _phonghoc.DeleteTietBan(id);
             if (!tietban)
