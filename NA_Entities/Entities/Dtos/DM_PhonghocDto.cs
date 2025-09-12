@@ -15,8 +15,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Sức chứa không được để trống")]
-        [StringLength(5, ErrorMessage = "Tối đa 5 ký tự")]
-        [Range(1, int.MaxValue, ErrorMessage = "Sức chứa phải là số dương")]
+        [Range(1,99999, ErrorMessage = "Sức chứa phải là số dương và tối đa 5 chữ số")]
         public int Suc_chua { get; set; } = 0;
         [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn loại phòng học")]
         public int Id_Loai_phong_hoc { get; set; }

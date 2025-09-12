@@ -91,10 +91,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id = 0;
             addph.Ma = phonghoc.Ten;
-            //kiểm tra mã môn học
-            var check_ma = _phonghoc.CheckMa(addph.Ma, idDonvi, addph.Id);
-            if (!check_ma)
-                ModelState.AddModelError("Ma", "Mã phòng đã trùng, vui lòng kiểm tra lại");
+            
             var check_ten = _phonghoc.CheckTrungTen( idDonvi,phonghoc.Ten);
             if (check_ten)
                 return ApiResult.BadRequest( "Tên phòng học đã trùng, vui lòng kiểm tra lại");

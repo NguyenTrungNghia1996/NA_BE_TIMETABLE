@@ -229,7 +229,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Success(new
             {
                 item = monhoc
-            }, "Cập nhật khối kiến thức thành công");
+            }, "Cập nhật môn học thành công");
         }
         [HttpDelete]
         [RequireToken]
