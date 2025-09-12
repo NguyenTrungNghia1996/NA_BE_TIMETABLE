@@ -939,27 +939,27 @@ namespace NA_Logic.Repository
         {
             try
             {
+                if (ds_tiet == null || !ds_tiet.Any()) return false;
 
-                if (ds_tiet != null && ds_tiet.Any())
-                {
-                    var chitietlist = ds_tiet.Select(tiet => new Chitiet_Thoikhoabieu
+                var updates = ds_tiet
+                    .Where(tiet => tiet.Id_ca > 0)
+                    .Select(tiet => new Chitiet_Thoikhoabieu
                     {
                         Id = tiet.Id,
-                        Id_tkb = tiet.Id_tkb,
-                        Id_lop = tiet.Id_lop ?? 0,
-                        Id_mon = tiet.Id_mon ?? 0,
-                        Id_giao_vien = tiet.Id_giao_vien ?? 0,
-                        Id_phong = tiet.Id_phong ?? 0,
                         Id_ca = tiet.Id_ca,
-                        Tiet_thu_may = tiet.Tiet_thu_may,
                         Ngay = tiet.Ngay,
-                        Tiet = tiet.Tiet,
-                        Khoa = tiet.Khoa 
-                    }).ToList();
-                    var chitiet = chitietlist.Where(c => c.Id_ca > 0).ToList();
-                    if(chitiet !=null)
-                        _context.BulkUpdate(chitiet);
+                        Tiet = tiet.Tiet
+                    })
+                    .ToList();
+
+                if (updates.Count > 0)
+                {
+                    _context.BulkUpdate(updates, options =>
+                    {
+                        options.PropertiesToInclude = new List<string> { "Id_ca", "Ngay", "Tiet" };
+                    });
                 }
+
                 return true;
             }
             catch (Exception ex)
@@ -1025,32 +1025,33 @@ namespace NA_Logic.Repository
                         TimViTriXepDuoc(dsTietChuaXep[i], idDonvi, dsTietDaXep, dsTietChuaXep);
                     }
                     // b2: Lọc các tiết có thể xếp được (vị trí > 0), nếu vị trí = 0 thì thêm vào ds bỏ qua
-                    var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
-                    var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
+                    var dsTietCoTheXep = new List<Object_Tiet>();
+                    var dsTietKhongTheXep = new List<Object_Tiet>();
 
-                    if (dsTietKhongTheXep != null && dsTietKhongTheXep.Count > 0)
+                    foreach (var tiet in dsTietChuaXep)
                     {
-                        for (int i = 0; i < dsTietKhongTheXep.Count; i++)
-                        {
-                            dsTietBoqua.Add(dsTietKhongTheXep[i]);
-                            dsTietChuaXep.Remove(dsTietKhongTheXep[i]);
-                        }
+                        if (tiet.Ds_vi_tri_xep_duoc.Count > 0)
+                            dsTietCoTheXep.Add(tiet);
+                        else
+                            dsTietKhongTheXep.Add(tiet);
                     }
+
+                    // Xử lý tiết không xếp được - tối ưu
+                    if (dsTietKhongTheXep.Count > 0)
+                    {
+                        dsTietBoqua.AddRange(dsTietKhongTheXep);
+                        dsTietChuaXep = dsTietChuaXep.Except(dsTietKhongTheXep).ToList();
+                    }
+
                     if (dsTietCoTheXep.Count == 0)
                     {
                         break;
                     }
-                    // b3: Sắp xếp theo thứ tự số vị trí xếp được và lấy tiết đầu tiên
-                    var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
-                    var tietCanXep = dsTietSorted.First();
-                    //b4: check xếp thành cặp
-                    if (CheckXepCap(tietCanXep))
-                    {
-                        if (TryXepCap(tietCanXep, dsTietChuaXep, dsTietDaXep, dsTietBoqua))
-                        {
-                            continue;
-                        }
-                    }
+
+                    // b3: Tìm tiết có ít vị trí nhất - tối ưu không cần sort toàn bộ
+                    var tietCanXep = dsTietCoTheXep
+                        .Aggregate((t1, t2) => t1.Ds_vi_tri_xep_duoc.Count <= t2.Ds_vi_tri_xep_duoc.Count ? t1 : t2);
+
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
                     tietCanXep.Id_ca = viTriChon.Ca;
