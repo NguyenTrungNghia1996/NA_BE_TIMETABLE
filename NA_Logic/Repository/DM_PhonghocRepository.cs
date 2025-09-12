@@ -92,6 +92,9 @@ namespace NA_Logic.Repository
         {
             try
             {
+                int count = _context.DM_Phonghoc.Count(c => c.Id_Diem_truong == dM_Phonghoc.Id_Diem_truong);
+                string ma = $"P-{(count + 1):D2}";
+                dM_Phonghoc.Ma = ma;
                 _context.DM_Phonghoc.Add(dM_Phonghoc);
                 _context.SaveChanges();
                 return true;

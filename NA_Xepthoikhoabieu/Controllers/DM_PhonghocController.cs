@@ -53,6 +53,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
+            search = search.Trim();
             var list = _phonghoc.GetList_Paging(PageIndex, PageSize, search, idDiemTruong,  idLoaiPhonghoc, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
@@ -90,7 +91,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             addph.Id = 0;
-            addph.Ma = phonghoc.Ten;
             
             var check_ten = _phonghoc.CheckTrungTen( idDonvi,phonghoc.Ten);
             if (check_ten)
