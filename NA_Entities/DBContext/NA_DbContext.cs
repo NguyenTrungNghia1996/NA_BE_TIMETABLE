@@ -94,6 +94,7 @@ namespace NA_Entities.DBContext
         public DbSet<Sotiet_LopMon> Sotiet_LopMon { get; set; }
         public DbSet<Export> Export { get; set; }
         public DbSet<DM_Tinh> DM_Tinh { get; set; }
+        public DbSet<Giaovien_Tochuyenmon> Giaovien_Tochuyenmon { get; set; }
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

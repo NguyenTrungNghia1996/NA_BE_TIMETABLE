@@ -18,8 +18,6 @@ namespace NA_Entities.Entities.Danh_muc
         [Required(ErrorMessage = "Tên đệm không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Vui lòng chọn tổ chuyên môn")]
-        public int Id_to_chuyen_mon { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
     }
     public class DM_Giaovien_List

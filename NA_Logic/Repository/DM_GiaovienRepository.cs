@@ -130,6 +130,30 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool AddTochuyenmon(int Id, List<int> tochuyenmonId)
+        {
+            try
+            {
+                if (tochuyenmonId != null && tochuyenmonId.Count > 0)
+                {
+                    for (int i = 0; i < tochuyenmonId.Count; i++)
+                    {
+                        var gvTochuyenmon = new Giaovien_Tochuyenmon
+                        {
+                            Id_giao_vien = Id,
+                            Id_to_chuyen_mon = tochuyenmonId[i]
+                        };
+                        _dbContext.Giaovien_Tochuyenmon.Add(gvTochuyenmon);
+                    }
+                    _dbContext.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Update(DM_Giaovien dm_Giaovien)
         {
             try
@@ -170,6 +194,32 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool UpdateTochuyenmon(int Id, List<int> tochuyenmonId)
+        {
+            try
+            {
+                var del = _dbContext.Giaovien_Tochuyenmon.Where(x => x.Id_giao_vien == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _dbContext.Giaovien_Tochuyenmon.RemoveRange(del);
+                }
+                for (int i = 0; i < tochuyenmonId.Count; i++)
+                {
+                    var gvtochuyenmon = new Giaovien_Tochuyenmon
+                    {
+                        Id_giao_vien = Id,
+                        Id_to_chuyen_mon = tochuyenmonId[i]
+                    };
+                    _dbContext.Giaovien_Tochuyenmon.Add(gvtochuyenmon);
+                }
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try
@@ -196,6 +246,23 @@ namespace NA_Logic.Repository
                 if (del != null && del.Count > 0)
                 {
                     _dbContext.Giaovien_Diadiemday.RemoveRange(del);
+                    _dbContext.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteTochuyenmon (int Id)
+        {
+            try
+            {
+                var del = _dbContext.Giaovien_Tochuyenmon.Where(x => x.Id_giao_vien == Id).ToList();
+                if (del != null && del.Count > 0)
+                {
+                    _dbContext.Giaovien_Tochuyenmon.RemoveRange(del);
                     _dbContext.SaveChanges();
                 }
                 return true;

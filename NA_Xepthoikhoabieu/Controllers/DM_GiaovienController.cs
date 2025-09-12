@@ -81,10 +81,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id = 0;
             item.Id_don_vi = idDonvi;
-            var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            //var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            //if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
+            //    ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
-            if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <=0)
-                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+           
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten);
@@ -110,6 +111,16 @@ namespace NA_Xepthoikhoabieu.Controllers
                 },
                 "Tạo giáo viên thành công, lưu điểm trường thất bại");
             }
+            bool addTcm = _Giaovien.AddTochuyenmon(item.Id, Giaovien.Id_to_chuyen_mon);
+            
+            if (!addTcm)
+            {
+                return ApiResult.Success(new
+                {
+                    item = Giaovien
+                },
+                "Tạo giáo viên thành công, lưu tổ chuyên môn thất bại");
+            }
             return ApiResult.Success(new
             {
                 item = itemDto
@@ -132,10 +143,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id_don_vi = idDonvi;
             item.Ma_giao_vien = Giaoviendb.Ma_giao_vien;
-            var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            //var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
+            //if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
+            //    ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
-            if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
-                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+            
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
             //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten, Giaovien.Id);
@@ -156,7 +168,16 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     item = Giaovien
                 },
-                "Tạo giáo viên thành công, lưu điểm trường thất bại");
+                "Cập nhật giáo viên thành công, Cập nhật điểm trường thất bại");
+            }
+            bool updateTCM = _Giaovien.UpdateTochuyenmon(item.Id, Giaovien.Id_to_chuyen_mon);
+            if (!updateTCM)
+            {
+                return ApiResult.Success(new
+                {
+                    item = Giaovien
+                },
+                "Cập nhật giáo viên thành công, Cập nhật điểm trường thất bại");
             }
             return ApiResult.Success(new
             {
@@ -189,6 +210,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool delete_diadiemday = _Giaovien.DeleteDiadiemday(id);
             if (!delete_diadiemday)
                 return ApiResult.NotFound("Xóa địa điểm dạy thất bại");
+            bool delete_tcm = _Giaovien.DeleteTochuyenmon(id);
+            if (!delete_tcm)
+                return ApiResult.NotFound("Xóa tổ chuyên môn thất bại");
             bool request = _Giaovien.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");

@@ -18,7 +18,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn tổ chuyên môn")]
-        public int Id_to_chuyen_mon { get; set; } = 0;
+        public List<int> Id_to_chuyen_mon { get; set; } = new List<int>();
         public int Id_don_vi { get; set; } = 0;
         public List<int> Id_diem_truong { get; set; } = new List<int>();
     }

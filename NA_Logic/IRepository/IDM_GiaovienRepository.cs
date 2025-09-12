@@ -15,10 +15,13 @@ namespace NA_Logic.IRepository
         List<int> GetlistDiadiemday(int id);
         bool Add(DM_Giaovien dm_Giaovien);
         bool AddDiadiemday(int Id, List<int> diemtruongId);
+        bool AddTochuyenmon(int Id, List<int> diemtruongId);
         bool Update(DM_Giaovien dm_Giaovien);
         bool UpdateDiadiemday(int Id, List<int> diemtruongId);
+        bool UpdateTochuyenmon(int Id, List<int> diemtruongId);
         bool Delete(int Id);
         bool DeleteDiadiemday(int Id);
+        bool DeleteTochuyenmon(int Id);
         bool checkContraints(int Id);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool CheckId(int Id, int idDonvi);

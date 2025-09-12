@@ -105,7 +105,7 @@ namespace NA_Logic.Repository
                 {
                     return(false, "Bản ghi không tồn tại");
                 }
-                bool check = _dbContext.DM_Giaovien.Any(c => c.Id_to_chuyen_mon == Id);
+                bool check = _dbContext.Giaovien_Tochuyenmon.Any(c => c.Id_to_chuyen_mon == Id);
                 if (check)
                     return (false, "Tổ chuyên môn đã có ràng buộc, không thể xoá");
 
