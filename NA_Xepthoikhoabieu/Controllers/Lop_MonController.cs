@@ -55,57 +55,54 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id_lop: {LopMon.Id_lop} không hợp lệ");
             }
             var dslopmon = new List<Lophoc_Monhoc>();
-            var errors = new List<string>();
             var existingCombinations = new HashSet<string>();
             foreach (var mon in LopMon.Ds_mon)
             {
                 if (mon.Trang_thai == true)
                 {
-                    bool check = false;
-                    var check_mon = _mon.CheckId(mon.Id_mon, idDonvi);
-                    var check_gv = _giaovien.CheckId(mon.Id_giao_vien, idDonvi);
-                    
-                    
-                    if (!check_gv)
+                    // Check gv
+                    if (mon.Id_giao_vien == 0)
                     {
-                        errors.Add($"Id_giao_vien = {mon.Id_giao_vien} không hợp lệ");
-                        check=true;
+                        return ApiResult.BadRequest("Vui lòng nhập giáo viên");
                     }
-                    if (!check_mon)
+                    if (!_giaovien.CheckId(mon.Id_giao_vien, idDonvi))
                     {
-                        errors.Add($"Id_mon = {mon.Id_mon} không hợp lệ");
-                        check = true;
+                        return ApiResult.BadRequest($"Giáo viên với Id = {mon.Id_giao_vien} không tồn tại");
                     }
-                    
-                    if (mon.Id_phong_chuyen_dung > 0)
+
+                    // Check môn
+                    if (mon.Id_mon == 0)
                     {
-                        var check_phongcd = _phong.CheckId(mon.Id_phong_chuyen_dung, idDonvi);
-                        if (!check_phongcd)
-                        {
-                            errors.Add($"Id_phong_chuyen_dung = {mon.Id_phong_chuyen_dung} không hợp lệ");
-                            check = true;
-                        }
+                        return ApiResult.BadRequest("Vui lòng nhập môn học");
                     }
-                    if ( mon.Id_phong_truyen_thong > 0)
+                    if (!_mon.CheckId(mon.Id_mon, idDonvi))
                     {
-                        var check_phongtt = _phong.CheckId(mon.Id_phong_truyen_thong, idDonvi);
-                        if (!check_phongtt)
-                        {
-                            errors.Add($"Id_phong_truyen_thong = {mon.Id_phong_truyen_thong} không hợp lệ");
-                            check = true;
-                        }
-                        
+                        return ApiResult.BadRequest($"Môn học với Id = {mon.Id_mon} không tồn tại");
                     }
-                    if (check)
+
+                    // Check phòng chuyên dụng
+                    if (mon.Id_phong_chuyen_dung > 0 && !_phong.CheckId(mon.Id_phong_chuyen_dung, idDonvi))
                     {
-                        continue;
+                        return ApiResult.BadRequest($"Phòng chuyên dụng với Id = {mon.Id_phong_chuyen_dung} không tồn tại");
                     }
+
+                    // Check phòng truyền thống
+                    if (mon.Id_phong_truyen_thong > 0 && !_phong.CheckId(mon.Id_phong_truyen_thong, idDonvi))
+                    {
+                        return ApiResult.BadRequest($"Phòng truyền thống với Id = {mon.Id_phong_truyen_thong} không tồn tại");
+                    }
+                    if (mon.Id_phong_truyen_thong == 0 && mon.Id_phong_truyen_thong != null)
+                    {
+                        return ApiResult.BadRequest("Vui lòng nhập phòng truyền thống");
+                    }
+
+                    // Check trùng lặp
                     string uniqueKey = $"{LopMon.Id_lop}_{mon.Id_mon}_{mon.Id_giao_vien}_{mon.Id_phong_chuyen_dung}_{mon.Id_phong_truyen_thong}";
                     if (existingCombinations.Contains(uniqueKey))
                     {
-                        errors.Add("Trùng lặp bản ghi");
-                        check = true ;
+                        return ApiResult.BadRequest("Trùng lặp bản ghi");
                     }
+                    existingCombinations.Add(uniqueKey);
                     dslopmon.Add(new Lophoc_Monhoc
                     {
                         Id_lop = LopMon.Id_lop,
@@ -119,10 +116,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                         So_tiet_ca_sang_truyen_thong = mon.So_tiet_ca_sang_truyen_thong
                     });
                 }
-            }
-            if (errors.Any())
-            {
-                return ApiResult.BadRequest(string.Join(", ", errors));
             }
 
             bool result = _lopmon.AddMonLop(dslopmon, LopMon.Id_lop);
