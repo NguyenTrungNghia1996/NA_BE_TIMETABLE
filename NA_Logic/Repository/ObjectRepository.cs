@@ -1010,6 +1010,31 @@ namespace NA_Logic.Repository
                 var dsTietChuaXep = _dsTietGoc.Where(c => c.Id_ca == 0).ToList();
                 var dsTietDaXep = _dsTietGoc.Where(c => c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0).ToList();
                 var dsTietBoqua = new List<Object_Tiet>();
+
+                // 2. Xử lý tiết cố định
+                if(dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
+                
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1091,7 +1116,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1174,7 +1221,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1257,7 +1326,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1340,7 +1431,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1424,7 +1537,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1508,7 +1643,29 @@ namespace NA_Logic.Repository
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -1596,7 +1753,29 @@ namespace NA_Logic.Repository
                         dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == idLop && c.Id_mon == idMon && c.Ngay > 0 && c.Tiet > 0));
                     }
                 }
+                // 2. Xử lý tiết cố định
+                if (dsTietDaXep == null || dsTietDaXep.Count == 0)
+                {
+                    var dsTietCoDinh = _dsObjectTietcodinh;
+                    for (int i = 0; i < _dsTietGoc.Count; i++)
+                    {
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
 
+                        if (tietCoDinh != null)
+                        {
+                            LoadObjectsPhongFromTiet(_dsTietGoc[i]);
+                            if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
+                            {
+                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                dsTietDaXep.Add(_dsTietGoc[i]
+                                    );
+                            }
+
+                        }
+                    }
+                }
                 //3. lặp đến khi ds chưa xếp = 0
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
