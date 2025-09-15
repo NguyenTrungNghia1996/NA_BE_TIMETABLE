@@ -68,6 +68,8 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_GiaovienDto>(detailGiaovien);
             detailDto.Id_diem_truong = _Giaovien.GetlistDiadiemday(Id);
+            detailDto.Id_to_chuyen_mon = _Giaovien.GetlistTochuyenmon(Id);
+            detailDto.Id_to_chuyen_mon = _Giaovien.GetlistTochuyenmon(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -81,9 +83,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id = 0;
             item.Id_don_vi = idDonvi;
-            //var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
-            //if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
-            //    ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+            if(Giaovien.Id_to_chuyen_mon == null || Giaovien.Id_to_chuyen_mon.Count == 0)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Vui lòng chọn tổ chuyên môn");
+            var check_tochuyenmon = _tochuyenmon.CheckIds(Giaovien.Id_to_chuyen_mon, idDonvi);
+            if (!check_tochuyenmon)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
            
             if (!check_diemtruong)
@@ -143,9 +147,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id_don_vi = idDonvi;
             item.Ma_giao_vien = Giaoviendb.Ma_giao_vien;
-            //var check_tochuyenmon = _tochuyenmon.CheckId(Giaovien.Id_to_chuyen_mon, idDonvi);
-            //if (!check_tochuyenmon || Giaovien.Id_to_chuyen_mon <= 0)
-            //    ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
+            if (Giaovien.Id_to_chuyen_mon == null || Giaovien.Id_to_chuyen_mon.Count == 0)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Vui lòng chọn tổ chuyên môn");
+            var check_tochuyenmon = _tochuyenmon.CheckIds(Giaovien.Id_to_chuyen_mon, idDonvi);
+            if (!check_tochuyenmon)
+                ModelState.AddModelError("Id_to_chuyen_mon", "Id tổ chuyên môn không hợp lệ, vui lòng kiểm tra lại");
             var check_diemtruong = _diemtruong.CheckIds(Giaovien.Id_diem_truong, idDonvi);
             
             if (!check_diemtruong)

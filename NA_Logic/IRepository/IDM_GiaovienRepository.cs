@@ -13,6 +13,7 @@ namespace NA_Logic.IRepository
         List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, ref int totalrecord);
         DM_Giaovien GetDetailById(int Id, int idDonvi);
         List<int> GetlistDiadiemday(int id);
+        List<int> GetlistTochuyenmon(int id);
         bool Add(DM_Giaovien dm_Giaovien);
         bool AddDiadiemday(int Id, List<int> diemtruongId);
         bool AddTochuyenmon(int Id, List<int> diemtruongId);

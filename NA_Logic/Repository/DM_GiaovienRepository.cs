@@ -90,6 +90,19 @@ namespace NA_Logic.Repository
                 return new List<int>();
             }
         }
+        public List<int> GetlistTochuyenmon(int id)
+        {
+            try
+            {
+                var list = _dbContext.Giaovien_Tochuyenmon.Where(x => x.Id_giao_vien == id).Select(x => x.Id_to_chuyen_mon).ToList();
+                if (list == null) return new List<int>();
+                return list;
+            }
+            catch
+            {
+                return new List<int>();
+            }
+        }
         public bool Add(DM_Giaovien dm_Giaovien)
         {
             try

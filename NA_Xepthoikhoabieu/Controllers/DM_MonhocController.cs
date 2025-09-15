@@ -52,6 +52,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
+            search = search.Trim();
             var list = _monhoc.GetList_Paging(PageIndex, PageSize, search, idDonvi, id_loai_phong,id_lop,id_khoi,id_ban, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
@@ -118,7 +119,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //kiểm tra mã môn học
             var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
-                ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest( "Mã môn học đã trùng, vui lòng kiểm tra lại");
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten);
             if (checkten)
             {
@@ -187,7 +188,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //kiểm tra mã môn học
             var check_ma = _monhoc.CheckMa(monhoc.Ma, idDonvi, item.Id);
             if (!check_ma)
-                ModelState.AddModelError("Ma", "Mã môn học đã trùng, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest( "Mã môn học đã trùng, vui lòng kiểm tra lại");
             bool checkten = _validate.CheckTrungTen_byDonvi<DM_Monhoc>(idDonvi, monhoc.Ten, monhoc.Id);
             if (checkten)
             {
@@ -243,8 +244,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var monhocdb = _monhoc.CheckId(id, idDonvi);
             if (monhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            var request = _monhoc.Delete(id, idDonvi);
 
+            //check ràng buộc
+            var (check, message) = _monhoc.CheckContraints(id);
+            if (!check)
+                return ApiResult.BadRequest(message);
             //delete khối kiến thức
             var deleteKhoi = _monhoc.DeleteKhoi(id);
             if (!deleteKhoi)
@@ -264,6 +268,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!phongcm)
                 return ApiResult.NotFound("Xóa các phòng chuyên môn thất bại");
             //delete môn học
+            var request = _monhoc.Delete(id, idDonvi);
             if (!request)
                 if (!request)
                 return ApiResult.NotFound("Xóa thất bại");

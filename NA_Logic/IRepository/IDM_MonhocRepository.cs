@@ -34,5 +34,6 @@ namespace NA_Logic.IRepository
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool CheckTen(string Ten, int idDonvi, int? Id);
         List<MonLop> GetList_MonLop(int idDonvi, int id_lop);
+        (bool success, string message) CheckContraints(int Id);
     }
 }

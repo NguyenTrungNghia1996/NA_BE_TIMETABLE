@@ -225,6 +225,26 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public (bool success, string message) CheckContraints(int Id)
+        {
+            try
+            {
+                bool check = _context.Database.SqlQueryRaw<int>($@"
+                             select 1 as Value from Giaovien_Monhoc where Id_mon = {Id}
+                            union select 1 from Lophoc_Monhoc where Id_mon = {Id}
+                            union select 1 from Lophoc_Monhoc_Tiettranhxep where Id_mon = {Id}
+                            union select 1 from Monhoc_Khoilop where Id_mon = {Id}
+                            union select 1 from Monhoc_Khoilop_Tiettranhxep where Id_mon = {Id}
+                            union select 1 from Monhoc_Tohopmon where Id_mon_1 = {Id} or Id_mon_2 = {Id} or Id_mon_3 = {Id}").Any();
+                if (check)
+                    return (false, "Môn học đã có ràng buộc, không thể xoá");
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
         public bool Delete(int Id, int idDonvi)
         {
             try
