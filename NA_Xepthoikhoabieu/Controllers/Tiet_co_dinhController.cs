@@ -205,7 +205,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 };
                 update = _tietcodinh.Update(tietcd_update);
             }
-
+            //check trùng
+            bool check = _tietcodinh.CheckTrung(tietcdList);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tiết cố định đã tồn tại");
+            }
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
 
