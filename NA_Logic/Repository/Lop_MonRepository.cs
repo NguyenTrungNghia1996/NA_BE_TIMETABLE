@@ -22,15 +22,19 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public Lop_MonDto GetLopMon(int idLop)
+        public Lop_MonDto GetLopMon(int idLop, int idDonvi)
         {
             var paramIdLop = new SqlParameter("IdLop", SqlDbType.Int)
             {
                 Value = idLop
             };
+            var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+            {
+                Value = idDonvi
+            };
 
             var spResults = _context.Set<Lophoc_Monhoc_List>()
-                .FromSqlRaw("EXEC GetLopMon @IdLop", paramIdLop)
+                .FromSqlRaw("EXEC GetLopMon @IdLop, @idDonvi", paramIdLop, paramIdDonvi)
                 .ToList();
 
             if (!spResults.Any())

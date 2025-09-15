@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface ILop_MonRepository
     {
-        Lop_MonDto GetLopMon(int idLop);
+        Lop_MonDto GetLopMon(int idLop, int idDonvi);
         bool AddMonLop(List<Lophoc_Monhoc> dsTietBan, int idLop);
         bool DeleteMonLop(int Id_lop);
         LopMon_banDto GetListTietBan_MonLop(int Id_lop, int Id_mon, int idDonvi);
