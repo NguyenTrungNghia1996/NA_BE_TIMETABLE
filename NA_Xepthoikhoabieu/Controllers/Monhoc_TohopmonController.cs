@@ -98,6 +98,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var check = _tohopmon.CheckTrung(item);
+            if (check)
+                return ApiResult.BadRequest("Tổ hợp môn đã tồn tại");
             // add 
             bool add = _tohopmon.Add(item);
             if (!add)

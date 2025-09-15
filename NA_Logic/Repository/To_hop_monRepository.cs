@@ -142,5 +142,16 @@ namespace NA_Logic.Repository
                 return ten_input == ten_tontai;
             });
         }
+        public bool CheckTrung(Monhoc_Tohopmon thm)
+        {
+            try
+            {
+                bool check = _dbContext.Monhoc_Tohopmon.Any(c => c.Id_ban == thm.Id_ban && c.Id_khoi==thm.Id_khoi && (c.Id_mon_1 == thm.Id_mon_1 || c.Id_mon_1==thm.Id_mon_2 || c.Id_mon_1 == thm.Id_mon_3) 
+                                && (c.Id_mon_2 == thm.Id_mon_1 || c.Id_mon_2 == thm.Id_mon_2 || c.Id_mon_2 == thm.Id_mon_3) && (c.Id_mon_3 == thm.Id_mon_1 || c.Id_mon_3 == thm.Id_mon_2 || c.Id_mon_3 == thm.Id_mon_3));
+
+                return check;
+            }
+            catch { return true; }
+        }
     }
 }
