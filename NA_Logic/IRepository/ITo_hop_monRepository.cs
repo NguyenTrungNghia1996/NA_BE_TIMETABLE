@@ -15,5 +15,6 @@ namespace NA_Logic.IRepository
         bool Update(Monhoc_Tohopmon tohopmon);
         bool Delete(int Id);
         bool CheckId(int Id, int idDonvi);
+        bool CheckTrungTen(int idDonvi, string ten, int? excludeId = null);
     }
 }

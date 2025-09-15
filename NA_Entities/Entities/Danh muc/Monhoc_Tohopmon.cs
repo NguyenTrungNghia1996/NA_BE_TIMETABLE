@@ -11,7 +11,7 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên tổ hợp môn không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ten{ get; set; } = string.Empty;
         [Required(ErrorMessage = "Môn 1 không được để trống")]
         public int Id_mon_1 { get; set; } = 0;

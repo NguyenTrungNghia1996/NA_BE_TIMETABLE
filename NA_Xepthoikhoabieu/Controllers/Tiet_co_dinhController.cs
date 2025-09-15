@@ -124,6 +124,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 });
             }
+            //check trùng
+            bool check = _tietcodinh.CheckTrung(tietcdList);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tiết cố định đã tồn tại");
+            }
             //thêm
             bool add = _tietcodinh.Add(tietcdList);
             if (!add)

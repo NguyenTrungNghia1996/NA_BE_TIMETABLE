@@ -1,4 +1,5 @@
-﻿using EFCore.BulkExtensions;
+﻿using DocumentFormat.OpenXml.InkML;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -125,6 +126,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckTrungTen(int idDonvi, string ten, int? excludeId = null)
+        {
+            var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";
 
+            var sql = excludeId == null
+                ? $"SELECT thm.Ten FROM Monhoc_Tohopmon thm join DM_Monhoc mh on thm.Id_mon_1 = mh.Id where mh.Id_don_vi = {idDonvi} "
+                : $"SELECT thm.Ten FROM Monhoc_Tohopmon thm join DM_Monhoc mh on thm.Id_mon_1 = mh.Id where mh.Id_don_vi = {idDonvi} and p.Id != {excludeId}";
+
+            var ds_ten = _dbContext.Database.SqlQueryRaw<string>(sql).ToList();
+
+            return ds_ten.Any(existingName =>
+            {
+                var ten_tontai = existingName?.Trim().ToLower().Replace(" ", "") ?? "";
+                return ten_input == ten_tontai;
+            });
+        }
     }
 }

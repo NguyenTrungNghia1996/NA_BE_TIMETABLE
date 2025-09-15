@@ -187,6 +187,23 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckTrung(List<Tiet_co_dinh> list_tietcd)
+        {
+            try
+            {
+
+                foreach(var tietcd in list_tietcd)
+                {
+                    bool check = _dbContext.Tiet_co_dinh.Any(c => c.Id_ca == tietcd.Id_ca && c.Ngay == tietcd.Ngay && c.Tiet == tietcd.Tiet && c.Id_khoi_lop == tietcd.Id_khoi_lop && c.Id_mon == tietcd.Id_mon);
+                    if (check)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch { return true; }
+        }
         //public bool CheckId(int Id, int idDonvi)
         //{
         //    if (Id <= 0) return false;

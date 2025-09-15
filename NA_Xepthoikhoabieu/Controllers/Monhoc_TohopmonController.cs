@@ -74,6 +74,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             // mapper data 
             var item = _mapper.Map<Monhoc_Tohopmon>(tohopmon);
             item.Id = 0;
+            //check trùng tên
+            var check_ten = _tohopmon.CheckTrungTen(idDonvi, tohopmon.Ten);
+            if (check_ten)
+                return ApiResult.BadRequest("Tên tổ hợp môn đã trùng, vui lòng kiểm tra lại");
             //check các id
             var check_ban = _banhoc.CheckId(tohopmon.Id_ban, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(tohopmon.Id_khoi, idDonvi);
@@ -120,7 +124,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (tohopmondb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            //check trùng tên
+            var check_ten = _tohopmon.CheckTrungTen(idDonvi, tohopmon.Ten, tohopmon.Id);
+            if (check_ten)
+                return ApiResult.BadRequest("Tên tổ hợp môn đã trùng, vui lòng kiểm tra lại");
             //check các id
             var check_ban = _banhoc.CheckId(tohopmon.Id_ban, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(tohopmon.Id_khoi, idDonvi);
