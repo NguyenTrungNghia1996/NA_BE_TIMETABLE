@@ -125,7 +125,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Tên môn học đã tồn tại");
             }
-            
+            if(monhoc.So_tiet_toi_da_mot_ca > monhoc.So_tiet_toi_da_hai_ca)
+            {
+                return ApiResult.BadRequest("Số tiết tối đa 2 ca phải lớn hơn hoặc bằng số tiết tối đa 1 ca");
+            }
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);
@@ -192,7 +195,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Tên môn học đã tồn tại");
             }
-            
+            if (monhoc.So_tiet_toi_da_mot_ca > monhoc.So_tiet_toi_da_hai_ca)
+            {
+                return ApiResult.BadRequest("Số tiết tối đa 2 ca phải lớn hơn hoặc bằng số tiết tối đa 1 ca");
+            }
             //kiểm tra id loại phòng học và khối kiến thức
             var check_loaiphonghoc = _loaiphong.CheckId(monhoc.Id_loai_phong_hoc);
             var check_khoikienthuc = _khoikienthuc.CheckIds(monhoc.Id_khoi_kien_thuc, idDonvi);

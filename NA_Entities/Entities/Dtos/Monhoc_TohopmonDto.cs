@@ -18,9 +18,14 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Tên môn 2 không được để trống")]
         public int Id_mon_2 { get; set; } = 0;
         public int Id_mon_3 { get; set; } = 0;
-        [Required(ErrorMessage = "Số tiết tối đa 1 ca không được để trống")]
-        public int So_tiet_toi_da_1_ca { get; set; } = 0;
-        public int So_tiet_toi_da_2_ca { get; set; } = 0;
+        [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa một ca phải nhỏ hơn 10")]
+        public double? So_tiet_toi_da_1_ca { get; set; }
+        [Required(ErrorMessage = "Số tiết tối đa hai ca không được để trống")]
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa hai ca phải nhỏ hơn 10")]
+        public double? So_tiet_toi_da_2_ca { get; set; }
         [Required(ErrorMessage = "Ban học không được để trống")]
         public int Id_ban { get; set; } = 0;
         [Required(ErrorMessage = "Khối lớp không được để trống")]
