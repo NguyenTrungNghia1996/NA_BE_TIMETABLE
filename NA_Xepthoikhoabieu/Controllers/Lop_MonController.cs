@@ -91,10 +91,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                     {
                         return ApiResult.BadRequest($"Phòng truyền thống với Id = {mon.Id_phong_truyen_thong} không tồn tại");
                     }
-                    if (mon.Id_phong_truyen_thong == 0 && mon.Id_phong_truyen_thong != null)
-                    {
-                        return ApiResult.BadRequest("Vui lòng nhập phòng truyền thống");
-                    }
 
                     // Check trùng lặp
                     string uniqueKey = $"{LopMon.Id_lop}_{mon.Id_mon}_{mon.Id_giao_vien}_{mon.Id_phong_chuyen_dung}_{mon.Id_phong_truyen_thong}";
