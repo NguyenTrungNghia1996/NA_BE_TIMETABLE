@@ -95,7 +95,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!check_mon_3 && tohopmon.Id_mon_3>0)
                 ModelState.AddModelError("Id_mon_3", "Id môn 3 không hợp lệ, vui lòng kiểm tra lại");
             if(tohopmon.So_tiet_toi_da_1_ca <=0)
-                ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");\
+                ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
