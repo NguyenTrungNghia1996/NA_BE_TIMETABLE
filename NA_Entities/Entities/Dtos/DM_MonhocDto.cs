@@ -11,21 +11,23 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Mã môn học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 20 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ma { get; set; } = string.Empty;
         [Required(ErrorMessage = "Tên môn học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_loai_phong_hoc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;
         public bool Hoc_cach_ngay { get; set; } = false;
         public bool Xep_thanh_cap { get; set; } = false;
         [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "Số tiết tối đa một ca phải là số dương")]
-        public int So_tiet_toi_da_mot_ca { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa một ca phải nhỏ hơn 10")]
+        public double? So_tiet_toi_da_mot_ca { get; set; }
         [Required(ErrorMessage = "Số tiết tối đa hai ca không được để trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "Số tiết tối đa hai ca phải là số dương")]
-        public int So_tiet_toi_da_hai_ca { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa hai ca phải nhỏ hơn 10")]
+        public double? So_tiet_toi_da_hai_ca { get; set; }
         public bool La_mon_tu_chon { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
         public List<int> Id_khoi_kien_thuc { get; set; } = new List<int>();

@@ -11,10 +11,10 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Mã môn học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 20 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ma { get; set; } = string.Empty;
         [Required(ErrorMessage = "Tên môn học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_loai_phong_hoc { get; set; } = 0;
         public bool Do_GVCN_phu_trach { get; set; } = false;

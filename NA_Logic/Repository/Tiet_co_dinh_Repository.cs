@@ -152,25 +152,22 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var check_mon_ca_khoi = _dbContext.Dm_Monhoc
-                    .AsNoTracking()
-                    .Where(mon => mon.Id == idMon && mon.Id_don_vi == idDonvi)
-                    .Any(mon =>
-                        _dbContext.DM_Cahoc.AsNoTracking()
-                            .Any(ca => ca.Id == idCa) &&
-                        _dbContext.Cap_Donvi.AsNoTracking()
-                            .Join(_dbContext.DM_Khoilop.AsNoTracking(),
-                                cd => cd.Id_Cap_hoc,
-                                kl => kl.Id_Cap_hoc,
-                                (cd, kl) => new { cd, kl })
-                            .Any(x => x.kl.Id == idKhoi && x.cd.Id_Don_vi == idDonvi) &&
-                            _dbContext.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
-                                .Join(_dbContext.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
-                                .Join(_dbContext.DM_Khoilop,
-                                      ch => ch.Id, kl => kl.Id_Cap_hoc,
-                                      (ch, kl) => kl.Id)
-                                .Any(id => id == idKhoi)
-                    );
+                var check_mon_ca_khoi = (from mon in _dbContext.Dm_Monhoc.AsNoTracking()
+                                         where mon.Id == idMon && mon.Id_don_vi == idDonvi
+                                         from ca in _dbContext.DM_Cahoc.AsNoTracking()
+                                         join cdv in _dbContext.Ca_Donvi.AsNoTracking() on ca.Id equals cdv.Id_ca_hoc
+                                         where ca.Id == idCa && cdv.Id_don_vi==idDonvi
+                                         from cd in _dbContext.Cap_Donvi.AsNoTracking()
+                                         join kl in _dbContext.DM_Khoilop.AsNoTracking() on cd.Id_Cap_hoc equals kl.Id_Cap_hoc
+                                         where kl.Id == idKhoi && cd.Id_Don_vi == idDonvi
+                                         from cd2 in _dbContext.Cap_Donvi.AsNoTracking()
+                                         where cd2.Id_Don_vi == idDonvi
+                                         join ch in _dbContext.DM_Caphoc on cd2.Id_Cap_hoc equals ch.Id
+                                         join kl2 in _dbContext.DM_Khoilop on ch.Id equals kl2.Id_Cap_hoc
+                                         where kl2.Id == idKhoi
+
+                                         select mon
+                                        ).Any();
                 if (!Enum.IsDefined(typeof(Ngay), idNgay))
                 {
                     return false;
