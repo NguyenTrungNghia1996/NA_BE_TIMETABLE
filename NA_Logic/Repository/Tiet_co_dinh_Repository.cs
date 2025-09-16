@@ -57,11 +57,14 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Tiet_co_dinh GetDetailById(int Id)
+        public Tiet_co_dinh GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var tietcodinh = _dbContext.Tiet_co_dinh.FirstOrDefault(c => c.Id == Id);
+                var tietcodinh = (from c in _dbContext.Tiet_co_dinh
+                                  join d in _dbContext.Dm_Monhoc on c.Id_mon equals d.Id
+                                  where c.Id == Id && d.Id_don_vi == idDonvi
+                                  select c).FirstOrDefault();
                 return tietcodinh;
             }
             catch (Exception)

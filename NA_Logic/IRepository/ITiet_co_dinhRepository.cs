@@ -11,7 +11,7 @@ namespace NA_Logic.IRepository
     public interface ITiet_co_dinhRepository
     {
         List<Tiet_co_dinh_List> GetList_Paging(int PageIndex, int PageSize, int IdDonvi, ref int totalrecord);
-        Tiet_co_dinh GetDetailById(int Id);    
+        Tiet_co_dinh GetDetailById(int Id, int idDonvi);    
         bool Add(List<Tiet_co_dinh> tiet_cd);
         bool Update(Tiet_co_dinh tiet_cd);
         bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon);

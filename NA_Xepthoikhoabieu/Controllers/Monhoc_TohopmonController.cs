@@ -153,6 +153,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest(ModelState);
 
             var item = _mapper.Map<Monhoc_Tohopmon>(tohopmon);
+            var check = _tohopmon.CheckTrung(item);
+            if (check)
+                return ApiResult.BadRequest("Tổ hợp môn đã tồn tại");
             bool add = _tohopmon.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
