@@ -125,7 +125,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 });
             }
             //check trùng
-            bool check = _tietcodinh.CheckTrung(tietcdList);
+            bool check = _tietcodinh.CheckTrungList(tietcdList, idDonvi);
             if (check)
             {
                 return ApiResult.BadRequest("Tiết cố định đã tồn tại");
@@ -184,6 +184,11 @@ namespace NA_Xepthoikhoabieu.Controllers
 
                     });
                 }
+                bool check = _tietcodinh.CheckTrungList(tietcdList, idDonvi);
+                if (check)
+                {
+                    return ApiResult.BadRequest("Tiết cố định đã tồn tại");
+                }
                 update = _tietcodinh.UpdateAllKhoi(tietcdList, tietcd.Id_mon);
             }
             //nếu chỉ cho 1 khối
@@ -203,14 +208,15 @@ namespace NA_Xepthoikhoabieu.Controllers
                     Tiet = tietcd.Id_tiet,
                     Id_khoi_lop = tietcd.Id_khoi_lop,
                 };
+                bool check = _tietcodinh.CheckTrung(tietcd_update, idDonvi);
+                if (check)
+                {
+                    return ApiResult.BadRequest("Tiết cố định đã tồn tại");
+                }
                 update = _tietcodinh.Update(tietcd_update);
             }
             //check trùng
-            bool check = _tietcodinh.CheckTrung(tietcdList);
-            if (check)
-            {
-                return ApiResult.BadRequest("Tiết cố định đã tồn tại");
-            }
+           
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
 

@@ -145,15 +145,31 @@ namespace NA_Logic.Repository
                 return ten_input == ten_tontai;
             });
         }
-        public bool CheckTrung(Monhoc_Tohopmon thm)
+        public bool CheckTrung(Monhoc_Tohopmon thm, int idDonvi)
         {
             try
             {
                 var inputMons = new HashSet<int> { thm.Id_mon_1, thm.Id_mon_2, thm.Id_mon_3 };
 
+                // Lấy tất cả môn thuộc đơn vị này
+                var donViMonIds = new HashSet<int>(
+                    _dbContext.Dm_Monhoc
+                        .Where(m => m.Id_don_vi == idDonvi)
+                        .Select(m => m.Id)
+                );
+
+                // Check nếu input không thuộc đơn vị này thì return false
+                if (!inputMons.All(monId => donViMonIds.Contains(monId)))
+                    return false;
+
                 return _dbContext.Monhoc_Tohopmon
-                    .Where(c => c.Id_ban == thm.Id_ban && c.Id_khoi == thm.Id_khoi && c.Id != thm.Id)
-                    .AsEnumerable() 
+                    .Where(c => c.Id_ban == thm.Id_ban &&
+                               c.Id_khoi == thm.Id_khoi &&
+                               (thm.Id <= 0 || c.Id != thm.Id) &&
+                               donViMonIds.Contains(c.Id_mon_1) && 
+                               donViMonIds.Contains(c.Id_mon_2) &&
+                               donViMonIds.Contains(c.Id_mon_3))
+                    .AsEnumerable()
                     .Any(c => new HashSet<int> { c.Id_mon_1, c.Id_mon_2, c.Id_mon_3 }.SetEquals(inputMons));
             }
             catch { return true; }

@@ -1,4 +1,5 @@
-﻿using EFCore.BulkExtensions;
+﻿using DocumentFormat.OpenXml.InkML;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -190,19 +191,47 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckTrung(List<Tiet_co_dinh> list_tietcd)
+        public bool CheckTrungList(List<Tiet_co_dinh> list_tietcd, int idDonvi)
+        {
+            try
+            {
+                foreach (var tietcd in list_tietcd)
+                {
+                    bool check = (from tcd in _dbContext.Tiet_co_dinh
+                                  join m in _dbContext.Dm_Monhoc on tcd.Id_mon equals m.Id
+                                  where tcd.Id_ca == tietcd.Id_ca
+                                     && tcd.Ngay == tietcd.Ngay
+                                     && tcd.Tiet == tietcd.Tiet
+                                     && tcd.Id_khoi_lop == tietcd.Id_khoi_lop
+                                     && tcd.Id_mon == tietcd.Id_mon
+                                     && m.Id_don_vi == idDonvi
+                                     && (tietcd.Id <= 0 || tcd.Id != tietcd.Id) 
+                                  select tcd).Any();
+
+                    if (check) return true;
+                }
+                return false;
+            }
+            catch { return true; }
+        }
+        public bool CheckTrung(Tiet_co_dinh tietcd, int idDonvi)
         {
             try
             {
 
-                foreach(var tietcd in list_tietcd)
-                {
-                    bool check = _dbContext.Tiet_co_dinh.Any(c => c.Id_ca == tietcd.Id_ca && c.Ngay == tietcd.Ngay && c.Tiet == tietcd.Tiet && c.Id_khoi_lop == tietcd.Id_khoi_lop && c.Id_mon == tietcd.Id_mon);
-                    if (check)
-                    {
-                        return true;
-                    }
-                }
+                bool check = (from tcd in _dbContext.Tiet_co_dinh
+                                join m in _dbContext.Dm_Monhoc on tcd.Id_mon equals m.Id
+                                where tcd.Id_ca == tietcd.Id_ca
+                                    && tcd.Ngay == tietcd.Ngay
+                                    && tcd.Tiet == tietcd.Tiet
+                                    && tcd.Id_khoi_lop == tietcd.Id_khoi_lop
+                                    && tcd.Id_mon == tietcd.Id_mon
+                                    && m.Id_don_vi == idDonvi
+                                    && (tietcd.Id <= 0 || tcd.Id != tietcd.Id) 
+                                select tcd).Any();
+
+                if (check) return true;
+
                 return false;
             }
             catch { return true; }

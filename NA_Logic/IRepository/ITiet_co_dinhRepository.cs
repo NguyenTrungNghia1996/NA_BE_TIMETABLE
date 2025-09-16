@@ -17,6 +17,7 @@ namespace NA_Logic.IRepository
         bool UpdateAllKhoi(List<Tiet_co_dinh> tiet_cd, int idMon);
         bool Delete(int Id);
         bool CheckIds(int idMon, int idNgay, int idCa, int idTiet, int idKhoi, int idDonvi);
-        bool CheckTrung(List<Tiet_co_dinh> list_tietcd);
+        bool CheckTrung(Tiet_co_dinh tietcd, int idDonvi);
+        bool CheckTrungList(List<Tiet_co_dinh> list_tietcd, int idDonvi);
     }
 }

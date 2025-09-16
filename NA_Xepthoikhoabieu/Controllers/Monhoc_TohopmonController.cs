@@ -98,7 +98,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var check = _tohopmon.CheckTrung(item);
+            var check = _tohopmon.CheckTrung(item, idDonvi);
             if (check)
                 return ApiResult.BadRequest("Tổ hợp môn đã tồn tại");
             // add 
@@ -153,7 +153,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest(ModelState);
 
             var item = _mapper.Map<Monhoc_Tohopmon>(tohopmon);
-            var check = _tohopmon.CheckTrung(item);
+            var check = _tohopmon.CheckTrung(item, idDonvi);
             if (check)
                 return ApiResult.BadRequest("Tổ hợp môn đã tồn tại");
             bool add = _tohopmon.Update(item);
