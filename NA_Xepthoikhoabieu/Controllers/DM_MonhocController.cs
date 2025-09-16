@@ -179,8 +179,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (monhocdb == null)
-                return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             var item = _mapper.Map<DM_Monhoc>(monhoc);
             item.Id_don_vi = idDonvi;
@@ -242,7 +240,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             //kiểm tra id mô học
             var monhocdb = _monhoc.CheckId(id, idDonvi);
-            if (monhocdb == null)
+            if (!monhocdb)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
 
             //check ràng buộc
