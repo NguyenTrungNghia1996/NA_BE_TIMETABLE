@@ -82,3 +82,4 @@ docker-deploy:
     - echo "Deploying frontend service using Docker Compose as root..."
     - sudo bash -c "cd /root/docker/na_thoikhoabieu_test && docker compose pull thoikhoabieutest && docker compose up -d thoikhoabieutest"
     - sudo bash -c "cd /root/docker/na_thoikhoabieu_demo && docker compose pull thoikhoabieudemo && docker compose up -d thoikhoabieudemo"
+    - sudo bash -c "cd /root/docker/na_thoikhoabieu && docker compose pull thoikhoabieu && docker compose up -d thoikhoabieu"
