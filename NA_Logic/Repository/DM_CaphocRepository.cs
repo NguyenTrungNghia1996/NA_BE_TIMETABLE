@@ -20,18 +20,22 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search,int idDonvi, ref int totalrecord)
         {
             try
             {
                 var paramSearch = new SqlParameter("search", SqlDbType.NVarChar) { Value = search ?? string.Empty };
                 var paramPageIndex = new SqlParameter("pageIndex", SqlDbType.Int) { Value = PageIndex };
                 var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int) { Value = PageSize };
+                var paramIddonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
                 var result = _context.Set<DM_Caphoc_List>()
-                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
-                        paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                    .FromSqlRaw("EXEC DM_Caphoc_GetList_Paging @pageIndex, @pageSize, @search, @idDonvi, @total OUTPUT",
+                        paramPageIndex, paramPageSize, paramSearch,paramIddonvi, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Caphoc_List>();
                 totalrecord = (int)paramTotal.Value;

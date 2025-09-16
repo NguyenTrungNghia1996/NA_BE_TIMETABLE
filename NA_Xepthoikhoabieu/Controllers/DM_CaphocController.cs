@@ -36,11 +36,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpGet]
         public IActionResult Getlist_Pageing([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            
+            int idDonvi = 0;
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
-            var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok("Không tồn tại bản ghi hợp nào");
             var listDto = _mapper.Map<List<DM_Caphoc_ListDto>>(list);
@@ -63,6 +63,25 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_Caphoc_Dto>(detailCaphoc);
             return ApiResult.Success(detailDto,
+            "Thành công");
+        }
+        [HttpGet("captheodonvi")]
+        [RequireToken]
+        public IActionResult GetList_CabyDV([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        {
+            int idDonvi = _clamHelperRepository.GetIdDonvi(User);
+            // Lấy danh sách dữ liệu
+            int totalrecord = 0;
+            search = search.Trim();
+            var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search, idDonvi, ref totalrecord);
+            if (list == null || list.Count == 0)
+                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+            var listDto = _mapper.Map<List<DM_Caphoc_ListDto>>(list);
+            return ApiResult.Success(new
+            {
+                items = listDto,
+                totalrecord = totalrecord
+            },
             "Thành công");
         }
         [HttpPost]

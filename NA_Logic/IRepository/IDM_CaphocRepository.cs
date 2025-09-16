@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_CaphocRepository
     {
-        List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
+        List<DM_Caphoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord);
         DM_Caphoc GetDetailByID (int Id);
         bool Add (DM_Caphoc dm_caphoc);
         bool Update(DM_Caphoc dm_caphoc);
