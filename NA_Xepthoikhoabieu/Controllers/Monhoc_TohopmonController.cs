@@ -53,9 +53,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
-
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             // Lấy bản ghi từ db
-            var detailtohopmon = _tohopmon.GetDetailById(Id);
+            var detailtohopmon = _tohopmon.GetDetailById(Id, idDonvi);
             if (detailtohopmon == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<Monhoc_TohopmonDto>(detailtohopmon);
@@ -122,7 +122,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
   
             // Kiểm tra bản ghi hợp lệ
-            var tohopmondb = _tohopmon.GetDetailById(tohopmon.Id);
+            var tohopmondb = _tohopmon.GetDetailById(tohopmon.Id, idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (tohopmondb == null)
@@ -174,7 +174,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            var tohopmondb = _tohopmon.GetDetailById(id);
+            var tohopmondb = _tohopmon.GetDetailById(id, idDonvi);
             if (tohopmondb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _tohopmon.Delete(id);

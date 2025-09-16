@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
     public interface ITo_hop_monRepository
     {
         List<Monhoc_Tohopmon_List> GetList_Paging(int PageIndex, int PageSize, int IdDonvi, ref int totalrecord);
-        Monhoc_Tohopmon GetDetailById(int Id);
+        Monhoc_Tohopmon GetDetailById(int Id, int idDonvi);
         bool Add(Monhoc_Tohopmon tohopmon);
         bool Update(Monhoc_Tohopmon tohopmon);
         bool Delete(int Id);

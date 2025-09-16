@@ -55,11 +55,14 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Monhoc_Tohopmon GetDetailById(int Id)
+        public Monhoc_Tohopmon GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var monTohop = _dbContext.Monhoc_Tohopmon.FirstOrDefault(c => c.Id == Id);
+                var monTohop = (from c in _dbContext.Monhoc_Tohopmon
+                                join d in _dbContext.Dm_Monhoc on c.Id_mon_1 equals d.Id
+                                where c.Id == Id && d.Id_don_vi == idDonvi
+                                select c).FirstOrDefault();
                 return monTohop;
             }
             catch (Exception)
@@ -146,10 +149,12 @@ namespace NA_Logic.Repository
         {
             try
             {
-                bool check = _dbContext.Monhoc_Tohopmon.Any(c => c.Id_ban == thm.Id_ban && c.Id_khoi==thm.Id_khoi && (c.Id_mon_1 == thm.Id_mon_1 || c.Id_mon_1==thm.Id_mon_2 || c.Id_mon_1 == thm.Id_mon_3) 
-                                && (c.Id_mon_2 == thm.Id_mon_1 || c.Id_mon_2 == thm.Id_mon_2 || c.Id_mon_2 == thm.Id_mon_3) && (c.Id_mon_3 == thm.Id_mon_1 || c.Id_mon_3 == thm.Id_mon_2 || c.Id_mon_3 == thm.Id_mon_3));
+                var inputMons = new HashSet<int> { thm.Id_mon_1, thm.Id_mon_2, thm.Id_mon_3 };
 
-                return check;
+                return _dbContext.Monhoc_Tohopmon
+                    .Where(c => c.Id_ban == thm.Id_ban && c.Id_khoi == thm.Id_khoi && c.Id != thm.Id)
+                    .AsEnumerable() 
+                    .Any(c => new HashSet<int> { c.Id_mon_1, c.Id_mon_2, c.Id_mon_3 }.SetEquals(inputMons));
             }
             catch { return true; }
         }
