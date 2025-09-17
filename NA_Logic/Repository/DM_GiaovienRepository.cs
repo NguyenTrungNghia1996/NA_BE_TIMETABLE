@@ -484,7 +484,7 @@ namespace NA_Logic.Repository
             try
             {
                 var gvbd = _dbContext.Giaovien_Buoiday.FirstOrDefault(c=>c.Id_giao_vien==id);
-                if (id > 0)
+                if (gvbd !=null)
                 {
                     _dbContext.Giaovien_Buoiday.Remove(gvbd);
                 }
