@@ -201,7 +201,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Giaoviendb = _Giaovien.GetDetailById(id, idDonvi);
             if (Giaoviendb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            bool check = _Giaovien.checkContraints(id);
+            bool check = _Giaovien.checkContraints(id, idDonvi);
             if (check)
                 return ApiResult.BadRequest("Giáo viên đã có ràng buộc, không thể xoá");
             bool delete_tietban = _Giaovien.DeleteTietBan(id);
