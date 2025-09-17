@@ -12,10 +12,10 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ma_giao_vien { get; set; } = string.Empty;
         [Required(ErrorMessage = "Họ và tên đệm không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ho_va_ho_dem { get; set; } = string.Empty;
         [Required(ErrorMessage = "Tên không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(20, ErrorMessage = "Tối đa 20 ký tự")]
         public string Ten { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn tổ chuyên môn")]
         public List<int> Id_to_chuyen_mon { get; set; } = new List<int>();
