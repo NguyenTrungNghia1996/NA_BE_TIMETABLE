@@ -2422,9 +2422,9 @@ namespace NA_Logic.Repository
 
                         // Kiểm tra vị trí hiện tại có trong danh sách vị trí có thể xếp được của chính tiết đó
                         bool check_tietdaxep = dsvitri_tietdaxep.Any(vt =>
-                            vt.Ca == vitri.Id_ca &&
-                            vt.Ngay == vitri.Ngay &&
-                            vt.Tiet == vitri.Tiet);
+                            vt.Ca == idCa &&
+                            vt.Ngay == ngay &&
+                            vt.Tiet == tietSo);
 
                         // Kiểm tra vị trí hiện tại có trong dsViTriXepDuoc không
                         bool check_tietgoc = dsViTriXepDuoc.Any(vt =>
@@ -2832,11 +2832,11 @@ namespace NA_Logic.Repository
                     {
                         var vitri = (tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet);
 
-                        // Kiểm tra vị trí hiện tại có trong danh sách vị trí có thể xếp được của chính tiết đó
+                        // Kiểm tra vị trí của tiết gốc có trong ds xếp được của tiết đang xét không
                         bool check_tietdaxep = dsvitri_tietdaxep.Any(vt =>
-                            vt.Ca == vitri.Id_ca &&
-                            vt.Ngay == vitri.Ngay &&
-                            vt.Tiet == vitri.Tiet);
+                            vt.Ca == idCa &&
+                            vt.Ngay == ngay &&
+                            vt.Tiet == tietSo);
 
                         // Kiểm tra vị trí hiện tại có trong dsViTriXepDuoc không
                         bool check_tietgoc = dsViTriXepDuoc.Any(vt =>
