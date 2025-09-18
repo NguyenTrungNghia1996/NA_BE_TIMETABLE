@@ -606,10 +606,10 @@ namespace NA_Logic.Repository
                             c.Id_ca == ds_ca[j].Id_ca &&
                             c.Ngay == Ngay).Count();
 
-                        so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca + 1;
+                        so_tiet_da_xep_1_ca += so_tiet_1_mon_1_ca ;
                     }
 
-                    if (so_tiet_da_xep_1_ca > list_thm[i].So_tiet_toi_da_1_ca)
+                    if (so_tiet_da_xep_1_ca +1 > list_thm[i].So_tiet_toi_da_1_ca)
                     {
                         check = true;
                     }
@@ -624,7 +624,7 @@ namespace NA_Logic.Repository
 
                 if (list_thm[i].So_tiet_toi_da_1_ca < list_thm[i].So_tiet_toi_da_2_ca)
                 {
-                    if (so_tiet_da_xep_2_ca > list_thm[i].So_tiet_toi_da_2_ca)
+                    if (so_tiet_da_xep_2_ca +1 > list_thm[i].So_tiet_toi_da_2_ca)
                     {
                         check = true;
                     }
