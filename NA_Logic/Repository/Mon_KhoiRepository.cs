@@ -145,7 +145,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan,  int idDonvi)
+        public List<Monhoc_KhoiLopDto> GetMonhocKhoilop(int? idKhoi, int? idBan, int? idCa,  int idDonvi)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace NA_Logic.Repository
                                       Ten = ca.Ten
                                   }).ToList();
                 var Monhoc_Khoi = _context.Monhoc_Khoilop
-                    .Where(x => x.Id_khoi == idKhoi && x.Id_ban == idBan)
+                    .Where(x => x.Id_khoi == idKhoi && x.Id_ban == idBan && x.Id_ca == idCa)
                     .ToList();
 
                 var ds_Mon = allMonhoc.Select(mon =>
