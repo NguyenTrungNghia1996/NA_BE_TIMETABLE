@@ -11,11 +11,12 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên lớp học không được để trống")]
-        [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
+        [StringLength(10, ErrorMessage = "Tối đa 10 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_khoi { get; set; } = 0;
         [Range(1, int.MaxValue, ErrorMessage = "Sĩ số phải là số dương")]
-        public int? Si_so { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        public double? Si_so { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_ca { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn giáo viên chủ nhiệm")]
