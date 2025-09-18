@@ -2641,7 +2641,8 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
-                for(int i = 0; i<dsCa.Count; i++)
+                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                for (int i = 0; i<dsCa.Count; i++)
                 {
                     for (int ngay = 1; ngay <= 7; ngay++)
                     {
@@ -2649,7 +2650,7 @@ namespace NA_Logic.Repository
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
 
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey)||ds_tiet_da_xep_lop.Contains(slotKey))
                                 continue;
                             else
                             {
@@ -2692,6 +2693,7 @@ namespace NA_Logic.Repository
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int i = 0; i < dsCa.Count; i++)
                 {
                     for (int ngay = 1; ngay <= 7; ngay++)
@@ -2699,7 +2701,7 @@ namespace NA_Logic.Repository
                         for (int tiet = 1; tiet <= 5; tiet++)
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey))
                                 continue;
                             else
                             {
