@@ -35,7 +35,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             search = search.Trim();
             var list = _tochuyenmon.GetList_Paging(PageIndex, PageSize, search, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.NotFound("");
+                return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Tochuyenmon_ListDto>>(list);
             return ApiResult.Success(new
             {
