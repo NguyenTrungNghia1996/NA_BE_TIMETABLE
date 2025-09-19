@@ -149,6 +149,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (tkbdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
             dstkb.Id_don_vi = idDonvi;
+            //check trùng tên
+            bool check = _validate.CheckTrungTen_byDonvi<Danhsach_Thoikhoabieu>(idDonvi, dstkb.Ten, dstkb.Id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tên thời khoá biểu đã tồn tại");
+            }
             //update
             bool add = _tkb.Update(dstkb);
             bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);

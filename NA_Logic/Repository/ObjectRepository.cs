@@ -647,7 +647,7 @@ namespace NA_Logic.Repository
                 var dsCa = _dsCa;
                 for(int i = 0; i< dsCa.Count; i++)
                 {
-                    // Duyệt trực tiếp và check luôn - chỉ 1 lần duyệt
+                    
                     for (int ngay = 1; ngay <= 7; ngay++)
                     {
                         for (int tiet = 1; tiet <= 5; tiet++)
