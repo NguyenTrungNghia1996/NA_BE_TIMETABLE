@@ -34,10 +34,10 @@ namespace NA_Entities.Entities.Dtos
         public int Id_ca { get; set; }
         public string Ten_ca { get; set; }
         [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
-        [Range(0, 20, ErrorMessage = "Số tiết phải là số nguyên dương và nhỏ hơn 20")]
+        [Range(0, 99, ErrorMessage = "Số tiết phải là số nguyên dương và nhỏ hơn 100")]
         public double? So_tiet { get; set; } = 0;
         [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
-        [Range(0, 20, ErrorMessage = "Số nhóm phải là số nguyên dương và nhỏ hơn 20")]
+        [Range(0, 99, ErrorMessage = "Số nhóm phải là số nguyên dương và nhỏ hơn 100")]
         public double? So_nhom { get; set; } = 0;
     }
 
