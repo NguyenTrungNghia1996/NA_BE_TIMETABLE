@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace NA_Entities.Entities.Dtos
     public class ThoiKhoaBieuDto
     {
         public int Id { get; set; } = 0;
+        [Required(ErrorMessage = "Tên thời khoá biểu không được để trống")]
+        [StringLength(100, ErrorMessage = "Tối đa 100 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public bool Dang_su_dung { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;
