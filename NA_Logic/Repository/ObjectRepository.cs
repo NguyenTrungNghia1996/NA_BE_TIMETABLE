@@ -1859,7 +1859,7 @@ namespace NA_Logic.Repository
             var firstTiet = tiet.First();
             int idDonvi = firstTiet.Id_don_vi ?? 0;
 
-            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == 1)
+            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
                              .Join(_context.DM_Cahoc,
                                    cd => cd.Id_ca_hoc,
                                    ca => ca.Id,
@@ -2008,7 +2008,7 @@ namespace NA_Logic.Repository
             var firstTiet = tiet.First();
             int idDonvi = firstTiet.Id_don_vi ?? 0;
 
-            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == 1)
+            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
                              .Join(_context.DM_Cahoc,
                                    cd => cd.Id_ca_hoc,
                                    ca => ca.Id,
