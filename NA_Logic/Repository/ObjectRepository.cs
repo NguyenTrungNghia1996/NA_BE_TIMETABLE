@@ -2555,11 +2555,10 @@ namespace NA_Logic.Repository
                 // Cập nhật isDrag cho các tiết trong tkbBase
                 foreach (var tietdaxep in tkbBase.timetable)
                 {
-                    bool isDrag = tietdaxep.Id_ca == idCa &&
-                                      dsViTriXepDuoc.Any(vt =>
-                                          vt.Ca == tietdaxep.Id_ca &&
-                                          vt.Ngay == tietdaxep.Ngay &&
-                                          vt.Tiet == tietdaxep.Tiet);
+                    bool isDrag =  dsViTriXepDuoc.Any(vt =>
+                                        vt.Ca == tietdaxep.Id_ca &&
+                                        vt.Ngay == tietdaxep.Ngay &&
+                                        vt.Tiet == tietdaxep.Tiet);
 
                     tietdaxep.isDrag = isDrag;
                 }
