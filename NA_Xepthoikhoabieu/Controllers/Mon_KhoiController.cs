@@ -113,7 +113,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                             Id_mon = ds_mon.Id_mon,
                             Id_ca = ds_ca.Id_ca,
                             So_tiet = Convert.ToInt32(ds_ca.So_tiet ?? 0),
-                            So_nhom = Convert.ToInt32(ds_ca.So_tiet ?? 0),
+                            So_nhom = Convert.ToInt32(ds_ca.So_nhom ?? 0),
                         });
                     }
                 }
