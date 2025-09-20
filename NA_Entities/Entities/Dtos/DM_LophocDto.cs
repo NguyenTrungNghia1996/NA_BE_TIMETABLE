@@ -14,7 +14,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_khoi { get; set; } = 0;
-        [Range(1, int.MaxValue, ErrorMessage = "Sĩ số phải là số dương")]
+        [Range(0, int.MaxValue, ErrorMessage = "Sĩ số phải là số dương")]
         public int Si_so { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
         public int Id_ca { get; set; } = 0;
