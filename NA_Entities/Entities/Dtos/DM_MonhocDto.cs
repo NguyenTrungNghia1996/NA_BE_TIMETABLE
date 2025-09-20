@@ -22,11 +22,11 @@ namespace NA_Entities.Entities.Dtos
         public bool Xep_thanh_cap { get; set; } = false;
         [Required(ErrorMessage = "Số tiết tối đa một ca không được để trống")]
         [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
-        [Range(1, 9, ErrorMessage = "Số tiết tối đa một ca phải nhỏ hơn 10")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa một ca phải lớn hơn 0 và nhỏ hơn 10")]
         public double? So_tiet_toi_da_mot_ca { get; set; }
         [Required(ErrorMessage = "Số tiết tối đa hai ca không được để trống")]
         [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
-        [Range(1, 9, ErrorMessage = "Số tiết tối đa hai ca phải nhỏ hơn 10")]
+        [Range(1, 9, ErrorMessage = "Số tiết tối đa hai ca phải lớn hơn 0 và nhỏ hơn 10")]
         public double? So_tiet_toi_da_hai_ca { get; set; }
         public bool La_mon_tu_chon { get; set; } = false;
         public int Id_don_vi { get; set; } = 0;

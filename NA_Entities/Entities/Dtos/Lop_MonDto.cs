@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +22,18 @@ namespace NA_Entities.Entities.Dtos
         public string? Ten_phong_chuyen_dung { get; set; } = string.Empty;
         public int? Id_phong_truyen_thong { get; set; } = 0;
         public string? Ten_phong_truyen_thong { get; set; } = string.Empty;
-        public int? So_tiet_ca_sang_truyen_thong { get; set; } = 0;
-        public int? So_tiet_ca_chieu_truyen_thong { get; set; } = 0;
-        public int? So_tiet_ca_sang_phong_chuyen_dung { get; set; } = 0;
-        public int? So_tiet_ca_chieu_phong_chuyen_dung { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(0, 99, ErrorMessage = "Số tiết ca sáng truyền thống phải là số nguyên dương và nhỏ hơn 100")]
+        public double? So_tiet_ca_sang_truyen_thong { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(0, 99, ErrorMessage = "Số tiết ca chiều truyền thống phải là số nguyên dương và nhỏ hơn 100")]
+        public double? So_tiet_ca_chieu_truyen_thong { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(0, 99, ErrorMessage = "Số tiết ca sáng chuyên dụng phải là số nguyên dương và nhỏ hơn 100")]
+        public double? So_tiet_ca_sang_phong_chuyen_dung { get; set; } = 0;
+        [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
+        [Range(0, 99, ErrorMessage = "Số tiết ca chiều chuyên dụng phải là số nguyên dương và nhỏ hơn 100")]
+        public double? So_tiet_ca_chieu_phong_chuyen_dung { get; set; } = 0;
         public bool Trang_thai { get; set; } = false;
     }
     public class LopMon_banDto

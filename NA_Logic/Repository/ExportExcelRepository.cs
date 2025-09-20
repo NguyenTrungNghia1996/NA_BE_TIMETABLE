@@ -382,7 +382,7 @@ namespace NA_Logic.Repository
             // Tạo dữ liệu cho từng thứ
             var thuNames = new[] { "THỨ\nHAI", "THỨ\nBA", "THỨ\nTƯ", "THỨ\nNĂM", "THỨ\nSÁU", "THỨ\nBẢY" };
 
-            for (int ngayIndex = 1; ngayIndex < thuNames.Length; ngayIndex++)
+            for (int ngayIndex = 0; ngayIndex < thuNames.Length; ngayIndex++)
             {
 
                 // Merge cột THỨ cho 5 tiết
@@ -407,8 +407,9 @@ namespace NA_Logic.Repository
                     // Điền dữ liệu cho từng lớp
                     for (int lopIndex = 0; lopIndex < lopList.Count; lopIndex++)
                     {
+                        int ngay = ngayIndex + 1;
                         var tenLop = lopList[lopIndex];
-                        var lesson = data.FirstOrDefault(x => x.Tiet == tiet && x.Ngay == ngayIndex && x.Id_ca == idCa && x.Ten_lop == tenLop);
+                        var lesson = data.FirstOrDefault(x => x.Tiet == tiet && x.Ngay == ngay && x.Id_ca == idCa && x.Ten_lop == tenLop);
                         var cell = worksheet.Cell(currentRow, lopIndex + 3);
 
                         if (lesson != null)
@@ -434,9 +435,9 @@ namespace NA_Logic.Repository
                 worksheet.Row(i).Height = 45;
             }
 
-            worksheet.Column(1).Width = 8;  // Cột THỨ
-            worksheet.Column(2).Width = 6;  // Cột TIẾT
-            for (int i = 3; i <= lopList.Count + 2; i++)   // Cột các lớp
+            worksheet.Column(1).Width = 8;  
+            worksheet.Column(2).Width = 6; 
+            for (int i = 3; i <= lopList.Count + 2; i++) 
             {
                 worksheet.Column(i).Width = 18;
             }

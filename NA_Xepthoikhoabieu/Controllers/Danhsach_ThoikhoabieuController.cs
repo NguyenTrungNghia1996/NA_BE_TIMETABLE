@@ -24,15 +24,17 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_GiaovienRepository _giaovien;
+        private readonly IValidateRepository _validate;
 
         public Danhsach_ThoikhoabieuController(IMapper mapper, IDanhsach_ThoikhoabieuRepository tkb, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                     IDM_GiaovienRepository giaovien)
+                                     IDM_GiaovienRepository giaovien, IValidateRepository validate)
         {
             _mapper = mapper;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _tkb = tkb;
             _giaovien = giaovien;
+            _validate = validate;
         }
         [HttpGet]
         [RequireToken]
@@ -111,6 +113,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             //var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
             dstkb.Id = 0;
             dstkb.Id_don_vi = idDonvi;
+            //check trùng tên
+            bool check = _validate.CheckTrungTen_byDonvi<Danhsach_Thoikhoabieu>(idDonvi, dstkb.Ten);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tên thời khoá biểu đã tồn tại");
+            }
             //thêm
             bool add = _tkb.Add(dstkb);
             bool adddetail = _tkb.AddChitiet_tkb(dstkb.Id, idDonvi);
@@ -141,6 +149,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (tkbdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
             dstkb.Id_don_vi = idDonvi;
+            //check trùng tên
+            bool check = _validate.CheckTrungTen_byDonvi<Danhsach_Thoikhoabieu>(idDonvi, dstkb.Ten, dstkb.Id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tên thời khoá biểu đã tồn tại");
+            }
             //update
             bool add = _tkb.Update(dstkb);
             bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);

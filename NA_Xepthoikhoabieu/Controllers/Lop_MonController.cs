@@ -106,10 +106,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                         Id_giao_vien = mon.Id_giao_vien,
                         Id_phong_chuyen_dung = mon.Id_phong_chuyen_dung,
                         Id_phong_truyen_thong = mon.Id_phong_truyen_thong,
-                        So_tiet_ca_chieu_phong_chuyen_dung = mon.So_tiet_ca_chieu_phong_chuyen_dung,
-                        So_tiet_ca_chieu_truyen_thong = mon.So_tiet_ca_chieu_truyen_thong,
-                        So_tiet_ca_sang_phong_chuyen_dung = mon.So_tiet_ca_sang_phong_chuyen_dung,
-                        So_tiet_ca_sang_truyen_thong = mon.So_tiet_ca_sang_truyen_thong
+                        So_tiet_ca_chieu_phong_chuyen_dung = Convert.ToInt32( mon.So_tiet_ca_chieu_phong_chuyen_dung??0),
+                        So_tiet_ca_chieu_truyen_thong = Convert.ToInt32(mon.So_tiet_ca_chieu_truyen_thong ?? 0),
+                        So_tiet_ca_sang_phong_chuyen_dung = Convert.ToInt32(mon.So_tiet_ca_sang_phong_chuyen_dung ?? 0),
+                        So_tiet_ca_sang_truyen_thong = Convert.ToInt32(mon.So_tiet_ca_sang_truyen_thong ?? 0)
                     });
                 }
             }

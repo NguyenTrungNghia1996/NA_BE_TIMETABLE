@@ -16,6 +16,7 @@ namespace NA_Logic.IRepository
         bool Update(DM_Lophoc dM_Lophoc);
         bool Check_limit(int idDonvi);
         bool Delete(int Id);
+        bool CheckContraint(int id, int idDonvi);
         Lophoc_banDto GetListTietBan(int Id, int idDonvi);
         bool AddTietBan(List<Lophoc_Tietnghi> dsTietBan, int idLop);
         bool CheckId(int Id, int idDonvi);

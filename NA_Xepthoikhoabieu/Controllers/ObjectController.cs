@@ -472,7 +472,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool success = _ob.UpdateTietChuaXep(tiet, idDonvi);
             if (!success)
             {
-                return ApiResult.Success("Thất bại");
+                return ApiResult.BadRequest("Thất bại");
             }
             return ApiResult.Success("Thành công");
         }

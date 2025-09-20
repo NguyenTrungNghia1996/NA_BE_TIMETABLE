@@ -137,6 +137,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckContraint(int id, int idDonvi)
+        {
+            try
+            {
+                bool check = (from lopmon in _context.Lophoc_Monhoc.AsNoTracking()
+                              join lop in _context.DM_Lophoc.AsNoTracking() on lopmon.Id_lop equals lop.Id
+                              where lop.Id_don_vi == idDonvi && lopmon.Id_lop == id
+                              select 1).Any();
+                return check;
+            }
+            catch
+            {
+                return false;    
+            }
+        }
+
         public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;

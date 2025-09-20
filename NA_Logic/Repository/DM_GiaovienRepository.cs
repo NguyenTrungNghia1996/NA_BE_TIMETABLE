@@ -108,7 +108,7 @@ namespace NA_Logic.Repository
             try
             {
                 int count = _dbContext.DM_Giaovien.Count(c=> c.Id_don_vi == dm_Giaovien.Id_don_vi);
-                string ma = $"TKBGV-{(count + 1):D4}";
+                string ma = $"GV-{(count + 1):D2}";
                 dm_Giaovien.Ma_giao_vien = ma;
                 _dbContext.DM_Giaovien.Add(dm_Giaovien);
                 _dbContext.SaveChanges();
@@ -285,24 +285,34 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool checkContraints(int Id)
+        public bool checkContraints(int idGiaoVien, int idDonvi)
         {
             try
             {
-                bool check = _dbContext.DM_Lophoc.Any(c => c.Id_gvcn == Id)
-                                   || _dbContext.Lophoc_Monhoc.Any(c => c.Id_giao_vien == Id)
-                                   || _dbContext.Chitiet_Thoikhoabieu.Any(c => c.Id_giao_vien == Id);
+                bool exists =
+                    (from lh in _dbContext.DM_Lophoc
+                     join gv in _dbContext.DM_Giaovien on lh.Id_gvcn equals gv.Id
+                     where gv.Id_don_vi == idDonvi && gv.Id == idGiaoVien
+                     select lh.Id).Any()
 
-                if (check)
-                    return false;
+                    || (from lm in _dbContext.Lophoc_Monhoc
+                        join gv in _dbContext.DM_Giaovien on lm.Id_giao_vien equals gv.Id
+                        where gv.Id_don_vi == idDonvi && gv.Id == idGiaoVien
+                        select lm.Id).Any()
 
-                return true;
+                    || (from tkb in _dbContext.Chitiet_Thoikhoabieu
+                        join gv in _dbContext.DM_Giaovien on tkb.Id_giao_vien equals gv.Id
+                        where gv.Id_don_vi == idDonvi && gv.Id == idGiaoVien
+                        select tkb.Id).Any();
+
+                return exists; 
             }
-            catch (Exception ex)
+            catch
             {
                 return true;
             }
         }
+
         public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
@@ -474,7 +484,7 @@ namespace NA_Logic.Repository
             try
             {
                 var gvbd = _dbContext.Giaovien_Buoiday.FirstOrDefault(c=>c.Id_giao_vien==id);
-                if (id > 0)
+                if (gvbd !=null)
                 {
                     _dbContext.Giaovien_Buoiday.Remove(gvbd);
                 }
