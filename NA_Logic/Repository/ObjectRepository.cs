@@ -3009,7 +3009,7 @@ namespace NA_Logic.Repository
                 bool updateTiet2 = false;
                 if( objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
+                    check = CheckViTriXepDuoc_Lop(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
 
                     if (check)
                     {
@@ -3018,7 +3018,7 @@ namespace NA_Logic.Repository
                 }
                 else if(objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet,idDonvi);
+                    check = CheckViTriXepDuoc_Lop(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     if (check)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
@@ -3026,8 +3026,8 @@ namespace NA_Logic.Repository
                 }
                 else
                 {
-                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
-                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
+                    var check_t1 = CheckViTriXepDuoc_Lop(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     if(check_t1 && check_t2 && !lock1 && !lock2)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
@@ -3112,7 +3112,7 @@ namespace NA_Logic.Repository
                 bool updateTiet2 = false;
                 if (objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
+                    check = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
                     if (check)
                     {
                         updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
@@ -3124,7 +3124,7 @@ namespace NA_Logic.Repository
                 }
                 else if (objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
+                    check = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     if (check)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
@@ -3136,8 +3136,8 @@ namespace NA_Logic.Repository
                 }
                 else
                 {
-                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, objectTiet2.Id_ca, objectTiet2.Ngay, objectTiet2.Tiet, idDonvi);
-                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
+                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     if (check_t1 && check_t2 && !lock1&&!lock2)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
