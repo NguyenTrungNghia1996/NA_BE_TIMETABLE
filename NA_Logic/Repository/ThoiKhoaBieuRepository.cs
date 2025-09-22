@@ -164,6 +164,7 @@ namespace NA_Logic.Repository
                 {
                     foreach (var item in del)
                     {
+                        item.Id_ca = 0;
                         item.Ngay = 0;
                         item.Tiet = 0; 
                     }

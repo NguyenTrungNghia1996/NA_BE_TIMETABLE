@@ -14,7 +14,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
 
-
         public FileImportController(IMapper mapper, IFileImportRepository file, IClaimHelperRepository claimHelperRepository, IAuthRepository auth)
         {
             _mapper = mapper;
