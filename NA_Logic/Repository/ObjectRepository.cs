@@ -2447,6 +2447,10 @@ namespace NA_Logic.Repository
                                 vt.Ngay == tietdaxep.Ngay &&
                                 vt.Tiet == tietdaxep.Tiet);
                     }
+                    if (tietdaxep.Id_ca == idCa && tietdaxep.Ngay == ngay && tietdaxep.Tiet == tietSo)
+                    {
+                        isDrag = true;
+                    }
                     tietdaxep.isDrag = isDrag;
                 }
                 return tkbBase;
@@ -2870,7 +2874,11 @@ namespace NA_Logic.Repository
                                 vt.Ngay == tietdaxep.Ngay &&
                                 vt.Tiet == tietdaxep.Tiet);
                     }
-                        tietdaxep.isDrag = isDrag;
+                    if (tietdaxep.Id_ca == idCa && tietdaxep.Ngay == ngay && tietdaxep.Tiet == tietSo)
+                    {
+                        isDrag = true;
+                    }
+                    tietdaxep.isDrag = isDrag;
                 }
                 return tkbBase;
             }

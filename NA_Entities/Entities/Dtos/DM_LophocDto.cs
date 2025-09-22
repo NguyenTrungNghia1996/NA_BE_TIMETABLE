@@ -14,7 +14,7 @@ namespace NA_Entities.Entities.Dtos
         [StringLength(10, ErrorMessage = "Tối đa 10 ký tự")]
         public string Ten { get; set; } = string.Empty;
         public int Id_khoi { get; set; } = 0;
-        [Range(1, int.MaxValue, ErrorMessage = "Sĩ số phải là số dương")]
+        [Range(0, int.MaxValue, ErrorMessage = "Sĩ số phải là số dương")]
         [RegularExpression(@"^-?\d+$", ErrorMessage = "Không được nhập số thập phân")]
         public double? Si_so { get; set; } = 0;
         [Required(ErrorMessage = "Vui lòng chọn ca học")]
