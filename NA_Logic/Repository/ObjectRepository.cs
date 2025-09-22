@@ -3030,8 +3030,8 @@ namespace NA_Logic.Repository
                     var check_t2 = CheckViTriXepDuoc_Lop(objectTiet2, objectTiet1.Id_ca, objectTiet1.Ngay, objectTiet1.Tiet, idDonvi);
                     if(check_t1 && check_t2 && !lock1 && !lock2)
                     {
-                        updateTiet1 = UpdateTiet(objectTiet1, ca1, ngay2, tietSo2);
-                        updateTiet2 = UpdateTiet(objectTiet2, ca2, ngay1, tietSo1);
+                        updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
+                        updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
                     }
                     else
                     {

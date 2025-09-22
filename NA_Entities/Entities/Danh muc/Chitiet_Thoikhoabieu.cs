@@ -13,7 +13,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_lop { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
         public int Id_giao_vien { get; set; } = 0;
-        public int Id_phong { get; set; } = 0;
+        public int? Id_phong { get; set; } = 0;
         public int Id_ca { get; set; } = 0;
         public int Tiet_thu_may { get; set; } = 0;
         public int Ngay { get; set; } = 0;
