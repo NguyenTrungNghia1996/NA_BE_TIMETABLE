@@ -2385,7 +2385,7 @@ namespace NA_Logic.Repository
                 // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Id_ca == idCa).ToList();
+                    var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
                         TimViTriXepDuoc_Lop(tietGoc, idDonvi);
@@ -2813,7 +2813,7 @@ namespace NA_Logic.Repository
                 // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Id_ca == idCa).ToList();
+                    var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV).ToList();
                     foreach (var tietGoc in cacTietCuaGV)
                     {
                         TimViTriXepDuoc_GV(tietGoc, idDonvi);
