@@ -42,7 +42,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             search = search.Trim();
             var list = _caphocRepository.GetList_Paging(PageIndex, PageSize, search,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.Ok("Không tồn tại bản ghi hợp nào");
+                return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Caphoc_ListDto>>(list);
             return ApiResult.Success(new
             {

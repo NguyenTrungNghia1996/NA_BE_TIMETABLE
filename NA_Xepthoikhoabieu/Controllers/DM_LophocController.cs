@@ -54,7 +54,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int totalrecord = 0;
             var list = _Lophoc.GetList_Paging(PageIndex, PageSize, search, idDonvi, id_khoilop, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+                return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Lophoc_ListDto>>(list);
             return ApiResult.Success(new
             {

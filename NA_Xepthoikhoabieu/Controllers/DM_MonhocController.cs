@@ -55,7 +55,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             search = search.Trim();
             var list = _monhoc.GetList_Paging(PageIndex, PageSize, search, idDonvi, id_loai_phong,id_lop,id_khoi,id_ban, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+                return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Monhoc_ListDto>>(list);
             return ApiResult.Success(new
             {

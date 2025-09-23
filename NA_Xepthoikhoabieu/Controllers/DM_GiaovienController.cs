@@ -48,7 +48,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int totalrecord = 0;
             var list = _Giaovien.GetList_Paging(PageIndex, PageSize, search,idMon,idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+                return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Giaovien_ListDto>>(list);
             return ApiResult.Success(new
             {
