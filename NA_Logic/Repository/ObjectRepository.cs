@@ -2608,7 +2608,7 @@ namespace NA_Logic.Repository
                 var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop && t.Ngay == 0 && t.Tiet == 0).ToList();
                     foreach (var tietGoc in cacTietCuaLop)
                     {
-                        TimViTriXepDuoc_Lop(tietGoc, idDonvi);
+                        TimViTriXepDuoc_TietChuaXep(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
                             bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri => viTri.Ca == idCa &&
@@ -2925,7 +2925,7 @@ namespace NA_Logic.Repository
                 var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV && t.Ngay == 0 && t.Tiet == 0).ToList();
                 foreach (var tietGoc in cacTietCuaGV)
                 {
-                    TimViTriXepDuoc_Lop(tietGoc, idDonvi);
+                    TimViTriXepDuoc_TietChuaXep(tietGoc, idDonvi);
                     if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                     {
                         bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri => viTri.Ca == idCa &&
