@@ -1879,7 +1879,7 @@ namespace NA_Logic.Repository
                 Id_lop = id_lop,
                 Ten_lop = firstTiet.Ten_lop,
                 timetable = new List<tkb_theo_lop>(),
-                ds_chua_xep = new List<tkb_theo_lop>()
+                ds_chua_xep = new List<tkb_chuaxep_lop>()
             };
 
             foreach (var ca in dsCa)
@@ -1960,11 +1960,16 @@ namespace NA_Logic.Repository
                 }
             }
 
-            // Xử lý ds_chua_xep (các tiết chưa có thời gian cụ thể)
-            var tietChuaXep = tiet.Where(t => t.Ngay <= 0 || t.Tiet <= 0).ToList();
-            foreach (var t in tietChuaXep)
+            // Xử lý ds_chua_xep
+            var tietChuaXep = tiet.Where(t => t.Id_lop == id_lop && t.Id_tkb == idtkb && t.Ngay <= 0 && t.Tiet <= 0).GroupBy(t => new { t.Id_mon, t.Id_phong, t.Id_giao_vien })
+                                  .Select(g => new {
+                                      FirstItem = g.First(),
+                                      SoTiet = g.Count()
+                                  }).ToList();
+            foreach (var tietcx in tietChuaXep)
             {
-                var tietItem = new tkb_theo_lop
+                var t = tietcx.FirstItem;
+                var tietItem = new tkb_chuaxep_lop
                 {
                     Id_chitiet = t.Id,
                     Id_don_vi = t.Id_don_vi ?? 0,
@@ -1975,13 +1980,7 @@ namespace NA_Logic.Repository
                     Ten_giao_vien = t.Ten_giao_vien ?? "",
                     Id_phong = t.Id_phong ?? 0,
                     Ten_phong = t.Ten_phong ?? "Không cần phòng",
-                    Tiet_thu_may = t.Tiet_thu_may,
-                    Id_ca = t.Id_ca,
-                    Ngay = t.Ngay,
-                    Tiet = t.Tiet,
-                    isLock = false,
-                    isDrag = false,
-                    isRest = false
+                    So_tiet = tietcx.SoTiet
                 };
 
                 result.ds_chua_xep.Add(tietItem);
@@ -2028,7 +2027,7 @@ namespace NA_Logic.Repository
                 Id_giao_vien = id_gv,
                 Ten_giao_vien = firstTiet.Ten_giao_vien,
                 timetable = new List<tkb_theo_giaovien>(),
-                ds_chua_xep = new List<tkb_theo_giaovien>()
+                ds_chua_xep = new List<tkb_chuaxep_giaovien>()
             };
 
             foreach (var ca in dsCa)
@@ -2110,10 +2109,15 @@ namespace NA_Logic.Repository
             }
 
             // Xử lý ds_chua_xep (các tiết chưa có thời gian cụ thể)
-            var tietChuaXep = tiet.Where(t => t.Ngay <= 0 || t.Tiet <= 0).ToList();
-            foreach (var t in tietChuaXep)
+            var tietChuaXep = tiet.Where(t => t.Id_giao_vien == id_gv && t.Id_tkb == idtkb && t.Ngay <= 0 && t.Tiet <= 0).GroupBy(t => new { t.Id_mon, t.Id_lop, t.Id_phong})
+                                  .Select(g => new {
+                                      FirstItem = g.First(),
+                                      SoTiet = g.Count()
+                                  }).ToList();
+            foreach (var tietcx in tietChuaXep)
             {
-                var tietItem = new tkb_theo_giaovien
+                var t = tietcx.FirstItem;
+                var tietItem = new tkb_chuaxep_giaovien
                 {
                     Id_chitiet = t.Id,
                     Id_don_vi = t.Id_don_vi ?? 0,
@@ -2124,13 +2128,7 @@ namespace NA_Logic.Repository
                     Ten_lop = t.Ten_lop ?? "",
                     Id_phong = t.Id_phong ?? 0,
                     Ten_phong = t.Ten_phong ?? "Không cần phòng",
-                    Tiet_thu_may = t.Tiet_thu_may,
-                    Id_ca = t.Id_ca,
-                    Ngay = t.Ngay,
-                    Tiet = t.Tiet,
-                    isLock = false,
-                    isDrag = false,
-                    isRest = false
+                    So_tiet = tietcx.SoTiet
                 };
 
                 result.ds_chua_xep.Add(tietItem);
@@ -2138,18 +2136,23 @@ namespace NA_Logic.Repository
 
             return result;
         }
-        public List<Object_Tiet> GetTietChuaXep( int idtkb)
+        public List<Object_TietChuaXep> GetTietChuaXep( int idtkb)
         {
             _dsTietGoc = List_Object_tiet(idtkb);
             if (_dsTietGoc == null || _dsTietGoc.Count == 0)
             {
                 return null;
             }
-            var result = new List<Object_Tiet>();
-            var tietChuaXep = _dsTietGoc.Where(t => t.Ngay <= 0 || t.Tiet <= 0).ToList();
-            foreach (var t in tietChuaXep)
+            var result = new List<Object_TietChuaXep>();
+            var tietChuaXep = _dsTietGoc.Where(t => t.Id_tkb == idtkb && t.Ngay <= 0 && t.Tiet <= 0).GroupBy(t => new { t.Id_mon, t.Id_lop, t.Id_giao_vien, t.Id_phong })
+                      .Select(g => new {
+                          FirstItem = g.First(),
+                          SoTiet = g.Count()
+                      }).ToList();
+            foreach (var tietcx in tietChuaXep)
             {
-                var tietItem = new Object_Tiet
+                var t = tietcx.FirstItem;
+                var tietItem = new Object_TietChuaXep
                 {
                     Id = t.Id,
                     Id_don_vi = t.Id_don_vi ?? 0,
@@ -2162,12 +2165,8 @@ namespace NA_Logic.Repository
                     Ten_giao_vien = t.Ten_giao_vien,
                     Id_phong = t.Id_phong ?? 0,
                     Ten_phong = t.Ten_phong ?? "Không cần phòng",
-                    Tiet_thu_may = t.Tiet_thu_may,
-                    Id_ca = t.Id_ca,
-                    Ngay = t.Ngay,
-                    Tiet = t.Tiet
+                    So_tiet = tietcx.SoTiet
                 };
-
                 result.Add(tietItem);
             }
 
@@ -2473,7 +2472,6 @@ namespace NA_Logic.Repository
 
                 int idChitiet = tiet.Id_chitiet;
                 int idTkb = tiet.Id_tkb;
-                int idCa = tiet.Id_ca;
 
                 LoadObjectsFromTiet_Test(idTkb, idDonvi);
 
@@ -2529,7 +2527,6 @@ namespace NA_Logic.Repository
 
                 int idChitiet = tiet.Id_chitiet;
                 int idTkb = tiet.Id_tkb;
-                int idCa = tiet.Id_ca;
 
                 LoadObjectsFromTiet_Test(idTkb, idDonvi);
 

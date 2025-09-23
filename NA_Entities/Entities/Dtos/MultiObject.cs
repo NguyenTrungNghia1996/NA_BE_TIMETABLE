@@ -168,6 +168,22 @@ namespace NA_Entities.Entities.Dtos
         public bool Khoa { get; set; } = false;
         public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
     }
+    public class Object_TietChuaXep
+    {
+        public int Id { get; set; }
+        public int? Id_don_vi { get; set; } = 0;
+        public int Id_tkb { get; set; } = 0;
+        public int? Id_lop { get; set; } = 0;
+        public string? Ten_lop { get; set; } = string.Empty;
+        public int? Id_mon { get; set; } = 0;
+        public string? Ten_mon { get; set; } = string.Empty;
+        public int? Id_giao_vien { get; set; } = 0;
+        public string? Ten_giao_vien { get; set; } = string.Empty;
+        public int? Id_phong { get; set; } = 0;
+        public string? Ten_phong { get; set; } = string.Empty;
+        public int So_tiet { get; set; } = 0;
+        public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
+    }
     public class Object_lop_mon 
     {
         public int Id_lop { get; set; } = 0;
