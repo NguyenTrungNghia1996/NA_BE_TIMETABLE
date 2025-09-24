@@ -332,19 +332,28 @@ namespace NA_Xepthoikhoabieu.Controllers
             //add
             bool addbuoiday = false;
             bool addtiettranhxep = _Giaovien.AddTietBan(danhSachTiet, giaovienban.Id_giao_vien);
-            if (buoiday.Chi_day_mot_buoi == true || buoiday.So_tiet_toi_da > 0)
-            {
-                var check = _Giaovien.GetBuoidayTheoGV(buoiday.Id_giao_vien);
-                if (check==null)
-                {
-                    return ApiResult.NotFound("Giáo viên đã tồn tại buổi dạy");
-                }
+            var check = _Giaovien.GetBuoidayTheoGV(buoiday.Id_giao_vien);
+            if (check != null) {
                 addbuoiday = _Giaovien.SaveBuoiday(buoiday);
                 if (!addbuoiday)
                 {
                     return ApiResult.NotFound("Cập nhật buổi dạy của giáo viên thất bại");
                 }
+
             }
+            else
+            {
+                if (buoiday.Chi_day_mot_buoi == true || buoiday.So_tiet_toi_da > 0)
+                {
+
+                    addbuoiday = _Giaovien.SaveBuoiday(buoiday);
+                    if (!addbuoiday)
+                    {
+                        return ApiResult.NotFound("Cập nhật buổi dạy của giáo viên thất bại");
+                    }
+                }
+            }
+            
             if (!addtiettranhxep)
                 return ApiResult.NotFound("Cập nhật tiết tránh xếp thất bại");
             if(addbuoiday && addtiettranhxep)

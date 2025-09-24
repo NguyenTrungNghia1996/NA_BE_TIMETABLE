@@ -447,11 +447,13 @@ namespace NA_Logic.Repository
         {
             try
             {
-                if (gvbd.Id!= 0) { 
+                if (gvbd.Id!= 0) {
+                    _dbContext.ChangeTracker.Clear();
                     _dbContext.Giaovien_Buoiday.Update(gvbd);
                 }
                 else
                 {
+                    gvbd.Id = null;
                     _dbContext.Giaovien_Buoiday.Add(gvbd);
                 }
                 _dbContext.SaveChanges();
@@ -466,7 +468,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                if (id != 0)
+                if (id == 0)
                 {
                     return null;
                 }
