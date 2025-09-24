@@ -200,7 +200,6 @@ namespace NA_Logic.Repository
                                      && tcd.Ngay == tietcd.Ngay
                                      && tcd.Tiet == tietcd.Tiet
                                      && tcd.Id_khoi_lop == tietcd.Id_khoi_lop
-                                     && tcd.Id_mon == tietcd.Id_mon
                                      && m.Id_don_vi == idDonvi
                                      && (tietcd.Id <= 0 || tcd.Id != tietcd.Id) 
                                   select tcd).Any();
