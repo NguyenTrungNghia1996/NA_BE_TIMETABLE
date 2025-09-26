@@ -104,23 +104,35 @@ namespace NA_Logic.Repository
             using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                // Lấy danh sách khối đã có
-                var existingKhoiIds = _dbContext.Tiet_co_dinh
-                    .Where(x => x.Id_mon == idMon)
-                    .Select(x => x.Id_khoi_lop)
-                    .Distinct()
-                    .ToList();
+                var existingRecords = _dbContext.Tiet_co_dinh.Where(x => x.Id_mon == idMon).ToList();
 
-                // Lọc chỉ các khối chưa có
-                var recordsToAdd = tiet_cd
-                    .Where(x => !existingKhoiIds.Contains(x.Id_khoi_lop))
-                    .ToList();
-                //thêm các khối chưa có
+                var existingDict = existingRecords.ToDictionary(x => x.Id_khoi_lop);
+                var recordsToAdd = new List<Tiet_co_dinh>();
+
+                // Update các bản ghi hiện có trong memory
+                foreach (var item in tiet_cd)
+                {
+                    if (existingDict.TryGetValue(item.Id_khoi_lop, out var existing))
+                    {
+                        existing.Tiet = item.Tiet;
+                        existing.Ngay = item.Ngay;
+                        existing.Id_ca = item.Id_ca;
+                    }
+                    else
+                    {
+                        recordsToAdd.Add(item);
+                    }
+                }
+
+                if (existingRecords.Any())
+                {
+                    _dbContext.BulkUpdate(existingRecords);
+                }
+
                 if (recordsToAdd.Any())
                 {
                     _dbContext.BulkInsert(recordsToAdd);
                 }
-
                 transaction.Commit();
                 return true;
             }
