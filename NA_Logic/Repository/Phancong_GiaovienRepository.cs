@@ -52,6 +52,7 @@ namespace NA_Logic.Repository
                 var result = raw.Select(item => new PhancongGVDto
                 {
                     STT = item.STT,
+                    Id_giao_vien = item.Id_giao_vien,
                     Id_mon = item.Id_mon,
                     Ten_mon = item.Ten_mon ?? string.Empty,
                     Id_don_vi = item.Id_don_vi,
