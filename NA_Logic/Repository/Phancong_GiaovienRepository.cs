@@ -97,48 +97,61 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool Add(int idgv, int idmon, List<int> lopId)
+        public bool Add(List<PhancongGVDto> phancongList)
         {
+            using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                var exist = _dbContext.Lophoc_Monhoc.Where(x => x.Id_giao_vien == idgv && x.Id_mon == idmon).ToList();
-                if (lopId == null || lopId.Count == 0)
+                // Group theo gv và môn
+                var grouped = phancongList.GroupBy(x => new { x.Id_giao_vien, x.Id_mon });
+
+                var ListDelete = new List<Lophoc_Monhoc>();
+                var ListAdd = new List<Lophoc_Monhoc>();
+                // xử lý từng group
+                foreach (var group in grouped)
                 {
-                    if (exist.Count > 0)
+                    var idgv = group.Key.Id_giao_vien;
+                    var idmon = group.Key.Id_mon;
+                    var newLopIds = group.SelectMany(x => x.Id_lop).Distinct().ToList();
+                    
+                    // Tìm bản ghi đã tồn tại
+                    var exist = _dbContext.Lophoc_Monhoc.Where(x => x.Id_giao_vien == idgv && x.Id_mon == idmon).ToList();
+                    if (newLopIds == null || newLopIds.Count == 0)
                     {
-                        _dbContext.Lophoc_Monhoc.RemoveRange(exist);
-                        _dbContext.SaveChanges();
+                        if (exist.Count > 0)
+                        {
+                            ListDelete.AddRange(exist);
+                        }
+                        continue;
                     }
-                    return true;
-                }
-                //xoá bản ghi có ở exist nhưng không có ở phancong
-                var del = exist.Where(existing => !lopId.Contains(existing.Id_lop)).ToList();
-                if (del.Count > 0)
-                {
-                    _dbContext.Lophoc_Monhoc.RemoveRange(del);
+                    // Tìm bản ghi có trong lớp môn nhưng không có ở phancongList để xoá
+                    var toDeleteForGroup = exist.Where(e => !newLopIds.Contains(e.Id_lop)).ToList();
+                    ListDelete.AddRange(toDeleteForGroup);
+
+                    // Tìm bản ghi có trong phancongList nhưng không có ở Lớp môn để thêm
+                    var existingLopIds = exist.Select(x => x.Id_lop).ToList();
+                    var toAddForGroup = newLopIds.Where(lopId => !existingLopIds.Contains(lopId))
+                        .Select(lopId => new Lophoc_Monhoc
+                        {
+                            Id_giao_vien = idgv,
+                            Id_mon = idmon,
+                            Id_lop = lopId
+                        }).ToList();
+                    ListAdd.AddRange(toAddForGroup);
                 }
 
-                // tìm và thêm các lớp có ở phancong nhưng không có ở exist
-                var existClassIds = exist.Select(x => x.Id_lop).ToList();
-                var ClassIds = lopId    
-                    .Where(newClassId => !existClassIds.Contains(newClassId))
-                    .ToList();
-                
-                foreach (var classId in ClassIds)
-                {
-                    var newRecord = new Lophoc_Monhoc
-                    {
-                        Id_giao_vien = idgv,
-                        Id_mon = idmon,
-                        Id_lop = classId
-                    };
-                    _dbContext.Lophoc_Monhoc.Add(newRecord);
-                }
-                _dbContext.SaveChanges();
+                if (ListDelete.Any())
+                    _dbContext.BulkDelete(ListDelete);
+
+                if (ListAdd.Any())
+                    _dbContext.BulkInsert(ListAdd);
+
+                transaction.Commit();
                 return true;
             }
             catch
             {
+                transaction.Rollback();
                 return false;
             }
         }

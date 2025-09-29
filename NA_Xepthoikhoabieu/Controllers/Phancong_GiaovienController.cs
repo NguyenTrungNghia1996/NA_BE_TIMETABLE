@@ -79,32 +79,43 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost]
         [RequireToken]
-        public IActionResult Update([FromBody] PhancongGVDto phancong)
+        public IActionResult Update([FromBody] List<PhancongGVDto> phancongList)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) { return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết"); }
-            bool check_gv = _giaovien.CheckId(phancong.Id_giao_vien, idDonvi);
-            if (!check_gv)
+            if (idDonvi == 0)
             {
-                return ApiResult.BadRequest($"Id_giao_vien: {phancong.Id_giao_vien} không hợp lệ");
-            }
-            bool check_mon = _mon.CheckId(phancong.Id_mon, idDonvi);
-            if (!check_mon)
-            {
-                return ApiResult.BadRequest($"Id_mon: {phancong.Id_mon} không hợp lệ");
-            }
-            bool check_lop = _lop.CheckIds(phancong.Id_lop, idDonvi);
-            if (!check_lop)
-            {
-                return ApiResult.BadRequest($"Id_lop: {phancong.Id_lop} không hợp lệ");
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
 
-            bool result = _pcgv.Add(phancong.Id_giao_vien, phancong.Id_mon, phancong.Id_lop);
+            // Validate
+            foreach (var phancong in phancongList)
+            {
+                bool check_gv = _giaovien.CheckId(phancong.Id_giao_vien, idDonvi);
+                if (!check_gv)
+                {
+                    return ApiResult.BadRequest($"Id_giao_vien {phancong.Id_giao_vien} không hợp lệ");
+                }
+
+                bool check_mon = _mon.CheckId(phancong.Id_mon, idDonvi);
+                if (!check_mon)
+                {
+                    return ApiResult.BadRequest($"Id_mon {phancong.Id_mon} không hợp lệ");
+                }
+
+                bool check_lop = _lop.CheckIds(phancong.Id_lop, idDonvi);
+                if (!check_lop)
+                {
+                    return ApiResult.BadRequest($"Id_lop: {string.Join(", ", phancong.Id_lop)} không hợp lệ");
+                }
+            }
+
+            bool result = _pcgv.Add(phancongList);
             if (!result)
             {
-                return ApiResult.BadRequest("Cập nhật thông tin môn cho lớp không thành công");
+                return ApiResult.BadRequest("Cập nhật thông tin phân công không thành công");
             }
-            return ApiResult.Success( "Phân công chuyên môn cho giáo viên thành công");
+
+            return ApiResult.Success($"Phân công chuyên môn thành công");
         }
     }
 }
