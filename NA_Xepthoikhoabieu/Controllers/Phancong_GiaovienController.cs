@@ -31,11 +31,21 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList([FromQuery] int idgv, [FromQuery] int type)
+        public IActionResult GetList([FromQuery] int idgv, [FromQuery] int type = 1)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            bool check_gv = _giaovien.CheckId(idgv, idDonvi);
+            if (!check_gv)
+            {
+                return ApiResult.BadRequest($"Id_giao_vien: {idgv} không hợp lệ");
+            }
+            if(type > 2 || type<= 0)
+            {
+                return ApiResult.BadRequest($"Type: {type} không hợp lệ");
+
+            }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _pcgv.GetList_Paging(idgv, idDonvi, type);
@@ -50,6 +60,16 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            bool check_gv = _giaovien.CheckId(idgv, idDonvi);
+            if (!check_gv)
+            {
+                return ApiResult.BadRequest($"Id_giao_vien: {idgv} không hợp lệ");
+            }
+            bool check_mon = _mon.CheckId(idmon, idDonvi);
+            if (!check_mon)
+            {
+                return ApiResult.BadRequest($"Id_mon: {idmon} không hợp lệ");
+            }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             var list = _pcgv.GetList_Lop_ByGvAndMon(idgv, idDonvi, idmon);
@@ -69,7 +89,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id_giao_vien: {phancong.Id_giao_vien} không hợp lệ");
             }
             bool check_mon = _mon.CheckId(phancong.Id_mon, idDonvi);
-            if (!check_gv)
+            if (!check_mon)
             {
                 return ApiResult.BadRequest($"Id_mon: {phancong.Id_mon} không hợp lệ");
             }
