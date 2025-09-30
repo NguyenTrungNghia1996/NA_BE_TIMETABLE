@@ -127,17 +127,25 @@ namespace NA_Logic.Repository
                     // Tìm bản ghi có trong lớp môn nhưng không có ở phancongList để xoá
                     var toDeleteForGroup = exist.Where(e => !newLopIds.Contains(e.Id_lop)).ToList();
                     ListDelete.AddRange(toDeleteForGroup);
-
+                    
                     // Tìm bản ghi có trong phancongList nhưng không có ở Lớp môn để thêm
                     var existingLopIds = exist.Select(x => x.Id_lop).ToList();
-                    var toAddForGroup = newLopIds.Where(lopId => !existingLopIds.Contains(lopId))
+                    var listIdLop = newLopIds.Where(lopId => !existingLopIds.Contains(lopId)).ToList();
+
+                    // xoá giáo viên cũ ở các lớp mà giáo viên mới sẽ dạy
+                    if (listIdLop.Any())
+                    {
+                        var oldTeacher = _dbContext.Lophoc_Monhoc.Where(x => x.Id_mon == idmon && listIdLop.Contains(x.Id_lop) && x.Id_giao_vien != idgv).ToList();
+                        ListDelete.AddRange(oldTeacher);
+                    }
+                    var ListtoAdd = listIdLop
                         .Select(lopId => new Lophoc_Monhoc
                         {
                             Id_giao_vien = idgv,
                             Id_mon = idmon,
                             Id_lop = lopId
                         }).ToList();
-                    ListAdd.AddRange(toAddForGroup);
+                    ListAdd.AddRange(ListtoAdd);
                 }
 
                 if (ListDelete.Any())
