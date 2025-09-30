@@ -123,7 +123,7 @@ namespace NA_Logic.Repository
                             ListDelete.AddRange(exist);
                         }
                         continue;
-                    }
+                    } 
                     // Tìm bản ghi có trong lớp môn nhưng không có ở phancongList để xoá
                     var toDeleteForGroup = exist.Where(e => !newLopIds.Contains(e.Id_lop)).ToList();
                     ListDelete.AddRange(toDeleteForGroup);

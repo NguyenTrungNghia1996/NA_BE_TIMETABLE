@@ -1008,7 +1008,7 @@ namespace NA_Logic.Repository
                 {
                     return false;
                 }
-                var dsTietChuaXep = _dsTietGoc.Where(c => c.Id_ca == 0).ToList();
+                var dsTietChuaXep = _dsTietGoc.Where(c => c.Ngay <= 0).ToList();
                 var dsTietDaXep = _dsTietGoc.Where(c => c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0).ToList();
                 var dsTietBoqua = new List<Object_Tiet>();
 

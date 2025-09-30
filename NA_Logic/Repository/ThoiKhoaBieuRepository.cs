@@ -72,7 +72,7 @@ namespace NA_Logic.Repository
                     Trang_thai_xep = tkb.Trang_thai_xep,
                     Tong_tat_ca_tiet = tiet.Count(),
                     Tong_tiet_da_xep = tiet.Where(c => c.Ngay > 0 && c.Tiet > 0 &&c.Id_tkb==Id).Count(),
-                    Tong_tiet_chua_xep = tiet.Where(c => c.Ngay == 0 && c.Tiet == 0 && c.Id_tkb == Id).Count()
+                    Tong_tiet_chua_xep = tiet.Where(c => c.Ngay <= 0  && c.Id_tkb == Id).Count()
                 };
                 return tkb_detail;
             }
