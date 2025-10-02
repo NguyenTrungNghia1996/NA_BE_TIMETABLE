@@ -414,7 +414,7 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_phong}\n{lesson.Ten_giao_vien}";
+                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_giao_vien}";
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
