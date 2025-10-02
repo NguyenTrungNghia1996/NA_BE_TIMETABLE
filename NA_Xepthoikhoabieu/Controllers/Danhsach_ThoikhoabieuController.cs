@@ -110,7 +110,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
-            //var addph = _mapper.Map<DM_Phonghoc>(phonghoc);
+            //var dstkb = _mapper.Map<Danhsach_Thoikhoabieu>(dstkbDto);
             dstkb.Id = 0;
             dstkb.Id_don_vi = idDonvi;
             //check trùng tên
@@ -127,6 +127,56 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             if (!adddetail)
                 return ApiResult.BadRequest("Thêm danh sách thời khoá biểu thành công, thêm chi tiết thời khoá biểu thất bại");
+            
+            // mapper data trả về view
+            //var itemDto = _mapper.Map<DM_PhonghocDto>(addph);
+            return ApiResult.Success(new
+            {
+                item = dstkb
+            },
+            "Thêm mới thành công");
+
+        }
+        [HttpPost("copy")]
+        [RequireToken]
+        public IActionResult Copy([FromBody] Danhsach_Thoikhoabieu dstkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+            var tkb = new Danhsach_Thoikhoabieu()
+            {
+                Id = 0,
+                Ten = dstkb.Ten,
+                Dang_su_dung = dstkb.Dang_su_dung,
+                Trang_thai_xep = false,
+                Id_don_vi = idDonvi
+            };
+            //check trùng tên
+            bool check = _validate.CheckTrungTen_byDonvi<Danhsach_Thoikhoabieu>(idDonvi, tkb.Ten);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tên thời khoá biểu đã tồn tại");
+            }
+            //thêm
+            bool add = _tkb.Add(tkb);
+            bool adddetail = _tkb.AddChitiet_tkb(tkb.Id, idDonvi);
+            bool copytkb = false;
+            if (dstkb.Id > 0)
+            {
+                bool check_tkb = _tkb.CheckId(dstkb.Id, idDonvi);
+                if (!check_tkb)
+                    return ApiResult.BadRequest($"Id thời khoá biểu = {dstkb.Id} không hợp lệ, vui lòng kiểm tra lại");
+                copytkb = _tkb.Copy_Tkb(dstkb.Id, tkb.Id);
+            }
+            bool changestatus = _tkb.SetStatus(tkb.Id, idDonvi);
+            if (!add && !changestatus)
+                return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
+            if (!adddetail)
+                return ApiResult.BadRequest("Thêm danh sách thời khoá biểu thành công, thêm chi tiết thời khoá biểu thất bại");
+            if (!copytkb)
+                return ApiResult.BadRequest("Thêm danh sách thời khoá biểu thành công, thêm chi tiết thời khoá biểu thành công, sao chép thất bại");
             // mapper data trả về view
             //var itemDto = _mapper.Map<DM_PhonghocDto>(addph);
             return ApiResult.Success(new

@@ -125,6 +125,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Copy_Tkb(int id_tkb_nguon, int id_tkb_dich)
+        {
+            try
+            {
+                var paramIdTkbNguon = new SqlParameter("id_tkb_nguon", SqlDbType.Int) { Value = id_tkb_nguon };
+                var paramIdTkbDich = new SqlParameter("id_tkb_dich", SqlDbType.Int) { Value = id_tkb_dich };
+                var paramResult = new SqlParameter("result", SqlDbType.Bit) { Direction = ParameterDirection.Output };
+                _context.Database .ExecuteSqlRaw("EXEC Copy_Tkb @id_tkb_nguon, @id_tkb_dich, @result output", paramIdTkbNguon, paramIdTkbDich, paramResult);
+                return Convert.ToBoolean(paramResult.Value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool Update(Danhsach_Thoikhoabieu danhsach_Thoikhoabieu)
         {
             try
