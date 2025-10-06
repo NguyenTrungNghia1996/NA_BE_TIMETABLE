@@ -107,6 +107,7 @@ namespace NA_Logic.Repository
 
                 var ListDelete = new List<Lophoc_Monhoc>();
                 var ListAdd = new List<Lophoc_Monhoc>();
+                var ListUpdate = new List<Lophoc_Monhoc>();
                 // xử lý từng group
                 foreach (var group in grouped)
                 {
@@ -136,20 +137,30 @@ namespace NA_Logic.Repository
                     if (listIdLop.Any())
                     {
                         var oldTeacher = _dbContext.Lophoc_Monhoc.Where(x => x.Id_mon == idmon && listIdLop.Contains(x.Id_lop) && x.Id_giao_vien != idgv).ToList();
-                        ListDelete.AddRange(oldTeacher);
-                    }
-                    var ListtoAdd = listIdLop
-                        .Select(lopId => new Lophoc_Monhoc
+                        foreach( var x in oldTeacher)
                         {
-                            Id_giao_vien = idgv,
-                            Id_mon = idmon,
-                            Id_lop = lopId
-                        }).ToList();
-                    ListAdd.AddRange(ListtoAdd);
+                            x.Id_giao_vien = idgv;
+                        }
+                        ListUpdate.AddRange(oldTeacher);
+                        var IdLopUpdate = oldTeacher.Select(x => x.Id_lop).ToList();
+                        var IdLopAdd = listIdLop.Except(IdLopUpdate).ToList();
+                        var ListtoAdd = IdLopAdd
+                            .Select(lopId => new Lophoc_Monhoc
+                            {
+                                Id_giao_vien = idgv,
+                                Id_mon = idmon,
+                                Id_lop = lopId
+                            }).ToList();
+                        ListAdd.AddRange(ListtoAdd);
+                    }
+                    
                 }
 
                 if (ListDelete.Any())
                     _dbContext.BulkDelete(ListDelete);
+
+                if (ListUpdate.Any())
+                    _dbContext.BulkUpdate(ListUpdate);
 
                 if (ListAdd.Any())
                     _dbContext.BulkInsert(ListAdd);
