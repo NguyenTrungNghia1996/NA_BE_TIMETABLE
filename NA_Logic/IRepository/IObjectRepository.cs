@@ -19,8 +19,8 @@ namespace NA_Logic.IRepository
         //bool Check_to_hop_mon(int Ngay, int Tiet, int iddonvi, int idmon, int idlop, int idgv, int id_tkb);
         void LoadObjectsFromTiet_Test(int idTkb, int idDonvi);
         bool ProcessThoiKhoaBieu(int idtkb, int idDonvi);
-        ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb);
-        ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb);
+        ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb, int idDonvi);
+        ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb, int idDonvi);
         ObjectTiet_theoLopDto TimViTriXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi);
         ObjectTiet_theoGVDto TimViTriXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi);
         (bool success, ObjectTiet_theoLopDto result) DoiChoHaiTiet_Lop(ObjectTiet_theoLopDto tietDachon, int idDonvi);

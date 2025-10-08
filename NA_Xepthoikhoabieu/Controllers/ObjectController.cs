@@ -174,7 +174,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
-            var detail = _ob.GetTkbByLop(idLop, idtkb);
+            var detail = _ob.GetTkbByLop(idLop, idtkb, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpGet("giaovien")]
@@ -190,7 +190,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
-            var detail = _ob.GetTkbByGiaovien(idGV, idtkb);
+            var detail = _ob.GetTkbByGiaovien(idGV, idtkb, idDonvi);
             return ApiResult.Success(detail, "Thành công");
         }
         [HttpGet("tietchuaxep")]

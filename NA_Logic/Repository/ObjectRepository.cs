@@ -1840,13 +1840,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb)
-        {
-            _dsTietGoc = List_Object_tiet(idtkb);
-            if (_dsTietGoc?.Count == 0 || id_lop < 0) return null;
 
-            if (id_lop == 0)
-                id_lop = _context.DM_Lophoc.Select(c => c.Id).FirstOrDefault();
+        public ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb, int idDonvi)
+        {
+            LoadObjectsFromTiet_Test(idtkb, idDonvi);
+            if (_dsTietGoc?.Count == 0 || id_lop < 0) return null;
 
             var tiet = _dsTietGoc.Where(t => t.Id_lop == id_lop).ToList();
 
@@ -1857,19 +1855,8 @@ namespace NA_Logic.Repository
             }
 
             var firstTiet = tiet.First();
-            int idDonvi = firstTiet.Id_don_vi ?? 0;
-
-            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
-                             .Join(_context.DM_Cahoc,
-                                   cd => cd.Id_ca_hoc,
-                                   ca => ca.Id,
-                                   (cd, ca) => new
-                                   {
-                                       Id = ca.Id,
-                                       Ten = ca.Ten
-                                   }).ToList();
-
-            var tietTranhXep = _context.Lophoc_Tietnghi.Where(c => c.Id_lop == id_lop).ToList();
+            _ObjectLop = _dsObjectLop.FirstOrDefault(c => c.Id_lop == id_lop);
+            var tietTranhXep = _ObjectLop.ds_tiet_tranh_xep;
 
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
@@ -1881,8 +1868,8 @@ namespace NA_Logic.Repository
                 timetable = new List<tkb_theo_lop>(),
                 ds_chua_xep = new List<tkb_chuaxep_lop>()
             };
-
-            foreach (var ca in dsCa)
+            
+            foreach (var ca in _dsCa)
             {
                 foreach (var ngay in dsNgay)
                 {
@@ -1890,13 +1877,13 @@ namespace NA_Logic.Repository
                     {
                         // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
-                            t.Id_ca == ca.Id &&
+                            t.Id_ca == ca.Id_ca &&
                             t.Ngay == (int)ngay &&
                             t.Tiet == (int)tietEnum);
 
                         // Kiểm tra có trong danh sách tránh xếp không
                         bool isBreak = tietTranhXep.Any(tx =>
-                            tx.Id_ca == ca.Id &&
+                            tx.Id_ca == ca.Id_ca &&
                             tx.Ngay == (int)ngay &&
                             tx.Tiet == (int)tietEnum);
 
@@ -1906,7 +1893,7 @@ namespace NA_Logic.Repository
                             Id_chitiet = tietHoc?.Id ?? 0,
                             Id_don_vi = idDonvi,
                             Id_tkb = idtkb,
-                            Id_ca = ca.Id,
+                            Id_ca = ca.Id_ca,
                             Ngay = (int)ngay,
                             Tiet = (int)tietEnum,
                             Tiet_thu_may = tietHoc?.Tiet_thu_may ?? 0
@@ -1939,6 +1926,12 @@ namespace NA_Logic.Repository
                             tietItem.isLock = tietHoc.Khoa;
                             tietItem.isDrag = false;
                             tietItem.isRest = false;
+
+                            //check tiết này có trùng tiết tránh xếp không
+                            LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
+                            var tietban = DsTietTranhXep(tietHoc);
+                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
+                            tietItem.isError = tietban.Contains(currentKey);
 
                             result.timetable.Add(tietItem);
                         }
@@ -1988,15 +1981,14 @@ namespace NA_Logic.Repository
 
             return result;
         }
-        public ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb)
+        public ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb, int idDonvi)
         {
-            _dsTietGoc = List_Object_tiet(idtkb);
+            LoadObjectsFromTiet_Test(idtkb, idDonvi);
             if (_dsTietGoc == null || _dsTietGoc.Count == 0)
             {
                 return null;
             }
-            if (id_gv == 0)
-                id_gv = _context.DM_Giaovien.Select(c => c.Id).FirstOrDefault();
+
             var tiet = _dsTietGoc.Where(t => t.Id_giao_vien == id_gv).ToList();
 
             if (!tiet.Any())
@@ -2005,19 +1997,9 @@ namespace NA_Logic.Repository
             }
 
             var firstTiet = tiet.First();
-            int idDonvi = firstTiet.Id_don_vi ?? 0;
 
-            var dsCa = _context.Ca_Donvi.Where(cd => cd.Id_don_vi == idDonvi)
-                             .Join(_context.DM_Cahoc,
-                                   cd => cd.Id_ca_hoc,
-                                   ca => ca.Id,
-                                   (cd, ca) => new
-                                   {
-                                       Id = ca.Id,
-                                       Ten = ca.Ten
-                                   }).ToList();
-
-            var tietTranhXep = _context.Giaovien_Tiettranhxep.Where(c => c.Id_giao_vien == id_gv).ToList();
+            _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == id_gv);
+            var tietTranhXep = _ObjectLop.ds_tiet_tranh_xep;
 
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
@@ -2030,7 +2012,7 @@ namespace NA_Logic.Repository
                 ds_chua_xep = new List<tkb_chuaxep_giaovien>()
             };
 
-            foreach (var ca in dsCa)
+            foreach (var ca in _dsCa)
             {
                 foreach (var ngay in dsNgay)
                 {
@@ -2038,13 +2020,13 @@ namespace NA_Logic.Repository
                     {
                         // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
-                            t.Id_ca == ca.Id &&
+                            t.Id_ca == ca.Id_ca &&
                             t.Ngay == (int)ngay &&
                             t.Tiet == (int)tietEnum);
 
                         // Kiểm tra có trong danh sách tránh xếp không
                         bool isBreak = tietTranhXep.Any(tx =>
-                            tx.Id_ca == ca.Id &&
+                            tx.Id_ca == ca.Id_ca &&
                             tx.Ngay == (int)ngay &&
                             tx.Tiet == (int)tietEnum);
 
@@ -2054,7 +2036,7 @@ namespace NA_Logic.Repository
                             Id_chitiet = tietHoc?.Id ?? 0,
                             Id_don_vi = idDonvi,
                             Id_tkb = idtkb,
-                            Id_ca = ca.Id,
+                            Id_ca = ca.Id_ca,
                             Ngay = (int)ngay,
                             Tiet = (int)tietEnum,
                             Tiet_thu_may = tietHoc?.Tiet_thu_may ?? 0
@@ -2087,6 +2069,12 @@ namespace NA_Logic.Repository
                             tietItem.isLock = tietHoc.Khoa;
                             tietItem.isDrag = false;
                             tietItem.isRest = false;
+
+                            //check tiết này có trùng tiết tránh xếp không
+                            LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
+                            var tietban = DsTietTranhXep(tietHoc);
+                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
+                            tietItem.isError = tietban.Contains(currentKey);
 
                             result.timetable.Add(tietItem);
                         }
@@ -2353,7 +2341,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoLopDto();
                 }
-                var tkbBase = GetTkbByLop(idLop, idTkb);
+                var tkbBase = GetTkbByLop(idLop, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new ObjectTiet_theoLopDto();
@@ -2479,7 +2467,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoLopDto();
                 }
-                var tkbBase = GetTkbByLop(idLop, idTkb);
+                var tkbBase = GetTkbByLop(idLop, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new ObjectTiet_theoLopDto();
@@ -2534,7 +2522,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoGVDto();
                 }
-                var tkbBase = GetTkbByGiaovien(idgv, idTkb);
+                var tkbBase = GetTkbByGiaovien(idgv, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new ObjectTiet_theoGVDto();
@@ -2593,7 +2581,7 @@ namespace NA_Logic.Repository
                     return new List<Object_Tiet>();
                 }
 
-                var tkbBase = GetTkbByLop(idLop, idTkb);
+                var tkbBase = GetTkbByLop(idLop, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new List<Object_Tiet>();
@@ -2780,7 +2768,7 @@ namespace NA_Logic.Repository
                     return new ObjectTiet_theoGVDto();
                 }
 
-                var tkbBase = GetTkbByGiaovien(idGV, idTkb);
+                var tkbBase = GetTkbByGiaovien(idGV, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new ObjectTiet_theoGVDto();
@@ -2813,15 +2801,14 @@ namespace NA_Logic.Repository
                     var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV).ToList();
                     foreach (var tietGoc in cacTietCuaGV)
                     {
-                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
-                        if (tietGoc.Ds_vi_tri_xep_duoc != null)
+                        if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
-                            foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
+                            bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri =>
+                                viTri.Ngay == ngay && viTri.Tiet == tietSo);
+
+                            if (coViTriTrung)
                             {
-                                if (viTri.Ngay == ngay && viTri.Tiet == tietSo)
-                                {
-                                    dsViTriXepDuoc.Add((viTri.Ca, viTri.Ngay, viTri.Tiet));
-                                }
+                                dsViTriXepDuoc.Add((tietGoc.Id_ca, tietGoc.Ngay, tietGoc.Tiet));
                             }
                         }
                     }
@@ -2910,7 +2897,7 @@ namespace NA_Logic.Repository
                     return new List<Object_Tiet>();
                 }
 
-                var tkbBase = GetTkbByGiaovien(idGV, idTkb);
+                var tkbBase = GetTkbByGiaovien(idGV, idTkb, idDonvi);
                 if (tkbBase == null)
                 {
                     return new List<Object_Tiet>();

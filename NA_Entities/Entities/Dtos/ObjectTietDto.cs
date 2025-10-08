@@ -26,6 +26,7 @@ namespace NA_Entities.Entities.Dtos
         public bool isDrag { get; set; } = false;
         public bool isLock { get; set; } = false;
         public bool isRest { get; set; } = false;
+        public bool isError { get; set; } = false;
     }
     public class tkb_chuaxep_lop
     {
@@ -66,6 +67,7 @@ namespace NA_Entities.Entities.Dtos
         public bool isDrag { get; set; } = false;
         public bool isLock { get; set; } = false;
         public bool isRest { get; set; } = false;
+        public bool isError { get; set; } = false;
     }
     public class tkb_chuaxep_giaovien
     {
