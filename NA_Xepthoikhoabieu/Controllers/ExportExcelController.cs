@@ -25,14 +25,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("lop")]
         [RequireToken]
-        public IActionResult ExportTKB_Lop(int idtkb)
+        public IActionResult ExportTKB_Lop([FromQuery]int idtkb, [FromQuery] int show_room, [FromQuery] int show_teacher)
         {
             try
             {
                 bool check_env = _claimHelperRepository.IsDemoSite();
                 if (check_env)
                     return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
-                var excelBytes = _export.ExportExcel_Class(idtkb);
+                var excelBytes = _export.ExportExcel_Class(idtkb, show_room, show_teacher);
 
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
@@ -53,14 +53,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("giaovien")]
         [RequireToken]
-        public IActionResult ExportTKB_GV(int idtkb)
+        public IActionResult ExportTKB_GV([FromQuery] int idtkb, [FromQuery] int show_room)
         {
             try
             {
                 bool check_env = _claimHelperRepository.IsDemoSite();
                 if (check_env)
                     return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
-                var excelBytes = _export.ExportExcel_Teacher(idtkb);
+                var excelBytes = _export.ExportExcel_Teacher(idtkb, show_room);
 
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
@@ -81,7 +81,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult ExportTKB(int idtkb)
+        public IActionResult ExportTKB([FromQuery] int idtkb, [FromQuery] int show_room, [FromQuery] int show_teacher)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (check_env)
                     return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
 
-                var excelBytes = _export.ExportExcel_TKB(idtkb);
+                var excelBytes = _export.ExportExcel_TKB(idtkb, show_room, show_teacher);
 
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");

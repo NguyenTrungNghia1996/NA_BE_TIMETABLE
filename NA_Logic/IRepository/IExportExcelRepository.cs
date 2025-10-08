@@ -8,8 +8,8 @@ namespace NA_Logic.IRepository
 {
     public interface IExportExcelRepository
     {
-        byte[] ExportExcel_Class(int idtkb);
-        byte[] ExportExcel_Teacher(int idtkb);
-        byte[] ExportExcel_TKB(int idtkb);
+        byte[] ExportExcel_Class(int idtkb, int show_room, int show_teacher);
+        byte[] ExportExcel_Teacher(int idtkb, int show_room);
+        byte[] ExportExcel_TKB(int idtkb, int show_room, int show_teacher);
     }
 }

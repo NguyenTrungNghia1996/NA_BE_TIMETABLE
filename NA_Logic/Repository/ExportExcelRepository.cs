@@ -57,7 +57,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public byte[] ExportExcel_Class(int idtkb)
+        public byte[] ExportExcel_Class(int idtkb, int show_room, int show_teacher)
         {
             var data = List_Tiet(idtkb);
             if (!data.Any()) return null;
@@ -120,7 +120,20 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_phong}\n{lesson.Ten_giao_vien}";
+                            var information = new List<string>();
+                            information.Add(lesson.Ten_mon);
+                            // Chọn 1: phòng
+                            if (show_room == 1)
+                            {
+                                information.Add(lesson.Ten_phong);
+                            }
+                            // Chọn 2: giáo viên
+                            if (show_teacher == 1)
+                            {
+                                information.Add(lesson.Ten_giao_vien);
+                            }
+
+                            cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -152,7 +165,20 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_phong}\n{lesson.Ten_giao_vien}";
+                            var information = new List<string>();
+                            information.Add(lesson.Ten_mon);
+                            // Chọn 1: phòng
+                            if (show_room == 1)
+                            {
+                                information.Add(lesson.Ten_phong);
+                            }
+                            // Chọn 2: giáo viên
+                            if (show_teacher == 1)
+                            {
+                                information.Add(lesson.Ten_giao_vien);
+                            }
+
+                            cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -187,7 +213,7 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
-        public byte[] ExportExcel_Teacher(int idtkb)
+        public byte[] ExportExcel_Teacher(int idtkb, int show_room)
         {
             var data = List_Tiet(idtkb);
             if (!data.Any()) return null;
@@ -250,7 +276,16 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_phong}\n{lesson.Ten_giao_vien}";
+                            var information = new List<string>();
+                            information.Add(lesson.Ten_mon);
+                            information.Add(lesson.Ten_giao_vien);
+                            // Chọn 1: phòng
+                            if (show_room == 1)
+                            {
+                                information.Add(lesson.Ten_phong);
+                            }
+
+                            cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -282,7 +317,16 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_phong}\n{lesson.Ten_giao_vien}";
+                            var information = new List<string>();
+                            information.Add(lesson.Ten_mon);
+                            information.Add(lesson.Ten_giao_vien);
+                            // Chọn 1: phòng
+                            if (show_room == 1)
+                            {
+                                information.Add(lesson.Ten_phong);
+                            }
+
+                            cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -317,7 +361,7 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
-        public byte[] ExportExcel_TKB(int idtkb)
+        public byte[] ExportExcel_TKB(int idtkb, int show_room, int show_teacher)
         {
             var data = List_Tiet(idtkb);
             if (!data.Any()) return null;
@@ -329,18 +373,18 @@ namespace NA_Logic.Repository
 
             // Tạo sheet cho CA SÁNG
             var worksheetSang = workbook.Worksheets.Add("CA SÁNG");
-            CreateCaWorksheet(worksheetSang, data, lopList, 1, "CA SÁNG");
+            CreateCaWorksheet(worksheetSang, data, lopList, 1, "CA SÁNG", show_room, show_teacher);
 
             // Tạo sheet cho CA CHIỀU  
             var worksheetChieu = workbook.Worksheets.Add("CA CHIỀU");
-            CreateCaWorksheet(worksheetChieu, data, lopList, 2, "CA CHIỀU");
+            CreateCaWorksheet(worksheetChieu, data, lopList, 2, "CA CHIỀU", show_room, show_teacher);
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
 
-        private void CreateCaWorksheet(IXLWorksheet worksheet, List<Export> data, List<string> lopList, int idCa, string tenCa)
+        private void CreateCaWorksheet(IXLWorksheet worksheet, List<Export> data, List<string> lopList, int idCa, string tenCa, int show_room, int show_teacher)
         {
             var firstRow = data.FirstOrDefault();
 
@@ -414,7 +458,20 @@ namespace NA_Logic.Repository
 
                         if (lesson != null)
                         {
-                            cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_giao_vien}";
+                            var information = new List<string>();
+                            information.Add(lesson.Ten_mon);
+                            // Chọn 1: phòng
+                            if (show_room == 1)
+                            {
+                                information.Add(lesson.Ten_phong);
+                            }
+                            // Chọn 2: giáo viên
+                            if (show_teacher == 1)
+                            {
+                                information.Add(lesson.Ten_giao_vien);
+                            }
+
+                            cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                             cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);

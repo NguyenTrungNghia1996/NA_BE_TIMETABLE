@@ -50,4 +50,10 @@ namespace NA_Entities.Entities.Dtos
         public int Id_tkb { get; set; } = 0;
         public List<Ds_lop> Ds_lop { get; set;} = new List<Ds_lop>();
     }
+    public class ExportDto
+    {
+        public int Id_tkb { get; set; }
+        public int show_room { get; set; }
+        public int show_teacher { get; set; }
+    }
 }
