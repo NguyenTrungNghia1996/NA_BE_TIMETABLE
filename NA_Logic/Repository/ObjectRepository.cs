@@ -1984,7 +1984,7 @@ namespace NA_Logic.Repository
             var firstTiet = tiet.First();
 
             _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == id_gv);
-            var tietTranhXep = _ObjectLop.ds_tiet_tranh_xep;
+            var tietTranhXep = _ObjectGiaovien.ds_tiet_tranh_xep;
 
             var dsNgay = Enum.GetValues<Ngay>().ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
@@ -2037,8 +2037,8 @@ namespace NA_Logic.Repository
                             tietItem.Id_phong = tietHoc.Id_phong ?? 0;
                             tietItem.Ten_phong = tietHoc.Ten_phong ?? "Không cần phòng";
                             tietItem.isLock = tietHoc.Khoa;
-                            tietItem.isDrag = isBreak;
-                            tietItem.isRest = false;
+                            tietItem.isDrag = false;
+                            tietItem.isRest = isBreak;
 
                             //check tiết này có trùng tiết tránh xếp không
                             LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
@@ -2058,8 +2058,8 @@ namespace NA_Logic.Repository
                             tietItem.Id_phong = 0;
                             tietItem.Ten_phong = "";
                             tietItem.isLock = false;
-                            tietItem.isDrag = isBreak;
-                            tietItem.isRest = false;
+                            tietItem.isDrag = false;
+                            tietItem.isRest = isBreak;
                             result.timetable.Add(tietItem);
                         }
                     }
