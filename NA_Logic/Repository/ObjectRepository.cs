@@ -1899,22 +1899,7 @@ namespace NA_Logic.Repository
                             Tiet_thu_may = tietHoc?.Tiet_thu_may ?? 0
                         };
 
-                        if (isBreak)
-                        {
-                            // Tiết tránh xếp - để trống thông tin môn học
-                            tietItem.Id_mon = 0;
-                            tietItem.Ten_mon = "";
-                            tietItem.Id_giao_vien = 0;
-                            tietItem.Ten_giao_vien = "";
-                            tietItem.Id_phong = 0;
-                            tietItem.Ten_phong = "";
-                            tietItem.isLock = false;
-                            tietItem.isDrag = false;
-                            tietItem.isRest = true;
-
-                            result.timetable.Add(tietItem);
-                        }
-                        else if (tietHoc != null)
+                        if (tietHoc != null)
                         {
                             // Tiết có môn học
                             tietItem.Id_mon = tietHoc.Id_mon ?? 0;
@@ -1925,7 +1910,7 @@ namespace NA_Logic.Repository
                             tietItem.Ten_phong = tietHoc.Ten_phong ?? "Không cần phòng";
                             tietItem.isLock = tietHoc.Khoa;
                             tietItem.isDrag = false;
-                            tietItem.isRest = false;
+                            tietItem.isRest = isBreak;
 
                             //check tiết này có trùng tiết tránh xếp không
                             LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
@@ -1946,7 +1931,7 @@ namespace NA_Logic.Repository
                             tietItem.Ten_phong = "";
                             tietItem.isLock = false;
                             tietItem.isDrag = false;
-                            tietItem.isRest = false;
+                            tietItem.isRest = isBreak;
                             result.timetable.Add(tietItem);
                         }
                     }
@@ -2042,22 +2027,7 @@ namespace NA_Logic.Repository
                             Tiet_thu_may = tietHoc?.Tiet_thu_may ?? 0
                         };
 
-                        if (isBreak)
-                        {
-                            // Tiết tránh xếp - để trống thông tin môn học
-                            tietItem.Id_mon = 0;
-                            tietItem.Ten_mon = "";
-                            tietItem.Id_lop = 0;
-                            tietItem.Ten_lop = "";
-                            tietItem.Id_phong = 0;
-                            tietItem.Ten_phong = "";
-                            tietItem.isLock = false;
-                            tietItem.isDrag = false;
-                            tietItem.isRest = true;
-
-                            result.timetable.Add(tietItem);
-                        }
-                        else if (tietHoc != null)
+                        if (tietHoc != null)
                         {
                             // Tiết có môn học
                             tietItem.Id_mon = tietHoc.Id_mon ?? 0;
@@ -2067,7 +2037,7 @@ namespace NA_Logic.Repository
                             tietItem.Id_phong = tietHoc.Id_phong ?? 0;
                             tietItem.Ten_phong = tietHoc.Ten_phong ?? "Không cần phòng";
                             tietItem.isLock = tietHoc.Khoa;
-                            tietItem.isDrag = false;
+                            tietItem.isDrag = isBreak;
                             tietItem.isRest = false;
 
                             //check tiết này có trùng tiết tránh xếp không
@@ -2088,7 +2058,7 @@ namespace NA_Logic.Repository
                             tietItem.Id_phong = 0;
                             tietItem.Ten_phong = "";
                             tietItem.isLock = false;
-                            tietItem.isDrag = false;
+                            tietItem.isDrag = isBreak;
                             tietItem.isRest = false;
                             result.timetable.Add(tietItem);
                         }
