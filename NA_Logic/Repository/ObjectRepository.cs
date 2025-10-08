@@ -2055,7 +2055,7 @@ namespace NA_Logic.Repository
                             tietItem.Ten_mon = "";
                             tietItem.Id_lop = 0;
                             tietItem.Ten_lop = "";
-                            tietItem.Id_phong = 0;
+                            tietItem.Id_phong = 0; 
                             tietItem.Ten_phong = "";
                             tietItem.isLock = false;
                             tietItem.isDrag = false;
@@ -2771,6 +2771,7 @@ namespace NA_Logic.Repository
                     var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV).ToList();
                     foreach (var tietGoc in cacTietCuaGV)
                     {
+                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
                         if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
                         {
                             bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri =>
