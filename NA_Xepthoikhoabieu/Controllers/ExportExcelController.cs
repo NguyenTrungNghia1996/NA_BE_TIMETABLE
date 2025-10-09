@@ -79,35 +79,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest($"Lỗi: {ex.Message}");
             }
         }
-        [HttpGet("export-all-data")]
-        [RequireToken]
-        public IActionResult ExportAllData([FromQuery] int idDonVi, [FromQuery] int idTkb)
-        {
-            try
-            {
-                bool check_env = _claimHelperRepository.IsDemoSite();
-                if (check_env)
-                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
-
-                var excelBytes = _export.ExportAllDataToExcel(idDonVi, idTkb);
-
-                if (excelBytes == null)
-                    return NotFound("Không có dữ liệu");
-
-                var fileName = $"ThoiKhoaBieu_Data_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-
-                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
-                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
-
-                return File(excelBytes,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    fileName);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Lỗi: {ex.Message}");
-            }
-        }
+        
         [HttpGet]
         [RequireToken]
         public IActionResult ExportTKB([FromQuery] int idtkb, [FromQuery] int show_room, [FromQuery] int show_teacher)
