@@ -3320,7 +3320,42 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool HuyTietNghiLop(int idLop)
+        {
+            try
+            {
+                var del = _context.Lophoc_Tietnghi.FirstOrDefault(c => c.Id_lop == idLop);
+                if (del != null)
+                {
+                    _context.Lophoc_Tietnghi.Remove(del);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool HuyTietNghiGV(int idgv)
+        {
+            try
+            {
+                var del = _context.Giaovien_Tiettranhxep.FirstOrDefault(c => c.Id_giao_vien == idgv);
+                if (del != null)
+                {
+                    _context.Giaovien_Tiettranhxep.Remove(del);
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
     }
 }

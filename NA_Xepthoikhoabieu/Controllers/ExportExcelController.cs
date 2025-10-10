@@ -108,5 +108,58 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest($"Lỗi: {ex.Message}");
             }
         }
+        [HttpGet("matran/toantruong")]
+        public IActionResult Export_MaTran_ToanTruong([FromQuery] int idtkb)
+        {
+            try
+            {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+
+                var excelBytes = _export.ExportExcel_MaTranToanTruong(idtkb);
+
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
+
+                var fileName = $"MaTranToanTruong_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
+        }
+        [HttpGet("matran/khoi")]
+        public IActionResult Export_MaTran_Khoi([FromQuery] int idtkb)
+        {
+            try
+            {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                var excelBytes = _export.ExportExcel_MaTranKhoi(idtkb);
+
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
+
+                var fileName = $"MaTranKhoi_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
+        }
     }
 }
