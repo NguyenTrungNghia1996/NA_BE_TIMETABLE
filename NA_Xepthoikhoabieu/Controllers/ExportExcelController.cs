@@ -205,7 +205,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
-                var fileName = $"MaTranGiaoVien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var fileName = $"MaTranToHopMon_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 //header
                 Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
                 Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
