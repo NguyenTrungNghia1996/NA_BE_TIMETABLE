@@ -169,6 +169,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool add = _tkb.Add(tkb);
             bool adddetail = _tkb.AddChitiet_tkb(tkb.Id, idDonvi);
             bool copytkb = false;
+            if (dstkb.Dang_su_dung)
+            {
+                bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
+                if (!changestatus)
+                    return ApiResult.BadRequest("Thêm thời khoá biểu thành công, đổi trạng thái thất bại");
+            }
             if (dstkb.Id > 0)
             {
                 bool check_tkb = _tkb.CheckId(dstkb.Id, idDonvi);
@@ -176,12 +182,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                     return ApiResult.BadRequest($"Id thời khoá biểu = {dstkb.Id} không hợp lệ, vui lòng kiểm tra lại");
                 copytkb = _tkb.Copy_Tkb(dstkb.Id, tkb.Id);
             }
-            if (dstkb.Dang_su_dung)
-            {
-                bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
-                if (!changestatus)
-                    return ApiResult.BadRequest("Thêm thời khoá biểu thành công, đổi trạng thái thất bại");
-            }
+            
 
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
