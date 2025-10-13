@@ -41,6 +41,8 @@ namespace NA_Logic.Repository
                 {
                     ds_tiet.Add(new Export
                     {
+                        Id_mon = item.Id_mon,
+                        Id_giao_vien = item.Id_giao_vien,
                         Id_lop = item.Id_lop,
                         Ten_truong = item.Ten_don_vi,
                         Ten_lop = item.Ten_lop,
@@ -239,7 +241,7 @@ namespace NA_Logic.Repository
                 worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
 
-                worksheet.Cell(3, 1).Value = $"Thời khóa biểu giáo viên: {tenGV}";
+                worksheet.Cell(3, 1).Value = $"Thời khóa biểu giáo viên";
                 worksheet.Range(3, 1, 3, 7).Merge();
                 worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
@@ -281,7 +283,7 @@ namespace NA_Logic.Repository
                         {
                             var information = new List<string>();
                             information.Add(lesson.Ten_mon);
-                            information.Add(lesson.Ten_giao_vien);
+                            information.Add(lesson.Ten_lop);
                             // Chọn 1: phòng
                             if (show_room == 1)
                             {
@@ -322,7 +324,7 @@ namespace NA_Logic.Repository
                         {
                             var information = new List<string>();
                             information.Add(lesson.Ten_mon);
-                            information.Add(lesson.Ten_giao_vien);
+                            information.Add(lesson.Ten_lop);
                             // Chọn 1: phòng
                             if (show_room == 1)
                             {
@@ -664,7 +666,7 @@ namespace NA_Logic.Repository
                 worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
 
-                // Tiêu đề ca
+                // Tiêu đề sheet
                 worksheet.Cell(3, 1).Value = $"MA TRẬN KHỐI";
                 worksheet.Range(3, 1, 3, lopList.Count + 2).Merge();
                 worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
@@ -674,7 +676,7 @@ namespace NA_Logic.Repository
                 worksheet.Range(5,1,6,1).Merge().Value = "THỨ";
                 worksheet.Range(5, 1, 6, 1).Merge().Style.Font.SetBold(true);
                 worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                 worksheet.Range(5, 1, 6, 1).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
                 worksheet.Range(5, 2, 6, 2).Merge().Value = "CA";
@@ -686,7 +688,7 @@ namespace NA_Logic.Repository
                 worksheet.Range(5, 3, 6, 3).Merge().Value = "TIẾT";
                 worksheet.Range(5, 3, 6, 3).Merge().Style.Font.SetBold(true);
                 worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                 worksheet.Range(5, 3, 6, 3).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
 
@@ -824,54 +826,70 @@ namespace NA_Logic.Repository
         {
             var data = List_Tiet(idtkb);
             if (!data.Any()) return null;
-
+            var dataDict = data.GroupBy(x => new { x.Tiet, x.Ngay, x.Id_ca, x.Id_giao_vien }).ToDictionary(g => g.Key, g => g.First());
             using var workbook = new XLWorkbook();
 
             // Lấy danh sách các lớp từ data
-            var lopList = data.Select(x => x.Ten_lop).Distinct().OrderBy(x => x).ToList();
+            var giaovienList = data.Select(x => new { x.Ho_ho_dem, x.Ten_giao_vien, x.Id_giao_vien } ).Distinct().OrderBy(x => x.Ten_giao_vien).ToList();
 
             var firstRow = data.FirstOrDefault();
             var worksheet = workbook.Worksheets.Add("Toàn trường");
             // Tiêu đề trường
             worksheet.Cell(1, 1).Value = firstRow?.Ten_truong?.ToUpper() ?? "TRƯỜNG THCS";
-            worksheet.Range(1, 1, 1, lopList.Count + 2).Merge();
+            worksheet.Range(1, 1, 1, giaovienList.Count + 2).Merge();
             worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
 
-            // Tiêu đề ca
-            worksheet.Cell(3, 1).Value = $"MA TRẬN TOÀN TRƯỜNG";
-            worksheet.Range(3, 1, 3, lopList.Count + 2).Merge();
+            // Tiêu đề sheet
+            worksheet.Cell(3, 1).Value = $"MA TRẬN GIÁO VIÊN";
+            worksheet.Range(3, 1, 3, giaovienList.Count + 2).Merge();
             worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
 
             // Headers
-            worksheet.Cell(5, 1).Value = "CA";
-            worksheet.Cell(5, 1).Style.Font.SetBold(true);
-            worksheet.Cell(5, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            worksheet.Cell(5, 1).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            worksheet.Range(5, 1, 6, 1).Merge().Value = "CA";
+            worksheet.Range(5, 1, 6, 1).Merge().Style.Font.SetBold(true);
+            worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(5, 1, 6, 1).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
-            worksheet.Cell(5, 2).Value = "THỨ";
-            worksheet.Cell(5, 2).Style.Font.SetBold(true);
-            worksheet.Cell(5, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            worksheet.Cell(5, 2).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            worksheet.Range(5, 2, 6, 2).Merge().Value = "THỨ";
+            worksheet.Range(5, 2, 6, 2).Merge().Style.Font.SetBold(true);
+            worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(5, 2, 6, 2).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
-            worksheet.Cell(5, 3).Value = "TIẾT";
-            worksheet.Cell(5, 3).Style.Font.SetBold(true);
-            worksheet.Cell(5, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            worksheet.Cell(5, 3).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            worksheet.Range(5, 3, 6, 3).Merge().Value = "TIẾT";
+            worksheet.Range(5, 3, 6, 3).Merge().Style.Font.SetBold(true);
+            worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            worksheet.Range(5, 3, 6, 3).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
 
             // Headers cho các lớp
-            for (int i = 0; i < lopList.Count; i++)
+            for (int i = 0; i < giaovienList.Count; i++)
             {
-                var headerCell = worksheet.Cell(5, i + 4);
-                headerCell.Value = lopList[i];
+                int startCol = 4 + (i * 2);
+                var headerCell = worksheet.Range(5, startCol, 5, startCol + 1).Merge();
+                headerCell.Value = $"{giaovienList[i].Ho_ho_dem} {giaovienList[i].Ten_giao_vien}";
                 headerCell.Style.Font.SetBold(true);
                 headerCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 headerCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                //môn, lớp
+                var monCell = worksheet.Cell(6, startCol);
+                monCell.Value = "Môn";
+                monCell.Style.Font.SetBold(true);
+                monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                monCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                var lopCell = worksheet.Cell(6, startCol + 1);
+                lopCell.Value = "Lớp";
+                lopCell.Style.Font.SetBold(true);
+                lopCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                lopCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
             }
 
-            int currentRow = 6;
+            int currentRow = 7;
 
             // Tạo dữ liệu cho từng CA
             var caNames = new[] { "SÁNG", "CHIỀU" };
@@ -912,21 +930,31 @@ namespace NA_Logic.Repository
                         worksheet.Cell(currentRow, 3).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
                         // Điền dữ liệu cho từng lớp
-                        for (int lopIndex = 0; lopIndex < lopList.Count; lopIndex++)
+                        for (int giaovienIndex = 0; giaovienIndex < giaovienList.Count; giaovienIndex++)
                         {
                             int idCa = caIndex + 1;
                             int ngay = ngayIndex + 1;
-                            var tenLop = lopList[lopIndex];
-                            var lesson = data.FirstOrDefault(x => x.Tiet == tiet && x.Ngay == ngay && x.Id_ca == idCa && x.Ten_lop == tenLop);
-                            var cell = worksheet.Cell(currentRow, lopIndex + 4);
+                            var tenGv = giaovienList[giaovienIndex].Ten_giao_vien;
+                            int? idGv = giaovienList[giaovienIndex].Id_giao_vien;
+                            var key = new { Tiet = tiet, Ngay = ngay, Id_ca = idCa, Id_giao_vien = idGv };
+                            var lesson = dataDict.ContainsKey(key) ? dataDict[key] : null;
+                            var cell = worksheet.Cell(currentRow, giaovienIndex + 4);
+
+                            int startCol = 4 + (giaovienIndex * 2);
 
                             if (lesson != null)
                             {
+                                // Cột Môn
+                                var monCell = worksheet.Cell(currentRow, startCol);
+                                monCell.Value = lesson.Ten_mon;
+                                monCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-                                cell.Value = $"{lesson.Ten_mon}\n{lesson.Ten_giao_vien}";
-                                cell.Style.Alignment.SetWrapText(true);
-                                cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                                cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                // Cột lớp
+                                var lopCell = worksheet.Cell(currentRow, startCol + 1);
+                                lopCell.Value = $"{lesson.Ten_lop}";
+                                lopCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                lopCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                             }
                         }
                         currentRow++;
@@ -935,23 +963,217 @@ namespace NA_Logic.Repository
             }
 
             // Tạo border cho toàn bộ bảng
-            var dataRange = worksheet.Range(5, 1, currentRow - 1, lopList.Count + 3);
+            int lastCol = 3 + (giaovienList.Count * 2);
+            var dataRange = worksheet.Range(5, 1, currentRow - 1, lastCol);
             dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            // Set chiều cao và rộng
-            for (int i = 6; i <= currentRow - 1; i++)
+            // Set chiều cao hàng
+            //for (int i = 8; i <= 12; i++)
+            //{
+            //    worksheet.Row(i).Height = 45;
+            //}
+            //for (int i = 14; i <= 18; i++)
+            //{
+            //    worksheet.Row(i).Height = 45;
+            //}
+
+            // Set chiều rộng cột
+
+            for (int i = 4; i <= lastCol; i++)
             {
-                worksheet.Row(i).Height = 45;
+                worksheet.Column(i).Width = 15;
+            }
+            for (int i = 2; i <= 8; i++)
+            {
+                worksheet.Column(i).Width = 20;
             }
 
-            worksheet.Column(1).Width = 8;
-            worksheet.Column(2).Width = 6;
-            for (int i = 4; i <= lopList.Count + 3; i++)
-            {
-                worksheet.Column(i).Width = 18;
-            }
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
+        public byte[] ExportExcel_MaTranToHopMon(int idtkb, int idDonvi)
+        {
+            var data = List_Tiet(idtkb);
+            if (!data.Any()) return null;
+            using var workbook = new XLWorkbook();
+            var monIds = data.Select(x => x.Id_mon).Distinct().ToList();
 
+            var thmList = _context.Monhoc_Tohopmon.Join(_context.DM_Banhoc, thm => thm.Id_ban, b => b.Id, (thm, b) => new {thm.Ten, thm.Id_mon_1, thm.Id_mon_2, thm.Id_mon_3, b.Id_don_vi}).Where(x=>x.Id_don_vi == idDonvi)
+                                                    .Distinct().ToList();
+            for (int k = 0; k < thmList.Count; k++)
+            {
+                // Lấy danh sách các lớp từ data
+                var monListId = new List<int?>()
+                {
+                    thmList[k].Id_mon_1,
+                    thmList[k].Id_mon_2,
+                    thmList[k].Id_mon_3,
+                }.ToList();
+
+                var gvList = data.Where(c=> monListId.Contains(c.Id_mon)).Select(c => new { c.Ten_giao_vien, c.Ho_ho_dem, c.Id_giao_vien }).Distinct().OrderBy(x => x.Ten_giao_vien).ToList();
+                var dataDetail = data.Where(c => monListId.Contains(c.Id_mon)).ToList();
+
+                var firstRow = data.FirstOrDefault();
+                var worksheet = workbook.Worksheets.Add($"{thmList[k].Ten}");
+                // Tiêu đề trường
+                worksheet.Cell(1, 1).Value = firstRow?.Ten_truong?.ToUpper() ?? "TRƯỜNG THCS";
+                worksheet.Range(1, 1, 1, gvList.Count + 2).Merge();
+                worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
+
+                // Tiêu đề sheet
+                worksheet.Cell(3, 1).Value = $"MA TRẬN TỔ HỢP MÔN";
+                worksheet.Range(3, 1, 3, gvList.Count + 2).Merge();
+                worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
+
+                // Headers
+                worksheet.Range(5, 1, 6, 1).Merge().Value = "THỨ";
+                worksheet.Range(5, 1, 6, 1).Merge().Style.Font.SetBold(true);
+                worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range(5, 1, 6, 1).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Range(5, 1, 6, 1).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                worksheet.Range(5, 2, 6, 2).Merge().Value = "CA";
+                worksheet.Range(5, 2, 6, 2).Merge().Style.Font.SetBold(true);
+                worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range(5, 2, 6, 2).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Range(5, 2, 6, 2).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                worksheet.Range(5, 3, 6, 3).Merge().Value = "TIẾT";
+                worksheet.Range(5, 3, 6, 3).Merge().Style.Font.SetBold(true);
+                worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range(5, 3, 6, 3).Merge().Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Range(5, 3, 6, 3).Merge().Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+
+                // Headers
+                for (int i = 0; i < gvList.Count; i++)
+                {
+                    int startCol = 4 + (i * 2);
+                    //header cho lớp
+                    var headerCell = worksheet.Range(5, startCol, 5, startCol + 1);
+                    headerCell.Merge();
+                    headerCell.Value = $"{gvList[i].Ho_ho_dem} {gvList[i].Ten_giao_vien}";
+                    headerCell.Style.Font.SetBold(true);
+                    headerCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    headerCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                    //môn, lớp
+                    var monCell = worksheet.Cell(6, startCol);
+                    monCell.Value = "Môn";
+                    monCell.Style.Font.SetBold(true);
+                    monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    monCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                    var lopCell = worksheet.Cell(6, startCol + 1);
+                    lopCell.Value = "Lớp";
+                    lopCell.Style.Font.SetBold(true);
+                    lopCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    lopCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                }
+
+                int currentRow = 7;
+
+                // Tạo dữ liệu cho từng CA
+                var caNames = new[] { "SÁNG", "CHIỀU" };
+
+                // Tạo dữ liệu cho từng thứ
+                var thuNames = new[] { "THỨ\nHAI", "THỨ\nBA", "THỨ\nTƯ", "THỨ\nNĂM", "THỨ\nSÁU", "THỨ\nBẢY" };
+
+
+                for (int ngayIndex = 0; ngayIndex < thuNames.Length; ngayIndex++)
+                {
+
+                    // Merge cột THỨ cho 5 tiết
+                    var thuRange = worksheet.Range(currentRow, 1, currentRow + 9, 1);
+                    thuRange.Merge();
+                    thuRange.Value = thuNames[ngayIndex];
+                    thuRange.Style.Font.SetBold(true);
+                    thuRange.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    thuRange.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                    thuRange.Style.Alignment.SetWrapText(true);
+                    thuRange.Style.Fill.SetBackgroundColor(XLColor.LightBlue);
+                    for (int caIndex = 0; caIndex < caNames.Length; caIndex++)
+                    {
+                        // Merge cột ca
+                        var caRange = worksheet.Range(currentRow, 2, currentRow + 4, 2);
+                        caRange.Merge();
+                        caRange.Value = caNames[caIndex];
+                        caRange.Style.Font.SetBold(true);
+                        caRange.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        caRange.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                        caRange.Style.Alignment.SetWrapText(true);
+
+                        // 5 tiết trong ca
+                        for (int tiet = 1; tiet <= 5; tiet++)
+                        {
+                            // Cột TIẾT
+                            worksheet.Cell(currentRow, 3).Value = tiet.ToString();
+                            worksheet.Cell(currentRow, 3).Style.Font.SetBold(true);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            worksheet.Cell(currentRow, 3).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                            // Điền dữ liệu cho từng lớp
+                            for (int gvIndex = 0; gvIndex < gvList.Count; gvIndex++)
+                            {
+                                int idCa = caIndex + 1;
+                                int ngay = ngayIndex + 1;
+                                int? idGv = gvList[gvIndex].Id_giao_vien;
+                                var lesson = dataDetail.FirstOrDefault(x => x.Tiet == tiet && x.Ngay == ngay && x.Id_ca == idCa && x.Id_giao_vien == idGv);
+                                var cell = worksheet.Cell(currentRow, gvIndex + 4);
+
+                                int startCol = 4 + (gvIndex * 2);
+
+                                if (lesson != null)
+                                {
+                                    // Cột Môn
+                                    var monCell = worksheet.Cell(currentRow, startCol);
+                                    monCell.Value = lesson.Ten_mon;
+                                    monCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                    monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                                    // Cột lớp
+                                    var lopCell = worksheet.Cell(currentRow, startCol + 1);
+                                    lopCell.Value = $"{lesson.Ten_lop}";
+                                    lopCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                    lopCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                                }
+                            }
+                            currentRow++;
+                        }
+                    }
+
+                }
+
+                // Tạo border cho toàn bộ bảng
+                int lastCol = 3 + (gvList.Count * 2);
+                var dataRange = worksheet.Range(5, 1, currentRow - 1, lastCol);
+                dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                // Set chiều cao hàng
+                //for (int i = 8; i <= 12; i++)
+                //{
+                //    worksheet.Row(i).Height = 45;
+                //}
+                //for (int i = 14; i <= 18; i++)
+                //{
+                //    worksheet.Row(i).Height = 45;
+                //}
+
+                // Set chiều rộng cột
+
+                for (int i = 4; i <= lastCol; i++)
+                {
+                    worksheet.Column(i).Width = 15;
+                }
+                for (int i = 2; i <= 8; i++)
+                {
+                    worksheet.Column(i).Width = 20;
+                }
+            }
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();

@@ -41,6 +41,8 @@ namespace NA_Entities.Entities.Danh_muc
     }
     public class Export
     {
+        public int Id_mon { get; set; }
+        public int? Id_giao_vien { get; set; }
         public int Id_lop { get; set; }
         public string Ten_truong { get; set; }
         public string Ten_lop { get; set; }
