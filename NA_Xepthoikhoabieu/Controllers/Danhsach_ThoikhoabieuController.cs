@@ -171,7 +171,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool copytkb = false;
             if (dstkb.Dang_su_dung)
             {
-                bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
+                bool changestatus = _tkb.SetStatus(tkb.Id, idDonvi);
                 if (!changestatus)
                     return ApiResult.BadRequest("Thêm thời khoá biểu thành công, đổi trạng thái thất bại");
             }
