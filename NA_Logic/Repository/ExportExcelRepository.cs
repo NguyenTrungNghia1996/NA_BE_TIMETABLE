@@ -69,14 +69,14 @@ namespace NA_Logic.Repository
 
             using var workbook = new XLWorkbook();
 
-            var lopGroups = data.GroupBy(x => x.Ten_lop).ToList();
+            var lopGroups = data.GroupBy(x => new { x.Ten_lop, x.Id_lop }).ToList();
 
             foreach (var lopGroup in lopGroups)
             {
                 var tenLop = lopGroup.Key;
                 var lopData = lopGroup.ToList();
 
-                var worksheet = workbook.Worksheets.Add($"{tenLop}");
+                var worksheet = workbook.Worksheets.Add($"{tenLop.Ten_lop}");
 
                 // Tiêu đề
                 var firstRow = lopData.FirstOrDefault();
@@ -85,7 +85,7 @@ namespace NA_Logic.Repository
                 worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
 
-                worksheet.Cell(3, 1).Value = $"Thời khóa biểu lớp: {tenLop}";
+                worksheet.Cell(3, 1).Value = $"Thời khóa biểu lớp: {tenLop.Ten_lop}";
                 worksheet.Range(3, 1, 3, 7).Merge();
                 worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
@@ -225,7 +225,7 @@ namespace NA_Logic.Repository
 
             using var workbook = new XLWorkbook();
 
-            var Gvgroup = data.GroupBy(x => new { x.Ten_giao_vien, x.Ho_ho_dem }).ToList();
+            var Gvgroup = data.GroupBy(x => new { x.Ten_giao_vien, x.Ho_ho_dem, x.Id_giao_vien }).ToList();
 
             foreach (var Giaoviengroup in Gvgroup)
             {
