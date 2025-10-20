@@ -34,7 +34,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_mon_2 { get; set; }= 0;
         public int? Id_mon_3 { get; set; } = 0;
         public int So_tiet_toi_da_1_ca { get; set; } = 0;
-        public int So_tiet_toi_da_2_ca { get; set; } = 0;
+        public int? So_tiet_toi_da_2_ca { get; set; }
         public int Id_ban { get; set; } = 0;
         public int Id_khoi { get; set; } = 0;
         public string Ten_khoi { get; set; } = string.Empty;
