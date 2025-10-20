@@ -1025,6 +1025,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1130,6 +1131,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1236,6 +1238,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1342,6 +1345,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1448,6 +1452,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1555,6 +1560,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
@@ -1662,6 +1668,7 @@ namespace NA_Logic.Repository
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
+                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
                                 _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
                                 _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
                                 dsTietChuaXep.Remove(_dsTietGoc[i]);
