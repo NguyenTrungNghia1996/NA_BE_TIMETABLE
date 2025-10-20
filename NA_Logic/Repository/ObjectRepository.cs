@@ -1123,7 +1123,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1180,6 +1180,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1228,7 +1229,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1285,6 +1286,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1333,7 +1335,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1390,6 +1392,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1438,7 +1441,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1495,6 +1498,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1544,7 +1548,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1601,6 +1605,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1650,7 +1655,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1707,6 +1712,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
@@ -1760,7 +1766,7 @@ namespace NA_Logic.Repository
                     var dsTietCoDinh = _dsObjectTietcodinh;
                     for (int i = 0; i < _dsTietGoc.Count; i++)
                     {
-                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && tcd.Id_ca == _dsTietGoc[i].Id_ca && _dsTietGoc[i].Tiet_thu_may == 1);
+                        var tietCoDinh = dsTietCoDinh.FirstOrDefault(tcd => tcd.Id_mon == _dsTietGoc[i].Id_mon && tcd.Id_lop == _dsTietGoc[i].Id_lop && _dsTietGoc[i].Tiet_thu_may == 1);
 
                         if (tietCoDinh != null)
                         {
@@ -1817,6 +1823,7 @@ namespace NA_Logic.Repository
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
                     dsTietChuaXep.Remove(tietCanXep);
