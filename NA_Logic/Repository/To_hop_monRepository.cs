@@ -135,7 +135,7 @@ namespace NA_Logic.Repository
 
             var sql = excludeId == null
                 ? $"SELECT thm.Ten FROM Monhoc_Tohopmon thm join DM_Monhoc mh on thm.Id_mon_1 = mh.Id where mh.Id_don_vi = {idDonvi} "
-                : $"SELECT thm.Ten FROM Monhoc_Tohopmon thm join DM_Monhoc mh on thm.Id_mon_1 = mh.Id where mh.Id_don_vi = {idDonvi} and p.Id != {excludeId}";
+                : $"SELECT thm.Ten FROM Monhoc_Tohopmon thm join DM_Monhoc mh on thm.Id_mon_1 = mh.Id where mh.Id_don_vi = {idDonvi} and thm.Id != {excludeId}";
 
             var ds_ten = _dbContext.Database.SqlQueryRaw<string>(sql).ToList();
 

@@ -96,10 +96,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_mon_3", "Id môn 3 không hợp lệ, vui lòng kiểm tra lại");
             if(tohopmon.So_tiet_toi_da_1_ca <=0)
                 ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");
-            if (tohopmon.So_tiet_toi_da_2_ca > 0 && tohopmon.So_tiet_toi_da_2_ca >10)
-                ApiResult.BadRequest( "Số tiết tối đa 2 ca phải nhỏ hơn 10");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            if (tohopmon.So_tiet_toi_da_2_ca > 0 && tohopmon.So_tiet_toi_da_2_ca >10)
+                ApiResult.BadRequest( "Số tiết tối đa 2 ca phải nhỏ hơn 10");
+            
             if (tohopmon.So_tiet_toi_da_2_ca>0 && tohopmon.So_tiet_toi_da_1_ca > tohopmon.So_tiet_toi_da_2_ca)
             {
                 return ApiResult.BadRequest("Số tiết tối đa 2 ca phải lớn hơn hoặc bằng số tiết tối đa 1 ca");
@@ -155,10 +156,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("Id_mon_3", "Id môn 3 không hợp lệ, vui lòng kiểm tra lại");
             if (tohopmon.So_tiet_toi_da_1_ca <= 0)
                 ModelState.AddModelError("So_tiet_toi_da_1_ca", "Số tiết tối đa 1 ca không hợp lệ, vui lòng kiểm tra lại");
-            
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (tohopmon.So_tiet_toi_da_1_ca > tohopmon.So_tiet_toi_da_2_ca)
+            if (tohopmon.So_tiet_toi_da_2_ca > 0 && tohopmon.So_tiet_toi_da_2_ca > 10)
+                ApiResult.BadRequest("Số tiết tối đa 2 ca phải nhỏ hơn 10");
+            
+            if (tohopmon.So_tiet_toi_da_2_ca > 0 && tohopmon.So_tiet_toi_da_1_ca > tohopmon.So_tiet_toi_da_2_ca)
             {
                 return ApiResult.BadRequest("Số tiết tối đa 2 ca phải lớn hơn hoặc bằng số tiết tối đa 1 ca");
             }
