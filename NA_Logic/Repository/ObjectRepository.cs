@@ -2280,7 +2280,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var tietban = DsTietTranhXep(objectTiet);
+                var tietban = DsTietTranhXep(objectTiet); 
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
@@ -2984,19 +2984,35 @@ namespace NA_Logic.Repository
                 bool updateTiet2 = false;
                 if( objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    check = CheckViTriXepDuoc_Lop(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
 
                     if (check)
                     {
                         updateTiet2 = UpdateTiet(objectTiet2,ca1, ngay1, tietSo1);
+                        if (!updateTiet2)
+                        {
+                            return (false, new ObjectTiet_theoLopDto());
+                        }
+                    }
+                    else
+                    {
+                        return (false, new ObjectTiet_theoLopDto());
                     }
                 }
                 else if(objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_Lop(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    check = CheckViTriXepDuoc_Lop(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
                     if (check)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
+                        if (!updateTiet1)
+                        {
+                            return (false, new ObjectTiet_theoLopDto());
+                        }
+                    }
+                    else
+                    {
+                        return (false, new ObjectTiet_theoLopDto());
                     }
                 }
                 else
@@ -3007,21 +3023,16 @@ namespace NA_Logic.Repository
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
                         updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
+                        if (!updateTiet1 || !updateTiet2)
+                        {
+                            return (false, new ObjectTiet_theoLopDto());
+                        }
                     }
                     else
                     {
-                        check = false;
-                    }    
-                }
-
-                if (!check)
-                {
-                    return (false, new ObjectTiet_theoLopDto());
-                }
-
-                if (!updateTiet1 || !updateTiet2)
-                {
-                    return (false, new ObjectTiet_theoLopDto());
+                        return (false, new ObjectTiet_theoLopDto());
+                    }
+                    
                 }
 
                 var ketQuaCheckViTri = TimViTriXepDuoc_byLop(tietDachon, idDonvi);
@@ -3087,10 +3098,14 @@ namespace NA_Logic.Repository
                 bool updateTiet2 = false;
                 if (objectTiet1.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    check = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     if (check)
                     {
                         updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
+                        if (!updateTiet2)
+                        {
+                            return (false, new ObjectTiet_theoGVDto());
+                        }
                     }
                     else
                     {
@@ -3099,10 +3114,14 @@ namespace NA_Logic.Repository
                 }
                 else if (objectTiet2.Id_mon == 0)
                 {
-                    check = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    check = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
                     if (check)
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
+                        if (!updateTiet1)
+                        {
+                            return (false, new ObjectTiet_theoGVDto());
+                        }
                     }
                     else
                     {
@@ -3117,20 +3136,19 @@ namespace NA_Logic.Repository
                     {
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
                         updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
+                        if (!updateTiet1 || !updateTiet2)
+                        {
+                            return (false, new ObjectTiet_theoGVDto());
+                        }
                     }
                     else
                     {
                         return (false, new ObjectTiet_theoGVDto());
                     }
+                    
                 }
-
-                    if (!updateTiet1 || !updateTiet2)
-                    {
-                        return (false, new ObjectTiet_theoGVDto());
-                    }
-
-                    var ketQuaCheckViTri = TimViTriXepDuoc_byGV(tietDachon, idDonvi);
-                    return (true, ketQuaCheckViTri);
+                var ketQuaCheckViTri = TimViTriXepDuoc_byGV(tietDachon, idDonvi);
+                return (true, ketQuaCheckViTri);
               
             }
             catch (Exception ex)
