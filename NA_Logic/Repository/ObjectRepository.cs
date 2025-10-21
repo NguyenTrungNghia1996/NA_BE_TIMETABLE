@@ -1648,13 +1648,11 @@ namespace NA_Logic.Repository
                 var dsTietChuaXep = new List<Object_Tiet>();
                 var dsTietDaXep = new List<Object_Tiet>();
                 var dsTietBoqua = new List<Object_Tiet>();
-                var idgvcn = _context.DM_Lophoc.Select(c => c.Id_gvcn).ToList();
-                for ( int i = 0; i< idgvcn.Count; i++)
-                {
-                    int id = idgvcn[i];
-                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
-                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
-                }
+                var idgvcn = _context.DM_Lophoc.Where(c=>c.Id_don_vi == idDonvi).Select(c => c.Id_gvcn).ToList();
+                var mon_do_gvcn_day = _context.Dm_Monhoc.Where(c => c.Do_GVCN_phu_trach == true && c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
+                dsTietChuaXep = _dsTietGoc.Where(c =>idgvcn.Contains(c.Id_giao_vien??0) &&mon_do_gvcn_day.Contains(c.Id_mon??0) &&c.Ngay == 0 && c.Tiet == 0).ToList();
+                dsTietDaXep = _dsTietGoc.Where(c =>idgvcn.Contains(c.Id_giao_vien??0) &&mon_do_gvcn_day.Contains(c.Id_mon??0) &&c.Ngay > 0 && c.Tiet > 0).ToList();
+
                 // 2. Xử lý tiết cố định
                 if (dsTietDaXep == null || dsTietDaXep.Count == 0)
                 {
