@@ -2328,7 +2328,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoLopDto();
                 }
-                if (isLock || isRest)
+                if (isLock || isRest || tiet.isError)
                 {
                     return tkbBase;
                 }
@@ -2755,7 +2755,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoGVDto();
                 }
-                if (isLock || isRest)
+                if (isLock || isRest || tiet.isError)
                 {
                     return tkbBase;
                 }
