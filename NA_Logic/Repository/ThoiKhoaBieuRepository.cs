@@ -108,7 +108,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool AddChitiet_tkb(int Id, int iddonvi)
+        public bool AddChitiet_Tkb(int Id, int iddonvi)
         {
             try
             {
@@ -275,7 +275,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool checkId_chitiet(int Id, int idDonvi)
+        public bool CheckId_ChiTiet(int Id, int idDonvi)
         {
             if(Id <= 0) return false;
             try

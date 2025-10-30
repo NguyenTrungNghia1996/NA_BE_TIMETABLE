@@ -14,7 +14,7 @@ namespace NA_Logic.IRepository
         ThoiKhoaBieu_Detail GetDetailById(int Id, int idDonvi);
         List<Chitiet_Thoikhoabieu> GetDetailTKB(int Id);
         bool Add(Danhsach_Thoikhoabieu ds_thoikhoabieu);
-        bool AddChitiet_tkb(int Id, int iddonvi);
+        bool AddChitiet_Tkb(int Id, int iddonvi);
         bool Copy_Tkb(int id_tkb_nguon, int id_tkb_dich);
         bool Update(Danhsach_Thoikhoabieu danhsach_Thoikhoabieu);
         bool Update_TrangThaiXep(int idtkb);
@@ -23,6 +23,6 @@ namespace NA_Logic.IRepository
         bool DeleteDetail(int Id);
         bool CheckId(int Id, int idDonvi);
         bool Huy_KQ(int Id);
-        bool checkId_chitiet(int Id, int idDonvi);
+        bool CheckId_ChiTiet(int Id, int idDonvi);
     }
 }
