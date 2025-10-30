@@ -333,7 +333,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             bool success = _ob.HuyXep(id);
@@ -351,7 +351,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -370,7 +370,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -389,7 +389,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -408,7 +408,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -427,7 +427,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -446,7 +446,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            var check_id = _tkb.CheckId_ChiTiet(id, idDonvi);
             if (id <= 0 || !check_id)
                 return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 

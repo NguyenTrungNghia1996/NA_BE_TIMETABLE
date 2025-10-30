@@ -121,7 +121,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             //thêm
             bool add = _tkb.Add(dstkb);
-            bool adddetail = _tkb.AddChitiet_tkb(dstkb.Id, idDonvi);
+            bool adddetail = _tkb.AddChitiet_Tkb(dstkb.Id, idDonvi);
             if (dstkb.Dang_su_dung)
             {
                 bool changestatus = _tkb.SetStatus(dstkb.Id, idDonvi);
@@ -141,6 +141,23 @@ namespace NA_Xepthoikhoabieu.Controllers
                 item = dstkb
             },
             "Thêm mới thành công");
+
+        }
+        [HttpPost("sync")]
+        [RequireToken]
+        public IActionResult Sync(int idtkb)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            bool check_tkb = _tkb.CheckId(idtkb, idDonvi);
+            if (!check_tkb)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
+            //thêm
+            bool add = _tkb.Sync_Tkb(idtkb,idDonvi);
+            if (!add)
+                return ApiResult.NotFound("Đồng bộ thất bại");
+            return ApiResult.Success("Đồng bộ thành công");
 
         }
         [HttpPost("copy")]
@@ -167,7 +184,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             //thêm
             bool add = _tkb.Add(tkb);
-            bool adddetail = _tkb.AddChitiet_tkb(tkb.Id, idDonvi);
+            bool adddetail = _tkb.AddChitiet_Tkb(tkb.Id, idDonvi);
             bool copytkb = false;
             if (dstkb.Dang_su_dung)
             {

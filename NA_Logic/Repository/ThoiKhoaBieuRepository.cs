@@ -140,6 +140,24 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Sync_Tkb(int idtkb, int idDonvi)
+        {
+            try
+            {
+                var paramIdTkb = new SqlParameter("IdTKB", SqlDbType.Int) { Value = idtkb };
+                var paramIdDonvi = new SqlParameter("IdDonvi", SqlDbType.Int) { Value = idDonvi };
+                var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+
+                _context.Database.ExecuteSqlRaw("EXEC [Sync_TKB] @IdTKB, @IdDonvi, @Message OUTPUT", paramIdTkb, paramIdDonvi, paramMessage);
+
+                var Message = paramMessage.Value?.ToString() ?? "";
+                return Message == "success";
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Update(Danhsach_Thoikhoabieu danhsach_Thoikhoabieu)
         {
             try
