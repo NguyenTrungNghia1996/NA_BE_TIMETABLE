@@ -97,6 +97,8 @@ namespace NA_Entities.DBContext
         public DbSet<Giaovien_Tochuyenmon> Giaovien_Tochuyenmon { get; set; }
         public DbSet<PhancongGV> PhancongGV { get; set; }
         public DbSet<DsLop_ByGVandMon> DsLop_ByGVandMon { get; set; }
+        public DbSet<DM_Namhoc> DM_Namhoc { get; set; }
+        public DbSet<DM_Namhoc_List> DM_Namhoc_List { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -136,6 +138,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Export>().HasNoKey();
             builder.Entity<PhancongGV>().HasNoKey();
             builder.Entity<DsLop_ByGVandMon>().HasNoKey();
+            builder.Entity<DM_Namhoc_List>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
