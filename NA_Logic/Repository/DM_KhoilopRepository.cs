@@ -161,10 +161,9 @@ namespace NA_Logic.Repository
             try
             {
                 return _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
-                                .Join(_context.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
                                 .Join(_context.DM_Khoilop,
-                                      ch => ch.Id, kl => kl.Id_Cap_hoc,
-                                      (ch, kl) => kl.Id)
+                                      cd => cd.Id_Cap_hoc, kl => kl.Id_Cap_hoc,
+                                      (cd, kl) => kl.Id)
                                 .Any(id => id == idKhoilop);
             }
             catch

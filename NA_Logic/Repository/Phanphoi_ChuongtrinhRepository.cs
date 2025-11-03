@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class DM_NamhocRepository : IDM_NamhocRepository
+    public class Phanphoi_ChuongtrinhRepository : IPhanphoi_ChuongtrinhRepository
     {
         private readonly NA_DbContext _dbContext;
-        public DM_NamhocRepository(NA_DbContext dbContext)
+        public Phanphoi_ChuongtrinhRepository(NA_DbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public List<DM_Namhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<Phanphoi_Chuongtrinh_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Namhoc_List>().FromSqlRaw("EXEC DM_Namhoc_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
+                var result = _dbContext.Set<Phanphoi_Chuongtrinh_List>().FromSqlRaw("EXEC Phanphoi_Chuongtrinh_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Namhoc_List>();
+                if (result == null) result = new List<Phanphoi_Chuongtrinh_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -52,11 +52,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Namhoc GetDetailById(int Id)
+        public Phanphoi_Chuongtrinh GetDetailById(int Id)
         {
             try
             {
-                var namhoc = _dbContext.DM_Namhoc.FirstOrDefault(c => c.Id == Id);
+                var namhoc = _dbContext.Phanphoi_Chuongtrinh.FirstOrDefault(c => c.Id == Id);
                 return namhoc;
             }
             catch (Exception)
@@ -64,13 +64,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add(DM_Namhoc dm_Namhoc)
+        public bool Add(Phanphoi_Chuongtrinh ppct)
         {
             try
             {
-                dm_Namhoc.Tu_ngay = dm_Namhoc.Tu_ngay.Date;
-                dm_Namhoc.Den_ngay = dm_Namhoc.Den_ngay.Date;
-                _dbContext.DM_Namhoc.Add(dm_Namhoc);
+                _dbContext.Phanphoi_Chuongtrinh.Add(ppct);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -79,14 +77,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Namhoc dm_Namhoc)
+        public bool Update(Phanphoi_Chuongtrinh ppct)
         {
             try
             {
-                dm_Namhoc.Tu_ngay = dm_Namhoc.Tu_ngay.Date;
-                dm_Namhoc.Den_ngay = dm_Namhoc.Den_ngay.Date;
                 _dbContext.ChangeTracker.Clear();
-                _dbContext.DM_Namhoc.Update(dm_Namhoc);
+                _dbContext.Phanphoi_Chuongtrinh.Update(ppct);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -95,19 +91,20 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int id) {
+        public bool Delete(int id)
+        {
             try
             {
-                var namhoc = _dbContext.DM_Namhoc.Find(id);
-                if(namhoc == null)
+                var namhoc = _dbContext.Phanphoi_Chuongtrinh.Find(id);
+                if (namhoc == null)
                 {
                     return false;
                 }
-                _dbContext.DM_Namhoc.Remove(namhoc);
+                _dbContext.Phanphoi_Chuongtrinh.Remove(namhoc);
                 _dbContext.SaveChanges();
                 return true;
             }
-            catch(Exception) 
+            catch (Exception)
             {
                 return false;
             }
@@ -135,12 +132,12 @@ namespace NA_Logic.Repository
         //        return false;
         //    }
         //}
-        public bool CheckId(int Id)
+        public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Namhoc.Any(c=>c.Id == Id);
+                return _dbContext.Phanphoi_Chuongtrinh.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {
@@ -149,7 +146,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids)
         {
-            var existingIds = _dbContext.DM_Namhoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.Phanphoi_Chuongtrinh.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

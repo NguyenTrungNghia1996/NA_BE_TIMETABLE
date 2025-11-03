@@ -101,6 +101,10 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Namhoc_List> DM_Namhoc_List { get; set; }
         public DbSet<DM_Ngaynghi> DM_Ngaynghi { get; set; }
         public DbSet<DM_Ngaynghi_List> DM_Ngaynghi_List { get; set; }
+        public DbSet<Phanphoi_Chuongtrinh> Phanphoi_Chuongtrinh { get; set; }
+        public DbSet<Phanphoi_Chuongtrinh_List> Phanphoi_Chuongtrinh_List { get; set; }
+        public DbSet<Phanphoi_Chuongtrinh_Chitiet> Phanphoi_Chuongtrinh_Chitiet { get; set; }
+        public DbSet<Phanphoi_Chuongtrinh_Chitiet_List> Phanphoi_Chuongtrinh_Chitiet_List { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -142,6 +146,8 @@ namespace NA_Entities.DBContext
             builder.Entity<DsLop_ByGVandMon>().HasNoKey();
             builder.Entity<DM_Namhoc_List>().HasNoKey();
             builder.Entity<DM_Ngaynghi_List>().HasNoKey();
+            builder.Entity<Phanphoi_Chuongtrinh_List>().HasNoKey();
+            builder.Entity<Phanphoi_Chuongtrinh_Chitiet_List>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
