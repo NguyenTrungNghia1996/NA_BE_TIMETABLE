@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class DM_NamhocRepository : IDM_NamhocRepository
+    public class DM_NgaynghiRepository : IDM_NgaynghiRepository
     {
         private readonly NA_DbContext _dbContext;
-        public DM_NamhocRepository(NA_DbContext dbContext)
+        public DM_NgaynghiRepository(NA_DbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public List<DM_Namhoc_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Ngaynghi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace NA_Logic.Repository
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Namhoc_List>().FromSqlRaw("EXEC DM_Namhoc_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
+                var result = _dbContext.Set<DM_Ngaynghi_List>().FromSqlRaw("EXEC DM_Ngaynghi_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch, paramTotal)
                     .ToList();
-                if (result == null) result = new List<DM_Namhoc_List>();
+                if (result == null) result = new List<DM_Ngaynghi_List>();
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
@@ -52,25 +52,25 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Namhoc GetDetailById(int Id)
+        public DM_Ngaynghi GetDetailById(int Id)
         {
             try
             {
-                var namhoc = _dbContext.DM_Namhoc.FirstOrDefault(c => c.Id == Id);
-                return namhoc;
+                var ngaynghi = _dbContext.DM_Ngaynghi.FirstOrDefault(c => c.Id == Id);
+                return ngaynghi;
             }
             catch (Exception)
             {
                 return null;
             }
         }
-        public bool Add(DM_Namhoc dm_Namhoc)
+        public bool Add(DM_Ngaynghi dm_Ngaynghi)
         {
             try
             {
-                dm_Namhoc.Tu_ngay = dm_Namhoc.Tu_ngay.Date;
-                dm_Namhoc.Den_ngay = dm_Namhoc.Den_ngay.Date;
-                _dbContext.DM_Namhoc.Add(dm_Namhoc);
+                dm_Ngaynghi.Tu_ngay = dm_Ngaynghi.Tu_ngay.Date;
+                dm_Ngaynghi.Den_ngay = dm_Ngaynghi.Den_ngay.Date;
+                _dbContext.DM_Ngaynghi.Add(dm_Ngaynghi);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -79,14 +79,14 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Namhoc dm_Namhoc)
+        public bool Update(DM_Ngaynghi dm_Ngaynghi)
         {
             try
             {
-                dm_Namhoc.Tu_ngay = dm_Namhoc.Tu_ngay.Date;
-                dm_Namhoc.Den_ngay = dm_Namhoc.Den_ngay.Date;
+                dm_Ngaynghi.Tu_ngay = dm_Ngaynghi.Tu_ngay.Date;
+                dm_Ngaynghi.Den_ngay = dm_Ngaynghi.Den_ngay.Date;
                 _dbContext.ChangeTracker.Clear();
-                _dbContext.DM_Namhoc.Update(dm_Namhoc);
+                _dbContext.DM_Ngaynghi.Update(dm_Ngaynghi);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -95,19 +95,20 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Delete(int id) {
+        public bool Delete(int id)
+        {
             try
             {
-                var namhoc = _dbContext.DM_Namhoc.Find(id);
-                if(namhoc == null)
+                var ngaynghi = _dbContext.DM_Ngaynghi.Find(id);
+                if (ngaynghi == null)
                 {
                     return false;
                 }
-                _dbContext.DM_Namhoc.Remove(namhoc);
+                _dbContext.DM_Ngaynghi.Remove(ngaynghi);
                 _dbContext.SaveChanges();
                 return true;
             }
-            catch(Exception) 
+            catch (Exception)
             {
                 return false;
             }
@@ -156,7 +157,7 @@ namespace NA_Logic.Repository
         //}
         public bool CheckIds(IEnumerable<int> ids)
         {
-            var existingIds = _dbContext.DM_Namhoc.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Ngaynghi.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

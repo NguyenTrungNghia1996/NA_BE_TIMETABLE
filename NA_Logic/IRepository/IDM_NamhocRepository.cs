@@ -13,6 +13,6 @@ namespace NA_Logic.IRepository
         DM_Namhoc GetDetailById(int Id);
         bool Add(DM_Namhoc dm_Namhoc);
         bool Update(DM_Namhoc dm_Namhoc);
-        (bool success, string message) Delete(int Id);
+        bool Delete(int id);
     }
 }
