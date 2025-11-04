@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
@@ -7,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -154,6 +157,57 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
+        public bool Import (int idppct, Stream file)
+        {
+            if (idppct == 0) return false;
+            try
+            {
+                var listPPCT = new List<Phanphoi_Chuongtrinh_Chitiet>();
 
+                using var workbook = new XLWorkbook(file);
+                var worksheet = workbook.Worksheet(1);
+                var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 0;
+
+                for (int row = 2; row <= lastRow; row++)
+                {
+                    var tuan = worksheet.Cell(row, 1).Value;
+                    var tiet = worksheet.Cell(row, 2).Value;
+                    var phanMon = worksheet.Cell(row, 3).Value;
+                    var tenBai = worksheet.Cell(row, 4).Value;
+
+                    if (tuan.IsBlank && tiet.IsBlank &&
+                        phanMon.IsBlank && tenBai.IsBlank)
+                        continue;
+
+                    var itemPPCT = new Phanphoi_Chuongtrinh_Chitiet
+                    {
+                        Id_ppct = idppct,
+                        Tuan = tuan.IsBlank ? 0 :
+                               tuan.IsNumber ? (int)tuan.GetNumber() :
+                               int.TryParse(tuan.ToString(), out int t) ? t : 0,
+                        Thu_tu_tiet = tiet.IsBlank ? 0 :
+                               tiet.IsNumber ? (int)tiet.GetNumber() :
+                               int.TryParse(tiet.ToString(), out int ti) ? ti : 0,
+                        Phan_mon = phanMon.ToString() ?? "",
+                        Ten_bai = tenBai.ToString() ?? "",
+                        Ghi_chu = ""
+                    };
+
+                    listPPCT.Add(itemPPCT);
+                }
+
+                if (listPPCT.Any())
+                {
+                    _dbContext.Phanphoi_Chuongtrinh_Chitiet.AddRangeAsync(listPPCT);
+                    _dbContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

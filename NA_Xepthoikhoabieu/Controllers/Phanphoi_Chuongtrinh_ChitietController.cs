@@ -152,5 +152,32 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Xoá không thành công");
             return ApiResult.Ok("Xóa thành công");
         }
+        [HttpPost("import")]
+        [RequireToken]
+        public IActionResult Import(IFormFile file, [FromForm] int idppct)
+        {
+            try
+            {
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+                bool checkppct = _ppct.CheckId(idppct, idDonvi);
+                if (!checkppct)
+                {
+                    return ApiResult.BadRequest($"Id phân phối chương trình = {idppct} không hợp lệ");
+                }
+                bool result = false;
+                using (var stream = file.OpenReadStream())
+                {
+                    result = _ppctct.Import(idppct, stream);
+                }
+                if (!result)
+                    return ApiResult.BadRequest("Import thất bại");
+                return ApiResult.Success("Import thành công");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
     }
 }
