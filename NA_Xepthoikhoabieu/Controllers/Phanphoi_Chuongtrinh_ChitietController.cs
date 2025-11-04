@@ -29,13 +29,13 @@ namespace NA_Xepthoikhoabieu.Controllers
             _ppct = ppct;
         }
         [HttpGet]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int idPpct, [FromQuery] string search = "" )
         {
             int idDonvi = 0;
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
-            var list = _ppctct.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _ppctct.GetList_Paging(PageIndex, PageSize, search, idPpct, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new

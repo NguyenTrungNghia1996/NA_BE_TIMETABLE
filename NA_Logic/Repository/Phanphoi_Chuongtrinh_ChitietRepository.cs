@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<Phanphoi_Chuongtrinh_Chitiet_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<Phanphoi_Chuongtrinh_Chitiet_List> GetList_Paging(int PageIndex, int PageSize, string search, int idPpct, ref int totalrecord)
         {
             try
             {
@@ -36,12 +36,16 @@ namespace NA_Logic.Repository
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIdppct = new SqlParameter("Id_ppct", SqlDbType.Int)
+                {
+                    Value = PageSize
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<Phanphoi_Chuongtrinh_Chitiet_List>().FromSqlRaw("EXEC Phanphoi_Chuongtrinh_Chitiet_GetList_Paging @pageIndex, @pageSize, @search,  @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch, paramTotal)
+                var result = _dbContext.Set<Phanphoi_Chuongtrinh_Chitiet_List>().FromSqlRaw("EXEC Phanphoi_Chuongtrinh_Chitiet_GetList_Paging @pageIndex, @pageSize, @search, @Id_ppct,  @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdppct, paramTotal)
                     .ToList();
                 if (result == null) result = new List<Phanphoi_Chuongtrinh_Chitiet_List>();
                 totalrecord = (int)paramTotal.Value;
