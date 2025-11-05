@@ -41,7 +41,7 @@ namespace NA_Logic.Repository
                 };
                 var paramIdppct = new SqlParameter("Id_ppct", SqlDbType.Int)
                 {
-                    Value = PageSize
+                    Value = idPpct
                 };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
