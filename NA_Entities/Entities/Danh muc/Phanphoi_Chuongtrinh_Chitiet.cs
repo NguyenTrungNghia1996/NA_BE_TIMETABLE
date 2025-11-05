@@ -14,7 +14,6 @@ namespace NA_Entities.Entities.Danh_muc
         public int Thu_tu_tiet { get; set; }
         public string Phan_mon { get; set; }
         public string Ten_bai { get; set; }
-        public string Ghi_chu { get; set; }
     }
     public class Phanphoi_Chuongtrinh_Chitiet_List
     {
@@ -25,6 +24,5 @@ namespace NA_Entities.Entities.Danh_muc
         public int Thu_tu_tiet { get; set; }
         public string Phan_mon { get; set; }
         public string Ten_bai { get; set; }
-        public string Ghi_chu { get;set; }
     }
 }

@@ -210,8 +210,7 @@ namespace NA_Logic.Repository
                                tiet.IsNumber ? (int)tiet.GetNumber() :
                                int.TryParse(tiet.ToString(), out int ti) ? ti : 0,
                         Phan_mon = phanMon.ToString() ?? "",
-                        Ten_bai = tenBai.ToString() ?? "",
-                        Ghi_chu = ""
+                        Ten_bai = tenBai.ToString() ?? ""
                     };
                     if (CheckTrungTuanTiet(itemPPCT, idDonvi))
                     {
