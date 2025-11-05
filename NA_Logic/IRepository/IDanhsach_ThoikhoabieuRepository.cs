@@ -25,5 +25,6 @@ namespace NA_Logic.IRepository
         bool CheckId(int Id, int idDonvi);
         bool Huy_KQ(int Id);
         bool CheckId_ChiTiet(int Id, int idDonvi);
+        bool Check_constraint(int Id);
     }
 }

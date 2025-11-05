@@ -306,5 +306,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool Check_constraint(int Id)
+        {
+            try
+            {
+
+                return _context.Database.SqlQueryRaw<int>($@"
+                          select 1 as Value from Lich_Baogiang where Id_tkb = {Id}").Any();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

@@ -265,7 +265,11 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (!tkbdb)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            bool check_contraint = _tkb.Check_constraint(id);
+            if (check_contraint)
+            {
+                return ApiResult.BadRequest("Thời khoá biểu đã có ràng buộc, không thể xoá");
+            }
             var detail = _tkb.DeleteDetail(id);
             if (!detail)
                 return ApiResult.NotFound("Xóa chi tiết thời khoá biểu thất bại");

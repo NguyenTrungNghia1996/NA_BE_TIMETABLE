@@ -20,9 +20,11 @@ namespace NA_Entities.Entities.Danh_muc
         public int STT { get; set; }
         public int Id { get; set; }
         public int Id_nam_hoc { get; set; }
+        public string Ten_nam_hoc { get; set; }
         public int Tuan { get; set; }
         public DateTime Tu_ngay { get; set; }
         public DateTime Den_ngay { get; set; }
         public int Id_tkb { get; set; }
+        public string Ten_tkb { get; set; }
     }
 }

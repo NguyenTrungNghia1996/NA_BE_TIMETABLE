@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.InkML;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -188,7 +190,24 @@ namespace NA_Logic.Repository
                 using var workbook = new XLWorkbook(file);
                 var worksheet = workbook.Worksheet(1);
                 var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 0;
+                // 1. Kiểm tra file có dữ liệu không
+                if (lastRow < 2)
+                {
+                    return (false, "File Excel không có dữ liệu");
+                }
 
+                // 2. Kiểm tra file đúng định dạng không
+                var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài" };
+                for (int col = 1; col <= 4; col++)
+                {
+                    var headerValue = worksheet.Cell(1, col).Value.ToString()?.Trim();
+                    if (string.IsNullOrEmpty(headerValue) ||
+                        !headerValue.Equals(headers[col - 1], StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (false, $"Cột {col} không đúng định dạng. Cần: {headers[col - 1]}");
+                    }
+                }
+                //đọc file
                 for (int row = 2; row <= lastRow; row++)
                 {
                     var tuan = worksheet.Cell(row, 1).Value;
@@ -212,18 +231,27 @@ namespace NA_Logic.Repository
                         Phan_mon = phanMon.ToString() ?? "",
                         Ten_bai = tenBai.ToString() ?? ""
                     };
+                    if (itemPPCT.Tuan <= 0)
+                    {
+                        return (false, $"Dòng {row}: Tuần phải là số nguyên dương");
+                    }
+
+                    if (itemPPCT.Thu_tu_tiet <= 0)
+                    {
+                        return (false, $"Dòng {row}: Tiết phải là số nguyên dương");
+                    }
                     if (CheckTrungTuanTiet(itemPPCT, idDonvi))
                     {
                         return (false, "Cặp tuần - tiết này đã được tạo");
                     }
                     listPPCT.Add(itemPPCT);
                 }
-
-                if (listPPCT.Any())
-                {
-                    _dbContext.Phanphoi_Chuongtrinh_Chitiet.AddRangeAsync(listPPCT);
-                    _dbContext.SaveChangesAsync();
-                }
+                //xoá dữ liệu cũ
+                var ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct).ToList();
+                _dbContext.BulkDelete(ppctOld);
+                //thêm dữ liệu
+                _dbContext.BulkInsert(listPPCT);
+                _dbContext.SaveChangesAsync();
 
                 return (true,"Import thành công");
             }
