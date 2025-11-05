@@ -76,10 +76,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             ppct.Id = 0;
             ppct.Id_don_vi = idDonvi;
             //check validate
-            bool checkten = _validate.CheckTrungTen_byDonvi<Phanphoi_Chuongtrinh>(idDonvi,ppct.Ten);
-            if (checkten)
+            bool checktrung = _ppct.CheckTrung(ppct);
+            if (checktrung)
             {
-                return ApiResult.BadRequest("Tên phân phối chương trình học đã tồn tại");
+                return ApiResult.BadRequest("Phân phối chương trình này đã được tạo");
             }
             bool checknam = _namhoc.CheckId(ppct.Id_nam_hoc);
             if (!checknam) {
@@ -128,10 +128,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
             ppct.Id_don_vi= idDonvi;
             //check validate
-            bool checkten = _validate.CheckTrungTen_byDonvi<Phanphoi_Chuongtrinh>(idDonvi,ppct.Ten, ppct.Id);
-            if (checkten)
+            bool checktrung = _ppct.CheckTrung(ppct);
+            if (checktrung)
             {
-                return ApiResult.BadRequest("Tên nam học đã tồn tại");
+                return ApiResult.BadRequest("Phân phối chương trình này đã được tạo");
             }
             bool checknam = _namhoc.CheckId(ppct.Id_nam_hoc);
             if (!checknam)

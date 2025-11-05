@@ -15,5 +15,6 @@ namespace NA_Logic.IRepository
         bool Update(Phanphoi_Chuongtrinh ppct);
         bool Delete(int id);
         public bool CheckId(int Id, int idDonvi);
+        bool CheckTrung(Phanphoi_Chuongtrinh ppct);
     }
 }

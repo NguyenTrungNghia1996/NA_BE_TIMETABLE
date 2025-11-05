@@ -157,9 +157,30 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
-        public bool Import (int idppct, Stream file)
+        public bool CheckTrungTuanTiet(Phanphoi_Chuongtrinh_Chitiet ppctct, int idDonvi)
         {
-            if (idppct == 0) return false;
+            try
+            {
+
+                bool check = (from pct in _dbContext.Phanphoi_Chuongtrinh_Chitiet
+                              join p in _dbContext.Phanphoi_Chuongtrinh on pct.Id_ppct equals p.Id
+                              join m in _dbContext.Dm_Monhoc on p.Id_mon equals m.Id
+                              where pct.Tuan == ppctct.Tuan
+                                  && pct.Thu_tu_tiet == ppctct.Thu_tu_tiet
+                                  && pct.Id_ppct == ppctct.Id_ppct
+                                  && m.Id_don_vi == idDonvi
+                                  && (ppctct.Id <= 0 || pct.Id != ppctct.Id)
+                              select pct).Any();
+
+                if (check) return true;
+
+                return false;
+            }
+            catch { return true; }
+        }
+        public (bool result, string mess) Import (int idppct, Stream file, int idDonvi)
+        {
+            if (idppct == 0) return (false,"Id không hợp lệ");
             try
             {
                 var listPPCT = new List<Phanphoi_Chuongtrinh_Chitiet>();
@@ -192,7 +213,10 @@ namespace NA_Logic.Repository
                         Ten_bai = tenBai.ToString() ?? "",
                         Ghi_chu = ""
                     };
-
+                    if (CheckTrungTuanTiet(itemPPCT, idDonvi))
+                    {
+                        return (false, "Cặp tuần - tiết này đã được tạo");
+                    }
                     listPPCT.Add(itemPPCT);
                 }
 
@@ -202,11 +226,11 @@ namespace NA_Logic.Repository
                     _dbContext.SaveChangesAsync();
                 }
 
-                return true;
+                return (true,"Import thành công");
             }
             catch
             {
-                return false;
+                return (false, "Import thất bại");
             }
         }
     }

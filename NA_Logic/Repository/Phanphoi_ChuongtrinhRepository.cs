@@ -149,6 +149,25 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.Phanphoi_Chuongtrinh.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
+        public bool CheckTrung(Phanphoi_Chuongtrinh ppct)
+        {
+            try
+            {
 
+                bool check = (from p in _dbContext.Phanphoi_Chuongtrinh
+                              join m in _dbContext.Dm_Monhoc on p.Id_mon equals m.Id
+                              where p.Id_mon == ppct.Id_mon
+                                  && p.Id_khoi == ppct.Id_khoi
+                                  && p.Id_ban == ppct.Id_ban
+                                  && p.Id_nam_hoc == ppct.Id_nam_hoc
+                                  && m.Id_don_vi == ppct.Id_don_vi
+                                  && (ppct.Id <= 0 || p.Id != ppct.Id)
+                              select p).Any();
+                if (check) return true;
+
+                return false;
+            }
+            catch { return true; }
+        }
     }
 }

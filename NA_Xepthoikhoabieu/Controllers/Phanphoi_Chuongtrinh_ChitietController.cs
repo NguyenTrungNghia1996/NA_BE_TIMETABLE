@@ -69,11 +69,11 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             ppctct.Id = 0;
             //check validate
-            //bool checkten = _validate.CheckTrungTen<Phanphoi_Chuongtrinh_Chitiet>(ppctct.Ten);
-            //if (checkten)
-            //{
-            //    return ApiResult.BadRequest("Tên năm học đã tồn tại");
-            //}
+            bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
+            if (checktrung)
+            {
+                return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
+            }
             bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
             if (!checkppct)
             {
@@ -110,11 +110,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (ppctctdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
             //check validate
-            //bool checkten = _validate.CheckTrungTen<Phanphoi_Chuongtrinh_Chitiet>(ppctct.Ten, ppctct.Id);
-            //if (checkten)
-            //{
-            //    return ApiResult.BadRequest("Tên nam học đã tồn tại");
-            //}
+            bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
+            if (checktrung)
+            {
+                return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
+            }
             bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
             if (!checkppct)
             {
@@ -165,14 +165,14 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     return ApiResult.BadRequest($"Id phân phối chương trình = {idppct} không hợp lệ");
                 }
-                bool result = false;
+                var(result, mess) = (false,"");
                 using (var stream = file.OpenReadStream())
                 {
-                    result = _ppctct.Import(idppct, stream);
+                    (result, mess) = _ppctct.Import(idppct, stream, idDonvi);
                 }
                 if (!result)
-                    return ApiResult.BadRequest("Import thất bại");
-                return ApiResult.Success("Import thành công");
+                    return ApiResult.BadRequest(mess);
+                return ApiResult.Success(mess);
             }
             catch (Exception ex)
             {
