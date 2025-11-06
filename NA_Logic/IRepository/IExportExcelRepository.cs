@@ -15,5 +15,6 @@ namespace NA_Logic.IRepository
         byte[] ExportExcel_MaTranKhoi(int idtkb);
         byte[] ExportExcel_MaTranGiaoVien(int idtkb);
         byte[] ExportExcel_MaTranToHopMon(int idtkb, int idDonvi);
+        byte[] ExportExcel_MaTranLop(int idtkb);
     }
 }
