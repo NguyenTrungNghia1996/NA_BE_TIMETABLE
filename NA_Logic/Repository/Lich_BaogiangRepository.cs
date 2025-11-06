@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using EFCore.BulkExtensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
@@ -56,8 +58,8 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var namhoc = _dbContext.Lich_Baogiang.FirstOrDefault(c => c.Id == Id);
-                return namhoc;
+                var lbg = _dbContext.Lich_Baogiang.FirstOrDefault(c => c.Id == Id);
+                return lbg;
             }
             catch (Exception)
             {
@@ -97,6 +99,11 @@ namespace NA_Logic.Repository
         {
             try
             {
+                var lichbg = _dbContext.Lich_Baogiang.Any(c => c.Id == lbg.Id);
+                if (!lichbg)
+                {
+                    return (false, "Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
+                }
                 var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
 
                 var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
@@ -114,7 +121,6 @@ namespace NA_Logic.Repository
                 }
                 lbg.Tu_ngay = tuNgay;
                 lbg.Den_ngay = denNgay;
-                _dbContext.Lich_Baogiang.Update(lbg);
                 _dbContext.SaveChanges();
                 return (true, "Cập nhật lịch báo giảng thành công");
             }
@@ -137,6 +143,17 @@ namespace NA_Logic.Repository
                 return true;
             }
             catch (Exception)
+            {
+                return false;
+            }
+        }  
+        public bool CheckChangeTKB(Lich_Baogiang lbg)
+        {
+            try
+            {
+                return _dbContext.Lich_Baogiang.Any(c => c.Id_tkb == lbg.Id_tkb && c.Id == lbg.Id);
+            }
+            catch
             {
                 return false;
             }

@@ -16,5 +16,6 @@ namespace NA_Logic.IRepository
         bool Delete(int id);
         public bool CheckId(int Id, int idDonvi);
         bool CheckTrungTuan(Lich_Baogiang lbg, int idDonvi);
+        bool CheckChangeTKB(Lich_Baogiang lbg);
     }
 }

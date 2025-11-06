@@ -197,7 +197,7 @@ namespace NA_Logic.Repository
                 }
 
                 // 2. Kiểm tra file đúng định dạng không
-                var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài" };
+                var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài học" };
                 for (int col = 1; col <= 4; col++)
                 {
                     var headerValue = worksheet.Cell(1, col).Value.ToString()?.Trim();
@@ -240,10 +240,7 @@ namespace NA_Logic.Repository
                     {
                         return (false, $"Dòng {row}: Tiết phải là số nguyên dương");
                     }
-                    if (CheckTrungTuanTiet(itemPPCT, idDonvi))
-                    {
-                        return (false, "Cặp tuần - tiết này đã được tạo");
-                    }
+                    
                     listPPCT.Add(itemPPCT);
                 }
                 //xoá dữ liệu cũ
@@ -251,7 +248,6 @@ namespace NA_Logic.Repository
                 _dbContext.BulkDelete(ppctOld);
                 //thêm dữ liệu
                 _dbContext.BulkInsert(listPPCT);
-                _dbContext.SaveChangesAsync();
 
                 return (true,"Import thành công");
             }

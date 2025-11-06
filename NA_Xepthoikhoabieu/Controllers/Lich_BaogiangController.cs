@@ -18,8 +18,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IAuthRepository _auth;
         private readonly IDM_NamhocRepository _namhoc;
         private readonly IDanhsach_ThoikhoabieuRepository _tkb;
+        private readonly IPhieu_BaogiangRepository _pbg;
         public Lich_BaogiangController(IMapper mapper, ILich_BaogiangRepository lgb, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
-                                        IDM_NamhocRepository namhoc, IDanhsach_ThoikhoabieuRepository tkb)
+                                        IDM_NamhocRepository namhoc, IDanhsach_ThoikhoabieuRepository tkb, IPhieu_BaogiangRepository pbg)
         {
             _mapper = mapper;
             _lgb = lgb;
@@ -27,8 +28,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _namhoc = namhoc;
             _tkb = tkb;
+            _pbg = pbg;
         }
         [HttpGet]
+        [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
             int idDonvi = 0;
@@ -36,6 +39,24 @@ namespace NA_Xepthoikhoabieu.Controllers
             int totalrecord = 0;
             search = search.Trim();
             var list = _lgb.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            if (list == null || list.Count == 0)
+                return ApiResult.Ok();
+            return ApiResult.Success(new
+            {
+                items = list,
+                totalrecord = totalrecord
+            },
+            "Thành công");
+        }
+        [HttpGet("phieu")]
+        [RequireToken]
+        public IActionResult GetList_Paging_Phieu([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Idlbg, [FromQuery] string search = "")
+        {
+            int idDonvi = 0;
+            // Lấy danh sách dữ liệu
+            int totalrecord = 0;
+            search = search.Trim();
+            var list = _pbg.GetList_Paging(PageIndex, PageSize, Idlbg, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new
@@ -92,6 +113,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var (result, mess) = _lgb.Add(lgb);
             if (!result)
                 return ApiResult.NotFound(mess);
+
+            bool addPBG = _pbg.Add(lgb.Id, lgb.Id_tkb);
+            if (!addPBG)
+                return ApiResult.BadRequest("Thêm lịch báo giảng thành công, thêm phiếu báo giảng thất bại");
+
             return ApiResult.Success(new
             {
                 item = lgb
@@ -106,12 +132,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
-            // Kiểm tra bản ghi hợp lệ
-            var lgbdb = _lgb.GetDetailById(lgb.Id);
+
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (lgbdb == null)
-                return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
             //check validate
             bool checktrung = _lgb.CheckTrungTuan(lgb, idDonvi);
@@ -129,13 +152,24 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest($"Id năm học = {lgb.Id_nam_hoc} không hợp lệ");
             }
-           
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //sửa
             var (result, mess) = _lgb.Update(lgb);
             if (!result)
                 return ApiResult.NotFound(mess);
+            //nếu thay đổi tkb thì insert lại pbg
+            bool checkchangetkb = _lgb.CheckChangeTKB(lgb);
+            if (!checkchangetkb)
+            {
+                bool deletepgb = _pbg.Delete(lgb.Id);
+                if (!deletepgb)
+                    return ApiResult.BadRequest("Xoá phiếu báo giảng thất bại");
+                bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb);
+                if (!addpbg)
+                    return ApiResult.BadRequest("Thêm phiếu báo giảng thất bại");
+            }
+
             return ApiResult.Success(new
             {
                 item = lgb
@@ -145,19 +179,25 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
+            //check id đơn vị
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
             {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
+            //check id lbg
             var lgbdb = _lgb.GetDetailById(id);
             if (lgbdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            //xoá pbg
+            bool deletepgb = _pbg.Delete(id);
+            if (!deletepgb)
+                return ApiResult.BadRequest("Xoá phiếu báo giảng thất bại");
+            //xoá lbg
             bool delete = _lgb.Delete(id);
             if (!delete)
                 return ApiResult.BadRequest("Xoá không thành công");
+
             return ApiResult.Ok("Xóa thành công");
         }
     }
