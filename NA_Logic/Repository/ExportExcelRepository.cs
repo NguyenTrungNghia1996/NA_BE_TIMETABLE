@@ -504,10 +504,7 @@ namespace NA_Logic.Repository
             {
                 worksheet.Column(i).Width = 18;
             }
-            for (int i = 1; i <= 3; i++)
-            {
-                worksheet.Column(i).Width = 8;
-            }
+            
         }
 
         public byte[] ExportExcel_MaTranToanTruong(int idtkb)
@@ -1001,7 +998,7 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
-        public byte[] ExportExcel_MaTranToHopMon(int idtkb, int idDonvi)
+        public byte[] ExportExcel_MaTranToChuyenMon(int idtkb, int idDonvi)
         {
             var data = List_Tiet(idtkb);
             if (!data.Any()) return null;

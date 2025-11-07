@@ -190,9 +190,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest($"Lỗi: {ex.Message}");
             }
         }
+        //ma trận tổ chuyên môn
         [HttpGet("matran/tohopmon")]
         [RequireToken]
-        public IActionResult Export_MaTran_ToHopMon([FromQuery] int idtkb)
+        public IActionResult Export_MaTran_ToChuyenMon([FromQuery] int idtkb)
         {
             try
             {
@@ -200,12 +201,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (check_env)
                     return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-                var excelBytes = _export.ExportExcel_MaTranToHopMon(idtkb, idDonvi);
+                var excelBytes = _export.ExportExcel_MaTranToChuyenMon(idtkb, idDonvi);
 
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
-                var fileName = $"MaTranToHopMon_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var fileName = $"MaTranToChuyenMon_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 //header
                 Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
                 Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
