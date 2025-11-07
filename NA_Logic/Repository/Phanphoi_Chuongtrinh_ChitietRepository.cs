@@ -243,6 +243,28 @@ namespace NA_Logic.Repository
                     
                     listPPCT.Add(itemPPCT);
                 }
+                var cacTiet = listPPCT.OrderBy(x => x.Thu_tu_tiet).Select(x => x.Thu_tu_tiet).ToList();
+
+                if (cacTiet[0] != 1)
+                {
+                    return (false, "Tiết đầu tiên phải bắt đầu từ 1");
+                }
+
+                var cacTietThieu = new List<int>();
+
+                for (int i = 0; i < cacTiet.Count; i++)
+                {
+                    if (cacTiet[i] != i + 1)
+                    {
+                        cacTietThieu.Add(i + 1);
+                    }
+                }
+
+                if (cacTietThieu.Any())
+                {
+                    var danhSachThieu = string.Join(", ", cacTietThieu);
+                    return (false, $"Thứ tự tiết không liên tiếp. Thiếu tiết: {danhSachThieu}");
+                }
                 //xoá dữ liệu cũ
                 var ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct).ToList();
                 _dbContext.BulkDelete(ppctOld);
