@@ -46,112 +46,112 @@ namespace NA_Xepthoikhoabieu.Controllers
             "Thành công");
         }
 
-        [HttpGet("detail")]
-        [RequireToken]
-        public IActionResult GetDetailByID([FromQuery] int Id)
-        {
+        //[HttpGet("detail")]
+        //[RequireToken]
+        //public IActionResult GetDetailByID([FromQuery] int Id)
+        //{
 
-            // Lấy bản ghi từ db
-            var detailppctct = _ppctct.GetDetailById(Id);
-            if (detailppctct == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            return ApiResult.Success(detailppctct, "Thành công");
-        }
-        [HttpPost]
-        [RequireToken]
-        public IActionResult Create([FromBody] Phanphoi_Chuongtrinh_Chitiet ppctct)
-        {
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0)
-            {
-                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            }
+        //    // Lấy bản ghi từ db
+        //    var detailppctct = _ppctct.GetDetailById(Id);
+        //    if (detailppctct == null)
+        //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+        //    return ApiResult.Success(detailppctct, "Thành công");
+        //}
+        //[HttpPost]
+        //[RequireToken]
+        //public IActionResult Create([FromBody] Phanphoi_Chuongtrinh_Chitiet ppctct)
+        //{
+        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        //    if (idDonvi == 0)
+        //    {
+        //        return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        //    }
 
-            ppctct.Id = 0;
-            //check validate
-            bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
-            if (checktrung)
-            {
-                return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
-            }
-            bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
-            if (!checkppct)
-            {
-                return ApiResult.BadRequest($"Id phân phối chương trình = {ppctct.Id_ppct} không hợp lệ");
-            }
+        //    ppctct.Id = 0;
+        //    //check validate
+        //    bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
+        //    if (checktrung)
+        //    {
+        //        return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
+        //    }
+        //    bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
+        //    if (!checkppct)
+        //    {
+        //        return ApiResult.BadRequest($"Id phân phối chương trình = {ppctct.Id_ppct} không hợp lệ");
+        //    }
             
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            // add 
-            bool add = _ppctct.Add(ppctct);
-            if (!add)
-                return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
+        //    // add 
+        //    bool add = _ppctct.Add(ppctct);
+        //    if (!add)
+        //        return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
 
-            return ApiResult.Success(new
-            {
-                item = ppctct
-            },
-            "Thêm mới thành công");
-        }
-        [HttpPut]
-        [RequireToken]
-        public IActionResult Update([FromBody] Phanphoi_Chuongtrinh_Chitiet ppctct)
-        {
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0)
-            {
-                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            }
-            // Kiểm tra bản ghi hợp lệ
-            var ppctctdb = _ppctct.GetDetailById(ppctct.Id);
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
-            if (ppctctdb == null)
-                return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-            //check validate
-            bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
-            if (checktrung)
-            {
-                return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
-            }
-            bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
-            if (!checkppct)
-            {
-                return ApiResult.BadRequest($"Id phân phối chương trình = {ppctct.Id_ppct} không hợp lệ");
-            }
+        //    return ApiResult.Success(new
+        //    {
+        //        item = ppctct
+        //    },
+        //    "Thêm mới thành công");
+        //}
+        //[HttpPut]
+        //[RequireToken]
+        //public IActionResult Update([FromBody] Phanphoi_Chuongtrinh_Chitiet ppctct)
+        //{
+        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        //    if (idDonvi == 0)
+        //    {
+        //        return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        //    }
+        //    // Kiểm tra bản ghi hợp lệ
+        //    var ppctctdb = _ppctct.GetDetailById(ppctct.Id);
+        //    if (!ModelState.IsValid)
+        //        return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+        //    if (ppctctdb == null)
+        //        return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
+        //    //check validate
+        //    bool checktrung = _ppctct.CheckTrungTuanTiet(ppctct, idDonvi);
+        //    if (checktrung)
+        //    {
+        //        return ApiResult.BadRequest("Cặp tuần - tiết này đã được tạo");
+        //    }
+        //    bool checkppct = _ppct.CheckId(ppctct.Id_ppct, idDonvi);
+        //    if (!checkppct)
+        //    {
+        //        return ApiResult.BadRequest($"Id phân phối chương trình = {ppctct.Id_ppct} không hợp lệ");
+        //    }
             
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            //sửa
-            bool add = _ppctct.Update(ppctct);
-            if (!add)
-                return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            return ApiResult.Success(new
-            {
-                item = ppctct
-            },
-            "Cập nhật thành công");
-        }
-        [HttpDelete]
-        [RequireToken]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-            var ppctctdb = _ppctct.GetDetailById(id);
-            if (ppctctdb == null)
-                return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-            bool delete = _ppctct.Delete(id);
-            if (!delete)
-                return ApiResult.BadRequest("Xoá không thành công");
-            return ApiResult.Ok("Xóa thành công");
-        }
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+        //    //sửa
+        //    bool add = _ppctct.Update(ppctct);
+        //    if (!add)
+        //        return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
+        //    return ApiResult.Success(new
+        //    {
+        //        item = ppctct
+        //    },
+        //    "Cập nhật thành công");
+        //}
+        //[HttpDelete]
+        //[RequireToken]
+        //public IActionResult Delete([FromQuery] int id)
+        //{
+        //    int idUser = _claimHelperRepository.GetUserId(User);
+        //    // kiểm tra nếu là admin thì được truy cập
+        //    bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+        //    if (!checkIsAdmin)
+        //    {
+        //        return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+        //    }
+        //    var ppctctdb = _ppctct.GetDetailById(id);
+        //    if (ppctctdb == null)
+        //        return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+        //    bool delete = _ppctct.Delete(id);
+        //    if (!delete)
+        //        return ApiResult.BadRequest("Xoá không thành công");
+        //    return ApiResult.Ok("Xóa thành công");
+        //}
         [HttpPost("import")]
         [RequireToken]
         public IActionResult Import(IFormFile file, [FromForm] int idppct)

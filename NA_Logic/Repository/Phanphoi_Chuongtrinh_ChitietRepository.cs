@@ -61,63 +61,63 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Phanphoi_Chuongtrinh_Chitiet GetDetailById(int Id)
-        {
-            try
-            {
-                var namhoc = _dbContext.Phanphoi_Chuongtrinh_Chitiet.FirstOrDefault(c => c.Id == Id);
-                return namhoc;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        public bool Add(Phanphoi_Chuongtrinh_Chitiet ppct_ct)
-        {
-            try
-            {
-                _dbContext.Phanphoi_Chuongtrinh_Chitiet.Add(ppct_ct);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        public bool Update(Phanphoi_Chuongtrinh_Chitiet ppct_ct)
-        {
-            try
-            {
-                _dbContext.ChangeTracker.Clear();
-                _dbContext.Phanphoi_Chuongtrinh_Chitiet.Update(ppct_ct);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public bool Delete(int id)
-        {
-            try
-            {
-                var namhoc = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Find(id);
-                if (namhoc == null)
-                {
-                    return false;
-                }
-                _dbContext.Phanphoi_Chuongtrinh_Chitiet.Remove(namhoc);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        //public Phanphoi_Chuongtrinh_Chitiet GetDetailById(int Id)
+        //{
+        //    try
+        //    {
+        //        var namhoc = _dbContext.Phanphoi_Chuongtrinh_Chitiet.FirstOrDefault(c => c.Id == Id);
+        //        return namhoc;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
+        //public bool Add(Phanphoi_Chuongtrinh_Chitiet ppct_ct)
+        //{
+        //    try
+        //    {
+        //        _dbContext.Phanphoi_Chuongtrinh_Chitiet.Add(ppct_ct);
+        //        _dbContext.SaveChanges();
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
+        //public bool Update(Phanphoi_Chuongtrinh_Chitiet ppct_ct)
+        //{
+        //    try
+        //    {
+        //        _dbContext.ChangeTracker.Clear();
+        //        _dbContext.Phanphoi_Chuongtrinh_Chitiet.Update(ppct_ct);
+        //        _dbContext.SaveChanges();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+        //public bool Delete(int id)
+        //{
+        //    try
+        //    {
+        //        var namhoc = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Find(id);
+        //        if (namhoc == null)
+        //        {
+        //            return false;
+        //        }
+        //        _dbContext.Phanphoi_Chuongtrinh_Chitiet.Remove(namhoc);
+        //        _dbContext.SaveChanges();
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
         //public bool Check_constraint(int Id)
         //{
         //    try
@@ -141,45 +141,45 @@ namespace NA_Logic.Repository
         //        return false;
         //    }
         //}
-        public bool CheckId(int Id, int idDonvi)
-        {
-            if (Id <= 0) return false;
-            try
-            {
-                return _dbContext.Phanphoi_Chuongtrinh.Join(_dbContext.Phanphoi_Chuongtrinh_Chitiet, ppct=>ppct.Id, ppctct=>ppctct.Id_ppct, (ppct, ppctct) => new{ ppct.Id_don_vi, ppctct.Id})
-                        .Any(c => c.Id == Id && c.Id_don_vi==idDonvi);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public bool CheckIds(IEnumerable<int> ids)
-        {
-            var existingIds = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
-            return ids.All(id => existingIds.Contains(id));
-        }
-        public bool CheckTrungTuanTiet(Phanphoi_Chuongtrinh_Chitiet ppctct, int idDonvi)
-        {
-            try
-            {
+        //public bool CheckId(int Id, int idDonvi)
+        //{
+        //    if (Id <= 0) return false;
+        //    try
+        //    {
+        //        return _dbContext.Phanphoi_Chuongtrinh.Join(_dbContext.Phanphoi_Chuongtrinh_Chitiet, ppct=>ppct.Id, ppctct=>ppctct.Id_ppct, (ppct, ppctct) => new{ ppct.Id_don_vi, ppctct.Id})
+        //                .Any(c => c.Id == Id && c.Id_don_vi==idDonvi);
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+        //public bool CheckIds(IEnumerable<int> ids)
+        //{
+        //    var existingIds = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+        //    return ids.All(id => existingIds.Contains(id));
+        //}
+        //public bool CheckTrungTuanTiet(Phanphoi_Chuongtrinh_Chitiet ppctct, int idDonvi)
+        //{
+        //    try
+        //    {
 
-                bool check = (from pct in _dbContext.Phanphoi_Chuongtrinh_Chitiet
-                              join p in _dbContext.Phanphoi_Chuongtrinh on pct.Id_ppct equals p.Id
-                              join m in _dbContext.Dm_Monhoc on p.Id_mon equals m.Id
-                              where pct.Tuan == ppctct.Tuan
-                                  && pct.Thu_tu_tiet == ppctct.Thu_tu_tiet
-                                  && pct.Id_ppct == ppctct.Id_ppct
-                                  && m.Id_don_vi == idDonvi
-                                  && (ppctct.Id <= 0 || pct.Id != ppctct.Id)
-                              select pct).Any();
+        //        bool check = (from pct in _dbContext.Phanphoi_Chuongtrinh_Chitiet
+        //                      join p in _dbContext.Phanphoi_Chuongtrinh on pct.Id_ppct equals p.Id
+        //                      join m in _dbContext.Dm_Monhoc on p.Id_mon equals m.Id
+        //                      where pct.Tuan == ppctct.Tuan
+        //                          && pct.Thu_tu_tiet == ppctct.Thu_tu_tiet
+        //                          && pct.Id_ppct == ppctct.Id_ppct
+        //                          && m.Id_don_vi == idDonvi
+        //                          && (ppctct.Id <= 0 || pct.Id != ppctct.Id)
+        //                      select pct).Any();
 
-                if (check) return true;
+        //        if (check) return true;
 
-                return false;
-            }
-            catch { return true; }
-        }
+        //        return false;
+        //    }
+        //    catch { return true; }
+        //}
         public (bool result, string mess) Import (int idppct, Stream file, int idDonvi)
         {
             if (idppct == 0) return (false,"Id không hợp lệ");
@@ -190,13 +190,13 @@ namespace NA_Logic.Repository
                 using var workbook = new XLWorkbook(file);
                 var worksheet = workbook.Worksheet(1);
                 var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 0;
-                // 1. Kiểm tra file có dữ liệu không
+                // kiểm tra file có dữ liệu không
                 if (lastRow < 2)
                 {
                     return (false, "File Excel không có dữ liệu");
                 }
 
-                // 2. Kiểm tra file đúng định dạng không
+                // kiểm tra file đúng định dạng không
                 var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài học" };
                 for (int col = 1; col <= 4; col++)
                 {
@@ -243,6 +243,7 @@ namespace NA_Logic.Repository
                     
                     listPPCT.Add(itemPPCT);
                 }
+                //validate thứ tự tiết
                 var cacTiet = listPPCT.OrderBy(x => x.Thu_tu_tiet).Select(x => x.Thu_tu_tiet).ToList();
 
                 if (cacTiet[0] != 1)
