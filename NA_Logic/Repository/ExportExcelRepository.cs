@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens.Configuration;
@@ -505,7 +506,7 @@ namespace NA_Logic.Repository
             }
             for (int i = 1; i <= 3; i++)
             {
-                worksheet.Column(i).Width = 5;
+                worksheet.Column(i).Width = 8;
             }
         }
 
@@ -642,7 +643,7 @@ namespace NA_Logic.Repository
             }
             for (int i = 1; i <= 3; i++)
             {
-                worksheet.Column(i).Width = 5;
+                worksheet.Column(i).Width = 7;
             }
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -822,7 +823,7 @@ namespace NA_Logic.Repository
                 }
                 for (int i = 1; i <= 3; i++)
                 {
-                    worksheet.Column(i).Width = 5;
+                    worksheet.Column(i).Width = 7;
                 }
             }
             using var stream = new MemoryStream();
@@ -1007,23 +1008,22 @@ namespace NA_Logic.Repository
             using var workbook = new XLWorkbook();
             var monIds = data.Select(x => x.Id_mon).Distinct().ToList();
 
-            var thmList = _context.Monhoc_Tohopmon.Join(_context.DM_Banhoc, thm => thm.Id_ban, b => b.Id, (thm, b) => new {thm.Ten, thm.Id_mon_1, thm.Id_mon_2, thm.Id_mon_3, b.Id_don_vi}).Where(x=>x.Id_don_vi == idDonvi)
-                                                    .Distinct().ToList();
-            for (int k = 0; k < thmList.Count; k++)
+            var tcmList = (from tcm in _context.DM_Tochuyenmon
+                           where tcm.Id_don_vi == idDonvi
+                           select tcm).ToList();
+            for (int k = 0; k < tcmList.Count; k++)
             {
                 // Lấy danh sách các lớp từ data
-                var monListId = new List<int?>()
-                {
-                    thmList[k].Id_mon_1,
-                    thmList[k].Id_mon_2,
-                    thmList[k].Id_mon_3,
-                }.ToList();
+                var gvListId = (from tcm in _context.DM_Tochuyenmon
+                                 join tcmGV in _context.Giaovien_Tochuyenmon on tcm.Id equals tcmGV.Id_to_chuyen_mon
+                                 where tcm.Id_don_vi == idDonvi && tcm.Id == tcmList[k].Id
+                                 select tcmGV.Id_giao_vien).ToList();
 
-                var gvList = data.Where(c=> monListId.Contains(c.Id_mon)).Select(c => new { c.Ten_giao_vien, c.Ho_ho_dem, c.Id_giao_vien }).Distinct().OrderBy(x => x.Ten_giao_vien).ToList();
-                var dataDetail = data.Where(c => monListId.Contains(c.Id_mon)).ToList();
+                var gvList = data.Where(c=> gvListId.Contains(c.Id_giao_vien??0)).Select(c => new { c.Ten_giao_vien, c.Ho_ho_dem, c.Id_giao_vien }).Distinct().OrderBy(x => x.Ten_giao_vien).ToList();
+                var dataDetail = data.Where(c => gvListId.Contains(c.Id_giao_vien ?? 0)).ToList();
 
                 var firstRow = data.FirstOrDefault();
-                var worksheet = workbook.Worksheets.Add($"{thmList[k].Ten}");
+                var worksheet = workbook.Worksheets.Add($"{tcmList[k].Ten}");
                 // Tiêu đề trường
                 worksheet.Cell(1, 1).Value = firstRow?.Ten_truong?.ToUpper() ?? "TRƯỜNG THCS";
                 worksheet.Range(1, 1, 1, gvList.Count + 2).Merge();
@@ -1178,7 +1178,7 @@ namespace NA_Logic.Repository
                 }
                 for (int i = 1; i <= 3; i++)
                 {
-                    worksheet.Column(i).Width = 5;
+                    worksheet.Column(i).Width = 7;
                 }
             }
             using var stream = new MemoryStream();
