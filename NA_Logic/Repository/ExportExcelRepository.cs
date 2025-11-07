@@ -1028,7 +1028,7 @@ namespace NA_Logic.Repository
                 worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
 
                 // Tiêu đề sheet
-                worksheet.Cell(3, 1).Value = $"MA TRẬN TỔ HỢP MÔN";
+                worksheet.Cell(3, 1).Value = $"MA TRẬN TỔ CHUYÊN MÔN";
                 worksheet.Range(3, 1, 3, gvList.Count + 2).Merge();
                 worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
