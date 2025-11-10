@@ -34,7 +34,12 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
-            int idDonvi = 0;
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+            {
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            }
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
@@ -52,7 +57,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetList_Paging_Phieu([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Idlbg, [FromQuery] string search = "")
         {
-            int idDonvi = 0;
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+            {
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            }
+            bool checkIdlbg = _lgb.CheckId(Idlbg, idDonvi);
+            if (!checkIdlbg)
+                return ApiResult.BadRequest("Id lịch báo giảng không hợp lệ");
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
