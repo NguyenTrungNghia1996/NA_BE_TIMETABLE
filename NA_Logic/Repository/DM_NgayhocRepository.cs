@@ -65,23 +65,23 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<DM_Ngayhoc> GetListNgayhocByDonvi(int idDonvi)
-        {
-            try
-            {
-                return _dbContext.DM_Ngayhoc
-                        .Join(_dbContext.Ngay_Donvi.Where(nd => nd.Id_don_vi == idDonvi),
-                              nh => nh.Id,
-                              nd => nd.Id_ngay,
-                              (nh, nd) => nh)
-                        .ToList();
+        //public List<DM_Ngayhoc> GetListNgayhocByDonvi(int idDonvi)
+        //{
+        //    try
+        //    {
+        //        return _dbContext.DM_Ngayhoc
+        //                .Join(_dbContext.Ngay_Donvi.Where(nd => nd.Id_don_vi == idDonvi),
+        //                      nh => nh.Id,
+        //                      nd => nd.Id_ngay,
+        //                      (nh, nd) => nh)
+        //                .ToList();
 
-            }
-            catch (Exception)
-            {
-                return new List<DM_Ngayhoc>();
-            }
-        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new List<DM_Ngayhoc>();
+        //    }
+        //}
         public bool Add(DM_Ngayhoc dm_Ngayhoc)
         {
             try

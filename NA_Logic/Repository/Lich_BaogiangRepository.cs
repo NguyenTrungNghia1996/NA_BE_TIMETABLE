@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using EFCore.BulkExtensions;
+using Humanizer;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -66,26 +67,86 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public (bool result, string mess) Add(Lich_Baogiang lbg)
+        public (bool result, string mess) Add(Lich_Baogiang lbg, int idDonvi)
         {
             try
             {
-                var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
+                var ngayMin = _dbContext.Ngay_Donvi.Where(c => c.Id_don_vi == idDonvi).Min(c => c.Ngay);
 
+                var ngayMax = _dbContext.Ngay_Donvi.Where(c => c.Id_don_vi == idDonvi).Max(c => c.Ngay);
+
+                var soNgayTrongTuan = (ngayMax - ngayMin) + 1;
+                var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
                 var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
+                
+                var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
+                               join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
+                               where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
+                               select (int?)lichbg.Tuan).Max();
+
+                lbg.Tuan = (tuanMax ?? 0) + 1;
                 var soTuanToiDa = (int)Math.Ceiling(soNgay / 7.0);
                 if (lbg.Tuan > soTuanToiDa)
                 {
                     return (false, $"Tuần {lbg.Tuan} nằm ngoài năm học. Năm học này chỉ có {soTuanToiDa} tuần");
                 }
-                var tuNgay = namHoc.Tu_ngay.AddDays((lbg.Tuan - 1) * 7);
-                var denNgay = tuNgay.AddDays(6);
+                DateTime tuNgay, denNgay;
+
+                if (lbg.Tuan == 1)
+                {
+                    // Tuần 1: từ ngày bắt đầu năm học
+                    tuNgay = namHoc.Tu_ngay;
+
+                    // Tính thứ 2 của tuần chứa ngày bắt đầu
+                    var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
+                    var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
+                    var thu2CuaTuan = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
+
+                    denNgay = thu2CuaTuan.AddDays(soNgayTrongTuan - 1);
+
+                    if (tuNgay > denNgay)
+                    {
+                        tuNgay = thu2CuaTuan.AddDays(7);
+                        denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
+                    }
+                }
+                else
+                {
+                    var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
+                    var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
+                    var thu2DauTien = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
+
+                    var ngayCuoiTuan1 = thu2DauTien.AddDays(soNgayTrongTuan - 1);
+                    if (namHoc.Tu_ngay > ngayCuoiTuan1)
+                    {
+                        thu2DauTien = thu2DauTien.AddDays(7);
+                    }
+
+                    tuNgay = thu2DauTien.AddDays((lbg.Tuan - 1) * 7);
+                    denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
+                }
+
+                // Kiểm tra có vượt quá năm học không
+                if (tuNgay > namHoc.Den_ngay)
+                {
+                    return (false, $"Không thể thêm tuần {lbg.Tuan}. Năm học đã kết thúc");
+                }
+
+                // Đảm bảo không vượt quá ngày kết thúc năm học
                 if (denNgay > namHoc.Den_ngay)
                 {
                     denNgay = namHoc.Den_ngay;
                 }
+
+                // Đảm bảo không bắt đầu trước ngày bắt đầu năm học (chỉ áp dụng cho tuần 1)
+                if (lbg.Tuan == 1 && tuNgay < namHoc.Tu_ngay)
+                {
+                    tuNgay = namHoc.Tu_ngay;
+                }
+
                 lbg.Tu_ngay = tuNgay;
                 lbg.Den_ngay = denNgay;
+
                 _dbContext.Lich_Baogiang.Add(lbg);
                 _dbContext.SaveChanges();
                 return (true,"Thêm lịch báo giảng thành công");
@@ -99,28 +160,6 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var lichbg = _dbContext.Lich_Baogiang.Any(c => c.Id == lbg.Id);
-                if (!lichbg)
-                {
-                    return (false, "Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-                }
-                var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
-
-                var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
-                var soTuanToiDa = (int)Math.Ceiling(soNgay / 7.0);
-
-                var tuNgay = namHoc.Tu_ngay.AddDays((lbg.Tuan - 1) * 7);
-                if (tuNgay > namHoc.Den_ngay)
-                {
-                    return (false, $"Tuần {lbg.Tuan} nằm ngoài năm học. Năm học này chỉ có {soTuanToiDa} tuần");
-                }
-                var denNgay = tuNgay.AddDays(6);
-                if (denNgay > namHoc.Den_ngay)
-                {
-                    denNgay = namHoc.Den_ngay;
-                }
-                lbg.Tu_ngay = tuNgay;
-                lbg.Den_ngay = denNgay;
                 _dbContext.SaveChanges();
                 return (true, "Cập nhật lịch báo giảng thành công");
             }
@@ -220,3 +259,5 @@ namespace NA_Logic.Repository
         }
     }
 }
+
+ 

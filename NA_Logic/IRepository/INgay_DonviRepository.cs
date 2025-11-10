@@ -8,7 +8,7 @@ namespace NA_Logic.IRepository
 {
     public interface INgay_DonviRepository
     {
-        List<int> GetlistNgaybyDonvi(int id);
-        public bool UpdateNgay(int Id, List<int> ngayId);
+        //List<int> GetlistNgaybyDonvi(int id);
+        //public bool UpdateNgay(int Id, List<int> ngayId);
     }
 }

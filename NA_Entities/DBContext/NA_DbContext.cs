@@ -54,7 +54,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Tiethoc_List> DM_Tiethoc_List { get; set; }
         public DbSet<DM_Ngayhoc> DM_Ngayhoc { get; set; }
         public DbSet<DM_Ngayhoc_List> DM_Ngayhoc_List { get; set; }
-        public DbSet<Ca_Tiethoc> Ca_Tiethoc { get; set; }
+        public DbSet<Donvi_Tiethoc> Donvi_Tiethoc { get; set; }
         public DbSet<Tiet_ban> Tiet_ban { get; set; }
         public DbSet<DM_Monhoc> Dm_Monhoc { get; set; }
         public DbSet<DM_Monhoc_List> DM_Monhoc_List { get; set; }

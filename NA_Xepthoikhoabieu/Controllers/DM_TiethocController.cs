@@ -59,7 +59,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_TiethocDto>(detail);
-            detailDto.Id_Ca_hoc = _tiethoc.GetlistCabyTiethoc(Id);
+            //detailDto.Id_Ca_hoc = _tiethoc.GetlistCabyTiethoc(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -89,14 +89,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             tiethoc.Id = item.Id;
-            var addCa = _tiethoc.AddCa(tiethoc.Id, tiethoc.Id_Ca_hoc);
+            //var addCa = _tiethoc.AddCa(tiethoc.Id, tiethoc.Id_Ca_hoc);
 
-            if (!addCa)
-                return ApiResult.Success(new
-                {
-                    itemSave = tiethoc
-                },
-                "Tạo đơn vị thành công, lưu cấp học thất bại");
+            //if (!addCa)
+            //    return ApiResult.Success(new
+            //    {
+            //        itemSave = tiethoc
+            //    },
+            //    "Tạo đơn vị thành công, lưu cấp học thất bại");
             return ApiResult.Success(new
             {
                 itemSave = tiethoc
@@ -133,14 +133,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool add = _tiethoc.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var editCa = _tiethoc.UpdateCa(tiethoc.Id, tiethoc.Id_Ca_hoc);
+            //var editCa = _tiethoc.UpdateCa(tiethoc.Id, tiethoc.Id_Ca_hoc);
 
-            if (!editCa)
-                return ApiResult.Success(new
-                {
-                    itemSave = tiethoc
-                },
-                "Cập nhật đơn vị thành công, cập nhật cấp học thất bại");
+            //if (!editCa)
+            //    return ApiResult.Success(new
+            //    {
+            //        itemSave = tiethoc
+            //    },
+            //    "Cập nhật đơn vị thành công, cập nhật cấp học thất bại");
 
             return ApiResult.Success(new
             {
@@ -163,9 +163,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (item == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             var request = _tiethoc.Delete(id);
-            var deleteCa = _tiethoc.DeleteCa(id);
-            if (!deleteCa)
-                return ApiResult.NotFound("Xóa các ca học lỗi");
+            //var deleteCa = _tiethoc.DeleteCa(id);
+            //if (!deleteCa)
+            //    return ApiResult.NotFound("Xóa các ca học lỗi");
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");
             

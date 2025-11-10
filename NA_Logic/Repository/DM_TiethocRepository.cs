@@ -64,19 +64,19 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<int> GetlistCabyTiethoc(int id)
-        {
-            try
-            {
-                var list = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == id).Select(x => x.Id_Ca_hoc).ToList();
-                if (list == null) return new List<int>();
-                return list;
-            }
-            catch
-            {
-                return new List<int>();
-            }
-        }
+        //public List<int> GetlistCabyTiethoc(int id)
+        //{
+        //    try
+        //    {
+        //        var list = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == id).Select(x => x.Id_Ca_hoc).ToList();
+        //        if (list == null) return new List<int>();
+        //        return list;
+        //    }
+        //    catch
+        //    {
+        //        return new List<int>();
+        //    }
+        //}
         public bool Add(DM_Tiethoc dM_Tiethoc)
         {
             try
@@ -90,30 +90,30 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool AddCa(int Id, List<int> caId)
-        {
-            try
-            {
-                if (caId != null && caId.Count > 0)
-                {
-                    for (int i = 0; i < caId.Count; i++)
-                    {
-                        var caTiethoc = new Ca_Tiethoc
-                        {
-                            Id_Tiet_hoc = Id,
-                            Id_Ca_hoc = caId[i]
-                        };
-                        _context.Ca_Tiethoc.Add(caTiethoc);
-                    }
-                    _context.SaveChanges();
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //public bool AddCa(int Id, List<int> caId)
+        //{
+        //    try
+        //    {
+        //        if (caId != null && caId.Count > 0)
+        //        {
+        //            for (int i = 0; i < caId.Count; i++)
+        //            {
+        //                var caTiethoc = new Ca_Tiethoc
+        //                {
+        //                    Id_Tiet_hoc = Id,
+        //                    Id_Ca_hoc = caId[i]
+        //                };
+        //                _context.Ca_Tiethoc.Add(caTiethoc);
+        //            }
+        //            _context.SaveChanges();
+        //        }
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool Update(DM_Tiethoc dM_Tiethoc)
         {
             try
@@ -128,32 +128,32 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool UpdateCa(int Id, List<int> caId)
-        {
-            try
-            {
-                var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
-                if (del != null && del.Count > 0)
-                {
-                    _context.Ca_Tiethoc.RemoveRange(del);
-                }
-                for (int i = 0; i < caId.Count; i++)
-                {
-                    var Catiethoc = new Ca_Tiethoc
-                    {
-                        Id_Tiet_hoc = Id,
-                        Id_Ca_hoc = caId[i]
-                    };
-                    _context.Ca_Tiethoc.Add(Catiethoc);
-                }
-                _context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //public bool UpdateCa(int Id, List<int> caId)
+        //{
+        //    try
+        //    {
+        //        var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
+        //        if (del != null && del.Count > 0)
+        //        {
+        //            _context.Ca_Tiethoc.RemoveRange(del);
+        //        }
+        //        for (int i = 0; i < caId.Count; i++)
+        //        {
+        //            var Catiethoc = new Ca_Tiethoc
+        //            {
+        //                Id_Tiet_hoc = Id,
+        //                Id_Ca_hoc = caId[i]
+        //            };
+        //            _context.Ca_Tiethoc.Add(Catiethoc);
+        //        }
+        //        _context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool Delete(int Id)
         {
             try
@@ -172,45 +172,45 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool DeleteCa(int Id)
-        {
-            try
-            {
-                var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
-                if (del != null && del.Count > 0)
-                {
-                    _context.Ca_Tiethoc.RemoveRange(del);
-                    _context.SaveChanges();
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public bool CheckId(int idTiet,  int idCa)
-        {
-            if (idTiet <= 0) return false;
-            try
-            {
-                // Check ca thuộc đơn vị trước
-                //var caValid = _context.DM_Cahoc
-                //    .AsNoTracking()
-                //    .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
+        //public bool DeleteCa(int Id)
+        //{
+        //    try
+        //    {
+        //        var del = _context.Ca_Tiethoc.Where(x => x.Id_Tiet_hoc == Id).ToList();
+        //        if (del != null && del.Count > 0)
+        //        {
+        //            _context.Ca_Tiethoc.RemoveRange(del);
+        //            _context.SaveChanges();
+        //        }
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+        //public bool CheckId(int idTiet,  int idCa)
+        //{
+        //    if (idTiet <= 0) return false;
+        //    try
+        //    {
+        //        // Check ca thuộc đơn vị trước
+        //        //var caValid = _context.DM_Cahoc
+        //        //    .AsNoTracking()
+        //        //    .Any(c => c.Id == idCa && c.Id_Donvi == idDonvi);
 
-                //if (!caValid) return false;
+        //        //if (!caValid) return false;
 
-                // Sau đó check tiết trong ca
-                return _context.Ca_Tiethoc
-                    .AsNoTracking()
-                    .Any(ct => ct.Id_Tiet_hoc == idTiet && ct.Id_Ca_hoc == idCa);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //        // Sau đó check tiết trong ca
+        //        return _context.Ca_Tiethoc
+        //            .AsNoTracking()
+        //            .Any(ct => ct.Id_Tiet_hoc == idTiet && ct.Id_Ca_hoc == idCa);
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
     }
 }

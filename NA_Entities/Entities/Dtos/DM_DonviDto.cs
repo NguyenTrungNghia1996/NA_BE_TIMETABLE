@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace NA_Entities.Entities.Dtos
 {
+    public class Ca_DonviDto
+    {
+        public int Id_ca_hoc { get; set; }
+        public string Ten_ca { get; set; }
+        public int So_tiet { get;set; }
+    }
     public class DM_DonviDto
     {
         public int Id { get; set; } = 0;
@@ -26,7 +32,8 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
-        public List<int> Id_cahoc { get; set; } = new List<int>();
+        public List<Ca_DonviDto> List_ca { get; set; } = new List<Ca_DonviDto>();
+        public int So_ngay { get; set; } = 0;
     }
     public class DM_Donvi_List_Dto
     {
@@ -38,7 +45,7 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         public string Ten_cap { get; set; } = string.Empty;
         public string Ten_ca { get; set; } = string.Empty;
-
+        public int So_ngay { get; set; } = 0;
     }
     public class DM_Donvi_updateDto
     {
@@ -61,13 +68,8 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
-        public List<int> Id_cahoc { get; set; } = new List<int>();
-
+        public List<Ca_DonviDto> List_ca { get; set; } = new List<Ca_DonviDto>();
+        public int So_ngay { get; set; } = 0;
     }
-    public class Donvi_NgayDto
-    {
-        public int Id { get; set; } = 0;
-        public List<int> Id_Ngay { get; set; } = new List<int>();
 
-    }
 }

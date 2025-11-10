@@ -71,6 +71,7 @@ builder.Services.AddScoped<IPhanphoi_ChuongtrinhRepository, Phanphoi_Chuongtrinh
 builder.Services.AddScoped<IPhanphoi_Chuongtrinh_ChitietRepository, Phanphoi_Chuongtrinh_ChitietRepository>();
 builder.Services.AddScoped<ILich_BaogiangRepository, Lich_BaogiangRepository>();
 builder.Services.AddScoped<IPhieu_BaogiangRepository, Phieu_BaogiangRepository>();
+//builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("Không tồn tại key"));

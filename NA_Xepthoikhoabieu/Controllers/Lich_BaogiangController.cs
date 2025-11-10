@@ -122,7 +122,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest(ModelState);
 
             // add 
-            var (result, mess) = _lgb.Add(lgb);
+            var (result, mess) = _lgb.Add(lgb, idDonvi);
             if (!result)
                 return ApiResult.NotFound(mess);
 

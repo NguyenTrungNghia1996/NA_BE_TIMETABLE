@@ -29,6 +29,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _ppct = ppct;
         }
         [HttpGet]
+        [RequireToken]
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int idPpct, [FromQuery] string search = "" )
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
@@ -36,6 +37,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
+            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();

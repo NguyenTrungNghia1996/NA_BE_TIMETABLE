@@ -54,19 +54,19 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detailDto = _mapper.Map<DM_NgayhocDto>(detailNgayhoc);
             return ApiResult.Success(detailDto, "Thành công");
         }
-        [HttpGet("dsngaytheodonvi")]
-        [RequireToken]
-        public IActionResult GetListByID()
-        {
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0)
-                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // Lấy bản ghi từ db
-            var listngaybydv = _Ngayhoc.GetListNgayhocByDonvi(idDonvi);
-            if (listngaybydv == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho đơn vị có Id= {idDonvi}");
-            return ApiResult.Success(listngaybydv, "Thành công");
-        }
+        //[HttpGet("dsngaytheodonvi")]
+        //[RequireToken]
+        //public IActionResult GetListByID()
+        //{
+        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+        //    if (idDonvi == 0)
+        //        return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+        //    // Lấy bản ghi từ db
+        //    var listngaybydv = _Ngayhoc.GetListNgayhocByDonvi(idDonvi);
+        //    if (listngaybydv == null)
+        //        return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho đơn vị có Id= {idDonvi}");
+        //    return ApiResult.Success(listngaybydv, "Thành công");
+        //}
         [HttpPost]
         [RequireToken]
         public IActionResult Create([FromBody] DM_NgayhocDto Ngayhoc)
