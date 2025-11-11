@@ -70,7 +70,6 @@ namespace NA_Entities.Entities.Dtos
     }
     public class Thongtin_Donvi_updateDto
     {
-        public int Id { get; set; } = 0;
         [Required(ErrorMessage = "Tên đơn vị không được để trống")]
         [StringLength(100, ErrorMessage = "Tối đa 100 ký tự")]
         public string TenDonvi { get; set; } = string.Empty;

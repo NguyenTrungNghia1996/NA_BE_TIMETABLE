@@ -62,7 +62,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDetailById(donvi.Id);
+            var donvidb = _donvi.getDetailById(idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (donvidb == null)
@@ -79,6 +79,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
 
             var item = _mapper.Map<DM_Donvi>(donvi);
+            item.Id = idDonvi;
             var listca = _mapper.Map<List<Ca_Donvi>>(donvi.List_ca);
             List<int> sotiet = listca.Select(c => c.So_tiet).ToList();
             //check id ca, cấp
@@ -89,21 +90,21 @@ namespace NA_Xepthoikhoabieu.Controllers
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             //if (!checkcahoc)
             //    ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
-            bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, donvi.Id);
+            bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, idDonvi);
             if (checkten)
             {
                 return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
             }
-            if(donvi.So_ngay > 7 || donvi.So_ngay < 0)
+            if (donvi.So_ngay > 7 || donvi.So_ngay < 0)
             {
                 return ApiResult.BadRequest("Số ngày không hợp lệ");
             }
-            for (int i=0; i < sotiet.Count; i++)
+            for (int i = 0; i < sotiet.Count; i++)
             {
                 if (sotiet[i] < 0 || sotiet[i] > 5)
                     return ApiResult.BadRequest("Số tiết không hợp lệ");
             }
-            
+
             //hiển thị thông báo lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -111,9 +112,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool update = _donvi.Update(item);
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
-            var editCap = _donvi.UpdateCap(donvi.Id, donvi.IdCap);
-            
-            var editCa = _ttdonvi.UpdateCa(donvi.Id, listca);
+            var editCap = _donvi.UpdateCap(idDonvi, donvi.IdCap);
+
+            var editCa = _ttdonvi.UpdateCa(idDonvi, listca);
             if (!editCap)
                 return ApiResult.Success(new
                 {
