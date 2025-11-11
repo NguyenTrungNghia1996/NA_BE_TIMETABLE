@@ -82,14 +82,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             item.Id = idDonvi;
             var listca = _mapper.Map<List<Ca_Donvi>>(donvi.List_ca);
             List<int> sotiet = listca.Select(c => c.So_tiet).ToList();
+            List<int> idsCa = listca.Select(c => c.Id_ca_hoc).ToList();
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
-            //var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
+            var checkcahoc = _cahocRepository.CheckIds(idsCa);
 
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
-            //if (!checkcahoc)
-            //    ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            if (!checkcahoc)
+                ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, idDonvi);
             if (checkten)
             {
