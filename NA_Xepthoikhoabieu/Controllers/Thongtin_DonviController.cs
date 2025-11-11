@@ -15,18 +15,19 @@ using NA_Xepthoikhoabieu.Helpers;
 namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
-    [Route("api/donvi")]
-    public class DM_DonviController : ControllerBase
+    [Route("api/thongtin_donvi")]
+    public class Thongtin_DonviController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly IThongtin_DonviRepository _ttdonvi;
         private readonly IDM_DonviRepository _donvi;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IDM_NgayhocRepository _ngayhocRepository;
         private readonly IDM_CahocRepository _cahocRepository;
-        public DM_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,  
-            IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository, IDM_CahocRepository cahocRepository)
+        public Thongtin_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
+            IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository, IDM_CahocRepository cahocRepository, IThongtin_DonviRepository ttdonvi)
         {
             _mapper = mapper;
             _donvi = donvi;
@@ -35,32 +36,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             _caphocRepository = caphocRepository;
             _ngayhocRepository = ngayhocRepository;
             _cahocRepository = cahocRepository;
+            _ttdonvi = ttdonvi;
         }
         [HttpGet]
-        [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
-        {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-            // Lấy danh sách dữ liệu
-            int totalrecord = 0;
-            search = search.Trim();
-            var list = _donvi.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
-            if (list == null || list.Count == 0)
-                return ApiResult.Ok();
-            var listDto = _mapper.Map<List<DM_Donvi_List_Dto>>(list);
-            return ApiResult.Success(new
-            {
-                items = listDto,
-                totalrecord = totalrecord
-            },
-            "Thành công");
-        }
-        [HttpGet("detail")]
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
         {
@@ -71,95 +49,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detail = _donvi.getDetailById(Id);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
-            var detailDto = _mapper.Map<DM_DonviDto>(detail);
+            var detailDto = _mapper.Map<Thongtin_Donvi_updateDto>(detail);
             detailDto.IdCap = _donvi.GetlistCapbyDonvi(Id);
-            detailDto.Id_cahoc = _donvi.GetlistCapbyDonvi(Id);
+            var listca = _ttdonvi.GetlistCabyDonvi(Id);
+            detailDto.List_ca = _mapper.Map<List<Ca_DonviDto>>(listca);
             return ApiResult.Success(detailDto, "Thành công");
-        }
-        [HttpGet("donvichuacotaikhoan")]
-        [RequireToken]
-        public IActionResult GetDonviChuaCoTaiKhoan()
-        {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-
-            // Lấy bản ghi từ db
-            var list = _donvi.GetDonviChuaCoTaikhoan();
-            if (list == null || list.Count == 0)
-                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
-
-            return ApiResult.Success(list, "Thành công");
-        }
-        [HttpPost]
-        [RequireToken]
-        public IActionResult Create([FromBody] DM_DonviDto donvi)
-        {
-
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-
-            // mapper data 
-            var addDonvi = _mapper.Map<DM_Donvi>(donvi);
-            addDonvi.Id = 0;
-            //check chọn ca, cấp
-            if (donvi.IdCap == null || donvi.IdCap.Count == 0)
-            {
-                ModelState.AddModelError("IdCap", "Vui lòng chọn ít nhất 1 cấp học");
-            }
-            if (donvi.Id_cahoc == null || donvi.Id_cahoc.Count == 0)
-            {
-                ModelState.AddModelError("Id_ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
-            }
-            //check id ca, cấp
-            var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
-            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
-            if (!checkcaphoc)
-                ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
-            if (!checkcahoc)
-                ModelState.AddModelError("Id_cahoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
-            bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi);
-            if (checkten)
-            {
-                return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
-            }
-            //hiển thị lỗi
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            //add
-            bool add = _donvi.Add(addDonvi);
-            if (!add)
-                return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
-            donvi.Id = addDonvi.Id;
-            var addCapDonvi = _donvi.AddCap(donvi.Id, donvi.IdCap);
-            //var addCaDv = _donvi.AddCa(donvi.Id, donvi.Id_cahoc);
-            if (!addCapDonvi)
-                return ApiResult.Success(new
-                {
-                    item = donvi
-                },
-                "Tạo đơn vị thành công, lưu cấp học thất bại");
-            //if (!addCaDv)
-            //    return ApiResult.Success(new
-            //    {
-            //        item = donvi
-            //    },
-            //    "Tạo đơn vị thành công, lưu ca học thất bại");
-            return ApiResult.Success(new
-            {
-                item = donvi
-            }, "Tạo đơn vị thành công");
         }
         [HttpPut]
         [RequireToken]
-        public IActionResult Update([FromBody] DM_Donvi_updateDto donvi)
+        public IActionResult Update([FromBody] Thongtin_Donvi_updateDto donvi)
         {
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
@@ -179,26 +77,37 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 ModelState.AddModelError("IdCap", "Vui lòng chọn ít nhất 1 cấp học");
             }
-            if (donvi.Id_cahoc == null || donvi.Id_cahoc.Count == 0)
+            if (donvi.List_ca == null || donvi.List_ca.Count == 0)
             {
                 ModelState.AddModelError("Id_ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
 
             var item = _mapper.Map<DM_Donvi>(donvi);
-
+            var listca = _mapper.Map<List<Ca_Donvi>>(donvi.List_ca);
+            List<int> sotiet = listca.Select(c => c.So_tiet).ToList();
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
-            var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
+            //var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
 
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
-            if (!checkcahoc)
-                ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
+            //if (!checkcahoc)
+            //    ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
             bool checkten = _donvi.CheckTrungTen(donvi.TenDonvi, donvi.Id);
             if (checkten)
             {
                 return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
             }
+            if(donvi.So_ngay > 7 || donvi.So_ngay < 0)
+            {
+                return ApiResult.BadRequest("Số ngày không hợp lệ");
+            }
+            for (int i=0; i < sotiet.Count; i++)
+            {
+                if (sotiet[i] < 0 || sotiet[i] > 5)
+                    return ApiResult.BadRequest("Số tiết không hợp lệ");
+            }
+            
             //hiển thị thông báo lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -207,7 +116,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var editCap = _donvi.UpdateCap(donvi.Id, donvi.IdCap);
-            var editCa = _donvi.UpdateCa(donvi.Id, donvi.Id_cahoc);
+            
+            var editCa = _ttdonvi.UpdateCa(donvi.Id, listca);
             if (!editCap)
                 return ApiResult.Success(new
                 {
@@ -251,10 +161,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             var delete = _donvi.Delete(id);
             if (!delete)
                 return ApiResult.NotFound("Xóa đơn vị thất bại");
-            
+
 
             return ApiResult.Ok("Xóa đơn vị thành công");
         }
-        
+
     }
 }

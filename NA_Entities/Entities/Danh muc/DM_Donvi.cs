@@ -59,5 +59,6 @@ namespace NA_Entities.Entities.Danhmuc
         public string Ten_cap { get; set;} = string.Empty;
         public string Ten_ca { get; set;} = string.Empty;
         public int So_ngay { get; set; } = 0;
+        public int So_tiet { get; set; } = 0;
     }
 }

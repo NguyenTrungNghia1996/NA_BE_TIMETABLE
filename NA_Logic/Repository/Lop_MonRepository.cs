@@ -164,15 +164,17 @@ namespace NA_Logic.Repository
                                   (cd, ca) => new
                                   {
                                       Id = ca.Id,
-                                      Ten = ca.Ten
+                                      Ten = ca.Ten, 
+                                      So_tiet  = cd.So_tiet
                                   }).ToList();
             var tietBan = _context.Lophoc_Monhoc_Tiettranhxep
                         .Where(tb => tb.Id_lop == Id_lop && tb.Id_mon == Id_mon)
                         .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
                         .ToList();
 
+            var donvi = _context.DM_Donvi.Find(idDonvi);
             // Lấy danh sách ngày từ enum
-            var dsNgay = Enum.GetValues<Ngay>().ToList();
+            var dsNgay = Enum.GetValues<Ngay>().Take(donvi.So_ngay).ToList();
             // Lấy danh sách tiết từ enum
             var dsTiet = Enum.GetValues<Tiet>().ToList();
 
@@ -187,7 +189,7 @@ namespace NA_Logic.Repository
                     {
                         Id = ngay,
                         Ten = ngay.GetDisplayName(),
-                        Ds_Tiet = dsTiet.Select(tiet => new TietbanDto
+                        Ds_Tiet = dsTiet.Take(ca.So_tiet).Select(tiet => new TietbanDto
                         {
                             Id = tiet,
                             Ten = tiet.GetDisplayName(),

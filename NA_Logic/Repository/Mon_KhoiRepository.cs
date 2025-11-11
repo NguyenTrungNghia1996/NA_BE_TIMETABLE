@@ -32,15 +32,17 @@ namespace NA_Logic.Repository
                                   (cd, ca) => new
                                   {
                                       Id = ca.Id,
-                                      Ten = ca.Ten
+                                      Ten = ca.Ten, 
+                                      So_tiet  = cd.So_tiet
                                   }).ToList();
             var tietBan = _context.Monhoc_Khoilop_Tiettranhxep
                         .Where(tb => tb.Id_mon == Id_mon && tb.Id_khoi==Id_khoi && tb.Id_ban == Id_ban)
                         .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
                         .ToList();
 
+            var donvi = _context.DM_Donvi.Find(idDonvi);
             // Lấy danh sách ngày từ enum
-            var dsNgay = Enum.GetValues<Ngay>().ToList();
+            var dsNgay = Enum.GetValues<Ngay>().Take(donvi.So_ngay).ToList();
             // Lấy danh sách tiết từ enum
             var dsTiet = Enum.GetValues<Tiet>().ToList();
 
@@ -56,7 +58,7 @@ namespace NA_Logic.Repository
                     {
                         Id = ngay,
                         Ten = ngay.GetDisplayName(),
-                        Ds_Tiet = dsTiet.Select(tiet => new TietbanDto
+                        Ds_Tiet = dsTiet.Take(ca.So_tiet).Select(tiet => new TietbanDto
                         {
                             Id = tiet,
                             Ten = tiet.GetDisplayName(),
@@ -157,7 +159,7 @@ namespace NA_Logic.Repository
                                   (cd, ca) => new
                                   {
                                       Id = ca.Id,
-                                      Ten = ca.Ten
+                                     Ten = ca.Ten, So_tiet  = cd.So_tiet
                                   }).ToList();
                 var Monhoc_Khoi = _context.Monhoc_Khoilop
                     .Where(x => x.Id_khoi == idKhoi && x.Id_ban == idBan)

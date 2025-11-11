@@ -71,6 +71,7 @@ builder.Services.AddScoped<IPhanphoi_ChuongtrinhRepository, Phanphoi_Chuongtrinh
 builder.Services.AddScoped<IPhanphoi_Chuongtrinh_ChitietRepository, Phanphoi_Chuongtrinh_ChitietRepository>();
 builder.Services.AddScoped<ILich_BaogiangRepository, Lich_BaogiangRepository>();
 builder.Services.AddScoped<IPhieu_BaogiangRepository, Phieu_BaogiangRepository>();
+builder.Services.AddScoped<IThongtin_DonviRepository, Thongtin_DonviRepository>();
 //builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

@@ -47,18 +47,17 @@ namespace NA_Logic.Repository
             }
         }
 
-        public List<Ca_DonviDto> GetlistCabyDonvi(int id)
+        public List<int> GetlistCabyDonvi(int id)
         {
             try
             {
-                var list = (from cadv in _context.Ca_Donvi join ca in _context.DM_Cahoc on cadv.Id_ca_hoc equals ca.Id
-                            where cadv.Id_don_vi == id select new Ca_DonviDto {Id_ca_hoc = cadv.Id_ca_hoc, Ten_ca = ca.Ten,So_tiet = cadv.So_tiet}).ToList();
-                if (list == null) return new List<Ca_DonviDto>();
+                var list = _context.Ca_Donvi.Where(x => x.Id_don_vi == id).Select(x => x.Id_ca_hoc).ToList();
+                if (list == null) return new List<int>();
                 return list;
             }
             catch
             {
-                return new List<Ca_DonviDto>();
+                return new List<int>();
             }
         }
         public List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
@@ -118,6 +117,7 @@ namespace NA_Logic.Repository
         {
             try
             {
+                dm_donvi.So_ngay = 7;
                 _context.DM_Donvi.Add(dm_donvi);
                 _context.SaveChanges();
                 return true;
@@ -180,7 +180,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool AddCa(int Id, List<Ca_Donvi> listca)
+        public bool AddCa(int Id, List<int> listca)
         {
             try
             {
@@ -191,8 +191,8 @@ namespace NA_Logic.Repository
                         var caDonvi = new Ca_Donvi
                         {
                             Id_don_vi = Id,
-                            Id_ca_hoc = listca[i].Id_ca_hoc,
-                            So_tiet = listca[i].So_tiet
+                            Id_ca_hoc = listca[i],
+                            So_tiet = 5
                         };
                         _context.Ca_Donvi.Add(caDonvi);
                     }
@@ -246,7 +246,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool UpdateCa(int Id, List<Ca_Donvi> caId)
+        public bool UpdateCa(int Id, List<int> caId)
         {
             try
             {
@@ -260,8 +260,8 @@ namespace NA_Logic.Repository
                     var cadv = new Ca_Donvi
                     {
                         Id_don_vi = Id,
-                        Id_ca_hoc = caId[i].Id_ca_hoc,
-                        So_tiet = caId[i].So_tiet,
+                        Id_ca_hoc = caId[i],
+                        So_tiet = 5
                     };
                     _context.Ca_Donvi.Add(cadv);
                 }

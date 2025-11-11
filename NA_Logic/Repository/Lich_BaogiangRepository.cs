@@ -71,11 +71,8 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var ngayMin = _dbContext.Ngay_Donvi.Where(c => c.Id_don_vi == idDonvi).Min(c => c.Ngay);
 
-                var ngayMax = _dbContext.Ngay_Donvi.Where(c => c.Id_don_vi == idDonvi).Max(c => c.Ngay);
-
-                var soNgayTrongTuan = (ngayMax - ngayMin) + 1;
+                var soNgayTrongTuan = _dbContext.DM_Donvi.Where(c=>c.Id == idDonvi).Select(c=>c.So_ngay).FirstOrDefault();
                 var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
                 var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
                 

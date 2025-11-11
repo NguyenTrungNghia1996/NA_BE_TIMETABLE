@@ -69,8 +69,9 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_LophocDto, DM_Lophoc>();
             CreateMap<DM_Lophoc_List, DM_Lophoc_ListDto>();
             CreateMap<Danhsach_Thoikhoabieu,Danhsach_ThoikhoabieuDto>();
-            CreateMap<Ca_DonviDto,Ca_Donvi>();
-            CreateMap<Ca_Donvi,Ca_DonviDto>();
+            CreateMap<DM_Donvi, Thongtin_Donvi_updateDto>();
+            CreateMap<Thongtin_Donvi_updateDto, DM_Donvi>();
+            CreateMap<Ca_DonviDto, Ca_Donvi>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();
