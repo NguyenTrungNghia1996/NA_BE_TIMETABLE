@@ -40,18 +40,18 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetDetailByID([FromQuery] int Id)
+        public IActionResult GetDetailByID()
         {
-            if (Id <= 0)
-                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
 
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _donvi.getDetailById(Id);
+            var detail = _donvi.getDetailById(idDonvi);
             if (detail == null)
-                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {idDonvi}");
             var detailDto = _mapper.Map<Thongtin_Donvi_updateDto>(detail);
-            detailDto.IdCap = _donvi.GetlistCapbyDonvi(Id);
-            var listca = _ttdonvi.GetlistCabyDonvi(Id);
+            detailDto.IdCap = _donvi.GetlistCapbyDonvi(idDonvi);
+            var listca = _ttdonvi.GetlistCabyDonvi(idDonvi);
             detailDto.List_ca = _mapper.Map<List<Ca_DonviDto>>(listca);
             return ApiResult.Success(detailDto, "Thành công");
         }
@@ -59,12 +59,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Update([FromBody] Thongtin_Donvi_updateDto donvi)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Kiểm tra bản ghi hợp lệ
             var donvidb = _donvi.getDetailById(donvi.Id);
             if (!ModelState.IsValid)
@@ -136,35 +132,5 @@ namespace NA_Xepthoikhoabieu.Controllers
                 item = donvi
             }, "Cập nhật đơn vị thành công");
         }
-        [HttpDelete]
-        [RequireToken]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
-            // Kiểm tra bản ghi hợp lệ
-            var donvidb = _donvi.getDetailById(id);
-            if (donvidb == null)
-                return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
-
-            var (success, message) = _donvi.DeleteCap(id);
-            if (!success)
-                return ApiResult.BadRequest(message);
-
-            var deleteCa = _donvi.DeleteCa(id);
-            if (!deleteCa)
-                return ApiResult.NotFound("Xóa các cấp học lỗi");
-            var delete = _donvi.Delete(id);
-            if (!delete)
-                return ApiResult.NotFound("Xóa đơn vị thất bại");
-
-
-            return ApiResult.Ok("Xóa đơn vị thành công");
-        }
-
     }
 }
