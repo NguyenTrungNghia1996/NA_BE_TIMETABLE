@@ -122,18 +122,18 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest(ModelState);
 
             // add 
-            var (result, mess) = _lgb.Add(lgb, idDonvi);
-            if (!result)
-                return ApiResult.NotFound(mess);
+            var (result_lbg, mess_lbg) = _lgb.Add(lgb, idDonvi);
+            if (!result_lbg)
+                return ApiResult.NotFound(mess_lbg);
 
-            bool addPBG = _pbg.Add(lgb.Id, lgb.Id_tkb);
-            if (!addPBG)
-                return ApiResult.BadRequest("Thêm lịch báo giảng thành công, thêm phiếu báo giảng thất bại");
+            var(result_pbg, mess_pbg) = _pbg.Add(lgb.Id, lgb.Id_tkb);
+            if (!result_pbg)
+                return ApiResult.BadRequest(mess_pbg);
 
             return ApiResult.Success(new
             {
                 item = lgb
-            }, mess);
+            }, mess_lbg);
         }
         [HttpPut]
         [RequireToken]
@@ -174,12 +174,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkchangetkb = _lgb.CheckChangeTKB(lgb);
             if (!checkchangetkb)
             {
-                bool deletepgb = _pbg.Delete(lgb.Id);
-                if (!deletepgb)
-                    return ApiResult.BadRequest("Xoá phiếu báo giảng thất bại");
-                bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb);
+                var deletepgb = _pbg.Delete(lgb.Id);
+                if (!deletepgb.result)
+                    return ApiResult.BadRequest(deletepgb.mess);
+                var (addpbg, messPBG) = _pbg.Add(lgb.Id, lgb.Id_tkb);
                 if (!addpbg)
-                    return ApiResult.BadRequest("Thêm phiếu báo giảng thất bại");
+                    return ApiResult.BadRequest(messPBG);
             }
 
             return ApiResult.Success(new

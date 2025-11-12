@@ -11,7 +11,7 @@ namespace NA_Logic.IRepository
     {
         List<Phieu_Baogiang_List> GetList_Paging(int PageIndex, int PageSize, int idlbg, string search, ref int totalrecord);
         Phieu_Baogiang GetDetailById(int Id);
-        bool Add(int idLgb, int idtkb);
-        bool Delete(int idlgb);
+        (bool result, string mess) Add(int idLgb, int idtkb);
+        (bool result, string mess) Delete(int idlgb);
     }
 }

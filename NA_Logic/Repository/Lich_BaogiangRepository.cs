@@ -87,41 +87,22 @@ namespace NA_Logic.Repository
                 {
                     return (false, $"Tuần {lbg.Tuan} nằm ngoài năm học. Năm học này chỉ có {soTuanToiDa} tuần");
                 }
-                DateTime tuNgay, denNgay;
+                // Tính thứ 2 đầu tiên của năm học
+                var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
+                var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
+                var thu2DauTien = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
 
-                if (lbg.Tuan == 1)
+                // Nếu năm học bắt đầu sau ngày làm việc cuối cùng của tuần đầu tiên thì tuần 1 sẽ bắt đầu từ thứ 2 tuần sau
+                var ngayCuoiTuanDauTien = thu2DauTien.AddDays(soNgayTrongTuan - 1);
+                if (namHoc.Tu_ngay > ngayCuoiTuanDauTien)
                 {
-                    // Tuần 1: từ ngày bắt đầu năm học
-                    tuNgay = namHoc.Tu_ngay;
-
-                    // Tính thứ 2 của tuần chứa ngày bắt đầu
-                    var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
-                    var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
-                    var thu2CuaTuan = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
-
-                    denNgay = thu2CuaTuan.AddDays(soNgayTrongTuan - 1);
-
-                    if (tuNgay > denNgay)
-                    {
-                        tuNgay = thu2CuaTuan.AddDays(7);
-                        denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
-                    }
+                    thu2DauTien = thu2DauTien.AddDays(7);
                 }
-                else
-                {
-                    var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
-                    var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
-                    var thu2DauTien = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
 
-                    var ngayCuoiTuan1 = thu2DauTien.AddDays(soNgayTrongTuan - 1);
-                    if (namHoc.Tu_ngay > ngayCuoiTuan1)
-                    {
-                        thu2DauTien = thu2DauTien.AddDays(7);
-                    }
+                // Tính từ ngày và đến ngày cho tuần hiện tại
+                DateTime tuNgay = thu2DauTien.AddDays((lbg.Tuan - 1) * 7);
+                DateTime denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
 
-                    tuNgay = thu2DauTien.AddDays((lbg.Tuan - 1) * 7);
-                    denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
-                }
 
                 // Kiểm tra có vượt quá năm học không
                 if (tuNgay > namHoc.Den_ngay)
