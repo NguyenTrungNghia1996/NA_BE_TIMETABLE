@@ -1,4 +1,5 @@
 ﻿using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace NA_Logic.IRepository
         Phieu_Baogiang GetDetailById(int Id);
         (bool result, string mess) Add(int idLgb, int idtkb);
         (bool result, string mess) Delete(int idlgb);
+        Chitiet_PhieubaogiangDto GetList_Chitiet(int idpbg, int idDonvi);
     }
 }

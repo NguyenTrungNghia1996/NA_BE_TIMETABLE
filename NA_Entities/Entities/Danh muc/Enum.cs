@@ -9,17 +9,17 @@ namespace NA_Entities.Entities.Danh_muc
 {
     public enum Ngay
     {
-        [Display(Name = "Thứ hai")]
+        [Display(Name = "Hai")]
         thu_hai = 1,       
-        [Display(Name = "Thứ ba")]
+        [Display(Name = "Ba")]
         thu_ba = 2,       
-        [Display(Name = "Thứ tư")]
+        [Display(Name = "Tư")]
         thu_tu = 3,       
-        [Display(Name = "Thứ năm")]
+        [Display(Name = "Năm")]
         thu_nam = 4,       
-        [Display(Name = "Thứ sáu")]
+        [Display(Name = "Sáu")]
         thu_sau = 5,       
-        [Display(Name = "Thứ bảy")]
+        [Display(Name = "Bảy")]
         thu_bay = 6,       
         [Display(Name = "Chủ nhật")]
         chu_nhat=7

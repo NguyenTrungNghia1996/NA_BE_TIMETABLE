@@ -78,6 +78,29 @@ namespace NA_Xepthoikhoabieu.Controllers
             },
             "Thành công");
         }
+        [HttpGet("phieu/chitiet")]
+        [RequireToken]
+        public IActionResult GetList_Paging_Phieu_Chitiet([FromQuery] int Idpbg)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+            {
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            }
+            //bool checkIdlbg = _lgb.CheckId(Idlbg, idDonvi);
+            //if (!checkIdlbg)
+            //    return ApiResult.BadRequest("Id lịch báo giảng không hợp lệ");
+            // Lấy danh sách dữ liệu
+            
+            var list = _pbg.GetList_Chitiet(Idpbg, idDonvi);
+            if (list == null)
+                return ApiResult.Ok();
+            return ApiResult.Success(new
+            {
+                items = list
+            },
+            "Thành công");
+        }
 
         [HttpGet("detail")]
         [RequireToken]
@@ -202,9 +225,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (lgbdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //xoá pbg
-            bool deletepgb = _pbg.Delete(id);
-            if (!deletepgb)
-                return ApiResult.BadRequest("Xoá phiếu báo giảng thất bại");
+            var deletepgb = _pbg.Delete(id);
+            if (!deletepgb.result)
+                return ApiResult.BadRequest(deletepgb.mess);
             //xoá lbg
             bool delete = _lgb.Delete(id);
             if (!delete)
