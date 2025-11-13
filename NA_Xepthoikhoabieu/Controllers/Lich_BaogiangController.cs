@@ -140,7 +140,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest($"Id năm học = {lgb.Id_nam_hoc} không hợp lệ");
             }
-            
+            bool checkppct = _lgb.CheckExistPPCT(lgb.Id_nam_hoc);
+            if (!checkppct)
+                return ApiResult.BadRequest("Năm học chưa có phân phối chương trình");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -187,6 +189,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest($"Id năm học = {lgb.Id_nam_hoc} không hợp lệ");
             }
+            bool checkppct = _lgb.CheckExistPPCT(lgb.Id_nam_hoc);
+            if (!checkppct)
+                return ApiResult.BadRequest("Năm học chưa có phân phối chương trình");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //sửa

@@ -175,6 +175,17 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckExistPPCT(int idNam)
+        {
+            try
+            {
+                return _dbContext.Phanphoi_Chuongtrinh.Any(c => c.Id_nam_hoc == idNam);
+            }
+            catch
+            {
+                return false;
+            }
+        }
         //public bool Check_constraint(int Id)
         //{
         //    try
