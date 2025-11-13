@@ -12,7 +12,7 @@ namespace NA_Logic.IRepository
     {
         List<Phieu_Baogiang_List> GetList_Paging(int PageIndex, int PageSize, int idlbg, string search, ref int totalrecord);
         Phieu_Baogiang GetDetailById(int Id);
-        (bool result, string mess) Add(int idLgb, int idtkb);
+        bool Add(int idLgb, int idtkb);
         (bool result, string mess) Delete(int idlgb);
         Chitiet_PhieubaogiangDto GetList_Chitiet(int idpbg, int idDonvi);
     }

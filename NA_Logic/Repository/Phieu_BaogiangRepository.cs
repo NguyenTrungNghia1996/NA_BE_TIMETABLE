@@ -76,7 +76,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public (bool result, string mess) Add(int idLgb, int idtkb)
+        public bool Add(int idLgb, int idtkb)
         {
             try
             {
@@ -95,16 +95,13 @@ namespace NA_Logic.Repository
                 for (int i = 0; i < listPBG.Count; i++)
                 {
                     var result = Add_Chitiet(listPBG[i].Id);
-                    if (!result.resultchitiet)
-                    {
-                        return (false, result.messchitiet);
-                    }
+                    return result;
                 }
-                return (true,"");
+                return true;
             }
             catch (Exception)
             {
-                return (false, "");
+                return false;
             }
         }
         public (bool result, string mess) Delete(int idlgb)
@@ -203,28 +200,26 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public (bool resultchitiet, string messchitiet) Add_Chitiet(int idpbg)
+        public bool Add_Chitiet(int idpbg)
         {
-            using var transaction = _dbContext.Database.BeginTransaction();
-
             try
             {
                 var paramIdpbg = new SqlParameter("Idpbg", SqlDbType.Int) { Value = idpbg };
-                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+                var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC [Insert_ChitietPbg] @json, @idDonvi, @ErrorMessage OUTPUT", paramIdpbg, paramMessage);
+                _dbContext.Database.ExecuteSqlRaw("EXEC [Insert_ChitietPbg] @Idpbg, @Message OUTPUT", paramIdpbg, paramMessage);
 
                 var Message = paramMessage.Value?.ToString() ?? "";
 
-                var tengv = (from pgb in _dbContext.Phieu_Baogiang
-                             join gv in _dbContext.DM_Giaovien on pgb.Id_giao_vien equals gv.Id
-                             where pgb.Id == idpbg  
-                             select gv.Ten).FirstOrDefault();
-                return (Message == "success", $"Phiếu báo giảng của giáo viên {tengv} bị lỗi: {Message}" );
+                //var tengv = (from pgb in _dbContext.Phieu_Baogiang
+                //             join gv in _dbContext.DM_Giaovien on pgb.Id_giao_vien equals gv.Id
+                //             where pgb.Id == idpbg  
+                //             select gv.Ten).FirstOrDefault();
+                return Message == "success";
             }
             catch (Exception ex)
             {
-                 return (false,"Thêm chi tiết thất bại");
+                 return false;
             }
         }
         public bool Delete_Chitiet(int idpgb)

@@ -41,7 +41,7 @@ namespace NA_Logic.Repository
                 totalrecord = (int)paramTotal.Value;
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new List<Auth_Users_List> { };
             }

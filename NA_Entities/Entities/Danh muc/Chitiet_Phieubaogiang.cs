@@ -17,7 +17,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_chi_tiet_PPCT { get; set; }
         public int Id_lop { get; set; }
         public int Id_mon { get; set; }
-        public string Ghi_chu { get; set; }
+        public string Ghi_chu { get; set; } = string.Empty;
     }
     public class Chitiet_Phieubaogiang_List
     {
@@ -34,12 +34,11 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Ghi_chu { get; set; }
         public string? Ten_mon { get; set; }
         public string? Ten_lop { get; set; }
-        public string Ten_giao_vien { get; set; }
+        public string Ten_giao_vien { get; set; } = string.Empty;
         public string? Phan_mon { get; set; }
         public string? Ten_bai { get; set; }
         public int Tuan { get; set; }
         public DateTime Tu_Ngay { get; set; }
         public DateTime Den_Ngay { get; set; }
-        public int So_tiet { get; set; }
     }
 }
