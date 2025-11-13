@@ -78,7 +78,7 @@ namespace NA_Logic.Repository
             }
             catch (Exception)
             {
-                return null;
+                return new ThoiKhoaBieu_Detail();
             }
         }
         
@@ -87,7 +87,8 @@ namespace NA_Logic.Repository
             try
             {
                 var list = _context.Chitiet_Thoikhoabieu.Where(x => x.Id_tkb == Id).ToList();
-                if (list == null) return null;
+                if (list == null) 
+                    return new List<Chitiet_Thoikhoabieu>();
                 return list;
             }
             catch
@@ -242,7 +243,6 @@ namespace NA_Logic.Repository
                 catch
                 {
                     transaction.Rollback();
-                    throw;
                     return false;
                 }
             }

@@ -37,7 +37,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
-            int totalrecord = 0;
             var list = _lopmon.GetLopMon(IdLop, idDonvi);
             if (list == null)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");

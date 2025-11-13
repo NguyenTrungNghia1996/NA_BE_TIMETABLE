@@ -22,7 +22,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_KhoilopRepository _khoilop;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
-        private readonly IDM_CahocRepository _cahocRepository;
         private readonly IDM_CaphocRepository _caphocRepository;
         private readonly IValidateRepository _validate;
         public DM_KhoilopController(IMapper mapper, IDM_KhoilopRepository khoilop, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 

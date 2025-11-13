@@ -29,7 +29,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 int idDonvi = _claimHelperRepository.GetIdDonvi(User);
                 if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-                string jsonString;
                 bool result = false;
                 using (var stream = file.OpenReadStream())
                 {
@@ -53,7 +52,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                 int idDonvi = _claimHelperRepository.GetIdDonvi(User);
                 if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
                 string jsonString;
-                bool result = false;
                 using (var stream = file.OpenReadStream())
                 {
                     jsonString = _file.ConvertExcelToJson(stream);

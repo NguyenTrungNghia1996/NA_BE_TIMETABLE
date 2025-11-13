@@ -151,7 +151,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!result_lbg)
                 return ApiResult.NotFound(mess_lbg);
 
-            bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb);
+            bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb, idDonvi);
             if (!addpbg)
                 return ApiResult.BadRequest("Thêm phiếu báo giảng thất bại");
 
@@ -205,7 +205,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var deletepgb = _pbg.Delete(lgb.Id);
                 if (!deletepgb.result)
                     return ApiResult.BadRequest(deletepgb.mess);
-                bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb);
+                bool addpbg = _pbg.Add(lgb.Id, lgb.Id_tkb, idDonvi);
                 if (!addpbg)
                     return ApiResult.BadRequest("Thêm phiếu báo giảng thất bại");
             }

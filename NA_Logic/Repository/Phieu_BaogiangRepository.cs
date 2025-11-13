@@ -76,7 +76,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add(int idLgb, int idtkb)
+        public bool Add(int idLgb, int idtkb, int idDonvi)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace NA_Logic.Repository
                 _dbContext.BulkInsert(listPBG);
                 for (int i = 0; i < listPBG.Count; i++)
                 {
-                    var result = Add_Chitiet(listPBG[i].Id);
+                    var result = Add_Chitiet(listPBG[i].Id, idDonvi);
                     return result;
                 }
                 return true;
@@ -200,14 +200,15 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public bool Add_Chitiet(int idpbg)
+        public bool Add_Chitiet(int idpbg, int idDonvi)
         {
             try
             {
                 var paramIdpbg = new SqlParameter("Idpbg", SqlDbType.Int) { Value = idpbg };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idpbg };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC [Insert_ChitietPbg] @Idpbg, @Message OUTPUT", paramIdpbg, paramMessage);
+                _dbContext.Database.ExecuteSqlRaw("EXEC [Insert_ChitietPbg] @Idpbg, @idDonvi, @Message OUTPUT", paramIdpbg,paramIdDonvi, paramMessage);
 
                 var Message = paramMessage.Value?.ToString() ?? "";
 
