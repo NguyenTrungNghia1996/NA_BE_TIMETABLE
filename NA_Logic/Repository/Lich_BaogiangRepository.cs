@@ -138,6 +138,8 @@ namespace NA_Logic.Repository
         {
             try
             {
+                _dbContext.ChangeTracker.Clear();
+                _dbContext.Lich_Baogiang.Update(lbg);
                 _dbContext.SaveChanges();
                 return (true, "Cập nhật lịch báo giảng thành công");
             }
