@@ -245,7 +245,7 @@ namespace NA_Logic.Repository
                 }
                 //validate thứ tự tiết
                 var cacTiet = listPPCT.OrderBy(x => x.Thu_tu_tiet).Select(x => x.Thu_tu_tiet).ToList();
-                var existppct = _dbContext.Phanphoi_Chuongtrinh.Any(c => c.Id == idppct);
+                var existppct = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Any(c => c.Id_ppct == idppct);
                 if (!existppct && cacTiet[0] != 1)
                 {
                     return (false, "Tiết đầu tiên phải bắt đầu từ 1");
