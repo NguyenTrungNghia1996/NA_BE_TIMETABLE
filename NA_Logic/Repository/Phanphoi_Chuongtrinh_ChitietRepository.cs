@@ -266,15 +266,19 @@ namespace NA_Logic.Repository
                     var danhSachThieu = string.Join(", ", cacTietThieu);
                     return (false, $"Thứ tự tiết không liên tiếp. Thiếu tiết: {danhSachThieu}");
                 }
-                int ThuTuMaxDaDung = (from pp in _dbContext.Phanphoi_Chuongtrinh
-                                      join l in _dbContext.DM_Lophoc on new { pp.Id_khoi, pp.Id_ban } equals new { l.Id_khoi, l.Id_ban }
-                                      join ct in _dbContext.Chitiet_Phieubaogiang on new { Id_mon = pp.Id_mon, Id_lop = l.Id } equals new { ct.Id_mon, ct.Id_lop }
-                                      join ppct in _dbContext.Phanphoi_Chuongtrinh_Chitiet on ct.Id_chi_tiet_PPCT equals ppct.Id
-                                      where pp.Id == idppct
-                                      select ppct.Thu_tu_tiet).Max();
-                //xoá dữ liệu cũ
-                var ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct && c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
-                listPPCT = listPPCT.Where(c => c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
+                var ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct).ToList();
+                if (existppct)
+                {
+                    int ThuTuMaxDaDung = (from pp in _dbContext.Phanphoi_Chuongtrinh
+                                          join l in _dbContext.DM_Lophoc on new { pp.Id_khoi, pp.Id_ban } equals new { l.Id_khoi, l.Id_ban }
+                                          join ct in _dbContext.Chitiet_Phieubaogiang on new { Id_mon = pp.Id_mon, Id_lop = l.Id } equals new { ct.Id_mon, ct.Id_lop }
+                                          join ppct in _dbContext.Phanphoi_Chuongtrinh_Chitiet on ct.Id_chi_tiet_PPCT equals ppct.Id
+                                          where pp.Id == idppct
+                                          select ppct.Thu_tu_tiet).Max();
+                    listPPCT = listPPCT.Where(c => c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
+                    ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct && c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
+                }
+                
                 _dbContext.BulkDelete(ppctOld);
                 //thêm dữ liệu
                 _dbContext.BulkInsert(listPPCT);
