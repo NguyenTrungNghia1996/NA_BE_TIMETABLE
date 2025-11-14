@@ -33,18 +33,31 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int IdNam, [FromQuery] string search = "")
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
             {
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
+            if (IdNam > 0)
+            {
+                bool checknam = _namhoc.CheckId(IdNam);
+                if (!checknam)
+                {
+                    return ApiResult.BadRequest($"Id năm học = {IdNam} không hợp lệ");
+                }
+            }
+            if(IdNam < 0)
+            {
+                return ApiResult.BadRequest("Id năm học phải là số dương");
+            }
+                
             
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
-            var list = _lgb.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _lgb.GetList_Paging(PageIndex, PageSize, IdNam, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new

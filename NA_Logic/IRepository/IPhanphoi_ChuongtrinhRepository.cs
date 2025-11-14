@@ -9,7 +9,7 @@ namespace NA_Logic.IRepository
 {
     public interface IPhanphoi_ChuongtrinhRepository
     {
-        List<Phanphoi_Chuongtrinh_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord);
+        List<Phanphoi_Chuongtrinh_List> GetList_Paging(int PageIndex, int PageSize, int IdBan, int IdKhoi, int IdMon, int IdNam, string search, ref int totalrecord);
         Phanphoi_Chuongtrinh GetDetailById(int Id);
         bool Add(Phanphoi_Chuongtrinh ppct);
         bool Update(Phanphoi_Chuongtrinh ppct);
