@@ -91,11 +91,14 @@ namespace NA_Logic.Repository
                     };
                     listPBG.Add(itemPBG);
                 }
-                _dbContext.BulkInsert(listPBG);
+                _dbContext.Phieu_Baogiang.AddRange(listPBG);
+                _dbContext.SaveChanges();
+
                 for (int i = 0; i < listPBG.Count; i++)
                 {
-                    var result = Add_Chitiet(listPBG[i].Id, idDonvi);
-                    return result;
+                    bool addchitiet = Add_Chitiet(listPBG[i].Id, idDonvi);
+                    if (!addchitiet)
+                        return false;
                 }
                 return true;
             }
@@ -204,8 +207,12 @@ namespace NA_Logic.Repository
         {
             try
             {
+                if(idpbg <= 0)
+                {
+                    return false;
+                }
                 var paramIdpbg = new SqlParameter("Idpbg", SqlDbType.Int) { Value = idpbg };
-                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idpbg };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
                 _dbContext.Database.ExecuteSqlRaw("EXEC [Insert_ChitietPbg] @Idpbg, @idDonvi, @Message OUTPUT", paramIdpbg,paramIdDonvi, paramMessage);
