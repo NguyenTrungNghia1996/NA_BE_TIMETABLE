@@ -67,43 +67,64 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        private (DateTime tuNgay, DateTime denNgay) TinhNgayTheoTuan(int tuan, int idNamHoc, int idDonvi)
+        {
+            var soNgayTrongTuan = _dbContext.DM_Donvi
+                .Where(c => c.Id == idDonvi)
+                .Select(c => c.So_ngay)
+                .FirstOrDefault();
+
+            var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == idNamHoc);
+
+            // Tính thứ 2 đầu tiên của năm học
+            var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
+            var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
+            var thu2DauTien = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
+
+            // Nếu năm học bắt đầu sau ngày làm việc cuối cùng của tuần đầu tiên thì tuần 1 sẽ bắt đầu từ thứ 2 tuần sau
+            var ngayCuoiTuanDauTien = thu2DauTien.AddDays(soNgayTrongTuan - 1);
+            if (namHoc.Tu_ngay > ngayCuoiTuanDauTien)
+            {
+                thu2DauTien = thu2DauTien.AddDays(7);
+            }
+
+            // Tính từ ngày và đến ngày cho tuần hiện tại
+            DateTime tuNgay = thu2DauTien.AddDays((tuan - 1) * 7);
+            DateTime denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
+
+            // Đảm bảo không vượt quá ngày kết thúc năm học
+            if (denNgay > namHoc.Den_ngay)
+            {
+                denNgay = namHoc.Den_ngay;
+            }
+
+            // Đảm bảo không bắt đầu trước ngày bắt đầu năm học (chỉ áp dụng cho tuần 1)
+            if (tuan == 1 && tuNgay < namHoc.Tu_ngay)
+            {
+                tuNgay = namHoc.Tu_ngay;
+            }
+
+            return (tuNgay, denNgay);
+        }
         public (bool result, string mess) Add(Lich_Baogiang lbg, int idDonvi)
         {
             try
             {
-
-                var soNgayTrongTuan = _dbContext.DM_Donvi.Where(c=>c.Id == idDonvi).Select(c=>c.So_ngay).FirstOrDefault();
+                var soNgayTrongTuan = _dbContext.DM_Donvi.Where(c => c.Id == idDonvi).Select(c => c.So_ngay).FirstOrDefault();
                 var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
                 var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
-                
-                var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
-                               join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
-                               where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
-                               select (int?)lichbg.Tuan).Max();
 
+                var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
+                                join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
+                                where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
+                                select (int?)lichbg.Tuan).Max();
                 lbg.Tuan = (tuanMax ?? 0) + 1;
                 var soTuanToiDa = (int)Math.Ceiling(soNgay / 7.0);
                 if (lbg.Tuan > soTuanToiDa)
                 {
                     return (false, $"Tuần {lbg.Tuan} nằm ngoài năm học. Năm học này chỉ có {soTuanToiDa} tuần");
                 }
-                // Tính thứ 2 đầu tiên của năm học
-                var thuTrongTuan = (int)namHoc.Tu_ngay.DayOfWeek;
-                var soNgayLeTheoThu2 = (thuTrongTuan == 0) ? 6 : thuTrongTuan - 1;
-                var thu2DauTien = namHoc.Tu_ngay.AddDays(-soNgayLeTheoThu2);
-
-                // Nếu năm học bắt đầu sau ngày làm việc cuối cùng của tuần đầu tiên thì tuần 1 sẽ bắt đầu từ thứ 2 tuần sau
-                var ngayCuoiTuanDauTien = thu2DauTien.AddDays(soNgayTrongTuan - 1);
-                if (namHoc.Tu_ngay > ngayCuoiTuanDauTien)
-                {
-                    thu2DauTien = thu2DauTien.AddDays(7);
-                }
-
-                // Tính từ ngày và đến ngày cho tuần hiện tại
-                DateTime tuNgay = thu2DauTien.AddDays((lbg.Tuan - 1) * 7);
-                DateTime denNgay = tuNgay.AddDays(soNgayTrongTuan - 1);
-
-
+                var (tuNgay, denNgay) = TinhNgayTheoTuan(lbg.Tuan, lbg.Id_nam_hoc, idDonvi);
                 // Kiểm tra có vượt quá năm học không
                 if (tuNgay > namHoc.Den_ngay)
                 {
@@ -124,7 +145,6 @@ namespace NA_Logic.Repository
 
                 lbg.Tu_ngay = tuNgay;
                 lbg.Den_ngay = denNgay;
-
                 _dbContext.Lich_Baogiang.Add(lbg);
                 _dbContext.SaveChanges();
                 return (true,"Thêm lịch báo giảng thành công");
@@ -134,11 +154,50 @@ namespace NA_Logic.Repository
                 return (false,"Thêm mới thất bại");
             }
         }
-        public (bool result, string mess) Update(Lich_Baogiang lbg)
+        public (bool result, string mess) Update(Lich_Baogiang lbg, int idDonvi)
         {
             try
             {
                 _dbContext.ChangeTracker.Clear();
+                bool checkChangeNam = _dbContext.Lich_Baogiang.Any(c => c.Id == lbg.Id && c.Id_nam_hoc == lbg.Id_nam_hoc);
+                if (!checkChangeNam)
+                {
+                    var soNgayTrongTuan = _dbContext.DM_Donvi.Where(c => c.Id == idDonvi).Select(c => c.So_ngay).FirstOrDefault();
+                    var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
+                    var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
+
+                    var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
+                                   join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
+                                   where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
+                                   select (int?)lichbg.Tuan).Max();
+                    lbg.Tuan = (tuanMax ?? 0) + 1;
+                    var soTuanToiDa = (int)Math.Ceiling(soNgay / 7.0);
+                    if (lbg.Tuan > soTuanToiDa)
+                    {
+                        return (false, $"Tuần {lbg.Tuan} nằm ngoài năm học. Năm học này chỉ có {soTuanToiDa} tuần");
+                    }
+                    var (tuNgay, denNgay) = TinhNgayTheoTuan(lbg.Tuan, lbg.Id_nam_hoc, idDonvi);
+                    // Kiểm tra có vượt quá năm học không
+                    if (tuNgay > namHoc.Den_ngay)
+                    {
+                        return (false, $"Không thể thêm tuần {lbg.Tuan}. Năm học đã kết thúc");
+                    }
+
+                    // Đảm bảo không vượt quá ngày kết thúc năm học
+                    if (denNgay > namHoc.Den_ngay)
+                    {
+                        denNgay = namHoc.Den_ngay;
+                    }
+
+                    // Đảm bảo không bắt đầu trước ngày bắt đầu năm học (chỉ áp dụng cho tuần 1)
+                    if (lbg.Tuan == 1 && tuNgay < namHoc.Tu_ngay)
+                    {
+                        tuNgay = namHoc.Tu_ngay;
+                    }
+
+                    lbg.Tu_ngay = tuNgay;
+                    lbg.Den_ngay = denNgay;
+                }
                 _dbContext.Lich_Baogiang.Update(lbg);
                 _dbContext.SaveChanges();
                 return (true, "Cập nhật lịch báo giảng thành công");
@@ -229,25 +288,25 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.Lich_Baogiang.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
-        public bool CheckTrungTuan(Lich_Baogiang lbg, int idDonvi)
-        {
-            try
-            {
+        //public bool CheckTrungTuan(Lich_Baogiang lbg, int idDonvi)
+        //{
+        //    try
+        //    {
 
-                bool check = (from l in _dbContext.Lich_Baogiang
-                              join p in _dbContext.Danhsach_Thoikhoabieu on l.Id_tkb equals p.Id
-                              where l.Tuan == lbg.Tuan
-                                  && l.Id_nam_hoc == lbg.Id_nam_hoc
-                                  && p.Id_don_vi == idDonvi
-                                  && (lbg.Id <= 0 || l.Id != lbg.Id)
-                              select l).Any();
+        //        bool check = (from l in _dbContext.Lich_Baogiang
+        //                      join p in _dbContext.Danhsach_Thoikhoabieu on l.Id_tkb equals p.Id
+        //                      where l.Tuan == lbg.Tuan
+        //                          && l.Id_nam_hoc == lbg.Id_nam_hoc
+        //                          && p.Id_don_vi == idDonvi
+        //                          && (lbg.Id <= 0 || l.Id != lbg.Id)
+        //                      select l).Any();
 
-                if (check) return true;
+        //        if (check) return true;
 
-                return false;
-            }
-            catch { return true; }
-        }
+        //        return false;
+        //    }
+        //    catch { return true; }
+        //}
     }
 }
 

@@ -72,6 +72,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Tên năm học đã tồn tại");
             }
+            bool checktrung = _namhoc.CheckKhoangNgay(namhoc);
+            if (checktrung) {
+                return ApiResult.BadRequest("Khoảng ngày đã tồn tại");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // check từ ngày, đến ngày
@@ -112,6 +116,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Tên nam học đã tồn tại");
             }
+            bool checktrung = _namhoc.CheckKhoangNgay(namhoc);
+            if (checktrung)
+            {
+                return ApiResult.BadRequest("Khoảng ngày đã tồn tại");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // check từ ngày, đến ngày
@@ -142,6 +151,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var namhocdb = _namhoc.GetDetailById(id);
             if (namhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            bool checkconstraint = _namhoc.Check_constraint(id);
+            if (checkconstraint)
+            {
+                return ApiResult.BadRequest("Năm học có ràng buộc, không thể xoá");
+            }
             bool delete = _namhoc.Delete(id);
             if (!delete)
                 return ApiResult.BadRequest("Xoá không thành công");

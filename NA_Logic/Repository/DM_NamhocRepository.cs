@@ -112,29 +112,44 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        //public bool Check_constraint(int Id)
-        //{
-        //    try
-        //    {
+        public bool CheckKhoangNgay(DM_Namhoc nam)
+        {
+            try
+            {
+                bool check = false;
+                if (nam.Id == 0)
+                {
+                    check = _dbContext.DM_Namhoc.Any(c => (c.Tu_ngay <= nam.Tu_ngay && c.Den_ngay >= nam.Tu_ngay)
+                                                    || (c.Tu_ngay <= nam.Den_ngay && c.Den_ngay >= nam.Den_ngay)
+                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay));
+                }
+                else
+                {
+                    check = _dbContext.DM_Namhoc.Where(c=>c.Id != nam.Id).Any(c => (c.Tu_ngay <= nam.Tu_ngay && c.Den_ngay >= nam.Tu_ngay)
+                                                    || (c.Tu_ngay <= nam.Den_ngay && c.Den_ngay >= nam.Den_ngay)
+                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay));
+                }
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool Check_constraint(int Id)
+        {
+            try
+            {
 
-        //        return _dbContext.Database.SqlQueryRaw<int>($@"
-        //                  select 1 as Value from Ca_Donvi where Id_ca_hoc = {Id}
-        //                  union select 1 from Chitiet_Thoikhoabieu where Id_ca = {Id} 
-        //                  union select 1 from DM_Lophoc where Id_ca = {Id}
-        //                  union select 1 from Giaovien_Tiettranhxep  where Id_ca = {Id}
-        //                  union select 1 from Lophoc_Monhoc_Tiettranhxep  where Id_ca = {Id}
-        //                  union select 1 from Lophoc_Tietnghi  where Id_ca = {Id}
-        //                  union select 1 from Monhoc_Khoilop  where Id_ca = {Id}
-        //                  union select 1 from Monhoc_Khoilop_Tiettranhxep  where Id_ca = {Id}
-        //                  union select 1 from Tiet_ban  where Id_ca = {Id}
-        //                  union select 1 from Tiet_tranh_xep  where Id_ca = {Id}
-        //                  union select 1 from Tiet_co_dinh  where Id_ca = {Id}").Any();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return false;
-        //    }
-        //}
+                return _dbContext.Database.SqlQuery<int>($@"
+                          select 1 as Value from Phanphoi_Chuongtrinh where Id_nam_hoc = {Id}
+                          union select 1 from Lich_Baogiang where Id_nam_hoc = {Id}").Any();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool CheckId(int Id)
         {
             if (Id <= 0) return false;

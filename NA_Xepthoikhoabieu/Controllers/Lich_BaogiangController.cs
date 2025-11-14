@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
@@ -125,11 +126,11 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             lgb.Id = 0;
             //check validate
-            bool checktrung = _lgb.CheckTrungTuan(lgb, idDonvi);
-            if (checktrung)
-            {
-                return ApiResult.BadRequest("Lịch báo giảng tuần này đã được tạo");
-            }
+            //bool checktrung = _lgb.CheckTrungTuan(lgb, idDonvi);
+            //if (checktrung)
+            //{
+            //    return ApiResult.BadRequest("Lịch báo giảng tuần này đã được tạo");
+            //}
             bool checktkb = _tkb.CheckId(lgb.Id_tkb, idDonvi);
             if (!checktkb)
             {
@@ -169,16 +170,18 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
-
+            var lgbdb = _lgb.GetDetailById(lgb.Id);
+            if (lgbdb == null)
+                return ApiResult.NotFound($"Bản ghi có Id= {lgb.Id} không tồn tại, vui lòng kiểm tra lại");
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
 
             //check validate
-            bool checktrung = _lgb.CheckTrungTuan(lgb, idDonvi);
-            if (checktrung)
-            {
-                return ApiResult.BadRequest("Lịch báo giảng tuần này đã được tạo");
-            }
+            //bool checktrung = _lgb.CheckTrungTuan(lgb, idDonvi);
+            //if (checktrung)
+            //{
+            //    return ApiResult.BadRequest("Lịch báo giảng tuần này đã được tạo");
+            //}
             bool checktkb = _tkb.CheckId(lgb.Id_tkb, idDonvi);
             if (!checktkb)
             {
@@ -192,14 +195,14 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkppct = _lgb.CheckExistPPCT(lgb.Id_nam_hoc);
             if (!checkppct)
                 return ApiResult.BadRequest("Năm học chưa có phân phối chương trình");
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            lgbdb.Id_tkb = lgb.Id_tkb;
+            lgbdb.Id_nam_hoc = lgb.Id_nam_hoc;
             //sửa
-            var (result, mess) = _lgb.Update(lgb);
+            var (result, mess) = _lgb.Update(lgbdb, idDonvi);
             if (!result)
                 return ApiResult.NotFound(mess);
             //nếu thay đổi tkb thì insert lại pbg
-            bool checkchangetkb = _lgb.CheckChangeTKB(lgb);
+            bool checkchangetkb = _lgb.CheckChangeTKB(lgbdb);
             if (!checkchangetkb)
             {
                 var deletepgb = _pbg.Delete(lgb.Id);

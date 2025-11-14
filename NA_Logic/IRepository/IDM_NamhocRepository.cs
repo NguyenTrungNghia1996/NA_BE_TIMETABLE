@@ -15,6 +15,8 @@ namespace NA_Logic.IRepository
         bool Update(DM_Namhoc dm_Namhoc);
         bool Delete(int id);
         public bool CheckId(int Id);
+        bool CheckKhoangNgay(DM_Namhoc nam);
+        bool Check_constraint(int Id);
     }
 }
  
