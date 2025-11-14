@@ -121,13 +121,15 @@ namespace NA_Logic.Repository
                 {
                     check = _dbContext.DM_Namhoc.Any(c => (c.Tu_ngay <= nam.Tu_ngay && c.Den_ngay >= nam.Tu_ngay)
                                                     || (c.Tu_ngay <= nam.Den_ngay && c.Den_ngay >= nam.Den_ngay)
-                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay));
+                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay)
+                                                    || (nam.Tu_ngay <= c.Tu_ngay && nam.Den_ngay >= c.Den_ngay));
                 }
                 else
                 {
                     check = _dbContext.DM_Namhoc.Where(c=>c.Id != nam.Id).Any(c => (c.Tu_ngay <= nam.Tu_ngay && c.Den_ngay >= nam.Tu_ngay)
                                                     || (c.Tu_ngay <= nam.Den_ngay && c.Den_ngay >= nam.Den_ngay)
-                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay));
+                                                    || (c.Tu_ngay >= nam.Tu_ngay && c.Den_ngay >= nam.Den_ngay)
+                                                    || (nam.Tu_ngay <= c.Tu_ngay && nam.Den_ngay >= c.Den_ngay));
                 }
                 return check;
             }
