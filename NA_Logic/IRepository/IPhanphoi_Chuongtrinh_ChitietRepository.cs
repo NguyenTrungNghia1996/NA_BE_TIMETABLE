@@ -15,6 +15,7 @@ namespace NA_Logic.IRepository
         //bool Update(Phanphoi_Chuongtrinh_Chitiet ppct);
         //bool Delete(int id);
         //public bool CheckId(int Id, int idDonvi);
+        bool Delete(int id_ppct);
         (bool result, string mess) Import(int idppct, Stream file, int idDonvi);
         //bool CheckTrungTuanTiet(Phanphoi_Chuongtrinh_Chitiet ppctct, int idDonvi);
     }

@@ -21,8 +21,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_KhoilopRepository _khoilop;
         private readonly IDM_NamhocRepository _namhoc;
         private readonly IDM_MonhocRepository _monhoc;
+        private readonly IPhanphoi_Chuongtrinh_ChitietRepository _chitiet;
         public Phanphoi_ChuongtrinhController(IMapper mapper, IPhanphoi_ChuongtrinhRepository ppct, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IValidateRepository validate, 
-                                              IDM_BanhocRepository banhoc, IDM_NamhocRepository namhoc, IDM_KhoilopRepository khoilop, IDM_MonhocRepository monhoc)
+                                              IDM_BanhocRepository banhoc, IDM_NamhocRepository namhoc, IDM_KhoilopRepository khoilop, IDM_MonhocRepository monhoc, IPhanphoi_Chuongtrinh_ChitietRepository chitiet)
         {
             _mapper = mapper;
             _ppct = ppct;
@@ -33,6 +34,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _namhoc = namhoc;
             _banhoc = banhoc;
             _khoilop = khoilop;
+            _chitiet = chitiet;
         }
         [HttpGet]
         [RequireToken]
@@ -237,6 +239,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var ppctdb = _ppct.GetDetailById(id);
             if (ppctdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            bool del_chitiet = _chitiet.Delete(id);
+            if (!del_chitiet)
+                return ApiResult.BadRequest("Xoá chi tiết không thành công");
             bool delete = _ppct.Delete(id);
             if (!delete)
                 return ApiResult.BadRequest("Xoá không thành công");

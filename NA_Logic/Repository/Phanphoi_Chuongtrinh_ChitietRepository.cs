@@ -100,24 +100,24 @@ namespace NA_Logic.Repository
         //        return false;
         //    }
         //}
-        //public bool Delete(int id)
-        //{
-        //    try
-        //    {
-        //        var namhoc = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Find(id);
-        //        if (namhoc == null)
-        //        {
-        //            return false;
-        //        }
-        //        _dbContext.Phanphoi_Chuongtrinh_Chitiet.Remove(namhoc);
-        //        _dbContext.SaveChanges();
-        //        return true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+        public bool Delete(int id_ppct)
+        {
+            try
+            {
+                var listdel = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c=>c.Id_ppct == id_ppct).ToList();
+                if (listdel == null)
+                {
+                    return false;
+                }
+                _dbContext.Phanphoi_Chuongtrinh_Chitiet.RemoveRange(listdel);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         //public bool Check_constraint(int Id)
         //{
         //    try
