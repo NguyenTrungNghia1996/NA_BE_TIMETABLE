@@ -6,6 +6,7 @@ using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
+using System.Composition;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
@@ -20,8 +21,10 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_NamhocRepository _namhoc;
         private readonly IDanhsach_ThoikhoabieuRepository _tkb;
         private readonly IPhieu_BaogiangRepository _pbg;
+        private readonly IExportWordRepository _export;
+        private readonly IWebHostEnvironment _env;
         public Lich_BaogiangController(IMapper mapper, ILich_BaogiangRepository lgb, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, 
-                                        IDM_NamhocRepository namhoc, IDanhsach_ThoikhoabieuRepository tkb, IPhieu_BaogiangRepository pbg)
+                                        IDM_NamhocRepository namhoc, IDanhsach_ThoikhoabieuRepository tkb, IPhieu_BaogiangRepository pbg, IExportWordRepository export, IWebHostEnvironment env)
         {
             _mapper = mapper;
             _lgb = lgb;
@@ -30,10 +33,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             _namhoc = namhoc;
             _tkb = tkb;
             _pbg = pbg;
+            _export = export;
+            _env = env;
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int IdNam, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int IdNam)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
@@ -56,8 +61,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
-            search = search.Trim();
-            var list = _lgb.GetList_Paging(PageIndex, PageSize, IdNam, search, ref totalrecord);
+            //search = search.Trim();
+            var list = _lgb.GetList_Paging(PageIndex, PageSize, IdNam, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new
@@ -254,6 +259,63 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Xoá không thành công");
 
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("phieu/export")]
+        [RequireToken]
+        public IActionResult Export_TungPhieu([FromQuery] int idpbg)
+        {
+            try
+            {
+                //bool check_env = _claimHelperRepository.IsDemoSite();
+                //if (check_env)
+                //    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "template.docx");
+                var data = _export.GetList_Chitiet(idpbg, idDonvi);
+                var excelBytes = _export.FillTemplate( templatePath , data);
+
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
+
+                var fileName = $"{data.Ten_giao_vien}_Tuan {data.Tuan}(Từ ngày {data.Tu_ngay.ToString("dd/MM/yyyy")} - đến ngày {data.Den_ngay.ToString("dd/MM/yyyy")}).docx";
+                //header
+                //Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{fileName}\"; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
+        }
+        [HttpGet("export")]
+        [RequireToken]
+        public IActionResult Export_TatCaPhieu([FromQuery] int idlbg)
+        {
+            try
+            {
+                //bool check_env = _claimHelperRepository.IsDemoSite();
+                //if (check_env)
+                //    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var lgbdb = _lgb.GetDetailById(idlbg);
+                if (lgbdb == null)
+                    return ApiResult.NotFound($"Bản ghi có Id= {idlbg} không tồn tại, vui lòng kiểm tra lại");
+                var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "template.docx");
+                var zipBytes = _export.FillMultipleAndZip( templatePath , idlbg, idDonvi);
+
+                var fileName = $"PhieuBaoGiang_Tuần {lgbdb.Tuan}(Từ ngày {lgbdb.Tu_ngay.ToString("dd/MM/yyyy")} - đến ngày {lgbdb.Den_ngay.ToString("dd/MM/yyyy")}).zip";
+                //header
+                //Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{fileName}\"; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(zipBytes, "application/zip", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
         }
     }
 }

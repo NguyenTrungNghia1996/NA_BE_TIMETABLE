@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<Lich_Baogiang_List> GetList_Paging(int PageIndex, int PageSize, int IdNam, string search, ref int totalrecord)
+        public List<Lich_Baogiang_List> GetList_Paging(int PageIndex, int PageSize, int IdNam, ref int totalrecord)
         {
             try
             {
@@ -40,16 +40,16 @@ namespace NA_Logic.Repository
                     Value = IdNam
                 };
 
-                var paramSearch = new SqlParameter("search", SqlDbType.NVarChar)
-                {
-                    Value = search ?? string.Empty
-                };
+                //var paramSearch = new SqlParameter("search", SqlDbType.NVarChar)
+                //{
+                //    Value = search ?? string.Empty
+                //};
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<Lich_Baogiang_List>().FromSqlRaw("EXEC Lich_Baogiang_GetList_Paging @pageIndex, @pageSize, @Id_nam, @search,  @total OUTPUT",
-                    paramPageIndex, paramPageSize,paramIdNam, paramSearch, paramTotal)
+                var result = _dbContext.Set<Lich_Baogiang_List>().FromSqlRaw("EXEC Lich_Baogiang_GetList_Paging @pageIndex, @pageSize, @Id_nam,  @total OUTPUT",
+                    paramPageIndex, paramPageSize,paramIdNam, paramTotal)
                     .ToList();
                 if (result == null) result = new List<Lich_Baogiang_List>();
                 totalrecord = (int)paramTotal.Value;

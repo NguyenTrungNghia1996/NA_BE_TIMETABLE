@@ -9,7 +9,7 @@ namespace NA_Logic.IRepository
 {
     public interface ILich_BaogiangRepository
     {
-        List<Lich_Baogiang_List> GetList_Paging(int PageIndex, int PageSize,int IdNam,  string search, ref int totalrecord);
+        List<Lich_Baogiang_List> GetList_Paging(int PageIndex, int PageSize,int IdNam, ref int totalrecord);
         Lich_Baogiang GetDetailById(int Id);
         (bool result, string mess) Add(Lich_Baogiang lbg, int idDonvi);
         (bool result, string mess) Update(Lich_Baogiang lbg, int idDonvi);

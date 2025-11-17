@@ -220,7 +220,7 @@ namespace NA_Logic.Repository
                     if (string.IsNullOrEmpty(headerValue) ||
                         !headerValue.Equals(headers[col - 1], StringComparison.OrdinalIgnoreCase))
                     {
-                        return (false, $"Cột {col} không đúng định dạng. Cần: {headers[col - 1]}");
+                        return (false, $"File không đúng định dạng");
                     }
                 }
                 //đọc file
@@ -249,12 +249,12 @@ namespace NA_Logic.Repository
                     };
                     if (itemPPCT.Tuan <= 0)
                     {
-                        return (false, $"Dòng {row}: Tuần phải là số nguyên dương");
+                        return (false, $"Tuần phải là số nguyên dương");
                     }
 
                     if (itemPPCT.Thu_tu_tiet <= 0)
                     {
-                        return (false, $"Dòng {row}: Tiết phải là số nguyên dương");
+                        return (false, $"Tiết phải là số nguyên dương");
                     }
 
                     listPPCT.Add(itemPPCT);
@@ -280,7 +280,7 @@ namespace NA_Logic.Repository
                 if (cacTietThieu.Any())
                 {
                     var danhSachThieu = string.Join(", ", cacTietThieu);
-                    return (false, $"Thứ tự tiết không liên tiếp. Thiếu tiết: {danhSachThieu}");
+                    return (false, $"Thứ tự tiết phải liên tiếp");
                 }
                 var ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct).ToList();
                 if (existppct)

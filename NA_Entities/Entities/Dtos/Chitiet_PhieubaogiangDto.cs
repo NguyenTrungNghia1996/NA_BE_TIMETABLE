@@ -32,4 +32,12 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_giao_vien { get; set; } = string.Empty;
         public List<NgayhocDto> Lich_theo_ngay { get; set; } = new List<NgayhocDto>();
     }
+    public class PhieubaogiangDto
+    {
+        public string Ten_giao_vien { get; set; } = string.Empty;
+        public int Tuan { get; set; } = 0;
+        public DateTime Tu_ngay { get; set; }
+        public DateTime Den_ngay { get; set; }
+        public List<NgayhocDto> Lich_theo_ngay { get; set; } = new List<NgayhocDto>();
+    }
 }
