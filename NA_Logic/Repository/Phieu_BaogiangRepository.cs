@@ -151,12 +151,11 @@ namespace NA_Logic.Repository
 
                 var dsCa = _dbContext.Ca_Donvi.Where(c=>c.Id_don_vi== idDonvi).ToList();
                 // Lấy danh sách ngày từ enum
-                var thuBatDau = (int)tuNgay.DayOfWeek; // 0=CN, 1=T2, 2=T3,...
-                var thuBatDauEnum = thuBatDau == 0 ? 7 : thuBatDau; // Chuyển 0(CN) thành 7
+                var thuBatDau = (int)tuNgay.DayOfWeek; 
+                var thuBatDauEnum = thuBatDau == 0 ? 7 : thuBatDau;
                 var allNgayEnum = Enum.GetValues<Ngay>().ToList();
-                var dsNgay = Enumerable.Range(0, so_ngay)
-                    .Select(i => allNgayEnum.FirstOrDefault(n => (int)n == ((thuBatDauEnum - 1 + i) % 7) + 1))
-                    .ToList();                // Lấy danh sách tiết từ enum
+                var dsNgay = Enumerable.Range(0, so_ngay).Select(i => allNgayEnum.FirstOrDefault(n => (int)n == ((thuBatDauEnum - 1 + i) % 7) + 1)).ToList();                
+                // Lấy danh sách tiết từ enum
                 var dsTiet = Enum.GetValues<Tiet>().ToList();
 
                 var result = new Chitiet_PhieubaogiangDto
