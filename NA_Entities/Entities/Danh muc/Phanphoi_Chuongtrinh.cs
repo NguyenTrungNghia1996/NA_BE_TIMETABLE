@@ -30,5 +30,6 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_mon { get; set; }
         public string Ten_mon { get; set; }
         public int Id_don_vi { get;set; }
+        public bool Edit { get; set; }
     }
 }

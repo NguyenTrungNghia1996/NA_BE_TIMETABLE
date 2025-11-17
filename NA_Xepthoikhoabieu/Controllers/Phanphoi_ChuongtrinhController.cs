@@ -95,7 +95,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
-            var list = _ppct.GetList_Paging(PageIndex, PageSize,IdBan, IdKhoi, IdMon, IdNam, search, ref totalrecord);
+            var list = _ppct.GetList_Paging(PageIndex, PageSize,IdBan, IdKhoi, IdMon, IdNam, idDonvi, search, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new

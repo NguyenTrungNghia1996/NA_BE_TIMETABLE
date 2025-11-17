@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<Phanphoi_Chuongtrinh_List> GetList_Paging(int PageIndex, int PageSize,int IdBan, int IdKhoi, int IdMon, int IdNam, string search, ref int totalrecord)
+        public List<Phanphoi_Chuongtrinh_List> GetList_Paging(int PageIndex, int PageSize,int IdBan, int IdKhoi, int IdMon, int IdNam, int IdDonvi, string search, ref int totalrecord)
         {
             try
             {
@@ -48,6 +48,10 @@ namespace NA_Logic.Repository
                 {
                     Value = IdNam
                 };
+                var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int)
+                {
+                    Value = IdDonvi
+                };
                 var paramSearch = new SqlParameter("search", SqlDbType.NVarChar)
                 {
                     Value = search ?? string.Empty
@@ -57,8 +61,8 @@ namespace NA_Logic.Repository
                     Direction = ParameterDirection.Output
                 };
                 var result = _dbContext.Set<Phanphoi_Chuongtrinh_List>().FromSqlRaw("EXEC Phanphoi_Chuongtrinh_GetList_Paging @pageIndex, @pageSize, @Id_khoi, @Id_ban," +
-                                                                                    "@Id_nam, @Id_mon, @search,  @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramIdKhoi, paramIdBan, paramIdNam, paramIdMon, paramSearch, paramTotal)
+                                                                                    "@Id_nam, @Id_mon, @Id_don_vi, @search,  @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramIdKhoi, paramIdBan, paramIdNam, paramIdMon, paramIdDonvi, paramSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<Phanphoi_Chuongtrinh_List>();
                 totalrecord = (int)paramTotal.Value;
