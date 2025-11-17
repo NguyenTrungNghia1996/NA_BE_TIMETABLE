@@ -229,16 +229,17 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult Delete([FromQuery] int id)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
             {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
             var ppctdb = _ppct.GetDetailById(id);
             if (ppctdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            bool checkConstraint = _chitiet.CheckConstraint(id, idDonvi);
+            if (checkConstraint)
+                return ApiResult.BadRequest("Đã tạo lịch báo giảng, không thể xoá");
             bool del_chitiet = _chitiet.Delete(id);
             if (!del_chitiet)
                 return ApiResult.BadRequest("Xoá chi tiết không thành công");

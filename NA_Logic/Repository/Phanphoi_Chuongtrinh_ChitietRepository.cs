@@ -100,6 +100,22 @@ namespace NA_Logic.Repository
         //        return false;
         //    }
         //}
+        public bool CheckConstraint(int Id, int IdDonvi)
+        {
+            try
+            {
+                bool check = _dbContext.Database.SqlQuery<int>($@"
+                             select 1 as Value FROM Phanphoi_Chuongtrinh pp 
+						     JOIN DM_Lophoc l ON l.Id_ban = pp.Id_ban AND l.Id_khoi = pp.Id_khoi
+						     JOIN Chitiet_Phieubaogiang ct ON ct.Id_lop = l.Id AND ct.Id_mon = pp.Id_mon 
+						     JOIN Phanphoi_Chuongtrinh_Chitiet ppct ON ppct.Id = ct.Id_chi_tiet_PPCT where pp.Id = {Id} and pp.Id_don_vi = {IdDonvi}").Any();
+                return check;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool Delete(int id_ppct)
         {
             try
