@@ -139,19 +139,19 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
             donvi.Id = addDonvi.Id;
             var addCapDonvi = _donvi.AddCap(donvi.Id, donvi.IdCap);
-            //var addCaDv = _donvi.AddCa(donvi.Id, donvi.Id_cahoc);
+            var addCaDv = _donvi.AddCa(donvi.Id, donvi.Id_cahoc);
             if (!addCapDonvi)
                 return ApiResult.Success(new
                 {
                     item = donvi
                 },
                 "Tạo đơn vị thành công, lưu cấp học thất bại");
-            //if (!addCaDv)
-            //    return ApiResult.Success(new
-            //    {
-            //        item = donvi
-            //    },
-            //    "Tạo đơn vị thành công, lưu ca học thất bại");
+            if (!addCaDv)
+                return ApiResult.Success(new
+                {
+                    item = donvi
+                },
+                "Tạo đơn vị thành công, lưu ca học thất bại");
             return ApiResult.Success(new
             {
                 item = donvi

@@ -210,6 +210,7 @@ namespace NA_Logic.Repository
         {
             try
             {
+                dm_donvi.So_ngay = 7;
                 _context.ChangeTracker.Clear();
                 _context.DM_Donvi.Update(dm_donvi);
                 _context.SaveChanges();
