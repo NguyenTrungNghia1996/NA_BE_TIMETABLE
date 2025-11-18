@@ -58,11 +58,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id năm học phải là số dương");
             }
                 
-            
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             //search = search.Trim();
-            var list = _lgb.GetList_Paging(PageIndex, PageSize, IdNam, ref totalrecord);
+            var list = _lgb.GetList_Paging(PageIndex, PageSize, IdNam, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             return ApiResult.Success(new

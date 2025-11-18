@@ -290,7 +290,7 @@ namespace NA_Logic.Repository
                                           join ct in _dbContext.Chitiet_Phieubaogiang on new { Id_mon = pp.Id_mon, Id_lop = l.Id } equals new { ct.Id_mon, ct.Id_lop }
                                           join ppct in _dbContext.Phanphoi_Chuongtrinh_Chitiet on ct.Id_chi_tiet_PPCT equals ppct.Id
                                           where pp.Id == idppct
-                                          select ppct.Thu_tu_tiet).Max();
+                                          select (int?)ppct.Thu_tu_tiet).Max()??0;
                     listPPCT = listPPCT.Where(c => c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
                     ppctOld = _dbContext.Phanphoi_Chuongtrinh_Chitiet.Where(c => c.Id_ppct == idppct && c.Thu_tu_tiet > ThuTuMaxDaDung).ToList();
                 }
