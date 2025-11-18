@@ -161,7 +161,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Xoá không thành công");
             return ApiResult.Ok("Xóa thành công");
         }
-        [HttpGet("/tuanmax")]
+        [HttpGet("tuanmax")]
         [RequireToken]
         public IActionResult GetTuanMax([FromQuery] int id)
         {
