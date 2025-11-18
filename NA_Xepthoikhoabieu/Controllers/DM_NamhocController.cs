@@ -165,14 +165,17 @@ namespace NA_Xepthoikhoabieu.Controllers
         [RequireToken]
         public IActionResult GetTuanMax([FromQuery] int id)
         {
-            int idUser = _claimHelperRepository.GetUserId(User);
-            // kiểm tra nếu là admin thì được truy cập
-            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            //int idUser = _claimHelperRepository.GetUserId(User);
+            //// kiểm tra nếu là admin thì được truy cập
+            //bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            //if (!checkIsAdmin)
+            //{
+            //    return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            //}
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
             var namhocdb = _namhoc.GetDetailById(id);
             if (namhocdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
