@@ -150,6 +150,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public int GetMaxTuanByNam(int Id, int IdDonvi)
+        {
+            try
+            {
+                int TuanMax =(from lbg in _dbContext.Lich_Baogiang 
+                              join n in _dbContext.DM_Namhoc on lbg.Id_nam_hoc equals n.Id
+                                join ds in _dbContext.Danhsach_Thoikhoabieu on lbg.Id_tkb equals ds.Id
+                                where n.Id == Id && ds.Id_don_vi == IdDonvi
+                                select (int?)lbg.Tuan).Max() ?? 0;
+                return TuanMax;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
         public bool CheckId(int Id)
         {
             if (Id <= 0) return false;

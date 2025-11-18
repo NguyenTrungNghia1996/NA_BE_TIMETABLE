@@ -17,6 +17,7 @@ namespace NA_Logic.IRepository
         public bool CheckId(int Id);
         bool CheckKhoangNgay(DM_Namhoc nam);
         bool Check_constraint(int Id);
+        int GetMaxTuanByNam(int Id, int IdDonvi);
     }
 }
  

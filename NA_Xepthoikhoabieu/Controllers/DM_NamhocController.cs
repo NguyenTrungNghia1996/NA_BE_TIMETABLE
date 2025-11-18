@@ -161,5 +161,23 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Xoá không thành công");
             return ApiResult.Ok("Xóa thành công");
         }
+        [HttpGet("/tuanmax")]
+        [RequireToken]
+        public IActionResult GetTuanMax([FromQuery] int id)
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            var namhocdb = _namhoc.GetDetailById(id);
+            if (namhocdb == null)
+                return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            int result = _namhoc.GetMaxTuanByNam(id, idDonvi);
+            return ApiResult.Success(result, "Thành công");
+        }
     }
 }
