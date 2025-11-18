@@ -17,6 +17,6 @@ namespace NA_Logic.IRepository
         public bool CheckId(int Id, int idDonvi);
         //bool CheckTrungTuan(Lich_Baogiang lbg, int idDonvi);
         bool CheckChangeTKB(Lich_Baogiang lbg);
-        bool CheckExistPPCT(int idNam);
+        bool CheckExistPPCT(int idNam, int idDonvi);
     }
 }

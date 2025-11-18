@@ -245,11 +245,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckExistPPCT(int idNam)
+        public bool CheckExistPPCT(int idNam, int idDonvi)
         {
             try
             {
-                return _dbContext.Phanphoi_Chuongtrinh.Any(c => c.Id_nam_hoc == idNam);
+                return _dbContext.Phanphoi_Chuongtrinh.Any(c => c.Id_nam_hoc == idNam && c.Id_don_vi == idDonvi);
             }
             catch
             {
