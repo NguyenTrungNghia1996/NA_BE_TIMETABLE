@@ -268,7 +268,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
                 var fileName = $"PhanPhoiChuongTrinh_{ppct.Ten}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 //header
-                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                //Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
                 Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
                 return File(excelBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
