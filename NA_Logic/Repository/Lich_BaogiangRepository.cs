@@ -122,12 +122,20 @@ namespace NA_Logic.Repository
                 var soNgayTrongTuan = _dbContext.DM_Donvi.Where(c => c.Id == idDonvi).Select(c => c.So_ngay).FirstOrDefault();
                 var namHoc = _dbContext.DM_Namhoc.FirstOrDefault(x => x.Id == lbg.Id_nam_hoc);
                 var soNgay = (namHoc.Den_ngay - namHoc.Tu_ngay).Days + 1;
-
-                var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
-                                join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
-                                where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
-                                select (int?)lichbg.Tuan).Max();
-                lbg.Tuan = (tuanMax ?? 0) + 1;
+                bool existLBG = (from l in _dbContext.Lich_Baogiang
+                               join tkb in _dbContext.Danhsach_Thoikhoabieu on l.Id_tkb equals tkb.Id
+                               where l.Id_nam_hoc == lbg.Id_nam_hoc && tkb.Id_don_vi == idDonvi
+                               select 1).Any();
+                
+                if (existLBG || lbg.Tuan == 0 || lbg.Tuan == null)
+                {
+                    var tuanMax = (from lichbg in _dbContext.Lich_Baogiang
+                                   join tkb in _dbContext.Danhsach_Thoikhoabieu on lichbg.Id_tkb equals tkb.Id
+                                   where tkb.Id_don_vi == idDonvi && lichbg.Id_nam_hoc == lbg.Id_nam_hoc
+                                   select (int?)lichbg.Tuan).Max();
+                    lbg.Tuan = (tuanMax ?? 0) + 1;
+                }
+                   
                 var soTuanToiDa = (int)Math.Ceiling(soNgay / 7.0);
                 if (lbg.Tuan > soTuanToiDa)
                 {

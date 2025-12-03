@@ -5,6 +5,7 @@ using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
+using System.Composition;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
@@ -118,7 +119,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
             // Lấy bản ghi từ db
-            var detailppct = _ppct.GetDetailById(Id);
+            var detailppct = _ppct.GetDetailById(Id, idDonvi);
             if (detailppct == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             return ApiResult.Success(detailppct, "Thành công");
@@ -181,7 +182,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
             // Kiểm tra bản ghi hợp lệ
-            var ppctdb = _ppct.GetDetailById(ppct.Id);
+            var ppctdb = _ppct.GetDetailById(ppct.Id, idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (ppctdb == null)
@@ -234,7 +235,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
-            var ppctdb = _ppct.GetDetailById(id);
+            var ppctdb = _ppct.GetDetailById(id, idDonvi);
             if (ppctdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             bool checkConstraint = _chitiet.CheckConstraint(id, idDonvi);
@@ -247,6 +248,36 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!delete)
                 return ApiResult.BadRequest("Xoá không thành công");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("export")]
+        [RequireToken]
+        public IActionResult Export([FromQuery] int id)
+        {
+            try
+            {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var excelBytes = _ppct.ExportExcel_PPCT(id, idDonvi);
+                var ppct = _ppct.GetDetailById(id, idDonvi);
+                if (ppct == null)
+                    return ApiResult.NotFound("Không tìm thấy phân phối chương trình");
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu");
+
+                var fileName = $"PhanPhoiChuongTrinh_{ppct.Ten}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
         }
     }
 }

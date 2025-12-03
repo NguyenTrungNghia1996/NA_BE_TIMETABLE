@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
@@ -73,11 +75,11 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public Phanphoi_Chuongtrinh GetDetailById(int Id)
+        public Phanphoi_Chuongtrinh GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var namhoc = _dbContext.Phanphoi_Chuongtrinh.FirstOrDefault(c => c.Id == Id);
+                var namhoc = _dbContext.Phanphoi_Chuongtrinh.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
                 return namhoc;
             }
             catch (Exception)
@@ -129,6 +131,53 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+        }
+        public byte[] ExportExcel_PPCT(int id, int idDonvi)
+        {
+            var data = (from ct in _dbContext.Phanphoi_Chuongtrinh_Chitiet
+                        join pp in _dbContext.Phanphoi_Chuongtrinh on ct.Id_ppct equals pp.Id
+                        where ct.Id_ppct == id && pp.Id_don_vi == idDonvi
+                        select ct).ToList();
+
+            if (!data.Any()) return null;
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            // Headers
+            var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài" };
+            for (int i = 0; i < headers.Length; i++)
+            {
+                var headerCell = worksheet.Cell(1, i + 1);
+                headerCell.Value = headers[i];
+                headerCell.Style.Font.SetBold(true);
+                headerCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                headerCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
+
+            // Đổ dữ liệu
+            int currentRow = 2;
+
+            foreach (var ct in data)
+            {
+                worksheet.Cell(currentRow, 1).Value = ct.Tuan;
+                worksheet.Cell(currentRow, 2).Value = ct.Thu_tu_tiet;
+                worksheet.Cell(currentRow, 3).Value = ct.Phan_mon;
+                worksheet.Cell(currentRow, 4).Value = ct.Ten_bai;
+
+                // căn giữa cột số
+                worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                currentRow++;
+            }
+
+            // Tự động căn chỉnh width
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
         //public bool Check_constraint(int Id)
         //{
