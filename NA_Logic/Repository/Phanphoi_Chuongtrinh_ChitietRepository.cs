@@ -268,12 +268,14 @@ namespace NA_Logic.Repository
                 //}
 
                 var cacTietThieu = new List<int>();
+                int tietDau = cacTiet.First();
+                int tietCuoi = cacTiet.Count + tietDau - 1;
 
-                for (int i = 0; i < cacTiet.Count; i++)
+                for (int tiet = tietDau; tiet <= tietCuoi; tiet++)
                 {
-                    if (cacTiet[i] != i + 1)
+                    if (!cacTiet.Contains(tiet))
                     {
-                        cacTietThieu.Add(i + 1);
+                        cacTietThieu.Add(tiet);
                     }
                 }
 
