@@ -86,6 +86,8 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id_giao_vien { get; set; } = 0;
         public string Ten_giao_vien { get; set; } = string.Empty;
+        public int? Tong_so_tiet { get; set; } = 0;
+        public int? So_tiet_da_xep { get; set; } = 0;
         public List<tkb_theo_giaovien> timetable { get; set; } = new List<tkb_theo_giaovien>();
         public List<tkb_chuaxep_giaovien> ds_chua_xep { get; set; } = new List<tkb_chuaxep_giaovien>();
     }

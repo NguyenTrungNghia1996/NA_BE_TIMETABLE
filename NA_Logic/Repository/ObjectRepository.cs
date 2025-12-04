@@ -1987,6 +1987,7 @@ namespace NA_Logic.Repository
         public ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb, int idDonvi)
         {
             LoadObjectsFromTiet_Test(idtkb, idDonvi);
+
             if (_dsTietGoc == null || _dsTietGoc.Count == 0)
             {
                 return null;
@@ -2011,6 +2012,8 @@ namespace NA_Logic.Repository
             {
                 Id_giao_vien = id_gv,
                 Ten_giao_vien = firstTiet.Ten_giao_vien,
+                Tong_so_tiet = tiet.Count(),
+                So_tiet_da_xep = tiet.Where(c=>c.Ngay > 0 && c.Tiet > 0).Count(),
                 timetable = new List<tkb_theo_giaovien>(),
                 ds_chua_xep = new List<tkb_chuaxep_giaovien>()
             };
