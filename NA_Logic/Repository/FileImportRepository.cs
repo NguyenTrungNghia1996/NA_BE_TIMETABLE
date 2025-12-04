@@ -152,7 +152,13 @@ namespace NA_Logic.Repository
                             object value;
 
                             if (cell.DataType == XLDataType.Number)
-                                value = (int)cell.GetDouble();
+                            {
+                                double numValue = cell.GetDouble();
+                                if (numValue == Math.Floor(numValue))
+                                    value = (int)numValue;
+                                else
+                                    value = numValue.ToString("0.#####");
+                            }
                             else
                                 value = cell.GetString().Trim();
 
