@@ -73,7 +73,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
             var detailDto = _mapper.Map<DM_DonviDto>(detail);
             detailDto.IdCap = _donvi.GetlistCapbyDonvi(Id);
-            detailDto.Id_cahoc = _donvi.GetlistCapbyDonvi(Id);
+            detailDto.Id_cahoc = _donvi.GetlistCabyDonvi(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpGet("donvichuacotaikhoan")]
