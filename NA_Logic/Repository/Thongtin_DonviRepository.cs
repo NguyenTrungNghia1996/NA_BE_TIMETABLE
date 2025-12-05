@@ -1,5 +1,6 @@
 ﻿using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using System;
@@ -30,6 +31,20 @@ namespace NA_Logic.Repository
             catch
             {
                 return new List<Ca_DonviDto>();
+            }
+        }
+        public bool Update_ThongTinDv(DM_Donvi dm_donvi)
+        {
+            try
+            {
+                _context.ChangeTracker.Clear();
+                _context.DM_Donvi.Update(dm_donvi);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
         public bool UpdateCa(int Id, List<Ca_Donvi> caId)

@@ -110,7 +110,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //update
-            bool update = _donvi.Update(item);
+            bool update = _ttdonvi.Update_ThongTinDv(item);
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var editCap = _donvi.UpdateCap(idDonvi, donvi.IdCap);

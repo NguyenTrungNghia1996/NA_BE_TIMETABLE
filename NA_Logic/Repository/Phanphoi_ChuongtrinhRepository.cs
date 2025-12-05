@@ -145,7 +145,7 @@ namespace NA_Logic.Repository
             var worksheet = workbook.Worksheets.Add("Sheet1");
 
             // Headers
-            var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài" };
+            var headers = new[] { "Tuần", "Tiết", "Phân môn", "Tên bài học" };
             for (int i = 0; i < headers.Length; i++)
             {
                 var headerCell = worksheet.Cell(1, i + 1);
