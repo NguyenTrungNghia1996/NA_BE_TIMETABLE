@@ -247,5 +247,33 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest($"Lỗi: {ex.Message}");
             }
         }
+        [HttpGet("matran/lopdoc")]
+        [RequireToken]
+        public IActionResult Export_MaTran_LopDoc([FromQuery] int idtkb)
+        {
+            try
+            {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var excelBytes = _export.ExportExcel_MaTranLop_Doc(idtkb);
+
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
+
+                var fileName = $"MaTranLopDoc_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
+        }
     }
 }

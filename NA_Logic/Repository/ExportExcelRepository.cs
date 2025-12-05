@@ -1352,7 +1352,118 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
-        
+        public byte[] ExportExcel_MaTranLop_Doc(int idtkb)
+        {
+            var data = List_Tiet(idtkb);
+            if (!data.Any()) return null;
+            var dataDict = data.GroupBy(x => new { x.Tiet, x.Ngay, x.Id_ca, x.Id_lop }).ToDictionary(g => g.Key, g => g.First());
+            using var workbook = new XLWorkbook();
+
+            // Lấy danh sách các lớp từ data
+            var lopList = data.Select(x => new { x.Ten_lop, x.Id_lop }).Distinct().OrderBy(x => x.Ten_lop).ToList();
+            var firstRow = data.FirstOrDefault();
+
+            var caList = new[] {
+                new { IdCa = 1, TenCa = "Ca sáng" },
+                new { IdCa = 2, TenCa = "Ca chiều" }
+            };
+
+            foreach (var ca in caList)
+            {
+                var worksheet = workbook.Worksheets.Add(ca.TenCa);
+
+                // Tiêu đề trường
+                worksheet.Cell(1, 1).Value = firstRow?.Ten_truong?.ToUpper() ?? "TRƯỜNG THCS";
+                worksheet.Range(1, 1, 1, 8).Merge();
+                worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
+
+                // Tiêu đề sheet
+                worksheet.Cell(3, 1).Value = $"MA TRẬN LỚP - {ca.TenCa.ToUpper()}";
+                worksheet.Range(3, 1, 3, 8).Merge();
+                worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
+
+                // Headers - Hàng 5
+                worksheet.Cell(5, 1).Value = "Lớp";
+                worksheet.Cell(5, 1).Style.Font.SetBold(true);
+                worksheet.Cell(5, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(5, 1).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Cell(5, 1).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                worksheet.Cell(5, 2).Value = "Tiết";
+                worksheet.Cell(5, 2).Style.Font.SetBold(true);
+                worksheet.Cell(5, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(5, 2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                worksheet.Cell(5, 2).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                // Headers cho các thứ
+                var thuNames = new[] { "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy" };
+                for (int i = 0; i < thuNames.Length; i++)
+                {
+                    worksheet.Cell(5, 3 + i).Value = thuNames[i];
+                    worksheet.Cell(5, 3 + i).Style.Font.SetBold(true);
+                    worksheet.Cell(5, 3 + i).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    worksheet.Cell(5, 3 + i).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                }
+
+                int currentRow = 6;
+
+                // Duyệt qua từng lớp
+                foreach (var lop in lopList)
+                {
+                    // Merge cột Lớp cho 5 tiết
+                    worksheet.Range(currentRow, 1, currentRow + 4, 1).Merge();
+                    worksheet.Cell(currentRow, 1).Value = lop.Ten_lop;
+                    worksheet.Cell(currentRow, 1).Style.Font.SetBold(true);
+                    worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    worksheet.Cell(currentRow, 1).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                    // 5 tiết của ca hiện tại
+                    for (int tiet = 1; tiet <= 5; tiet++)
+                    {
+                        worksheet.Cell(currentRow, 2).Value = tiet.ToString();
+                        worksheet.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        worksheet.Cell(currentRow, 2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                        // Điền dữ liệu cho 6 ngày trong tuần
+                        for (int ngayIndex = 0; ngayIndex < 6; ngayIndex++)
+                        {
+                            int ngay = ngayIndex + 1;
+                            var key = new { Tiet = tiet, Ngay = ngay, Id_ca = ca.IdCa, Id_lop = lop.Id_lop };
+                            var lesson = dataDict.ContainsKey(key) ? dataDict[key] : null;
+
+                            var cell = worksheet.Cell(currentRow, 3 + ngayIndex);
+                            if (lesson != null)
+                            {
+                                cell.Value = $"{lesson.Ten_mon} - {lesson.Ten_giao_vien}";
+                                cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                cell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            }
+                        }
+                        currentRow++;
+                    }
+                }
+
+                // Tạo border cho toàn bộ bảng
+                var dataRange = worksheet.Range(5, 1, currentRow - 1, 8);
+                dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                // Set chiều rộng cột
+                worksheet.Column(1).Width = 8;
+                worksheet.Column(2).Width = 6;
+                for (int i = 3; i <= 8; i++)
+                {
+                    worksheet.Column(i).Width = 20;
+                }
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
+
 
     }
 }
