@@ -80,4 +80,5 @@ docker-deploy:
     - sudo docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - echo "Deploying frontend service using Docker Compose as root..."
-    - sudo bash -c "cd /root/docker/na_thoikhoabieu && docker compose pull thoikhoabieu && docker compose up -d thoikhoabieu"
+    - sudo bash -c "cd /root/docker/na_thoikhoabieu_test && docker compose pull thoikhoabieutest && docker compose up -d thoikhoabieutest"
+    - sudo bash -c "cd /root/docker/na_thoikhoabieu_demo && docker compose pull thoikhoabieudemo && docker compose up -d thoikhoabieudemo"
