@@ -15,3 +15,4 @@ namespace NA_Logic.IRepository
         bool Deleted(int id);
     }
 }
+// 
