@@ -201,6 +201,6 @@ namespace NA_Entities.Entities.Dtos
     public class Object_ca
     {
         public int Id_ca { get; set; } = 0;
-        public int? So_tiet { get; set; } = 0;
+        public int So_tiet { get; set; } = 0;
     }
 }
