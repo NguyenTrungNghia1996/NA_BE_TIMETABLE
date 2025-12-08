@@ -43,7 +43,7 @@ namespace NA_Logic.Repository
         private List<Object_Tohopmon> _dsObjectTohopmon = new List<Object_Tohopmon>();
         private List<object_tiet_co_dinh> _dsObjectTietcodinh = new List<object_tiet_co_dinh>();
         private List<Object_ca> _dsCa;
-        private int? _soNgay;
+        private int _soNgay;
         public ObjectRepository(NA_DbContext context)
         {
             _context = context;
@@ -418,17 +418,14 @@ namespace NA_Logic.Repository
                             ob_ca.Add(new Object_ca
                             {
                                 Id_ca = reader.GetInt32(1),
-                                So_tiet = reader.FieldCount > 3 ? reader.GetInt32(3) : 5
+                                So_tiet = reader.GetInt32(3)
 
                             });
                         }
                         reader.NextResult();
-                        if (reader.HasRows)
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                _soNgay = reader.FieldCount > 0 ? reader.GetInt32(0) : 0;
-                            }
+                            _soNgay = reader.GetInt32(0);
                         }
                     }
                 }
