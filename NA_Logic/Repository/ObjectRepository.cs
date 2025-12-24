@@ -1877,7 +1877,7 @@ namespace NA_Logic.Repository
             _ObjectLop = _dsObjectLop.FirstOrDefault(c => c.Id_lop == id_lop);
             var tietTranhXep = _ObjectLop.ds_tiet_tranh_xep;
 
-            var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay??7).ToList();
+            var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay).ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
 
             var result = new ObjectTiet_theoLopDto
@@ -1892,7 +1892,7 @@ namespace NA_Logic.Repository
             {
                 foreach (var ngay in dsNgay)
                 {
-                    foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet??5))
+                    foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet))
                     {
                         // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
@@ -2006,7 +2006,7 @@ namespace NA_Logic.Repository
             _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == id_gv);
             var tietTranhXep = _ObjectGiaovien.ds_tiet_tranh_xep;
 
-            var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay??7).ToList();
+            var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay).ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
 
             var result = new ObjectTiet_theoGVDto
@@ -2023,7 +2023,7 @@ namespace NA_Logic.Repository
             {
                 foreach (var ngay in dsNgay)
                 {
-                    foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet??5))
+                    foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet))
                     {
                         // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
