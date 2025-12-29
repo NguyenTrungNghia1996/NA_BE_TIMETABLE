@@ -20,7 +20,7 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public string ConvertExcelToJson(Stream stream)
+        public string ImportAccessConvertExcelToJson(Stream stream)
         {
             var result = new Dictionary<string, List<Dictionary<string, object>>>();
             var diemTruongLookup = new Dictionary<string, string>(); 
@@ -207,7 +207,81 @@ namespace NA_Logic.Repository
 
             return JsonConvert.SerializeObject(result);
         }
+        public string ImportBackUpConvertExcelToJson(Stream stream)
+        {
+            var result = new Dictionary<string, List<Dictionary<string, object>>>();
 
+            using (var workbook = new XLWorkbook(stream))
+            {
+                foreach (var worksheet in workbook.Worksheets)
+                {
+                    var sheetData = new List<Dictionary<string, object>>();
+                    var range = worksheet.RangeUsed();
+
+                    if (range == null || range.RowCount() <= 1)
+                    {
+                        result[ConvertToPascalCase(worksheet.Name)] = sheetData;
+                        continue;
+                    }
+
+                    // Lấy headers từ row 1
+                    var headers = new List<string>();
+                    for (int col = 1; col <= range.ColumnCount(); col++)
+                    {
+                        var header = range.Cell(1, col).GetString().Trim();
+                        if (string.IsNullOrEmpty(header))
+                            header = $"Column{col}";
+                        headers.Add(ConvertToPascalCase(header));
+                    }
+
+                    // Đọc data từ row 2 trở đi
+                    for (int row = 2; row <= range.RowCount(); row++)
+                    {
+                        var rowData = new Dictionary<string, object>();
+                        bool isEmptyRow = true;
+
+                        for (int col = 1; col <= range.ColumnCount(); col++)
+                        {
+                            var cell = range.Cell(row, col);
+                            object value;
+
+                            if (cell.DataType == XLDataType.Number)
+                            {
+                                double numValue = cell.GetDouble();
+                                if (numValue == Math.Floor(numValue))
+                                    value = (int)numValue;
+                                else
+                                    value = numValue;
+                            }
+                            else if (cell.DataType == XLDataType.DateTime)
+                            {
+                                value = cell.GetDateTime();
+                            }
+                            else if (cell.DataType == XLDataType.Boolean)
+                            {
+                                value = cell.GetBoolean();
+                            }
+                            else
+                            {
+                                value = cell.GetString().Trim();
+                            }
+
+                            if (!string.IsNullOrEmpty(value?.ToString()))
+                                isEmptyRow = false;
+
+                            rowData[headers[col - 1]] = value;
+                        }
+
+                        if (!isEmptyRow)
+                            sheetData.Add(rowData);
+                    }
+
+                    result[ConvertToPascalCase(worksheet.Name)] = sheetData;
+                }
+            }
+
+            return JsonConvert.SerializeObject(result);
+        }
         private string ConvertToPascalCase(string input)
         {
             if (string.IsNullOrEmpty(input)) return "";
@@ -229,12 +303,31 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var json = ConvertExcelToJson(stream); 
+                var json = ImportAccessConvertExcelToJson(stream); 
                 var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
                 var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
                 var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
                 _context.Database.ExecuteSqlRaw("EXEC [InsertFromAccess] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
+
+                var errorMessage = paramMessage.Value?.ToString() ?? "";
+                return errorMessage == "success";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool ImportBackUpToDb(Stream stream, int idDonvi)
+        {
+            try
+            {
+                var json = ImportBackUpConvertExcelToJson(stream); 
+                var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
+                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+
+                _context.Database.ExecuteSqlRaw("EXEC [InsertFromBackUp] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
 
                 var errorMessage = paramMessage.Value?.ToString() ?? "";
                 return errorMessage == "success";

@@ -1464,6 +1464,109 @@ namespace NA_Logic.Repository
             return stream.ToArray();
         }
 
+        public byte[] ExportBackUp(int idDonvi)
+        {
+            try
+            {
+                using var workbook = new XLWorkbook();  
+                using var connection = _context.Database.GetDbConnection();
 
+                connection.Open();
+
+                using var command = connection.CreateCommand();
+                command.CommandText = "GetAllToExport";
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandTimeout = 300;
+
+                var param = command.CreateParameter();
+                param.ParameterName = "@idDonvi";
+                param.Value = idDonvi;
+                command.Parameters.Add(param);
+
+                using var reader = command.ExecuteReader();
+
+                var sheetNames = new[]
+                {
+                    "DS Điểm trường",
+                    "DS Bạn học",
+                    "DS Khối kiến thức",
+                    "DS Tổ chuyên môn",
+                    "DS Phòng học",
+                    "DS Tiết bận của phòng học",
+                    "Danh sách môn học",
+                    "Tiết tránh xếp của môn",
+                    "Tiết cố định",
+                    "Tổ hợp môn",
+                    "Danh sách giáo viên",
+                    "Giáo viên tiết tránh xếp",
+                    "Chuyên môn của giáo viên",
+                    "DS Môn học của khối",
+                    "TTX theo môn của khối",
+                    "DS Lớp",
+                    "DS Tiết nghỉ của lớp",
+                    "DS Môn học của lớp",
+                    "TTX Môn học của lớp"
+                };
+                // Đọc từng result set và fill vào sheet
+                foreach (var sheetName in sheetNames)
+                {
+                    var dataTable = new DataTable();
+                    dataTable.Load(reader);
+
+                    var worksheet = workbook.Worksheets.Add(sheetName);
+                    FillWorksheet(worksheet, dataTable);
+                }
+
+                using var stream = new MemoryStream();
+                workbook.SaveAs(stream);
+                return stream.ToArray();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi xuất file Excel: {ex.Message}", ex);
+            }
+        }
+
+        private void FillWorksheet(IXLWorksheet worksheet, DataTable dataTable)
+        {
+            if (dataTable.Rows.Count == 0)
+            {
+                worksheet.Cell(1, 1).Value = "Không có dữ liệu";
+                return;
+            }
+
+            // Headers
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                var cell = worksheet.Cell(1, i + 1);
+                cell.Value = dataTable.Columns[i].ColumnName;
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
+                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            }
+
+            // Data
+            for (int row = 0; row < dataTable.Rows.Count; row++)
+            {
+                for (int col = 0; col < dataTable.Columns.Count; col++)
+                {
+                    var cell = worksheet.Cell(row + 2, col + 1);
+                    var value = dataTable.Rows[row][col];
+
+                    if (value != DBNull.Value)
+                    {
+                        if (value is DateTime dt)
+                            cell.Value = dt;
+                        else if (value is int || value is long || value is decimal || value is double)
+                            cell.Value = Convert.ToDouble(value);
+                        else
+                            cell.Value = value.ToString();
+                    }
+                }
+            }
+
+            worksheet.Columns().AdjustToContents();
+            worksheet.SheetView.FreezeRows(1);
+        }
     }
 }
