@@ -8,7 +8,9 @@ namespace NA_Logic.IRepository
 {
     public interface IFileImportRepository
     {
-        string ConvertExcelToJson(Stream stream);
+        string ImportAccessConvertExcelToJson(Stream stream);
         bool ImportExcelToDb(Stream stream, int idDonvi);
+        string ImportBackUpConvertExcelToJson(Stream stream);
+        bool ImportBackUpToDb(Stream stream, int idDonvi);
     }
 }

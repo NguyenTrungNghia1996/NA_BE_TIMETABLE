@@ -275,5 +275,26 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return BadRequest($"Lỗi: {ex.Message}");
             }
         }
+        [HttpGet("backup")]
+        [RequireToken]
+        public IActionResult ExportBackUp()
+        {
+            try
+            {
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var fileBytes = _export.ExportBackUp(idDonvi);
+                var fileName = $"TKB_SaoLuu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(fileBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi xuất file", error = ex.Message });
+            }
+        }
     }
 }
