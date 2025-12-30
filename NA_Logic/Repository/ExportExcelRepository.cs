@@ -1488,7 +1488,7 @@ namespace NA_Logic.Repository
                 var sheetNames = new[]
                 {
                     "DS Điểm trường",
-                    "DS Bạn học",
+                    "DS Ban học",
                     "DS Khối kiến thức",
                     "DS Tổ chuyên môn",
                     "DS Phòng học",
