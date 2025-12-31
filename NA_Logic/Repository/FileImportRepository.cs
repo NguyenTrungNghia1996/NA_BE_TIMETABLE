@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace NA_Logic.Repository
 {
-    public class FileImportRepository: IFileImportRepository
+    public class FileImportRepository : IFileImportRepository
     {
         private readonly NA_DbContext _context;
         public FileImportRepository(NA_DbContext context)
@@ -23,23 +23,20 @@ namespace NA_Logic.Repository
         public string ImportAccessConvertExcelToJson(Stream stream)
         {
             var result = new Dictionary<string, List<Dictionary<string, object>>>();
-            var diemTruongLookup = new Dictionary<string, string>(); 
+            var diemTruongLookup = new Dictionary<string, string>();
             var tkbLookup = new Dictionary<string, string>();
 
             using (var workbook = new XLWorkbook(stream))
             {
-                // Bước 1: Tìm và đọc các sheet lookup trước
                 foreach (var worksheet in workbook.Worksheets)
                 {
                     var sheetNameLower = worksheet.Name.ToLower();
 
-                    // Xử lý sheet điểm trường
                     if (sheetNameLower.Contains("điểm") || sheetNameLower.Contains("diem"))
                     {
                         var range = worksheet.RangeUsed();
                         if (range == null || range.RowCount() <= 1) continue;
 
-                        // Tìm cột mã và tên
                         int maCol = -1, tenCol = -1;
                         for (int col = 1; col <= range.ColumnCount(); col++)
                         {
@@ -48,7 +45,6 @@ namespace NA_Logic.Repository
                             if (header.Contains("tên")) tenCol = col;
                         }
 
-                        // Đọc lookup data
                         if (maCol > 0 && tenCol > 0)
                         {
                             for (int row = 2; row <= range.RowCount(); row++)
@@ -61,21 +57,18 @@ namespace NA_Logic.Repository
                         }
                     }
 
-                    // Xử lý sheet TKB
                     else if (sheetNameLower.Contains("tkb") || sheetNameLower.Contains("thời khóa biểu"))
                     {
                         var range = worksheet.RangeUsed();
                         if (range == null || range.RowCount() <= 1) continue;
 
                         int headerRow = 1;
-                        // Check nếu có "mã tkb" ở row 1 thì skip
                         var firstCell = range.Cell(1, 1).GetString().ToLower();
                         if (firstCell.Contains("mã tkb") || firstCell.Contains("ma tkb"))
                         {
                             headerRow = 2;
                         }
 
-                        // Tìm cột mã và tên từ header row
                         int maCol = -1, tenCol = -1;
                         for (int col = 1; col <= range.ColumnCount(); col++)
                         {
@@ -84,7 +77,6 @@ namespace NA_Logic.Repository
                             if (header.Contains("tên")) tenCol = col;
                         }
 
-                        // Đọc lookup data
                         if (maCol > 0 && tenCol > 0)
                         {
                             for (int row = headerRow + 1; row <= range.RowCount(); row++)
@@ -98,7 +90,6 @@ namespace NA_Logic.Repository
                     }
                 }
 
-                // Bước 2: Xử lý tất cả sheet
                 foreach (var worksheet in workbook.Worksheets)
                 {
                     var sheetData = new List<Dictionary<string, object>>();
@@ -110,15 +101,13 @@ namespace NA_Logic.Repository
                     int headerRow = 1;
                     string maTKB = null;
 
-                    // Check nếu là sheet có TKB (kiểm tra cell A1)
                     var firstCell = range.Cell(1, 1).GetString().ToLower();
                     if (firstCell.Contains("mã tkb") || firstCell.Contains("ma tkb"))
                     {
-                        headerRow = 3; 
+                        headerRow = 3;
                         maTKB = range.Cell(1, 2).GetString().Trim();
                     }
 
-                    // Lấy headers từ headerRow
                     var headers = new List<string>();
                     int maDiemTruongCol = -1;
                     int maTkbCol = -1;
@@ -140,7 +129,6 @@ namespace NA_Logic.Repository
                         headers.Add(ConvertToPascalCase(header));
                     }
 
-                    // Đọc data từ headerRow + 1
                     for (int row = headerRow + 1; row <= range.RowCount(); row++)
                     {
                         var rowData = new Dictionary<string, object>();
@@ -174,7 +162,7 @@ namespace NA_Logic.Repository
                         if (firstColValue.Contains("tiết") || firstColValue.Contains("tiet"))
                             continue;
 
-                        // Thêm tên điểm trường nếu có
+                        // Thêm tên điểm trường
                         if (maDiemTruongCol > 0)
                         {
                             var ma = range.Cell(row, maDiemTruongCol).GetString().Trim();
@@ -182,7 +170,7 @@ namespace NA_Logic.Repository
                                 rowData["TenDiemTruong"] = diemTruongLookup[ma];
                         }
 
-                        // Thêm tên TKB nếu có
+                        // Thêm tên TKB 
                         if (maTkbCol > 0)
                         {
                             var ma = range.Cell(row, maTkbCol).GetString().Trim();
@@ -190,7 +178,7 @@ namespace NA_Logic.Repository
                                 rowData["TenTKB"] = tkbLookup[ma];
                         }
 
-                        // Thêm mã TKB từ header nếu có
+                        // Thêm mã TKB
                         if (!string.IsNullOrEmpty(maTKB))
                         {
                             rowData["MaTKB"] = maTKB;
@@ -224,7 +212,6 @@ namespace NA_Logic.Repository
                         continue;
                     }
 
-                    // Lấy headers từ row 1
                     var headers = new List<string>();
                     for (int col = 1; col <= range.ColumnCount(); col++)
                     {
@@ -234,7 +221,6 @@ namespace NA_Logic.Repository
                         headers.Add(ConvertToPascalCase(header));
                     }
 
-                    // Đọc data từ row 2 trở đi
                     for (int row = 2; row <= range.RowCount(); row++)
                     {
                         var rowData = new Dictionary<string, object>();
@@ -303,7 +289,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var json = ImportAccessConvertExcelToJson(stream); 
+                var json = ImportAccessConvertExcelToJson(stream);
                 var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
                 var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
                 var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
@@ -322,7 +308,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var json = ImportBackUpConvertExcelToJson(stream); 
+                var json = ImportBackUpConvertExcelToJson(stream);
                 var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
                 var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
                 var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
