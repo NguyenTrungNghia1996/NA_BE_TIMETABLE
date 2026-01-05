@@ -1507,7 +1507,6 @@ namespace NA_Logic.Repository
                     "DS Môn học của lớp",
                     "TTX Môn học của lớp"
                 };
-                // Đọc từng result set và fill vào sheet
                 foreach (var sheetName in sheetNames)
                 {
                     var dataTable = new DataTable();
