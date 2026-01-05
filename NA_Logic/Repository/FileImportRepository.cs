@@ -213,22 +213,25 @@ namespace NA_Logic.Repository
                     }
 
                     var headers = new List<string>();
+                    var headerRow = range.Row(1);
                     for (int col = 1; col <= range.ColumnCount(); col++)
                     {
-                        var header = range.Cell(1, col).GetString().Trim();
+                        var header = headerRow.Cell(col).GetString().Trim();
                         if (string.IsNullOrEmpty(header))
                             header = $"Column{col}";
                         headers.Add(ConvertToPascalCase(header));
                     }
 
-                    for (int row = 2; row <= range.RowCount(); row++)
+                    var rows = range.Rows().Skip(1);
+
+                    foreach (var row in rows)
                     {
                         var rowData = new Dictionary<string, object>();
                         bool isEmptyRow = true;
 
                         for (int col = 1; col <= range.ColumnCount(); col++)
                         {
-                            var cell = range.Cell(row, col);
+                            var cell = row.Cell(col);
                             object value;
 
                             if (cell.DataType == XLDataType.Number)
@@ -237,20 +240,10 @@ namespace NA_Logic.Repository
                                 if (numValue == Math.Floor(numValue))
                                     value = (int)numValue;
                                 else
-                                    value = numValue;
-                            }
-                            else if (cell.DataType == XLDataType.DateTime)
-                            {
-                                value = cell.GetDateTime();
-                            }
-                            else if (cell.DataType == XLDataType.Boolean)
-                            {
-                                value = cell.GetBoolean();
+                                    value = numValue.ToString("0.#####");
                             }
                             else
-                            {
                                 value = cell.GetString().Trim();
-                            }
 
                             if (!string.IsNullOrEmpty(value?.ToString()))
                                 isEmptyRow = false;
@@ -268,21 +261,37 @@ namespace NA_Logic.Repository
 
             return JsonConvert.SerializeObject(result);
         }
+
+        private static readonly Dictionary<string, string> _pascalCaseCache = new Dictionary<string, string>();
+
         private string ConvertToPascalCase(string input)
         {
             if (string.IsNullOrEmpty(input)) return "";
 
-            input = Regex.Replace(input, "[àáạảãâầấậẩẫăằắặẳẵ]", "a");
-            input = Regex.Replace(input, "[èéẹẻẽêềếệểễ]", "e");
-            input = Regex.Replace(input, "[ìíịỉĩ]", "i");
-            input = Regex.Replace(input, "[òóọỏõôồốộổỗơờớợởỡ]", "o");
-            input = Regex.Replace(input, "[ùúụủũưừứựửữ]", "u");
-            input = Regex.Replace(input, "[ỳýỵỷỹ]", "y");
-            input = Regex.Replace(input, "[đĐ]", "d");
-            input = Regex.Replace(input, "[/]", "_");
+            if (_pascalCaseCache.TryGetValue(input, out string cached))
+                return cached;
 
-            return string.Join("", input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                       .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
+            var normalized = input
+                .Replace("à", "a").Replace("á", "a").Replace("ạ", "a").Replace("ả", "a").Replace("ã", "a")
+                .Replace("â", "a").Replace("ầ", "a").Replace("ấ", "a").Replace("ậ", "a").Replace("ẩ", "a").Replace("ẫ", "a")
+                .Replace("ă", "a").Replace("ằ", "a").Replace("ắ", "a").Replace("ặ", "a").Replace("ẳ", "a").Replace("ẵ", "a")
+                .Replace("è", "e").Replace("é", "e").Replace("ẹ", "e").Replace("ẻ", "e").Replace("ẽ", "e")
+                .Replace("ê", "e").Replace("ề", "e").Replace("ế", "e").Replace("ệ", "e").Replace("ể", "e").Replace("ễ", "e")
+                .Replace("ì", "i").Replace("í", "i").Replace("ị", "i").Replace("ỉ", "i").Replace("ĩ", "i")
+                .Replace("ò", "o").Replace("ó", "o").Replace("ọ", "o").Replace("ỏ", "o").Replace("õ", "o")
+                .Replace("ô", "o").Replace("ồ", "o").Replace("ố", "o").Replace("ộ", "o").Replace("ổ", "o").Replace("ỗ", "o")
+                .Replace("ơ", "o").Replace("ờ", "o").Replace("ớ", "o").Replace("ợ", "o").Replace("ở", "o").Replace("ỡ", "o")
+                .Replace("ù", "u").Replace("ú", "u").Replace("ụ", "u").Replace("ủ", "u").Replace("ũ", "u")
+                .Replace("ư", "u").Replace("ừ", "u").Replace("ứ", "u").Replace("ự", "u").Replace("ử", "u").Replace("ữ", "u")
+                .Replace("ỳ", "y").Replace("ý", "y").Replace("ỵ", "y").Replace("ỷ", "y").Replace("ỹ", "y")
+                .Replace("đ", "d").Replace("Đ", "d")
+                .Replace("/", "_");
+
+            var result = string.Join("", normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
+
+            _pascalCaseCache[input] = result;
+            return result;
         }
 
         public bool ImportExcelToDb(Stream stream, int idDonvi)
