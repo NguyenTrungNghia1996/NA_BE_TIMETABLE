@@ -1535,38 +1535,29 @@ namespace NA_Logic.Repository
                 return;
             }
 
-            // Headers
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
-                var cell = worksheet.Cell(1, i + 1);
-                cell.Value = dataTable.Columns[i].ColumnName;
-                cell.Style.Font.Bold = true;
-                cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
-                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell(1, i + 1).Value = dataTable.Columns[i].ColumnName;
             }
 
-            // Data
             for (int row = 0; row < dataTable.Rows.Count; row++)
             {
                 for (int col = 0; col < dataTable.Columns.Count; col++)
                 {
-                    var cell = worksheet.Cell(row + 2, col + 1);
                     var value = dataTable.Rows[row][col];
+                    if (value == DBNull.Value) continue;
 
-                    if (value != DBNull.Value)
-                    {
-                        if (value is DateTime dt)
-                            cell.Value = dt;
-                        else if (value is int || value is long || value is decimal || value is double)
-                            cell.Value = Convert.ToDouble(value);
-                        else
-                            cell.Value = value.ToString();
-                    }
+                    var cell = worksheet.Cell(row + 2, col + 1);
+
+                    if (value is DateTime dt)
+                        cell.Value = dt;
+                    else if (value is int || value is long || value is decimal || value is double)
+                        cell.Value = Convert.ToDouble(value);
+                    else
+                        cell.Value = value.ToString();
                 }
             }
-
-            worksheet.Columns().AdjustToContents();
-            worksheet.SheetView.FreezeRows(1);
         }
+
     }
 }
