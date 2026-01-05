@@ -162,15 +162,12 @@ namespace NA_Logic.Repository
                         if (firstColValue.Contains("tiết") || firstColValue.Contains("tiet"))
                             continue;
 
-                        // Thêm tên điểm trường
                         if (maDiemTruongCol > 0)
                         {
                             var ma = range.Cell(row, maDiemTruongCol).GetString().Trim();
                             if (diemTruongLookup.ContainsKey(ma))
                                 rowData["TenDiemTruong"] = diemTruongLookup[ma];
                         }
-
-                        // Thêm tên TKB 
                         if (maTkbCol > 0)
                         {
                             var ma = range.Cell(row, maTkbCol).GetString().Trim();
@@ -178,7 +175,6 @@ namespace NA_Logic.Repository
                                 rowData["TenTKB"] = tkbLookup[ma];
                         }
 
-                        // Thêm mã TKB
                         if (!string.IsNullOrEmpty(maTKB))
                         {
                             rowData["MaTKB"] = maTKB;
