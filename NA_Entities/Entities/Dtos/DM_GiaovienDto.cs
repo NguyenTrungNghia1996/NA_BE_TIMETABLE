@@ -10,6 +10,8 @@ namespace NA_Entities.Entities.Dtos
     public class DM_GiaovienDto
     {
         public int Id { get; set; } = 0;
+        [Required(ErrorMessage = "Mã giáo viên không được để trống")]
+        [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
         public string Ma_giao_vien { get; set; } = string.Empty;
         [Required(ErrorMessage = "Họ và tên đệm không được để trống")]
         [StringLength(30, ErrorMessage = "Tối đa 30 ký tự")]
