@@ -107,9 +107,9 @@ namespace NA_Logic.Repository
         {
             try
             {
-                int count = _dbContext.DM_Giaovien.Count(c=> c.Id_don_vi == dm_Giaovien.Id_don_vi);
-                string ma = $"GV-{(count + 1):D2}";
-                dm_Giaovien.Ma_giao_vien = ma;
+                //int count = _dbContext.DM_Giaovien.Count(c=> c.Id_don_vi == dm_Giaovien.Id_don_vi);
+                //string ma = $"GV-{(count + 1):D2}";
+                //dm_Giaovien.Ma_giao_vien = ma;
                 _dbContext.DM_Giaovien.Add(dm_Giaovien);
                 _dbContext.SaveChanges();
                 return true;

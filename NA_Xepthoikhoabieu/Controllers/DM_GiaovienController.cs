@@ -92,6 +92,11 @@ namespace NA_Xepthoikhoabieu.Controllers
            
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
+            bool checkma = _Giaovien.CheckMa(Giaovien.Ma_giao_vien, idDonvi, item.Id);
+            if (!checkma)
+            {
+                return ApiResult.BadRequest("Mã giáo viên đã tồn tại");
+            }
             //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten);
             //if (checkten)
             //{
@@ -156,6 +161,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             
             if (!check_diemtruong)
                 ModelState.AddModelError("Id_diem_truong", "Id điểm trường không hợp lệ, vui lòng kiểm tra lại");
+
+            bool checkma = _Giaovien.CheckMa(Giaovien.Ma_giao_vien, idDonvi, Giaovien.Id);
+            if (checkma)
+            {
+                return ApiResult.BadRequest("Mã giáo viên đã tồn tại");
+            }
             //bool checkten = _validate.CheckTrungTen_byDonvi<DM_Giaovien>(idDonvi, Giaovien.Ten, Giaovien.Id);
             //if (checkten)
             //{
