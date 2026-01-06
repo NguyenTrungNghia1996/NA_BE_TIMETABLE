@@ -34,7 +34,7 @@ namespace NA_Entities.Entities.Dtos
         public List<int> Id_phong { get; set; } = new List<int>();
         [Required(ErrorMessage = "Tên môn học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string TenTheoNganh { get; set; } = string.Empty;
+        public string Ten_theo_nganh { get; set; } = string.Empty;
     }
     public class DM_Monhoc_ListDto
     {
@@ -73,7 +73,7 @@ namespace NA_Entities.Entities.Dtos
         public List<int> Id_phong { get; set; } = new List<int>();
         [Required(ErrorMessage = "Tên môn học không được để trống")]
         [StringLength(200, ErrorMessage = "Tối đa 200 ký tự")]
-        public string TenTheoNganh { get; set; } = string.Empty;
+        public string Ten_theo_nganh { get; set; } = string.Empty;
 
     }
     public class Mon_banDto
