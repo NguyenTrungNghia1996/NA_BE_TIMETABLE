@@ -102,7 +102,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detailDto = _mapper.Map<DM_MonhocDto>(detailCahoc);
             detailDto.Id_khoi_kien_thuc = _monhoc.GetlistKhoikienthucbyMon(Id);
             detailDto.Id_phong = _monhoc.GetlistPhongByDonvi(Id);
-            detailDto.TenTheoNganh = _monhoc.GetTenNgayByIdMon(Id);
+            detailDto.Ten_theo_nganh = _monhoc.GetTenNgayByIdMon(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -151,7 +151,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             monhoc.Id = item.Id;
             var addMonkhoikienthuc = _monhoc.AddKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
             var addMonphong = _monhoc.AddPhong(monhoc.Id, monhoc.Id_phong);
-            var addTenNganh = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.TenTheoNganh);
+            var addTenNganh = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.Ten_theo_nganh);
             if (!addMonkhoikienthuc)
                 return ApiResult.Success(new
                 {
@@ -227,7 +227,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var editkhoi = _monhoc.UpdateKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
             var editphong = _monhoc.UpdatePhong(monhoc.Id, monhoc.Id_phong);
-            var editten = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.TenTheoNganh);
+            var editten = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.Ten_theo_nganh);
             if (!editkhoi)
                 return ApiResult.Success(new
                 {
