@@ -102,6 +102,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var detailDto = _mapper.Map<DM_MonhocDto>(detailCahoc);
             detailDto.Id_khoi_kien_thuc = _monhoc.GetlistKhoikienthucbyMon(Id);
             detailDto.Id_phong = _monhoc.GetlistPhongByDonvi(Id);
+            detailDto.TenTheoNganh = _monhoc.GetTenNgayByIdMon(Id);
             return ApiResult.Success(detailDto, "Thành công");
         }
         [HttpPost]
@@ -150,6 +151,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             monhoc.Id = item.Id;
             var addMonkhoikienthuc = _monhoc.AddKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
             var addMonphong = _monhoc.AddPhong(monhoc.Id, monhoc.Id_phong);
+            var addTenNganh = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.TenTheoNganh);
             if (!addMonkhoikienthuc)
                 return ApiResult.Success(new
                 {
@@ -162,6 +164,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                     item = monhoc
                 },
                 "Tạo môn học thành công, lưu phòng thất bại");
+            if (!addTenNganh)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Tạo môn học thành công, lưu tên theo ngành thất bại");
             return ApiResult.Success(new
             {
                 item = monhoc
@@ -219,6 +227,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
             var editkhoi = _monhoc.UpdateKhoikienthuc(monhoc.Id, monhoc.Id_khoi_kien_thuc);
             var editphong = _monhoc.UpdatePhong(monhoc.Id, monhoc.Id_phong);
+            var editten = _monhoc.SaveTenMonTheoNganh(monhoc.Id, monhoc.TenTheoNganh);
             if (!editkhoi)
                 return ApiResult.Success(new
                 {
@@ -231,6 +240,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                     item = monhoc
                 },
                 "Cập nhật môn học thành công, cập nhật phòng học thất bại");
+            if (!editten)
+                return ApiResult.Success(new
+                {
+                    item = monhoc
+                },
+                "Cập nhật môn học thành công, cập nhật tên theo ngành thất bại");
 
             return ApiResult.Success(new
             {
@@ -245,7 +260,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            //kiểm tra id mô học
+            //kiểm tra id môn học
             var monhocdb = _monhoc.CheckId(id, idDonvi);
             if (!monhocdb)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
@@ -272,6 +287,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             var phongcm = _monhoc.DeletePhong(id);
             if (!phongcm)
                 return ApiResult.NotFound("Xóa các phòng chuyên môn thất bại");
+
+            //delete tên môn
+            var tenmontheonganh = _monhoc.DeleteTenMonTheoNganh(id);
+            if (!phongcm)
+                return ApiResult.NotFound("Xóa các tên môn theo ngành thất bại");
             //delete môn học
             var request = _monhoc.Delete(id, idDonvi);
             if (!request)

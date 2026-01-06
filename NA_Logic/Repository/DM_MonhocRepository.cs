@@ -9,6 +9,7 @@ using NA_Logic.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -553,6 +554,94 @@ namespace NA_Logic.Repository
                 if (del != null && del.Count > 0)
                 {
                     _context.Monhoc_Phonghoc.RemoveRange(del);
+                    _context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        //public bool AddTenMonTheoNganh(List<MonHoc_TheoNganh> dsTenMonTheoNganh, int idDonVi)
+        //{
+        //    using var transaction = _context.Database.BeginTransaction();
+        //    try
+        //    {
+        //        var existingTen = (from mh in _context.MonHoc_TheoNganh
+        //                            join m in _context.Dm_Monhoc on mh.Id_mon equals m.Id
+        //                            where m.Id_don_vi == idDonVi
+        //                            select mh).ToList();
+
+        //        //xóa
+        //        if (existingTen.Any())
+        //        {
+        //            _context.BulkDelete(existingTen);
+        //        }
+        //        //thêm
+        //        if (dsTenMonTheoNganh != null && dsTenMonTheoNganh.Any())
+        //        {
+        //            _context.BulkInsert(dsTenMonTheoNganh);
+        //        }
+
+        //        transaction.Commit();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        transaction.Rollback();
+        //        return false;
+        //    }
+        //}
+        public bool SaveTenMonTheoNganh(int Id, string Ten)
+        {
+            try
+            {
+                var mon = _context.MonHoc_TheoNganh.FirstOrDefault(c=>c.Id_mon == Id);
+
+                if (mon == null)
+                {
+                    mon = new MonHoc_TheoNganh
+                    {
+                        Id_mon = Id,
+                        Ten_mon_theo_nganh = Ten
+                    };
+                    _context.MonHoc_TheoNganh.Add(mon);
+                }
+                else
+                {
+                    mon.Ten_mon_theo_nganh = Ten;
+                }
+
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public string GetTenNgayByIdMon(int idmon)
+        {
+            try
+            {
+                string data = _context.MonHoc_TheoNganh.FirstOrDefault(c => c.Id_mon == idmon).Ten_mon_theo_nganh;
+                return data;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public bool DeleteTenMonTheoNganh(int Id)
+        {
+            try
+            {
+                var del = _context.MonHoc_TheoNganh.Where(x => x.Id_mon == Id).FirstOrDefault();
+                if (del != null)
+                {
+                    _context.MonHoc_TheoNganh.Remove(del);
                     _context.SaveChanges();
                 }
                 return true;

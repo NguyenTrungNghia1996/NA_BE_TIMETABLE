@@ -111,6 +111,7 @@ namespace NA_Entities.DBContext
         public DbSet<Phieu_Baogiang_List> Phieu_Baogiang_List { get; set; }
         public DbSet<Chitiet_Phieubaogiang> Chitiet_Phieubaogiang { get; set; }
         public DbSet<Chitiet_Phieubaogiang_List> Chitiet_Phieubaogiang_List { get; set; }
+        public DbSet<MonHoc_TheoNganh> MonHoc_TheoNganh { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
