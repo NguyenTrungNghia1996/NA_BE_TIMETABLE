@@ -30,7 +30,9 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Ten_lop { get; set; }
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; }
+        public string? Ten_mon_theo_nganh { get; set; }
         public int? Id_giao_vien { get; set; } = 0;
+        public string? Ma_giao_vien { get; set; }
         public string? Ho_va_ho_dem { get; set; }
         public string? Ten_giao_vien { get; set; }
         public int Id_phong { get; set; } = 0;
