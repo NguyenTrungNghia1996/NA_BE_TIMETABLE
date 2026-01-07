@@ -48,6 +48,8 @@ namespace NA_Entities.Entities.Dtos
         public int So_tiet_toi_da_hai_ca { get; set; } = 0;
         public bool La_mon_tu_chon { get; set; } = false;
         public string Ten_loai_phong_hoc { get; set; } = string.Empty;
+        public string? Ten_mon_theo_nganh { get; set; } = string.Empty;
+
     }
     public class DM_Monhoc_updateDto
     {

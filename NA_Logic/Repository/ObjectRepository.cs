@@ -1879,7 +1879,9 @@ namespace NA_Logic.Repository
 
             var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay).ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
-
+            var tietTrungLap = tiet.Where(t => t.Ngay > 0 && t.Tiet > 0)
+                              .GroupBy(t => new { t.Id_ca, t.Ngay, t.Tiet }).Where(g => g.Count() > 1)
+                              .Select(g => $"{g.Key.Ngay}_{g.Key.Id_ca}_{g.Key.Tiet}").ToHashSet();
             var result = new ObjectTiet_theoLopDto
             {
                 Id_lop = id_lop,
@@ -1931,11 +1933,15 @@ namespace NA_Logic.Repository
                             tietItem.isDrag = false;
                             tietItem.isRest = isBreak;
 
-                            //check tiết này có trùng tiết tránh xếp không
+                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
+                            // check trùng tiết nghỉ
                             LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
                             var tietban = DsTietTranhXep(tietHoc);
-                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
-                            tietItem.isError = tietban.Contains(currentKey);
+                            bool isErrorTietBan = tietban.Contains(currentKey);
+
+                            // check trùng tiết đã xếp
+                            bool isErrorTrungLap = tietTrungLap.Contains(currentKey);
+                            tietItem.isError = isErrorTietBan || isErrorTrungLap;
 
                             result.timetable.Add(tietItem);
                         }
@@ -2008,7 +2014,9 @@ namespace NA_Logic.Repository
 
             var dsNgay = Enum.GetValues<Ngay>().Take(_soNgay).ToList();
             var dsTietEnum = Enum.GetValues<Tiet>().ToList();
-
+            var tietTrungLap = tiet.Where(t => t.Ngay > 0 && t.Tiet > 0)
+                              .GroupBy(t => new { t.Id_ca, t.Ngay, t.Tiet }).Where(g => g.Count() > 1)
+                              .Select(g => $"{g.Key.Ngay}_{g.Key.Id_ca}_{g.Key.Tiet}").ToHashSet();
             var result = new ObjectTiet_theoGVDto
             {
                 Id_giao_vien = id_gv,
@@ -2018,7 +2026,7 @@ namespace NA_Logic.Repository
                 timetable = new List<tkb_theo_giaovien>(),
                 ds_chua_xep = new List<tkb_chuaxep_giaovien>()
             };
-
+            
             foreach (var ca in _dsCa)
             {
                 foreach (var ngay in dsNgay)
@@ -2062,11 +2070,15 @@ namespace NA_Logic.Repository
                             tietItem.isDrag = false;
                             tietItem.isRest = isBreak;
 
-                            //check tiết này có trùng tiết tránh xếp không
+                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
+                            // check trùng tiết nghỉ
                             LoadObjectsFromTiet_TietBan(tietHoc, idDonvi);
                             var tietban = DsTietTranhXep(tietHoc);
-                            string currentKey = $"{(int)ngay}_{ca.Id_ca}_{(int)tietEnum}";
-                            tietItem.isError = tietban.Contains(currentKey);
+                            bool isErrorTietBan = tietban.Contains(currentKey);
+
+                            // check trùng tiết đã xếp
+                            bool isErrorTrungLap = tietTrungLap.Contains(currentKey);
+                            tietItem.isError = isErrorTietBan || isErrorTrungLap;
 
                             result.timetable.Add(tietItem);
                         }

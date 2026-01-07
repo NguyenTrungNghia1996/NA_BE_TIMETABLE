@@ -48,6 +48,8 @@ namespace NA_Logic.Repository
                         Ten_truong = item.Ten_don_vi,
                         Ten_lop = item.Ten_lop,
                         Ten_mon = item.Ten_mon,
+                        Ten_mon_theo_nganh = item.Ten_mon_theo_nganh,
+                        Ma_giao_vien = item.Ma_giao_vien,
                         Ho_ho_dem = item.Ho_va_ho_dem,
                         Ten_giao_vien = item.Ten_giao_vien,
                         Ten_phong = item.Ten_phong,
@@ -1557,6 +1559,6 @@ namespace NA_Logic.Repository
                 }
             }
         }
-
+        
     }
 }

@@ -47,6 +47,8 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten_truong { get; set; }
         public string Ten_lop { get; set; }
         public string Ten_mon { get; set; }
+        public string? Ten_mon_theo_nganh { get; set; }
+        public string? Ma_giao_vien { get; set; }
         public string? Ho_ho_dem { get; set; } = string.Empty;
         public string Ten_giao_vien { get; set; }
         public string Ten_phong { get; set; }
