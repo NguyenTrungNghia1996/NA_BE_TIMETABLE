@@ -1559,6 +1559,146 @@ namespace NA_Logic.Repository
                 }
             }
         }
-        
+        public byte[] ExportExcel_DongBoCSDLNganh(int idtkb)
+        {
+            var data = List_Tiet(idtkb);
+            if (!data.Any()) return null;
+
+            using var workbook = new XLWorkbook();
+
+            var lopGroups = data.GroupBy(x => new { x.Ten_lop, x.Id_lop }).ToList();
+
+            foreach (var lopGroup in lopGroups)
+            {
+                var tenLop = lopGroup.Key;
+                var lopData = lopGroup.ToList();
+                var dataDict = lopData.GroupBy(x => new { x.Tiet, x.Ngay, x.Id_ca }).ToDictionary(g => g.Key, g => g.First());
+                var worksheet = workbook.Worksheets.Add($"{tenLop.Ten_lop}");
+
+                // Tiêu đề
+                var firstRow = lopData.FirstOrDefault();
+                worksheet.Cell(1, 1).Value = firstRow?.Ten_truong?.ToUpper() ?? "TRƯỜNG THCS";
+                worksheet.Range(1, 1, 1, 7).Merge();
+                worksheet.Cell(1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(1, 1).Style.Font.SetBold(true).Font.SetFontSize(14);
+
+                worksheet.Cell(3, 1).Value = $"Thời khóa biểu lớp: {tenLop.Ten_lop}";
+                worksheet.Range(3, 1, 3, 7).Merge();
+                worksheet.Cell(3, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell(3, 1).Style.Font.SetBold(true).Font.SetFontSize(12);
+
+                // Headers
+                worksheet.Cell(6, 1).Value = "Lớp";
+                worksheet.Cell(6, 2).Value = "Mã buổi học";
+                worksheet.Cell(6, 3).Value = "Tiết học";
+
+                var ngayTrongTuan = new[] { "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật" };
+
+                for (int i = 0; i < ngayTrongTuan.Length; i++)
+                {
+                    int startCol = 4 + (i * 2);
+                    worksheet.Range(6, startCol, 6, startCol + 1).Merge();
+                    var ngayCell = worksheet.Cell(6, startCol);
+                    ngayCell.Value = ngayTrongTuan[i];
+                    ngayCell.Style.Font.SetBold(true);
+                    ngayCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    ngayCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                    // Môn và giáo viên
+                    var monCell = worksheet.Cell(7, startCol);
+                    monCell.Value = "Môn";
+                    monCell.Style.Font.SetBold(true);
+                    monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    monCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+
+                    var gvCell = worksheet.Cell(7, startCol + 1);
+                    gvCell.Value = "Giáo viên";
+                    gvCell.Style.Font.SetBold(true);
+                    gvCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    gvCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                }
+
+                for (int col = 1; col <= 3; col++)
+                {
+                    worksheet.Range(6, col, 7, col).Merge();
+                    var headerCell = worksheet.Cell(6, col);
+                    headerCell.Style.Font.SetBold(true);
+                    headerCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    headerCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                    headerCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                }
+
+                int currentRow = 8;
+
+                var caNames = new[] { "SANG", "CHIEU" };
+                for (int caIndex = 0; caIndex < caNames.Length; caIndex++)
+                {
+                    for (int tiet = 1; tiet <= 5; tiet++)
+                    {
+                        var lopCell = worksheet.Cell(currentRow, 1);
+                        lopCell.Value = tenLop.Ten_lop;
+                        lopCell.Style.Font.SetBold(true);
+                        lopCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                        lopCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        var caCell = worksheet.Cell(currentRow, 2);
+                        caCell.Value = caNames[caIndex];
+                        caCell.Style.Font.SetBold(true);
+                        caCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                        caCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        var tietCell = worksheet.Cell(currentRow, 3);
+                        tietCell.Value = tiet.ToString();
+                        tietCell.Style.Font.SetBold(true);
+                        tietCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        tietCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                        for (int ngay = 1; ngay <= 7; ngay++)
+                        {
+                            int startCol = 4 + ((ngay - 1) * 2);
+
+                            int idCa = caIndex + 1;
+                            var key = new { Tiet = tiet, Ngay = ngay, Id_ca = idCa };
+                            var lesson = dataDict.ContainsKey(key) ? dataDict[key] : null;
+
+                            if (lesson != null)
+                            {
+                                var monCell = worksheet.Cell(currentRow, startCol);
+                                monCell.Value = lesson.Ten_mon_theo_nganh;
+                                monCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                monCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                                var gvCell = worksheet.Cell(currentRow, startCol + 1);
+                                gvCell.Value = $"{lesson.Ho_ho_dem} {lesson.Ten_giao_vien}\r\n({lesson.Ma_giao_vien})";
+                                gvCell.Style.Alignment.WrapText = true;
+                                gvCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                                gvCell.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            }
+                        }
+                        currentRow++;
+                    }
+                }
+
+                var dataRange = worksheet.Range(6, 1, currentRow - 1, 17);
+                dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                for (int i = 8; i < currentRow; i++)
+                {
+                    worksheet.Row(i).Height = 45;
+                }
+                worksheet.Column(1).Width = 12;
+                worksheet.Column(2).Width = 12;
+                worksheet.Column(3).Width = 8;
+                for (int i = 4; i <= 17; i++)
+                {
+                    worksheet.Column(i).Width = 20;
+                }
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
     }
 }
