@@ -271,12 +271,31 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost("dongbo")]
         [RequireToken]
-        public IActionResult DongBoLopMon()
+        public IActionResult DongBoLopMon([FromQuery] int idKhoi, [FromQuery] int idBan)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0)
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            bool sync = _monkhoi.DongBoLopMon(idDonvi);
+            if (idKhoi > 0)
+            {
+                var detail = _khoilop.CheckId(idKhoi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id khối = {idKhoi} không hợp lệ");
+            }else if (idKhoi == 0 || idKhoi == null)
+            {
+                return ApiResult.NotFound($"Vui lòng chọn khối");
+            }
+            if (idBan > 0)
+            {
+                var detail = _ban.CheckId(idBan, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Id ban = {idBan} không hợp lệ");
+            }
+            else if (idBan == 0 || idBan == null)
+            {
+                return ApiResult.NotFound($"Vui lòng chọn ban");
+            }
+            bool sync = _monkhoi.DongBoLopMon(idDonvi, idKhoi, idBan);
             if (!sync)
                 return ApiResult.BadRequest("Đồng bộ thất bại");
             return ApiResult.Success("Đồng bộ thành công");
