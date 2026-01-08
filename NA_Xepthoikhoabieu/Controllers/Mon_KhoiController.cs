@@ -269,7 +269,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success(new { id_mon = monban.Id_mon, so_tiet_ban = danhSachTiet.Count }, "Cập nhật tiết tránh xếp thành công");
         }
-        [HttpPut("dongbo")]
+        [HttpPost("dongbo")]
         [RequireToken]
         public IActionResult DongBoLopMon()
         {
