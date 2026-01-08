@@ -403,5 +403,6 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success(new { id_phong = monban.Id, so_tiet_ban = danhSachTiet.Count }, "Cập nhật tiết tránh xếp thành công");
         }
+        
     }
 }
