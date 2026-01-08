@@ -10,6 +10,15 @@ namespace NA_Xepthoikhoabieu.Helpers
 {
     public static class ApiResult
     {
+        public static IActionResult Success(string message = "Thành công")
+        {
+            return new OkObjectResult(new ApiResponse<object>
+            {
+                Data = null,
+                Message = message,
+                Status = "success"
+            });
+        }
         public static IActionResult Success<T>(T data, string message = "Thành công")
         {
             return new OkObjectResult(new ApiResponse<T>
@@ -19,6 +28,7 @@ namespace NA_Xepthoikhoabieu.Helpers
                 Status = "success"
             });
         }
+        
 
         public static IActionResult BadRequest(string message = "Yêu cầu không hợp lệ")
         {
