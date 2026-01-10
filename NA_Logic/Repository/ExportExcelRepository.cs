@@ -1567,13 +1567,16 @@ namespace NA_Logic.Repository
             using var workbook = new XLWorkbook();
 
             var lopGroups = data.GroupBy(x => new { x.Ten_lop, x.Id_lop }).ToList();
-
+            int sheetIndex = 1;
             foreach (var lopGroup in lopGroups)
             {
                 var tenLop = lopGroup.Key;
                 var lopData = lopGroup.ToList();
                 var dataDict = lopData.GroupBy(x => new { x.Tiet, x.Ngay, x.Id_ca }).ToDictionary(g => g.Key, g => g.First());
-                var worksheet = workbook.Worksheets.Add($"{tenLop.Ten_lop}");
+                string sheetName = string.IsNullOrWhiteSpace(tenLop.Ten_lop) ? $"Sheet_{sheetIndex}" : tenLop.Ten_lop;
+
+                var worksheet = workbook.Worksheets.Add(sheetName);
+                sheetIndex++;
 
                 // Tiêu đề
                 var firstRow = lopData.FirstOrDefault();
