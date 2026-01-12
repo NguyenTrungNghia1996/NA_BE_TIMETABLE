@@ -151,7 +151,6 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Giaovien>(Giaovien);
             item.Id_don_vi = idDonvi;
-            item.Ma_giao_vien = Giaoviendb.Ma_giao_vien;
             if (Giaovien.Id_to_chuyen_mon == null || Giaovien.Id_to_chuyen_mon.Count == 0)
                 ModelState.AddModelError("Id_to_chuyen_mon", "Vui lòng chọn tổ chuyên môn");
             var check_tochuyenmon = _tochuyenmon.CheckIds(Giaovien.Id_to_chuyen_mon, idDonvi);

@@ -66,6 +66,25 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public bool CheckMa(string Ma, int idDonvi, int? Id)
+        {
+            try
+            {
+                var query = _dbContext.DM_Lopontap.Where(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
+
+                if (Id.HasValue)
+                {
+                    query = query.Where(c => c.Id != Id.Value);
+                }
+
+                var check = query.Any();
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Add(DM_Lopontap dm_Lopontap)
         {
             try
@@ -203,10 +222,7 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return (from lo in _dbContext.DM_Lopontap
-                        join m in _dbContext.Dm_Monhoc on lo.Id_mon equals m.Id
-                        where lo.Id == Id && m.Id_don_vi == idDonvi
-                        select 1).Any();
+                return _dbContext.DM_Lopontap.Any(c=>c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {

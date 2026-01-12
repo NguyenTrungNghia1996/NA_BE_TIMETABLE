@@ -92,6 +92,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             //{
             //    return ApiResult.BadRequest("Tên ban học đã tồn tại");
             //}
+            bool checkma = _Lopontap.CheckMa(Lopontap.Ma, idDonvi, item.Id);
+            if (checkma)
+            {
+                return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
+            }
             var check_phong = _phong.CheckId(Lopontap.Id_phong, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lopontap.Id_khoi, idDonvi);
             var check_mon = _mon.CheckId(Lopontap.Id_mon, idDonvi);
@@ -143,6 +148,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             //{
             //    return ApiResult.BadRequest("Tên ban học đã tồn tại");
             //}
+            bool checkma = _Lopontap.CheckMa(Lopontap.Ma, idDonvi, item.Id);
+            if (checkma)
+            {
+                return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
+            }
             var check_phong = _phong.CheckId(Lopontap.Id_phong, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lopontap.Id_khoi, idDonvi);
             var check_mon = _mon.CheckId(Lopontap.Id_mon, idDonvi);
