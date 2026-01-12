@@ -73,6 +73,7 @@ builder.Services.AddScoped<ILich_BaogiangRepository, Lich_BaogiangRepository>();
 builder.Services.AddScoped<IPhieu_BaogiangRepository, Phieu_BaogiangRepository>();
 builder.Services.AddScoped<IThongtin_DonviRepository, Thongtin_DonviRepository>();
 builder.Services.AddScoped<IExportWordRepository, ExportWordRepository>();
+builder.Services.AddScoped<IDM_LopontapRepository, DM_LopontapRepository>();
 //builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

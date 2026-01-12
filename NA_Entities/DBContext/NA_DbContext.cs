@@ -112,6 +112,8 @@ namespace NA_Entities.DBContext
         public DbSet<Chitiet_Phieubaogiang> Chitiet_Phieubaogiang { get; set; }
         public DbSet<Chitiet_Phieubaogiang_List> Chitiet_Phieubaogiang_List { get; set; }
         public DbSet<MonHoc_TheoNganh> MonHoc_TheoNganh { get; set; }
+        public DbSet<DM_Lopontap> DM_Lopontap { get; set; }
+        public DbSet<DM_Lopontap_List> DM_Lopontap_List { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
@@ -159,6 +161,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Lich_Baogiang_List>().HasNoKey();
             builder.Entity<Phieu_Baogiang_List>().HasNoKey();
             builder.Entity<Chitiet_Phieubaogiang_List>().HasNoKey();
+            builder.Entity<DM_Lopontap_List>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
