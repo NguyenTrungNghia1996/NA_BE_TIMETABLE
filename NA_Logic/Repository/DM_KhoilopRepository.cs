@@ -118,11 +118,11 @@ namespace NA_Logic.Repository
                 return (false, $"Lỗi hệ thống: {ex.Message}");
             }
         }
-        public List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi)
+        public List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi, string search)
         {
             try
             {
-                var list = _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
+                var query = _context.Cap_Donvi.Where(cd => cd.Id_Don_vi == idDonvi)
                                     .Join(_context.DM_Caphoc, cd => cd.Id_Cap_hoc, ch => ch.Id, (cd, ch) => ch)
                                     .Join(_context.DM_Khoilop,
                                           ch => ch.Id, kl => kl.Id_Cap_hoc,
@@ -131,11 +131,14 @@ namespace NA_Logic.Repository
                                               Id = kl.Id,
                                               Ten = kl.Ten
                                           })
-                                    .Distinct()
-                                    .ToList();
+                                    .Distinct();
 
-                if (list == null) return new List<Khoilop_byDonvi>();
-                return list;
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(kl => kl.Ten.Contains(search));
+                }
+
+                return query.ToList();
             }
             catch
             {

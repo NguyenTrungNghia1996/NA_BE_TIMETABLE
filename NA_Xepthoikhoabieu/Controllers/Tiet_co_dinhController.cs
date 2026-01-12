@@ -88,7 +88,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu chọn áp dụng cho tất cả các khối
             if (tietcd.Ap_dung_cho_tat_ca_cac_khoi == true)
             {
-                var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
+                var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi, "");
                 foreach (var khoilop in allKhoilop)
                 {
                     bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);
@@ -166,7 +166,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             //nếu áp dụng cho tất cả các khối
             if (tietcd.Ap_dung_cho_tat_ca_cac_khoi == true)
             {
-                var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi);
+                var allKhoilop = _khoilop.GetKhoilopByDonvi(idDonvi, "");
                 foreach (var khoilop in allKhoilop)
                 {
                     bool isValid = _tietcodinh.CheckIds(tietcd.Id_mon, tietcd.Id_ngay, tietcd.Id_ca, tietcd.Id_tiet, khoilop.Id, idDonvi);

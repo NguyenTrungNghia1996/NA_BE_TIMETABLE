@@ -114,6 +114,7 @@ namespace NA_Entities.DBContext
         public DbSet<MonHoc_TheoNganh> MonHoc_TheoNganh { get; set; }
         public DbSet<DM_Lopontap> DM_Lopontap { get; set; }
         public DbSet<DM_Lopontap_List> DM_Lopontap_List { get; set; }
+        public DbSet<Lopontap_Tietnghi> Lopontap_Tietnghi { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }

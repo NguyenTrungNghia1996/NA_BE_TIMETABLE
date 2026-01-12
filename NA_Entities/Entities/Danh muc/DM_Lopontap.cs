@@ -49,4 +49,5 @@ namespace NA_Entities.Entities.Danh_muc
         public int So_tiet_toi_da_tren_tuan { get; set; }
         public int Total { get; set; }
     }
+
 }
