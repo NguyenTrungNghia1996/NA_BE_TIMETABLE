@@ -325,7 +325,7 @@ namespace NA_Logic.Repository
                 }
 
                 var check = query.Any();
-                return !check;
+                return check;
             }
             catch
             {
