@@ -162,13 +162,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("khoiloptheodonvi")]
         [RequireToken]
-        public IActionResult GetKhoiLopByID()
+        public IActionResult GetKhoiLopByID([FromQuery] string search = "")
         {
+            search = search.Trim();
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy bản ghi từ db
-            var detail = _khoilop.GetKhoilopByDonvi(idDonvi);
+            var detail = _khoilop.GetKhoilopByDonvi(idDonvi, search);
             if (detail == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho đơn vị có Id= {idDonvi}");
             return ApiResult.Success(detail, "Thành công");

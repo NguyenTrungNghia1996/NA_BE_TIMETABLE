@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Logic.Repository;
@@ -21,9 +23,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_KhoilopRepository _khoilop;
         private readonly IDM_MonhocRepository _mon;
         private readonly IDM_NamhocRepository _nam;
+        private readonly IDM_DonviRepository _donvi;
+        private readonly IThongtin_DonviRepository _ttdonvi;
         private readonly IValidateRepository _validate;
         public DM_LopontapController(IMapper mapper, IDM_LopontapRepository Lopontap, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IValidateRepository validate,
-            IDM_GiaovienRepository giaovien, IDM_NamhocRepository nam, IDM_MonhocRepository mon, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop)
+            IDM_GiaovienRepository giaovien, IDM_NamhocRepository nam, IDM_MonhocRepository mon, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop, IDM_DonviRepository donvi, IThongtin_DonviRepository ttdonvi)
         {
             _mapper = mapper;
             _Lopontap = Lopontap;
@@ -36,6 +40,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             _phong = phong;
             _khoilop = khoilop;
             _validate = validate;
+            _donvi = donvi;
+            _ttdonvi = ttdonvi;
         }
         [HttpGet]
         [RequireToken]
@@ -174,10 +180,127 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Lopontapdb = _Lopontap.GetDetailById(id);
             if (Lopontapdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            bool deleteTietnghi = _Lopontap.DeleteTietBan(id);
+            if (!deleteTietnghi)
+                return ApiResult.BadRequest("Xoá tiết nghỉ thất bại");
             bool result = _Lopontap.Delete(id);
             if (!result)
                 return ApiResult.BadRequest("Xoá thất bại");
             return ApiResult.Ok("Xóa thành công");
+        }
+        [HttpGet("tietnghi")]
+        [RequireToken]
+        public IActionResult GetListTietBan([FromQuery] int Id)
+        {
+            if (Id < 0)
+                return ApiResult.BadRequest($"Id {Id} không hợp lệ, vui lòng kiểm tra lại");
+
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (Id > 0)
+            {
+                var detail = _Lopontap.CheckId(Id, idDonvi);
+                if (!detail)
+                    return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            }
+            var result = _Lopontap.GetListTietBan(Id, idDonvi);
+            if (result == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {Id}");
+            return ApiResult.Success(result, "Th  ành công");
+        }
+
+        [HttpPost("tietnghi")]
+        [RequireToken]
+        public IActionResult Update([FromBody] Lopontap_TietnghiDto tietnghi)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0)
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            if (!_Lopontap.CheckId(tietnghi.Id, idDonvi))
+                return ApiResult.BadRequest("Lớp ôn tập không hợp lệ");
+            var detailDonvi = _donvi.getDetailById(idDonvi);
+            var listCa = _ttdonvi.GetlistCabyDonvi(idDonvi);
+            var caDictionary = listCa.ToDictionary(c => c.Id_ca_hoc, c => c.So_tiet);
+
+            var errors = new List<string>();
+            foreach (var ca in tietnghi.Ds_Ca)
+            {
+                if (!caDictionary.ContainsKey(ca.Id))
+                {
+                    errors.Add($"Ca {ca.Id} không hợp lệ hoặc không thuộc đơn vị");
+                    continue;
+                }
+
+                int soTietCuaCa = caDictionary[ca.Id];
+
+                foreach (var ngay in ca.Ds_Ngay)
+                {
+                    var idthu = (int)ngay.Id;
+                    if (idthu < 1 || idthu > detailDonvi.So_ngay)
+                    {
+                        errors.Add($"Ca {ca.Id}: Ngày {idthu} không hợp lệ");
+                        continue;
+                    }
+
+                    foreach (var tiet in ngay.Ds_Tiet)
+                    {
+                        var idtiet = (int)tiet.Id;
+                        if (idtiet < 1 || idtiet > soTietCuaCa)
+                        {
+                            errors.Add($"Ca {ca.Id}, Ngày {idthu}: Tiết {idtiet} không hợp lệ");
+                        }
+                    }
+                }
+            }
+
+            var danhSachTietBan = new List<Lopontap_Tietnghi>();
+            
+            var existingCombinations = new HashSet<string>();
+            foreach (var ca in tietnghi.Ds_Ca)
+            {
+                foreach (var ngay in ca.Ds_Ngay)
+                {
+                    foreach (var tiet in ngay.Ds_Tiet)
+                    {
+                        var idthu = (int)ngay.Id;
+                        var idtiet = (int)tiet.Id;
+
+                        if (tiet.Trang_thai == true)
+                        {
+                            //Tạo unique key để check trùng
+                            string uniqueKey = $"{tietnghi.Id}_{ca.Id}_{idthu}_{idtiet}";
+                            //kiểm tra unique tồn tại chưa
+                            if (existingCombinations.Contains(uniqueKey))
+                            {
+                                errors.Add($"Trùng lặp bản ghi");
+                                continue;
+                            }
+                            //nếu chưa tồn tại thì thêm vào combinations
+                            existingCombinations.Add(uniqueKey);
+                            //thêm các tiết trạng thái bằng true vào danh sách tiết bận
+                            danhSachTietBan.Add(new Lopontap_Tietnghi
+                            {
+                                Id_lop_on = tietnghi.Id,
+                                Id_ca = ca.Id,
+                                Ngay = idthu,
+                                Tiet = idtiet
+                            });
+                        }
+                    }
+                }
+            }
+            if (errors.Any())
+                return ApiResult.BadRequest(string.Join("; ", errors));
+
+            bool result = _Lopontap.AddTietBan(danhSachTietBan, tietnghi.Id);
+            if (!result)
+                return ApiResult.NotFound("Cập nhật tiết bận thất bại");
+
+            return ApiResult.Success(new { id_phong = tietnghi.Id, so_tiet_ban = danhSachTietBan.Count }, "Cập nhật tiết bận thành công");
         }
     }
 }

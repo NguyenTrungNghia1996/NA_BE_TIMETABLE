@@ -48,4 +48,9 @@ namespace NA_Entities.Entities.Dtos
         public string? Ten_nam { get; set; }
         public int So_tiet_toi_da_tren_tuan { get; set; }
     }
+    public class Lopontap_TietnghiDto
+    {
+        public int Id { get; set; } = 0;
+        public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
+    }
 }

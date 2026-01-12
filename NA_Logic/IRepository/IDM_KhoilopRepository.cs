@@ -15,7 +15,7 @@ namespace NA_Logic.IRepository
         bool Add(DM_Khoilop dM_Khoilop);
         bool Update(DM_Khoilop dM_Khoilop);
         (bool success, string message) Delete(int Id);
-        List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi);
+        List<Khoilop_byDonvi> GetKhoilopByDonvi(int idDonvi, string search);
         bool CheckId(int Id);
         bool CheckKhoilopByDonvi(int idKhoilop, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
