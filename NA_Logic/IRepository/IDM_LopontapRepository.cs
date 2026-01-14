@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_LopontapRepository
     {
-        List<DM_Lopontap_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi);
+        List<DM_Lopontap_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idKhoi);
         DM_Lopontap GetDetailById(int Id);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool Add(DM_Lopontap dm_Lopontap);

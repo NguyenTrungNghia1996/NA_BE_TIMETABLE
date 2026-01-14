@@ -58,7 +58,7 @@ builder.Services.AddScoped<IDM_GiaovienRepository,DM_GiaovienRepository>();
 builder.Services.AddScoped<IDM_LophocRepository,DM_LophocRepository>();
 builder.Services.AddScoped<ILop_MonRepository,Lop_MonRepository>();
 builder.Services.AddScoped<IDanhsach_ThoikhoabieuRepository, ThoiKhoaBieuRepository>();
-builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
+builder.Services.AddScoped<IXepThoiKhoaBieuRepository, XepThoiKhoaBieuRepository>();
 builder.Services.AddScoped<ISoTietDanhMucRepository, SoTietDanhMucRepository>();
 builder.Services.AddScoped<IExportExcelRepository, ExportExcelRepository>();
 builder.Services.AddScoped<IValidateRepository, ValidateRepository>();
@@ -75,6 +75,7 @@ builder.Services.AddScoped<IThongtin_DonviRepository, Thongtin_DonviRepository>(
 builder.Services.AddScoped<IExportWordRepository, ExportWordRepository>();
 builder.Services.AddScoped<IDM_LopontapRepository, DM_LopontapRepository>();
 builder.Services.AddScoped<IDanhsach_LichontapRepository, Danhsach_LichontapRepository>();
+builder.Services.AddScoped<IXepLichOnTapRepository, XepLichOnTapRepository>();
 //builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

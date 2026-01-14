@@ -23,7 +23,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Lopontap_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi)
+        public List<DM_Lopontap_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idKhoi)
         {
             try
             {
@@ -43,9 +43,13 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
+                var paramIdKhoi = new SqlParameter("idKhoi", SqlDbType.Int)
+                {
+                    Value = idKhoi
+                };
 
-                var result = _dbContext.Set<DM_Lopontap_List>().FromSqlRaw("EXEC DM_Lopontap_GetList_Paging @pageIndex, @pageSize, @search,@idDonvi",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi).ToList();
+                var result = _dbContext.Set<DM_Lopontap_List>().FromSqlRaw("EXEC DM_Lopontap_GetList_Paging @pageIndex, @pageSize, @search,@idDonvi, @idKhoi",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdKhoi).ToList();
                 if (result == null) result = new List<DM_Lopontap_List>();
                 return result;
             }
