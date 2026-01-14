@@ -138,9 +138,9 @@ namespace NA_Logic.Repository
                                       Ten = ca.Ten,
                                       So_tiet = cd.So_tiet,
                                   }).ToList();
-            var tietBan = _dbContext.Tiet_ban
-                        .Where(tb => tb.Id_phong == Id)
-                        .Select(tb => new { tb.Id_ca, tb.Thu, tb.Tiet })
+            var tietBan = _dbContext.Lopontap_Tietnghi
+                        .Where(tb => tb.Id_lop_on == Id)
+                        .Select(tb => new { tb.Id_ca, tb.Ngay, tb.Tiet })
                         .ToList();
             var donvi = _dbContext.DM_Donvi.Find(idDonvi);
             // Lấy danh sách ngày từ enum
@@ -163,7 +163,7 @@ namespace NA_Logic.Repository
                             Id = tiet,
                             Ten = tiet.GetDisplayName(),
                             Trang_thai = tietBan.Any(td => td.Id_ca == ca.Id &&
-                                                           td.Thu == (int)ngay &&
+                                                           td.Ngay == (int)ngay &&
                                                            td.Tiet == (int)tiet)
                         }).ToList()
                     }).ToList()
