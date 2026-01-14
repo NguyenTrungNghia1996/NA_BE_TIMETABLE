@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 namespace NA_Entities.Entities.Dtos
 {
 
-    public class tkb_theo_lop
+    public class tiet_theo_lop
     {
         public int Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
         public int Id_giao_vien { get; set; } = 0;
@@ -24,15 +23,22 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
         public bool isDrag { get; set; } = false;
-        public bool isLock { get; set; } = false;
         public bool isRest { get; set; } = false;
         public bool isError { get; set; } = false;
     }
-    public class tkb_chuaxep_lop
+    public class tkb_theo_lop: tiet_theo_lop
+    {
+        public int Id_tkb { get; set; } = 0;
+        public bool isLock { get; set; } = false;
+    }
+    public class lich_theo_lop: tiet_theo_lop
+    {
+        public int Id_lich { get; set; } = 0;
+    }
+    public class tiet_chuaxep_lop
     {
         public int Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
         public string Ten_mon { get; set; } = string.Empty;
         public int Id_giao_vien { get; set; } = 0;
@@ -41,19 +47,33 @@ namespace NA_Entities.Entities.Dtos
         public string? Ten_phong { get; set; } = string.Empty;
         public int So_tiet { get; set; } = 0;
     }
-
-    public class ObjectTiet_theoLopDto
+    public class tkb_chuaxep_lop: tiet_chuaxep_lop
+    {
+        public int Id_tkb { get; set; } = 0;
+    }
+    public class lich_chuaxep_lop: tiet_chuaxep_lop
+    {
+        public int Id_lich { get; set; } = 0;
+    }
+    public class ObjectLopDto
     {
         public int Id_lop { get; set; } = 0;
         public string Ten_lop { get; set; } = string.Empty;
+    }
+    public class ObjectTiet_theoLopDto: ObjectLopDto
+    {
         public List<tkb_theo_lop> timetable { get; set; } = new List<tkb_theo_lop>();
         public List<tkb_chuaxep_lop> ds_chua_xep { get; set; } = new List<tkb_chuaxep_lop>();
     }
-    public class tkb_theo_giaovien
+    public class ObjectTietOnTap_theoLopDto: ObjectLopDto
+    {
+        public List<lich_theo_lop> timetable { get; set; } = new List<lich_theo_lop>();
+        public List<lich_chuaxep_lop> ds_chua_xep { get; set; } = new List<lich_chuaxep_lop>();
+    }
+    public class tiet_theo_giaovien
     {
         public int Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int? Id_lop { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
         public int? Id_mon { get; set; } = 0;
@@ -65,15 +85,22 @@ namespace NA_Entities.Entities.Dtos
         public int Ngay { get; set; } = 0;
         public int Tiet { get; set; } = 0;
         public bool isDrag { get; set; } = false;
-        public bool isLock { get; set; } = false;
         public bool isRest { get; set; } = false;
         public bool isError { get; set; } = false;
     }
-    public class tkb_chuaxep_giaovien
+    public class tkb_theo_giaovien: tiet_theo_giaovien
+    {
+        public int Id_tkb { get; set; } = 0;
+        public bool isLock { get; set; } = false;
+    }
+    public class lich_theo_giaovien: tiet_theo_giaovien
+    {
+        public int Id_lich { get; set; } = 0;
+    }
+    public class tiet_chuaxep_giaovien
     {
         public int Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int? Id_lop { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
         public int? Id_mon { get; set; } = 0;
@@ -82,21 +109,36 @@ namespace NA_Entities.Entities.Dtos
         public string? Ten_phong { get; set; } = string.Empty;
         public int So_tiet { get; set; } = 0;
     }
-    public class ObjectTiet_theoGVDto
+    public class tkb_chuaxep_giaovien: tiet_chuaxep_giaovien
+    {
+        public int Id_tkb { get; set; } = 0;
+    }
+    public class lich_chuaxep_giaovien: tiet_chuaxep_giaovien
+    {
+        public int Id_lich { get; set; } = 0;
+    }
+    public class ObjectGVDto
     {
         public int Id_giao_vien { get; set; } = 0;
         public string Ten_giao_vien { get; set; } = string.Empty;
         public int? Tong_so_tiet { get; set; } = 0;
         public int? So_tiet_da_xep { get; set; } = 0;
+    }
+    public class ObjectTiet_theoGVDto : ObjectGVDto
+    {
         public List<tkb_theo_giaovien> timetable { get; set; } = new List<tkb_theo_giaovien>();
         public List<tkb_chuaxep_giaovien> ds_chua_xep { get; set; } = new List<tkb_chuaxep_giaovien>();
     }
-    public class ObjectTiet_DaChon
+    public class ObjectTietOnTap_theoGVDto : ObjectGVDto
+    {
+        public List<lich_theo_giaovien> timetable { get; set; } = new List<lich_theo_giaovien>();
+        public List<lich_chuaxep_giaovien> ds_chua_xep { get; set; } = new List<lich_chuaxep_giaovien>();
+    }
+    public class ObjectTietDto
     {
 
         public int? Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int? Id_lop { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
         public int? Id_mon { get; set; } = 0;
@@ -110,7 +152,15 @@ namespace NA_Entities.Entities.Dtos
         public int? Ngay { get; set; } = 0;
         public int? Tiet { get; set; } = 0;
         public bool isDrag { get; set; } = false;
-        public bool isLock { get; set; } = false;
         public bool isRest { get; set; } = false;
+    }
+    public class ObjectTiet_DaChon: ObjectTietDto
+    {
+        public int Id_tkb { get; set; } = 0;
+        public bool isLock { get; set; } = false;
+    }
+    public class ObjectTietOnTap_DaChon: ObjectTietDto
+    {
+        public int Id_lich { get; set; } = 0;
     }
 }

@@ -17,10 +17,10 @@ namespace NA_Xepthoikhoabieu.Controllers
 {
     [ApiController]
     [Route("api/tkb")]
-    public class ObjectController : ControllerBase
+    public class XepThoiKhoaBieuController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IObjectRepository _ob;
+        private readonly IXepThoiKhoaBieuRepository _ob;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_GiaovienRepository _giaovien;
@@ -29,7 +29,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly ITo_hop_monRepository _thm;
         private readonly IDanhsach_ThoikhoabieuRepository _tkb;
 
-        public ObjectController(IMapper mapper, IObjectRepository ob, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
+        public XepThoiKhoaBieuController(IMapper mapper, IXepThoiKhoaBieuRepository ob, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
                                      IDM_GiaovienRepository giaovien, IDM_MonhocRepository monhoc, IDM_PhonghocRepository phonghoc, ITo_hop_monRepository thm, IDanhsach_ThoikhoabieuRepository tkb)
         {
             _mapper = mapper;
@@ -158,7 +158,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         //        return ApiResult.BadRequest($"Id thời khoá biểu = {Idtkb} không hợp lệ, vui lòng kiểm tra lại");
 
         //    // Lấy bản ghi từ db
-        //    var detail = _ob.LoadObjectsFromTiet_Test(Idtkb, idDonvi);
+        //    var detail = _ob.LoadAllInformation(Idtkb, idDonvi);
         //    return ApiResult.Success(detail, "Thành công");
         //}
         [HttpGet("lop")]

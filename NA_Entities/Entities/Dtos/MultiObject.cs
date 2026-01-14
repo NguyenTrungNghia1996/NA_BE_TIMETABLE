@@ -100,17 +100,17 @@ namespace NA_Entities.Entities.Dtos
     public class Object_Monhoc
     {
         public int Id_mon { get; set; } = 0;
-        public bool Hoc_cach_ngay { get; set; } = false;
-        public bool Xep_thanh_cap { get; set; } = false;
-        public int So_tiet_toi_da_mot_ca { get; set; } = 0;
-        public int So_tiet_toi_da_hai_ca { get; set; } = 0;
+        public bool? Hoc_cach_ngay { get; set; } = false;
+        public bool? Xep_thanh_cap { get; set; } = false;
+        public int? So_tiet_toi_da_mot_ca { get; set; } = 0;
+        public int? So_tiet_toi_da_hai_ca { get; set; } = 0;
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
         //public List<Ds_tiet_co_dinh> ds_tiet_co_dinh { get; set; } = new List<Ds_tiet_co_dinh>();
     }
     public class Object_Phonghoc
     {
         public int Id_phong { get; set; } = 0;
-        public int Id_loai_phong { get; set; } = 0;
+        public int? Id_loai_phong { get; set; } = 0;
         public bool Khong_kiem_tra_xung_dot { get; set; } = false;
         public List<Ds_mon> ds_mon_tai_phong { get; set; } = new List<Ds_mon>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
@@ -131,8 +131,8 @@ namespace NA_Entities.Entities.Dtos
     public class Object_Lophoc
     {
         public int Id_lop { get; set; } = 0;
-        public int Id_ban { get; set; } = 0;
-        public int Id_khoi { get; set; } = 0; 
+        public int? Id_ban { get; set; } = 0;
+        public int? Id_khoi { get; set; } = 0; 
         //public List<Ds_tiet_phan_cong> ds_lop_mon { get; set; } = new List<Ds_tiet_phan_cong>();
         public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
@@ -168,11 +168,10 @@ namespace NA_Entities.Entities.Dtos
         public bool Khoa { get; set; } = false;
         public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
     }
-    public class Object_TietChuaXep
+    public class TietChuaXep
     {
         public int Id { get; set; }
         public int? Id_don_vi { get; set; } = 0;
-        public int Id_tkb { get; set; } = 0;
         public int? Id_lop { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
         public int? Id_mon { get; set; } = 0;
@@ -183,6 +182,14 @@ namespace NA_Entities.Entities.Dtos
         public string? Ten_phong { get; set; } = string.Empty;
         public int So_tiet { get; set; } = 0;
         public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
+    }
+    public class Object_TietChuaXep: TietChuaXep
+    {
+        public int Id_tkb { get; set; } = 0;
+    }
+    public class Object_TietOnTapChuaXep: TietChuaXep
+    {
+        public int Id_lich { get; set; } = 0;
     }
     public class Object_lop_mon 
     {
@@ -202,5 +209,34 @@ namespace NA_Entities.Entities.Dtos
     {
         public int Id_ca { get; set; } = 0;
         public int So_tiet { get; set; } = 0;
+    }
+    public class Object_TietOnTap
+    {
+        public int Id { get; set; }
+        public int? Id_don_vi { get; set; } = 0;
+        public int Id_lich { get; set; } = 0;
+        public int? Id_lop { get; set; } = 0;
+        public string? Ten_lop { get; set; } = string.Empty;
+        public int? Id_mon { get; set; } = 0;
+        public string? Ten_mon { get; set; } = string.Empty;
+        public int? Id_giao_vien { get; set; } = 0;
+        public string? Ten_giao_vien { get; set; } = string.Empty;
+        public int? Id_phong { get; set; } = 0;
+        public string? Ten_phong { get; set; } = string.Empty;
+        public int Tiet_thu_may { get; set; } = 0;
+        public int Id_ca { get; set; } = 0;
+        public int Ngay { get; set; } = 0;
+        public int Tiet { get; set; } = 0;
+        public List<Ds_vi_tri_xep_duoc> Ds_vi_tri_xep_duoc { get; set; } = new List<Ds_vi_tri_xep_duoc>();
+    }
+    public class Object_GiaovienOnTap
+    {
+        public int? Id_giao_vien { get; set; } = 0;
+        public bool? Chi_day_mot_buoi { get; set; } = false;
+        public int? So_tiet_toi_da { get; set; } = 0;
+        public List<Ds_tiet_phan_cong> ds_tiet_phan_cong { get; set; } = new List<Ds_tiet_phan_cong>();
+        public List<Object_TietOnTap> ds_tiet_da_xep { get; set; } = new List<Object_TietOnTap>();
+        public List<Object_TietOnTap> ds_tiet_chua_xep { get; set; } = new List<Object_TietOnTap>();
+        public List<Ds_tiet_tranh_xep> ds_tiet_tranh_xep { get; set; } = new List<Ds_tiet_tranh_xep>();
     }
 }

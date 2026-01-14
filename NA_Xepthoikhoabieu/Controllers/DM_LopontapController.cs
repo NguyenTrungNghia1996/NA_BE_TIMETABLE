@@ -45,12 +45,12 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_khoi, [FromQuery] string search = "")
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             search = search.Trim();
-            var list = _Lopontap.GetList_Paging(PageIndex, PageSize, search, idDonvi);
+            var list = _Lopontap.GetList_Paging(PageIndex, PageSize, search, idDonvi,Id_khoi);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Lopontap_ListDto>>(list);

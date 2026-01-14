@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class ObjectRepository : IObjectRepository
+    public class XepThoiKhoaBieuRepository : IXepThoiKhoaBieuRepository
     {
         private readonly NA_DbContext _context;
         private Object_Monhoc _ObjectMon = new Object_Monhoc();
@@ -44,7 +44,7 @@ namespace NA_Logic.Repository
         private List<object_tiet_co_dinh> _dsObjectTietcodinh = new List<object_tiet_co_dinh>();
         private List<Object_ca> _dsCa;
         private int _soNgay;
-        public ObjectRepository(NA_DbContext context)
+        public XepThoiKhoaBieuRepository(NA_DbContext context)
         {
             _context = context;
         }
@@ -201,7 +201,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public void LoadObjectsFromTiet_Test(int idTkb, int idDonvi)
+        public void LoadAllInformation(int idTkb, int idDonvi)
         {
             try
             {
@@ -780,7 +780,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                if (_ObjectMon == null || !_ObjectMon.Hoc_cach_ngay)
+                if (_ObjectMon == null || _ObjectMon.Hoc_cach_ngay == false)
                     return true;
 
                 var dsDataXep = _ObjectGiaovien?.ds_tiet_da_xep?.Where(x =>
@@ -853,7 +853,7 @@ namespace NA_Logic.Repository
             try
             {
                 LoadObjectsMonFromTiet(tiet);
-                if (_ObjectMon == null || !_ObjectMon.Xep_thanh_cap)
+                if (_ObjectMon == null || _ObjectMon.Xep_thanh_cap == false)
                 {
                     return false;
                 }
@@ -1010,7 +1010,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1111,7 +1111,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1218,7 +1218,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1325,7 +1325,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1432,7 +1432,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1539,7 +1539,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1647,7 +1647,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1753,7 +1753,7 @@ namespace NA_Logic.Repository
             try
             {
                 // 1. Load tất cả tiết cần xếp
-                LoadObjectsFromTiet_Test(idtkb, idDonvi);
+                LoadAllInformation(idtkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -1862,7 +1862,7 @@ namespace NA_Logic.Repository
 
         public ObjectTiet_theoLopDto GetTkbByLop(int id_lop, int idtkb, int idDonvi)
         {
-            LoadObjectsFromTiet_Test(idtkb, idDonvi);
+            LoadAllInformation(idtkb, idDonvi);
             if (_dsTietGoc?.Count == 0 || id_lop < 0) return null;
 
             var tiet = _dsTietGoc.Where(t => t.Id_lop == id_lop).ToList();
@@ -1896,19 +1896,16 @@ namespace NA_Logic.Repository
                 {
                     foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet))
                     {
-                        // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
                             t.Id_ca == ca.Id_ca &&
                             t.Ngay == (int)ngay &&
                             t.Tiet == (int)tietEnum);
 
-                        // Kiểm tra có trong danh sách tránh xếp không
                         bool isBreak = tietTranhXep.Any(tx =>
                             tx.Id_ca == ca.Id_ca &&
                             tx.Ngay == (int)ngay &&
                             tx.Tiet == (int)tietEnum);
 
-                        // Tạo tkb_theo_lop item
                         var tietItem = new tkb_theo_lop
                         {
                             Id_chitiet = tietHoc?.Id ?? 0,
@@ -1922,7 +1919,6 @@ namespace NA_Logic.Repository
 
                         if (tietHoc != null)
                         {
-                            // Tiết có môn học
                             tietItem.Id_mon = tietHoc.Id_mon ?? 0;
                             tietItem.Ten_mon = tietHoc.Ten_mon ?? "";
                             tietItem.Id_giao_vien = tietHoc.Id_giao_vien ?? 0;
@@ -1947,7 +1943,6 @@ namespace NA_Logic.Repository
                         }
                         else
                         {
-                            // Tiết trống - chỉ thêm nếu cần hiển thị full grid
                             tietItem.Id_mon = 0;
                             tietItem.Ten_mon = "";
                             tietItem.Id_giao_vien = 0;
@@ -1963,7 +1958,6 @@ namespace NA_Logic.Repository
                 }
             }
 
-            // Xử lý ds_chua_xep
             var tietChuaXep = tiet.Where(t => t.Id_lop == id_lop && t.Id_tkb == idtkb && t.Ngay <= 0 && t.Tiet <= 0).GroupBy(t => new { t.Id_mon, t.Id_phong, t.Id_giao_vien })
                                   .Select(g => new {
                                       FirstItem = g.First(),
@@ -1993,7 +1987,7 @@ namespace NA_Logic.Repository
         }
         public ObjectTiet_theoGVDto GetTkbByGiaovien(int id_gv, int idtkb, int idDonvi)
         {
-            LoadObjectsFromTiet_Test(idtkb, idDonvi);
+            LoadAllInformation(idtkb, idDonvi);
 
             if (_dsTietGoc == null || _dsTietGoc.Count == 0)
             {
@@ -2033,19 +2027,16 @@ namespace NA_Logic.Repository
                 {
                     foreach (var tietEnum in dsTietEnum.Take(ca.So_tiet))
                     {
-                        // Tìm tiết học thực tế
                         var tietHoc = tiet.FirstOrDefault(t =>
                             t.Id_ca == ca.Id_ca &&
                             t.Ngay == (int)ngay &&
                             t.Tiet == (int)tietEnum);
 
-                        // Kiểm tra có trong danh sách tránh xếp không
                         bool isBreak = tietTranhXep.Any(tx =>
                             tx.Id_ca == ca.Id_ca &&
                             tx.Ngay == (int)ngay &&
                             tx.Tiet == (int)tietEnum);
 
-                        // Tạo tkb_theo_lop item
                         var tietItem = new tkb_theo_giaovien
                         {
                             Id_chitiet = tietHoc?.Id ?? 0,
@@ -2059,7 +2050,6 @@ namespace NA_Logic.Repository
 
                         if (tietHoc != null)
                         {
-                            // Tiết có môn học
                             tietItem.Id_mon = tietHoc.Id_mon ?? 0;
                             tietItem.Ten_mon = tietHoc.Ten_mon ?? "";
                             tietItem.Id_lop = tietHoc.Id_lop ?? 0;
@@ -2084,7 +2074,6 @@ namespace NA_Logic.Repository
                         }
                         else
                         {
-                            // Tiết trống - chỉ thêm nếu cần hiển thị full grid
                             tietItem.Id_mon = 0;
                             tietItem.Ten_mon = "";
                             tietItem.Id_lop = 0;
@@ -2100,7 +2089,6 @@ namespace NA_Logic.Repository
                 }
             }
 
-            // Xử lý ds_chua_xep (các tiết chưa có thời gian cụ thể)
             var tietChuaXep = tiet.Where(t => t.Id_giao_vien == id_gv && t.Id_tkb == idtkb && t.Ngay <= 0 && t.Tiet <= 0).GroupBy(t => new { t.Id_mon, t.Id_lop, t.Id_phong})
                                   .Select(g => new {
                                       FirstItem = g.First(),
@@ -2339,7 +2327,7 @@ namespace NA_Logic.Repository
                 int idPhong = tiet.Id_phong;
                 bool isRest = tiet.isRest;
                 bool isLock = tiet.isLock;
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
 
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
@@ -2465,7 +2453,7 @@ namespace NA_Logic.Repository
                 int idChitiet = tiet.Id_chitiet;
                 int idTkb = tiet.Id_tkb;
 
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
 
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
@@ -2520,7 +2508,7 @@ namespace NA_Logic.Repository
                 int idChitiet = tiet.Id_chitiet;
                 int idTkb = tiet.Id_tkb;
 
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
 
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
@@ -2579,7 +2567,7 @@ namespace NA_Logic.Repository
                 int ngay = tiet.Ngay;
                 int tietSo = tiet.Tiet;
 
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new List<Object_Tiet>();
@@ -2766,7 +2754,7 @@ namespace NA_Logic.Repository
                 bool isRest = tiet.isRest;
                 bool isLock = tiet.isLock;
 
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new ObjectTiet_theoGVDto();
@@ -2896,7 +2884,7 @@ namespace NA_Logic.Repository
                 int idlop = tiet.Id_lop ?? 0;
                 int idPhong = tiet.Id_phong ?? 0;
 
-                LoadObjectsFromTiet_Test(idTkb, idDonvi);
+                LoadAllInformation(idTkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return new List<Object_Tiet>();
@@ -3000,7 +2988,7 @@ namespace NA_Logic.Repository
                     Id_ca = tiet2.Id_ca,
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
-                LoadObjectsFromTiet_Test(objectTiet1.Id_tkb, idDonvi);
+                LoadAllInformation(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
                 bool updateTiet1 = false;
                 bool updateTiet2 = false;
@@ -3114,7 +3102,7 @@ namespace NA_Logic.Repository
                     Id_ca = tiet2.Id_ca,
                     Tiet_thu_may = tiet2.Tiet_thu_may
                 };
-                LoadObjectsFromTiet_Test(objectTiet1.Id_tkb, idDonvi);
+                LoadAllInformation(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
                 bool updateTiet1 = false;
                 bool updateTiet2 = false;
