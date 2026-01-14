@@ -57,7 +57,7 @@ namespace NA_Logic.Repository
                 {
                     Value = idtkb
                 };
-                var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Object  @Id_tkb = @Id_tkb", paramIdTkb)
+                var result = _context.Set<Chitiet_Thoikhoabieu_List>().FromSqlRaw("EXEC Get_Chitiet_TKB  @Id_tkb = @Id_tkb", paramIdTkb)
                     .ToList();
 
                 if (result == null) return null;
