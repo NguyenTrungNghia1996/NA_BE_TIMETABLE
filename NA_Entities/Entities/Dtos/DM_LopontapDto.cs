@@ -22,8 +22,6 @@ namespace NA_Entities.Entities.Dtos
         public int Id_mon { get; set; } = 0;
         [Required(ErrorMessage = "Phòng học không được để trống")]
         public int Id_phong { get; set; } = 0;
-        [Required(ErrorMessage = "Đơn vị không được để trống")]
-        public int Id_don_vi { get; set; } = 0;
         [Required(ErrorMessage = "Giáo viên không được để trống")]
         public int Id_giao_vien { get; set; } = 0;
         [Required(ErrorMessage = "Năm học không được để trống")]

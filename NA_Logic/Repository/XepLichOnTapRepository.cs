@@ -2044,5 +2044,29 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool HuyXep(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return false;
+                }
+                var tiet = _context.Chitiet_Lichontap.FirstOrDefault(c => c.Id == id);
+                if (tiet != null)
+                {
+                    tiet.Id_ca = 0;
+                    tiet.Ngay = 0;
+                    tiet.Tiet = 0;
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
