@@ -33,4 +33,9 @@ namespace NA_Entities.Entities.Danh_muc
         public int Tong_tiet_da_xep { get; set; } = 0;
         public int Tong_tiet_chua_xep { get; set; } = 0;
     }
+    public class Xep_lich
+    {
+        public int Id_lich { get; set; } = 0;
+        public List<int> Ids { get; set; } = new List<int>();
+    }
 }
