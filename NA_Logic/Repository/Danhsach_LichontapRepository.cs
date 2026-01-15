@@ -195,7 +195,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var del = _context.Chitiet_Thoikhoabieu.Where(x => x.Id_tkb == Id).ToList();
+                var del = _context.Chitiet_Lichontap.Where(x => x.Id_lich == Id).ToList();
                 if (del != null && del.Count > 0)
                 {
                     foreach (var item in del)

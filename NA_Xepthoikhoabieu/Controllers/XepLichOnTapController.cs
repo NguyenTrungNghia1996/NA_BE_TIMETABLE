@@ -55,7 +55,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(idlich, idDonvi);
             if (idlich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
             var detail = _ob.GetLichByLop(idLop, idlich, idDonvi);
@@ -71,7 +71,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(idlich, idDonvi);
             if (idlich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
             var detail = _ob.GetLichByGiaovien(idGV, idlich, idDonvi);
@@ -87,7 +87,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(idlich, idDonvi);
             if (idlich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
             var detail = _ob.GetTietChuaXep(idlich);
@@ -172,9 +172,6 @@ namespace NA_Xepthoikhoabieu.Controllers
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // mapper data 
-
-            // add 
             var (success, detail) = _ob.DoiChoHaiTiet_GV(tietDaChon, idDonvi);
             if (!success)
             {
@@ -211,7 +208,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
             if (xeplich.Id_lich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.Xeplich_byLop(xeplich.Ids, xeplich.Id_lich, idDonvi);
             //bool update = _lich.Update_TrangThaiXep(id_lich);
@@ -220,10 +217,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
             //}
             if (!add)
-                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+                return ApiResult.NotFound("Xếp lịch ôn tập không thành công");
 
             return ApiResult.Success(
-            "Xếp thời khoá biểu thành công");
+            "Xếp lịch ôn tập thành công");
         }
         [HttpPost("xeptheophong")]
         [RequireToken]
@@ -235,7 +232,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
             if (xeplich.Id_lich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.Xeplich_byPhong(xeplich.Ids, xeplich.Id_lich, idDonvi);
             //bool update = _lich.Update_TrangThaiXep(id_lich);
@@ -244,10 +241,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
             //}
             if (!add)
-                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+                return ApiResult.NotFound("Xếp lịch ôn tập không thành công");
 
             return ApiResult.Success(
-            "Xếp thời khoá biểu thành công");
+            "Xếp lịch ôn tập thành công");
         }
         [HttpPost("xeptheogv")]
         [RequireToken]
@@ -259,7 +256,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
             if (xeplich.Id_lich <= 0 || !check_lich)
-                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+                return ApiResult.BadRequest($"Id lịch ôn tập = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.Xeplich_byGV(xeplich.Ids, xeplich.Id_lich, idDonvi);
             //bool update = _lich.Update_TrangThaiXep(id_lich);
@@ -268,10 +265,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
             //}
             if (!add)
-                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+                return ApiResult.NotFound("Xếp lịch ôn tập không thành công");
 
             return ApiResult.Success(
-            "Xếp thời khoá biểu thành công");
+            "Xếp lịch ôn tập thành công");
         }
     }
 }
