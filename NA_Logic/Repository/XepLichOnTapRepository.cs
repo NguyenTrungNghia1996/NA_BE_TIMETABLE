@@ -197,7 +197,6 @@ namespace NA_Logic.Repository
                             ob_tiet_lich.Add(new Object_Tiet
                             {
                                 Id = (int)reader["Id"],
-                                Id_don_vi = (int)reader["Id_don_vi"],
                                 Id_tkb = (int)reader["Id_tkb"],
                                 Id_ca = (int)reader["Id_ca"],
                                 Id_giao_vien = (int)reader["Id_giao_vien"],
@@ -526,11 +525,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Xeptkb_byMon(List<int> idmon, int idtkb, int idDonvi)
+        public bool Xeplich_byPhong(List<int> idphong, int idlich, int idDonvi)
         {
             try
             {
-                LoadAllInformation(idtkb, idDonvi);
+                LoadAllInformation(idlich, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -538,11 +537,11 @@ namespace NA_Logic.Repository
                 var dsTietChuaXep = new List<Object_TietOnTap>();
                 var dsTietDaXep = new List<Object_TietOnTap>();
                 var dsTietBoqua = new List<Object_TietOnTap>();
-                for (int i = 0; i < idmon.Count; i++)
+                for (int i = 0; i < idphong.Count; i++)
                 {
-                    int id = idmon[i];
-                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay == 0 && c.Tiet == 0));
-                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay > 0 && c.Tiet > 0));
+                    int id = idphong[i];
+                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay == 0 && c.Tiet == 0));
+                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_phong == id && c.Ngay > 0 && c.Tiet > 0));
                 }
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)
@@ -593,11 +592,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Xeptkb_byGV(List<int> idgv, int idtkb, int idDonvi)
+        public bool Xeplich_byGV(List<int> idgv, int idlich, int idDonvi)
         {
             try
             {
-                LoadAllInformation(idtkb, idDonvi);
+                LoadAllInformation(idlich, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
                 {
                     return false;
@@ -610,6 +609,73 @@ namespace NA_Logic.Repository
                     int id = idgv[i];
                     dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
                     dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
+                }
+                int vongLap = 0;
+                while (dsTietChuaXep.Count > 0)
+                {
+                    vongLap++;
+                    for (int i = 0; i < dsTietChuaXep.Count; i++)
+                    {
+                        TimViTriXepDuoc(dsTietChuaXep[i], idDonvi, dsTietDaXep, dsTietChuaXep);
+                    }
+                    var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
+                    var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
+                    if (dsTietKhongTheXep != null && dsTietKhongTheXep.Count > 0)
+                    {
+                        for (int i = 0; i < dsTietKhongTheXep.Count; i++)
+                        {
+                            dsTietBoqua.Add(dsTietKhongTheXep[i]);
+                            dsTietChuaXep.Remove(dsTietKhongTheXep[i]);
+                        }
+                    }
+                    if (dsTietCoTheXep.Count == 0)
+                    {
+                        break;
+                    }
+                    var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
+                    var tietCanXep = dsTietSorted.First();
+
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
+                    tietCanXep.Ngay = viTriChon.Ngay;
+                    tietCanXep.Tiet = viTriChon.Tiet;
+                    dsTietChuaXep.Remove(tietCanXep);
+                    dsTietDaXep.Add(tietCanXep);
+                    if (vongLap > 1000)
+                    {
+                        break;
+                    }
+                }
+                bool update = UpdateListTiet(dsTietDaXep);
+                if (update)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
+                return false;
+            }
+        }
+        public bool Xeplich_byLop(List<int> idlop, int idlich, int idDonvi)
+        {
+            try
+            {
+                LoadAllInformation(idlich, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
+                {
+                    return false;
+                }
+                var dsTietChuaXep = new List<Object_TietOnTap>();
+                var dsTietDaXep = new List<Object_TietOnTap>();
+                var dsTietBoqua = new List<Object_TietOnTap>();
+                for (int i = 0; i < idlop.Count; i++)
+                {
+                    int id = idlop[i];
+                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay == 0 && c.Tiet == 0));
+                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay > 0 && c.Tiet > 0));
                 }
                 int vongLap = 0;
                 while (dsTietChuaXep.Count > 0)

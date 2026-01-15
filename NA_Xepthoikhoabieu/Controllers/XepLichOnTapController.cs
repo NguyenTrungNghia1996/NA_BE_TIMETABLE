@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Xepthoikhoabieu.Helpers;
@@ -33,8 +34,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            var check_tkb = _lot.CheckId(idlich, idDonvi);
-            if (idlich <= 0 || !check_tkb)
+            var check_lich = _lot.CheckId(idlich, idDonvi);
+            if (idlich <= 0 || !check_lich)
                 return ApiResult.BadRequest($"Id lịch ôn tập = {idlich} không hợp lệ, vui lòng kiểm tra lại");
             // add 
             bool add = _ob.ProcessThoiKhoaBieu(idlich, idDonvi);
@@ -46,14 +47,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("lop")]
         [RequireToken]
-        public IActionResult tkb_lop(int idLop, int idlich)
+        public IActionResult lich_lop(int idLop, int idlich)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            var check_tkb = _lot.CheckId(idlich, idDonvi);
-            if (idlich <= 0 || !check_tkb)
+            var check_lich = _lot.CheckId(idlich, idDonvi);
+            if (idlich <= 0 || !check_lich)
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
@@ -62,14 +63,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("giaovien")]
         [RequireToken]
-        public IActionResult tkb_giaovien(int idGV, int idlich)
+        public IActionResult lich_giaovien(int idGV, int idlich)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            var check_tkb = _lot.CheckId(idlich, idDonvi);
-            if (idlich <= 0 || !check_tkb)
+            var check_lich = _lot.CheckId(idlich, idDonvi);
+            if (idlich <= 0 || !check_lich)
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
@@ -78,14 +79,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("tietchuaxep")]
         [RequireToken]
-        public IActionResult tkb_tietchuaxep(int idlich)
+        public IActionResult lich_tietchuaxep(int idlich)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            var check_tkb = _lot.CheckId(idlich, idDonvi);
-            if (idlich <= 0 || !check_tkb)
+            var check_lich = _lot.CheckId(idlich, idDonvi);
+            if (idlich <= 0 || !check_lich)
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idlich} không hợp lệ, vui lòng kiểm tra lại");
 
             // Lấy bản ghi từ db
@@ -189,7 +190,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // mapper data 
 
-            //var check_id = _tkb.checkId_chitiet(id, idDonvi);
+            //var check_id = _lich.checkId_chitiet(id, idDonvi);
             //if (id <= 0 || !check_id)
             //    return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
             // add 
@@ -199,6 +200,78 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Thất bại");
             }
             return ApiResult.Success("Thành công");
+        }
+        [HttpPost("xeptheolop")]
+        [RequireToken]
+        public IActionResult Xeptheolop([FromBody] Xep_lich xeplich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
+            if (xeplich.Id_lich <= 0 || !check_lich)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool add = _ob.Xeplich_byLop(xeplich.Ids, xeplich.Id_lich, idDonvi);
+            //bool update = _lich.Update_TrangThaiXep(id_lich);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
+            if (!add)
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+
+            return ApiResult.Success(
+            "Xếp thời khoá biểu thành công");
+        }
+        [HttpPost("xeptheophong")]
+        [RequireToken]
+        public IActionResult Xeptheophong([FromBody] Xep_lich xeplich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
+            if (xeplich.Id_lich <= 0 || !check_lich)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool add = _ob.Xeplich_byPhong(xeplich.Ids, xeplich.Id_lich, idDonvi);
+            //bool update = _lich.Update_TrangThaiXep(id_lich);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
+            if (!add)
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+
+            return ApiResult.Success(
+            "Xếp thời khoá biểu thành công");
+        }
+        [HttpPost("xeptheogv")]
+        [RequireToken]
+        public IActionResult Xeptheogv([FromBody] Xep_lich xeplich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_lich = _lot.CheckId(xeplich.Id_lich, idDonvi);
+            if (xeplich.Id_lich <= 0 || !check_lich)
+                return ApiResult.BadRequest($"Id thời khoá biểu = {xeplich.Id_lich} không hợp lệ, vui lòng kiểm tra lại");
+            // add 
+            bool add = _ob.Xeplich_byGV(xeplich.Ids, xeplich.Id_lich, idDonvi);
+            //bool update = _lich.Update_TrangThaiXep(id_lich);
+            //if (!update)
+            //{
+            //    return ApiResult.NotFound("Cập nhật trạng thái không thành công");
+            //}
+            if (!add)
+                return ApiResult.NotFound("Xếp thời khoá biểu không thành công");
+
+            return ApiResult.Success(
+            "Xếp thời khoá biểu thành công");
         }
     }
 }

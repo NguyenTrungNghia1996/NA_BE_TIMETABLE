@@ -9,10 +9,10 @@ namespace NA_Logic.IRepository
 {
     public interface IXepLichOnTapRepository
     {
-        bool ProcessThoiKhoaBieu(int idtkb, int idDonvi);
-        ObjectTietOnTap_theoLopDto GetLichByLop(int id_lop, int idtkb, int idDonvi);
-        ObjectTietOnTap_theoGVDto GetLichByGiaovien(int id_gv, int idtkb, int idDonvi);
-        List<Object_TietOnTapChuaXep> GetTietChuaXep(int idtkb);
+        bool ProcessThoiKhoaBieu(int idlich, int idDonvi);
+        ObjectTietOnTap_theoLopDto GetLichByLop(int id_lop, int idlich, int idDonvi);
+        ObjectTietOnTap_theoGVDto GetLichByGiaovien(int id_gv, int idlich, int idDonvi);
+        List<Object_TietOnTapChuaXep> GetTietChuaXep(int idlich);
         ObjectTietOnTap_theoLopDto TimViTriXepDuoc_byLop(ObjectTietOnTap_theoLopDto tietDachon, int idDonvi);
         ObjectTietOnTap_theoGVDto TimViTriXepDuoc_byGV(ObjectTietOnTap_theoGVDto tietDachon, int idDonvi);
         (bool success, ObjectTietOnTap_theoLopDto result) DoiChoHaiTiet_Lop(ObjectTietOnTap_theoLopDto tietDachon, int idDonvi);
@@ -22,5 +22,8 @@ namespace NA_Logic.IRepository
         bool UpdateTietChuaXep(Object_TietOnTap tietDachon, int idDonvi);
         ObjectTietOnTap_theoLopDto TimViTriXepDuoc_TietChuaXep_byLop(ObjectTietOnTap_theoLopDto tietDachon, int idDonvi);
         ObjectTietOnTap_theoGVDto TimViTriXepDuoc_TietChuaXep_byGV(ObjectTietOnTap_theoGVDto tietDachon, int idDonvi);
+        bool Xeplich_byLop(List<int> idlop, int idlich, int idDonvi);
+        bool Xeplich_byGV(List<int> idgv, int idlich, int idDonvi);
+        bool Xeplich_byPhong(List<int> idphong, int idlich, int idDonvi);
     }
 }
