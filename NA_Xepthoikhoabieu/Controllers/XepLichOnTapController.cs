@@ -270,5 +270,23 @@ namespace NA_Xepthoikhoabieu.Controllers
             return ApiResult.Success(
             "Xếp lịch ôn tập thành công");
         }
+        [HttpPut("huytiet")]
+        [RequireToken]
+        public IActionResult huytiet([FromQuery] int id)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // mapper data 
+
+            var check_id = _lot.CheckId_ChiTiet(id, idDonvi);
+            if (id <= 0 || !check_id)
+                return ApiResult.BadRequest($"Id = {id} không hợp lệ, vui lòng kiểm tra lại");
+            bool success = _ob.HuyXep(id);
+            if (!success)
+            {
+                return ApiResult.Success("Thất bại");
+            }
+            return ApiResult.Success("Thành công");
+        }
     }
 }

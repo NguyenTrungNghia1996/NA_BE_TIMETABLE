@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NA_Entities.Entities.Danh_muc
+{
+    public class DM_Hocsinh
+    {
+        public int Id { get; set; } = 0;
+        [Required(ErrorMessage = "Mã học sinh không được để trống")]
+        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
+        public string Ma { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Tên học sinh không được để trống")]
+        [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
+        public string Ten { get; set; } = string.Empty;
+        public int Id_don_vi { get; set; }
+        [Required(ErrorMessage = "Lớp chính khoá không được để trống")]
+        public int Id_lop_chinh { get; set; }
+
+    }
+    public class DM_Hocsinh_List
+    {
+        public int Id { get; set; } = 0;
+        public string Ma { get; set; } = string.Empty;
+        public string Ten { get; set; } = string.Empty;
+        public int Id_don_vi { get; set; } = 0;
+        public int Id_lop { get; set; } = 0;
+        public string? Ten_lop { get; set; } = string.Empty;
+        public int Total { get; set; }
+    }
+}

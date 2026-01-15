@@ -25,5 +25,6 @@ namespace NA_Logic.IRepository
         bool Xeplich_byLop(List<int> idlop, int idlich, int idDonvi);
         bool Xeplich_byGV(List<int> idgv, int idlich, int idDonvi);
         bool Xeplich_byPhong(List<int> idphong, int idlich, int idDonvi);
+        bool HuyXep(int id);
     }
 }
