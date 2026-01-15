@@ -5,6 +5,7 @@ using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -522,6 +523,140 @@ namespace NA_Logic.Repository
             }
             catch (Exception ex)
             {
+                return false;
+            }
+        }
+        public bool Xeptkb_byMon(List<int> idmon, int idtkb, int idDonvi)
+        {
+            try
+            {
+                LoadAllInformation(idtkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
+                {
+                    return false;
+                }
+                var dsTietChuaXep = new List<Object_TietOnTap>();
+                var dsTietDaXep = new List<Object_TietOnTap>();
+                var dsTietBoqua = new List<Object_TietOnTap>();
+                for (int i = 0; i < idmon.Count; i++)
+                {
+                    int id = idmon[i];
+                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay == 0 && c.Tiet == 0));
+                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay > 0 && c.Tiet > 0));
+                }
+                int vongLap = 0;
+                while (dsTietChuaXep.Count > 0)
+                {
+                    vongLap++;
+                    for (int i = 0; i < dsTietChuaXep.Count; i++)
+                    {
+                        TimViTriXepDuoc(dsTietChuaXep[i], idDonvi, dsTietDaXep, dsTietChuaXep);
+                    }
+                    var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
+                    var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
+                    if (dsTietKhongTheXep != null && dsTietKhongTheXep.Count > 0)
+                    {
+                        for (int i = 0; i < dsTietKhongTheXep.Count; i++)
+                        {
+                            dsTietBoqua.Add(dsTietKhongTheXep[i]);
+                            dsTietChuaXep.Remove(dsTietKhongTheXep[i]);
+                        }
+                    }
+                    if (dsTietCoTheXep.Count == 0)
+                    {
+                        break;
+                    }
+                    var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
+                    var tietCanXep = dsTietSorted.First();
+
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
+                    tietCanXep.Ngay = viTriChon.Ngay;
+                    tietCanXep.Tiet = viTriChon.Tiet;
+                    dsTietChuaXep.Remove(tietCanXep);
+                    dsTietDaXep.Add(tietCanXep);
+                    if (vongLap > 1000)
+                    {
+                        break;
+                    }
+                }
+                bool update = UpdateListTiet(dsTietDaXep);
+                if (update)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
+                return false;
+            }
+        }
+        public bool Xeptkb_byGV(List<int> idgv, int idtkb, int idDonvi)
+        {
+            try
+            {
+                LoadAllInformation(idtkb, idDonvi);
+                if (_dsTietGoc == null || _dsTietGoc.Count == 0)
+                {
+                    return false;
+                }
+                var dsTietChuaXep = new List<Object_TietOnTap>();
+                var dsTietDaXep = new List<Object_TietOnTap>();
+                var dsTietBoqua = new List<Object_TietOnTap>();
+                for (int i = 0; i < idgv.Count; i++)
+                {
+                    int id = idgv[i];
+                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
+                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
+                }
+                int vongLap = 0;
+                while (dsTietChuaXep.Count > 0)
+                {
+                    vongLap++;
+                    for (int i = 0; i < dsTietChuaXep.Count; i++)
+                    {
+                        TimViTriXepDuoc(dsTietChuaXep[i], idDonvi, dsTietDaXep, dsTietChuaXep);
+                    }
+                    var dsTietCoTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count > 0).ToList();
+                    var dsTietKhongTheXep = dsTietChuaXep.Where(t => t.Ds_vi_tri_xep_duoc.Count == 0).ToList();
+                    if (dsTietKhongTheXep != null && dsTietKhongTheXep.Count > 0)
+                    {
+                        for (int i = 0; i < dsTietKhongTheXep.Count; i++)
+                        {
+                            dsTietBoqua.Add(dsTietKhongTheXep[i]);
+                            dsTietChuaXep.Remove(dsTietKhongTheXep[i]);
+                        }
+                    }
+                    if (dsTietCoTheXep.Count == 0)
+                    {
+                        break;
+                    }
+                    var dsTietSorted = dsTietCoTheXep.OrderBy(t => t.Ds_vi_tri_xep_duoc.Count).ToList();
+                    var tietCanXep = dsTietSorted.First();
+
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    tietCanXep.Id_ca = viTriChon.Ca;
+                    tietCanXep.Ngay = viTriChon.Ngay;
+                    tietCanXep.Tiet = viTriChon.Tiet;
+                    dsTietChuaXep.Remove(tietCanXep);
+                    dsTietDaXep.Add(tietCanXep);
+                    if (vongLap > 1000)
+                    {
+                        break;
+                    }
+                }
+                bool update = UpdateListTiet(dsTietDaXep);
+                if (update)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in ProcessThoiKhoaBieu: {ex.Message}");
                 return false;
             }
         }
