@@ -11,6 +11,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; }
         public int Id_hoc_sinh { get; set; }
         public int Id_lop_on { get; set; }
+        public string Ma_hoc_sinh { get; set; }
         public string Ten_hoc_sinh { get; set; }
         public string Ten_lop { get; set; }
     }

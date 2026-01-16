@@ -20,6 +20,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id { get; set; }
         public int Id_hoc_sinh { get; set; }
         public int Id_lop_on { get; set; }
+        public string Ma_hoc_sinh { get; set; }
         public string Ten_hoc_sinh { get; set; }
         public string Ten_lop { get; set; }
         public int Total { get; set; }
