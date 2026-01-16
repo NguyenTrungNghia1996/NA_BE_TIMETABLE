@@ -298,7 +298,6 @@ namespace NA_Logic.Repository
                 }
                 
                 _dbContext.BulkDelete(ppctOld);
-                //thêm dữ liệu
                 _dbContext.BulkInsert(listPPCT);
 
                 return (true,"Import thành công");

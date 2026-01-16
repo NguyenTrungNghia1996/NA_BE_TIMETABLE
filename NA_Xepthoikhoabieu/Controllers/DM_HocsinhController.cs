@@ -154,5 +154,30 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
+        [HttpPost("import")]
+        [RequireToken]
+        public IActionResult ImportStudents(IFormFile file)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "Vui lòng chọn file" });
+
+
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+                return BadRequest(new { message = "Chỉ chấp nhận file Excel (.xlsx, .xls)" });
+
+            var result = _hocsinh.Import(file, idDonvi);
+
+            if (result.success)
+            {
+                return ApiResult.Success("Import thành công");
+            }
+            else
+            {
+                return ApiResult.BadRequest(result.mess);
+            }
+        }
     }
 }
