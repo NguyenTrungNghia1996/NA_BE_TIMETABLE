@@ -23,6 +23,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ma_hoc_sinh { get; set; }
         public string Ten_hoc_sinh { get; set; }
         public string Ten_lop { get; set; }
+        public string Ten_lop_chinh { get; set; }
         public int Total { get; set; }
     }
     public class Hocsinh_Lopon_Multi
