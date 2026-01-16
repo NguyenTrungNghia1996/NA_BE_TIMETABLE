@@ -34,11 +34,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
-            int totalrecord = 0;
+            
             var list = _hocsinh.GetList_Paging(PageIndex, PageSize, search, idDonvi);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Hocsinh_ListDto>>(list);
+            int totalrecord = list.First().Total;
             return ApiResult.Success(new
             {
                 items = listDto,
