@@ -13,7 +13,7 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ma { get; set; } = string.Empty;
         public string Ten { get; set; } = string.Empty;
-        public int Id_lop { get; set; } = 0;
+        public int Id_lop_chinh { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
     }
     public class DM_HocsinhDto
