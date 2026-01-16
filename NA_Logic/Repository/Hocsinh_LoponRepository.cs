@@ -1,6 +1,8 @@
-﻿using DocumentFormat.OpenXml.InkML;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using EFCore.BulkExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -90,31 +92,6 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        //public Lopon_Hocsinh GetHocSinhByIdLop(int IdLop, int idDonvi)
-        //{
-        //    try
-        //    {
-        //        var lopOn = _dbContext.DM_Lopontap.Where(c=>c.Id == IdLop && c.Id_don_vi == idDonvi)
-        //            .Select( c=> new Lopon_Hocsinh
-        //            {
-        //                Id = c.Id,
-        //                Ten = c.Ten,
-        //                Hoc_sinh = (from hs in _dbContext.DM_Hocsinh
-        //                           join hl in _dbContext.Hocsinh_Lopon on hs.Id equals hl.Id_hoc_sinh
-        //                           where hl.Id_lop_on == IdLop
-        //                           select new Hocsinh_List
-        //                           {
-        //                               Id_hoc_sinh = hs.Id,
-        //                               Ten = hs.Ten
-        //                           }).ToList()
-        //            }).FirstOrDefault();
-        //        return lopOn;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
         public bool CheckTrung(Hocsinh_Lopon hs, int idDonvi)
         {
             try
@@ -233,6 +210,99 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.Hocsinh_Lopon.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
+        public (bool success, string mess) Import(IFormFile file, int idDonvi)
+        {
+            try
+            {
 
+                using var stream = file.OpenReadStream();
+                using var workbook = new XLWorkbook(stream);
+                var worksheet = workbook.Worksheet(1);
+
+                var rows = worksheet.RangeUsed().RowsUsed().Skip(1).ToList();
+
+                if (!rows.Any())
+                    return (false, "File không có dữ liệu");
+                var headers = new[] { "STT", "Mã lớp", "Tên lớp ôn tập", "Mã học sinh", "Họ và tên học sinh" };
+                for (int col = 1; col <= 4; col++)
+                {
+                    var headerValue = worksheet.Cell(1, col).Value.ToString()?.Trim();
+                    if (string.IsNullOrEmpty(headerValue) ||
+                        !headerValue.Equals(headers[col - 1], StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (false, $"File không đúng định dạng");
+                    }
+                }
+
+                int rowNumber = 2;
+                var listMa = new HashSet<string>();
+                foreach (var row in rows)
+                {
+                    var ma = row.Cell(2).GetValue<string>()?.Trim();
+                    var ten = row.Cell(3).GetValue<string>()?.Trim();
+                    var lop = row.Cell(4).GetValue<string>()?.Trim();
+
+                    if (string.IsNullOrEmpty(ma))
+                        return (false, "Mã học sinh không được để trống");
+
+                    if (string.IsNullOrEmpty(ten))
+                        return (false, "Họ tên không được để trống");
+
+                    if (string.IsNullOrEmpty(lop))
+                        return (false, "Lớp không được để trống");
+
+                    if (!string.IsNullOrEmpty(ma))
+                    {
+                        if (listMa.Contains(ma))
+                        {
+                            return (false, $"Mã học sinh \"{ma}\" bị trùng trong file Excel");
+                        }
+                        else
+                        {
+                            listMa.Add(ma);
+                        }
+                    }
+
+                    rowNumber++;
+                }
+
+                var dataTable = new DataTable();
+                dataTable.Columns.Add("STT", typeof(int));
+                dataTable.Columns.Add("Ma_hoc_sinh", typeof(string));
+                dataTable.Columns.Add("Ten_hoc_sinh", typeof(string));
+                dataTable.Columns.Add("Ma_lop", typeof(string));
+                dataTable.Columns.Add("Ten_lop", typeof(string));
+
+
+                foreach (var row in rows)
+                {
+                    dataTable.Rows.Add(
+                        rowNumber,
+                        row.Cell(2).GetValue<string>()?.Trim(),
+                        row.Cell(3).GetValue<string>()?.Trim(),
+                        row.Cell(4).GetValue<string>()?.Trim()
+                    );
+                    rowNumber++;
+                }
+                var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int) { Value = idDonvi };
+                var dataParam = new SqlParameter("@Data", SqlDbType.Structured)
+                {
+                    TypeName = "dbo.HocSinhLopOn",
+                    Value = dataTable
+                };
+                var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+                var results = _dbContext.Database.ExecuteSqlRaw("EXEC ImportHocSinhLopOn @Id_don_vi, @Data, @Message OUTPUT ", paramIdDonvi, dataParam, paramMessage);
+                var Message = paramMessage.Value?.ToString() ?? "";
+
+                if (Message == "Thành công")
+                    return (true, Message);
+                return (false, Message);
+
+            }
+            catch (Exception ex)
+            {
+                return (false, "Có lỗi hệ thống");
+            }
+        }
     }
 }
