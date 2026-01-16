@@ -77,7 +77,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Mã học sinh đã tồn tại");
             }
             bool checklop = _lop.CheckId(hocsinh.Id_lop_chinh, idDonvi);
-            if (checklop)
+            if (!checklop)
             {
                 return ApiResult.BadRequest("Id lớp học không hợp lệ, vui lòng kiểm tra lại");
             }
@@ -118,7 +118,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Mã học sinh đã tồn tại");
             }
             bool checklop = _lop.CheckId(hocsinh.Id_lop_chinh, idDonvi);
-            if (checklop)
+            if (!checklop)
             {
                 return ApiResult.BadRequest("Id lớp học không hợp lệ, vui lòng kiểm tra lại");
             }
