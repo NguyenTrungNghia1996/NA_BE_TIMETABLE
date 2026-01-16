@@ -74,6 +74,7 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Hocsinh, DM_HocsinhDto>();
             CreateMap<DM_HocsinhDto, DM_Hocsinh>();
             CreateMap<DM_Hocsinh_List, DM_Hocsinh_ListDto>();
+            CreateMap<Hocsinh_Lopon_List, Hocsinh_Lopon_ListDto>();
             CreateMap<Danhsach_Thoikhoabieu,Danhsach_ThoikhoabieuDto>();
             CreateMap<DM_Donvi, Thongtin_Donvi_updateDto>();
             CreateMap<Thongtin_Donvi_updateDto, DM_Donvi>();

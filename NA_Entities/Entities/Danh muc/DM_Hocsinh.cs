@@ -31,4 +31,9 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Ten_lop { get; set; } = string.Empty;
         public int Total { get; set; }
     }
+    public class Hocsinh_List
+    {
+        public int Id_hoc_sinh { get; set; } = 0;
+        public string Ten { get; set;} = string.Empty;
+    }
 }

@@ -139,9 +139,9 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckIds(IEnumerable<int> ids)
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Hocsinh.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Hocsinh.Where(c => c.Id_don_vi == idDonvi && ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

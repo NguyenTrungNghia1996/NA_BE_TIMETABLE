@@ -158,7 +158,6 @@ namespace NA_Logic.Repository
                         .Select(m => m.Id)
                 );
 
-                // Check nếu input không thuộc đơn vị này thì return false
                 if (!inputMons.All(monId => donViMonIds.Contains(monId)))
                     return false;
 

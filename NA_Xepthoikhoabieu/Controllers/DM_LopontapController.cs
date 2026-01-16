@@ -25,9 +25,11 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_NamhocRepository _nam;
         private readonly IDM_DonviRepository _donvi;
         private readonly IThongtin_DonviRepository _ttdonvi;
+        private readonly IHocsinh_LoponRepository _hl;
         private readonly IValidateRepository _validate;
         public DM_LopontapController(IMapper mapper, IDM_LopontapRepository Lopontap, IClaimHelperRepository claimHelperRepository, IAuthRepository auth, IValidateRepository validate,
-            IDM_GiaovienRepository giaovien, IDM_NamhocRepository nam, IDM_MonhocRepository mon, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop, IDM_DonviRepository donvi, IThongtin_DonviRepository ttdonvi)
+            IDM_GiaovienRepository giaovien, IDM_NamhocRepository nam, IDM_MonhocRepository mon, IDM_PhonghocRepository phong, IDM_KhoilopRepository khoilop, 
+            IDM_DonviRepository donvi, IThongtin_DonviRepository ttdonvi, IHocsinh_LoponRepository hl)
         {
             _mapper = mapper;
             _Lopontap = Lopontap;
@@ -42,6 +44,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _validate = validate;
             _donvi = donvi;
             _ttdonvi = ttdonvi;
+            _hl = hl;
         }
         [HttpGet]
         [RequireToken]
@@ -193,6 +196,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool deleteTietnghi = _Lopontap.DeleteTietBan(id);
             if (!deleteTietnghi)
                 return ApiResult.BadRequest("Xoá tiết nghỉ thất bại");
+            bool deleteHocsinhLopon = _hl.DeleteByLop(id);
+            if (!deleteHocsinhLopon)
+                return ApiResult.BadRequest("Xoá các học sinh của lớp thất bại");
             bool result = _Lopontap.Delete(id);
             if (!result)
                 return ApiResult.BadRequest("Xoá thất bại");
