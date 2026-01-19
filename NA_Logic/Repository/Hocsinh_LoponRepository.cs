@@ -265,25 +265,26 @@ namespace NA_Logic.Repository
 
                     rowNumber++;
                 }
-
+                int stt = 1;
                 var dataTable = new DataTable();
                 dataTable.Columns.Add("STT", typeof(int));
-                dataTable.Columns.Add("Ma_hoc_sinh", typeof(string));
-                dataTable.Columns.Add("Ten_hoc_sinh", typeof(string));
                 dataTable.Columns.Add("Ma_lop", typeof(string));
                 dataTable.Columns.Add("Ten_lop", typeof(string));
-
-
+                dataTable.Columns.Add("Ma_hoc_sinh", typeof(string));
+                dataTable.Columns.Add("Ten_hoc_sinh", typeof(string));
+                
                 foreach (var row in rows)
                 {
                     dataTable.Rows.Add(
-                        rowNumber,
+                        stt,
                         row.Cell(2).GetValue<string>()?.Trim(),
                         row.Cell(3).GetValue<string>()?.Trim(),
-                        row.Cell(4).GetValue<string>()?.Trim()
+                        row.Cell(4).GetValue<string>()?.Trim(),
+                        row.Cell(5).GetValue<string>()?.Trim()
                     );
-                    rowNumber++;
+                    stt++;
                 }
+
                 var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int) { Value = idDonvi };
                 var dataParam = new SqlParameter("@Data", SqlDbType.Structured)
                 {
@@ -297,9 +298,8 @@ namespace NA_Logic.Repository
                 if (Message == "Thành công")
                     return (true, Message);
                 return (false, Message);
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return (false, "Có lỗi hệ thống");
             }

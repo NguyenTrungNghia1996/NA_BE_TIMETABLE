@@ -197,9 +197,8 @@ namespace NA_Logic.Repository
 
                 return new List<Monhoc_KhoiLopDto> { result };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Log exception nếu cần
                 return new List<Monhoc_KhoiLopDto>();
             }
         }
@@ -207,19 +206,32 @@ namespace NA_Logic.Repository
         {
             try
             {
-                int check = _context.Database.ExecuteSqlRaw(@"
-            update lm 
-            set lm.So_tiet_ca_sang_truyen_thong = case when mk.Id_ca = 1 and mk.So_tiet > 0 then mk.So_tiet else 0 end,
-                lm.So_tiet_ca_chieu_truyen_thong = case when mk.Id_ca = 2 and mk.So_tiet > 0 then mk.So_tiet else 0 end
-            from Lophoc_Monhoc lm 
-            join DM_Lophoc l on l.Id = lm.Id_lop
-            join Monhoc_Khoilop mk on lm.Id_mon = mk.Id_mon and l.Id_ban = mk.Id_ban and l.Id_khoi = mk.Id_khoi
-            where l.Id_don_vi = {0} and l.Id_khoi = {1} 
-                and l.Id_ban = {2}",idDonvi, idKhoi, idBan);  
+                int check = _context.Database.ExecuteSqlRaw($@"
+                    WITH SoTiet AS (
+                        SELECT 
+                            lm.Id,
+                            MAX(CASE WHEN mk.Id_ca = 1 THEN mk.So_tiet ELSE 0 END) AS So_tiet_sang,
+                            MAX(CASE WHEN mk.Id_ca = 2 THEN mk.So_tiet ELSE 0 END) AS So_tiet_chieu
+                        FROM Lophoc_Monhoc lm 
+                        JOIN DM_Lophoc l ON l.Id = lm.Id_lop
+                        JOIN Monhoc_Khoilop mk ON lm.Id_mon = mk.Id_mon 
+                            AND l.Id_ban = mk.Id_ban 
+                            AND l.Id_khoi = mk.Id_khoi
+                        WHERE l.Id_don_vi = {idDonvi} 
+                            AND l.Id_khoi = {idKhoi} 
+                            AND l.Id_ban = {idBan}
+                        GROUP BY lm.Id
+                    )
+                    UPDATE lm
+                    SET 
+                        lm.So_tiet_ca_sang_truyen_thong = s.So_tiet_sang,
+                        lm.So_tiet_ca_chieu_truyen_thong = s.So_tiet_chieu
+                    FROM Lophoc_Monhoc lm
+                    JOIN SoTiet s ON s.Id = lm.Id");
 
                 return check > 0;
             }
-            catch
+            catch (Exception)
             {
                 return false;
             }
