@@ -1,4 +1,5 @@
-﻿using NA_Entities.Entities.Danh_muc;
+﻿using Microsoft.AspNetCore.Http;
+using NA_Entities.Entities.Danh_muc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace NA_Logic.IRepository
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids);
         bool CheckTrung(Hocsinh_Lopon hs, int idDonvi);
+        (bool success, string mess) Import(IFormFile file, int idDonvi);
     }
 }

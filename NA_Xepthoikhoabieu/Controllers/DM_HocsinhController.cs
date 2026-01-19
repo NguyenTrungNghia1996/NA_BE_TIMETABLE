@@ -161,12 +161,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             if (file == null || file.Length == 0)
-                return BadRequest(new { message = "Vui lòng chọn file" });
+                return ApiResult.BadRequest( "Vui lòng chọn file" );
 
 
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (extension != ".xlsx" && extension != ".xls")
-                return BadRequest(new { message = "Chỉ chấp nhận file Excel (.xlsx, .xls)" });
+                return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
 
             var result = _hocsinh.Import(file, idDonvi);
 

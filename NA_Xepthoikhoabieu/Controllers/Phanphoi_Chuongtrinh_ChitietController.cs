@@ -171,7 +171,13 @@ namespace NA_Xepthoikhoabieu.Controllers
                 {
                     return ApiResult.BadRequest($"Id phân phối chương trình = {idppct} không hợp lệ");
                 }
-                var(result, mess) = (false,"");
+                if (file == null || file.Length == 0)
+                    return ApiResult.BadRequest("Vui lòng chọn file");
+
+                var extension = Path.GetExtension(file.FileName).ToLower();
+                if (extension != ".xlsx" && extension != ".xls")
+                    return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
+                var (result, mess) = (false,"");
                 using (var stream = file.OpenReadStream())
                 {
                     (result, mess) = _ppctct.Import(idppct, stream, idDonvi);
