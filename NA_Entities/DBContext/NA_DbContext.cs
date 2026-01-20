@@ -123,6 +123,10 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Hocsinh_List> DM_Hocsinh_List { get; set; }
         public DbSet<Hocsinh_Lopon> Hocsinh_Lopon { get; set; }
         public DbSet<Hocsinh_Lopon_List> Hocsinh_Lopon_List { get; set; }
+        public DbSet<DM_Baikiemtra> DM_Baikiemtra { get; set; }
+        public DbSet<DM_Baikiemtra_List> DM_Baikiemtra_List { get; set; }
+        public DbSet<DM_Loaikiemtra> DM_Loaikiemtra { get; set; }
+        public DbSet<DM_Loaikiemtra_List> DM_Loaikiemtra_List { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
@@ -175,6 +179,8 @@ namespace NA_Entities.DBContext
             builder.Entity<Chitiet_Lichontap_List>().HasNoKey();
             builder.Entity<DM_Hocsinh_List>().HasNoKey();
             builder.Entity<Hocsinh_Lopon_List>().HasNoKey();
+            builder.Entity<DM_Baikiemtra_List>().HasNoKey();
+            builder.Entity<DM_Loaikiemtra_List>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
