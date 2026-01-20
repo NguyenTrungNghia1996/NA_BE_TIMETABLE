@@ -12,11 +12,13 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; }
         [Required(ErrorMessage = "Tên loại kiểm tra không được để trống")]
         [StringLength(50, ErrorMessage = "Tối đa 50 ký tự")]
-        public string Ten { get; set; }
+        public string Ten { get; set; } = string.Empty;
+        public string Ghi_chu { get; set; } = string.Empty;
     }
     public class DM_Loaikiemtra_ListDto
     {
         public int Id { get; set; }
-        public string Ten { get; set; }
+        public string Ten { get; set; } = string.Empty;
+        public string Ghi_chu { get; set; } = string.Empty;
     }
 }
