@@ -63,7 +63,7 @@ namespace NA_Logic.Repository
                 {
                     Value = idLich
                 };
-                var result = _context.Set<Sotiet_Lop>().FromSqlRaw("EXEC Get_ListLop_SoTiet @Id_tkb, @Id_lich @Id_Donvi",
+                var result = _context.Set<Sotiet_Lop>().FromSqlRaw("EXEC Get_ListLop_SoTiet @Id_tkb, @Id_lich, @Id_Donvi",
                       paramIdtkb,paramIdLich, paramIdDonvi)
                     .ToList();
                 if (result == null) result = new List<Sotiet_Lop>();
