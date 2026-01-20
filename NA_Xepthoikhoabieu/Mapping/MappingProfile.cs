@@ -83,6 +83,7 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_LoaikiemtraDto, DM_Loaikiemtra>();
             CreateMap<DM_Loaikiemtra_List, DM_Loaikiemtra_ListDto>();
             CreateMap<Hocsinh_Lopon_List, Hocsinh_Lopon_ListDto>();
+            CreateMap<DM_Baikiemtra_List, DM_Baikiemtra_ListDto>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();
