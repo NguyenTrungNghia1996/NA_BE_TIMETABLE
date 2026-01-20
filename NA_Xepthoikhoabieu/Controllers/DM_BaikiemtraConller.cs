@@ -5,6 +5,7 @@ using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
 using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
+using System.Composition;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
@@ -17,15 +18,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_LoaikiemtraRepository _loaikt;
         private readonly IDM_LopontapRepository _lopon;
         private readonly IClaimHelperRepository _claimHelperRepository;
+        private readonly IKetqua_BaikiemtraRepository _ketqua;
         public DM_BaikiemtraController(IMapper mapper, IDM_BaikiemtraRepository kt, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                       IDM_LopontapRepository lopon, IDM_LoaikiemtraRepository loaikt)
+                                       IDM_LopontapRepository lopon, IDM_LoaikiemtraRepository loaikt, IKetqua_BaikiemtraRepository ketqua)
         {
             _mapper = mapper;
             _kt = kt;
             _loaikt = loaikt;
             _lopon = lopon;
             _claimHelperRepository = claimHelperRepository;
-            ;
+            _ketqua = ketqua;
         }
         [HttpGet]
         [RequireToken]
@@ -140,6 +142,33 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
+        [HttpGet("csdlnganh")]
+        [RequireToken]
+        public IActionResult Export_CSDLNganh([FromQuery] int idlop)
+        {
+            try
+            {
+                bool check_env = _claimHelperRepository.IsDemoSite();
+                if (check_env)
+                    return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
+                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                var excelBytes = _ketqua.ExportMauExcel(idlop);
 
+                if (excelBytes == null)
+                    return NotFound("Không có dữ liệu thời khóa biểu");
+
+                var fileName = $"DongBoCSDLNganh_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //header
+                Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
+                Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Lỗi: {ex.Message}");
+            }
+        }
     }
 }
