@@ -71,6 +71,27 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
+        public bool  Add( int id_bai)
+        {
+            try
+            {
+
+                var paramIdBai = new SqlParameter("Id_bai", SqlDbType.Int) { Value = id_bai };
+                
+                var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+                var results = _context.Database.ExecuteSqlRaw("EXEC [InsertHocSinh_KetQua] @Id_bai, @Message OUTPUT ", 
+                     paramIdBai,  paramMessage);
+                var Message = paramMessage.Value?.ToString() ?? "";
+
+                if (Message == "Thành công")
+                    return true;
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public (bool success, string mess) Import(IFormFile file, int id_lop, int id_bai)
         {
             try
