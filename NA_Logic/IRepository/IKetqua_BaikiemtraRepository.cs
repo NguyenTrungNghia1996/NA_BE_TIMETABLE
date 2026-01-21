@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using NA_Entities.Entities.Danh_muc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +11,9 @@ namespace NA_Logic.IRepository
     public interface IKetqua_BaikiemtraRepository
     {
         byte[] ExportMauExcel(int idlop);
+        bool Add(int id_bai);
+        (bool success, string mess) Import(IFormFile file, int id_bai);
+        List<KetQua_Baikiemtra_List> Getlist(int idbai);
+        bool UpdateDiem(List<KetQua_Baikiemtra_List> listKetQua);
     }
 }

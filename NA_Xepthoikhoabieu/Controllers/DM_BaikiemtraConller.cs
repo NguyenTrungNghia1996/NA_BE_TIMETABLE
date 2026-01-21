@@ -86,7 +86,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool add = _kt.Add(kt);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
-
+            bool addChiTiet = _ketqua.Add(kt.Id);
+            if (!addChiTiet)
+                return ApiResult.NotFound("Thêm mới thành công, thêm chi tiết thất bại");
             return ApiResult.Success(new
             {
                 item = kt
@@ -142,9 +144,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
-        [HttpGet("csdlnganh")]
+        [HttpGet("ketqua/mau")]
         [RequireToken]
-        public IActionResult Export_CSDLNganh([FromQuery] int idlop)
+        public IActionResult Export_MauExcel([FromQuery] int idlop)
         {
             try
             {
@@ -157,7 +159,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (excelBytes == null)
                     return NotFound("Không có dữ liệu thời khóa biểu");
 
-                var fileName = $"DongBoCSDLNganh_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var fileName = $"MauImportKetQua.xlsx";
                 //header
                 Response.Headers.Append("Content-Disposition", $"attachment; filename={fileName}; filename*=UTF-8''{Uri.EscapeDataString(fileName)}");
                 Response.Headers.Append("Access-Control-Expose-Headers", "Content-Disposition, Content-Length");
@@ -169,6 +171,43 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return BadRequest($"Lỗi: {ex.Message}");
             }
+        }
+        [HttpPost("ketqua/import")]
+        [RequireToken]
+        public IActionResult ImportStudents(IFormFile file, [FromForm] int idbai)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (file == null || file.Length == 0)
+                return ApiResult.BadRequest("Vui lòng chọn file");
+
+
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+                return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
+
+            var result = _ketqua.Import(file, idbai);
+
+            if (result.success)
+            {
+                return ApiResult.Success("Import thành công");
+            }
+            else
+            {
+                return ApiResult.BadRequest(result.mess);
+            }
+        }
+        [HttpGet("ketqua/list")]
+        [RequireToken]
+        public IActionResult GetList([FromQuery] int idbai)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+
+            var list = _ketqua.Getlist(idbai);
+            if (list == null)
+                return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {idbai}");
+
+            return ApiResult.Success(list, "Thành công");
         }
     }
 }

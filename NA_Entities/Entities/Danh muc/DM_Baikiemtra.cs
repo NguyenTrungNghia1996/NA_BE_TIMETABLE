@@ -28,4 +28,18 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten_lop_on { get; set; }
         public int Total { get; set; }
     }
+    public class KetQua_Baikiemtra
+    {
+        public int Id { get; set; }
+        public int Id_hoc_sinh { get; set; }
+        public int Id_bai_kiem_tra { get; set; }
+        public decimal Diem_so { get; set; }
+    }
+    public class KetQua_Baikiemtra_List
+    {
+        public int Id { get; set; }
+        public string Ma_hoc_sinh { get; set; }
+        public string Ten_hoc_sinh { get; set; }
+        public decimal Diem { get; set; }
+    }
 }
