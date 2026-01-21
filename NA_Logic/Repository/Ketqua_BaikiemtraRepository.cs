@@ -1,8 +1,10 @@
 ﻿using ClosedXML.Excel;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
+using NA_Entities.Entities.Danh_muc;
 using NA_Logic.IRepository;
 using System;
 using System.Collections.Generic;
@@ -24,7 +26,7 @@ namespace NA_Logic.Repository
         {
             var data = (from hl in _context.Hocsinh_Lopon
                         join hs in _context.DM_Hocsinh on hl.Id_hoc_sinh equals hs.Id
-                        where hl.Id_lop_on == 4
+                        where hl.Id_lop_on == idlop
                         select hs).ToList();
             if (!data.Any()) return null;
 
@@ -92,7 +94,7 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public (bool success, string mess) Import(IFormFile file, int id_lop, int id_bai)
+        public (bool success, string mess) Import(IFormFile file, int id_bai)
         {
             try
             {
@@ -161,7 +163,6 @@ namespace NA_Logic.Repository
                     stt++;
                 }
 
-                var paramIdLop = new SqlParameter("Id_lop", SqlDbType.Int) { Value = id_lop };
                 var paramIdBai = new SqlParameter("Id_bai", SqlDbType.Int) { Value = id_bai };
                 var dataParam = new SqlParameter("@Data", SqlDbType.Structured)
                 {
@@ -169,8 +170,8 @@ namespace NA_Logic.Repository
                     Value = dataTable
                 };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
-                var results = _context.Database.ExecuteSqlRaw("EXEC [ImportKetQuaBaiKiemTra] @Id_lop, @Id_bai, @Data, @Message OUTPUT ", 
-                    paramIdLop, paramIdBai, dataParam, paramMessage);
+                var results = _context.Database.ExecuteSqlRaw("EXEC [ImportKetQuaBaiKiemTra] @Id_bai, @Data, @Message OUTPUT ", 
+                     paramIdBai, dataParam, paramMessage);
                 var Message = paramMessage.Value?.ToString() ?? "";
 
                 if (Message == "Thành công")
@@ -180,6 +181,48 @@ namespace NA_Logic.Repository
             catch (Exception)
             {
                 return (false, "Có lỗi hệ thống");
+            }
+        }
+        public List<KetQua_Baikiemtra_List> Getlist(int idbai)
+        {
+            try
+            {
+                var data = (from kq in _context.KetQua_Baikiemtra
+                            join hs in _context.DM_Hocsinh on kq.Id_hoc_sinh equals hs.Id
+                            where kq.Id_bai_kiem_tra == idbai
+                            select new KetQua_Baikiemtra_List
+                            {
+                                Id = kq.Id,
+                                Ma_hoc_sinh = hs.Ma,
+                                Ten_hoc_sinh = hs.Ten,
+                                Diem = kq.Diem_so
+                            }).ToList();
+                return data;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public bool UpdateDiem(List<KetQua_Baikiemtra_List> listKetQua)
+        {
+            try
+            {
+                var updateList = listKetQua.Select(x => new KetQua_Baikiemtra
+                {
+                    Id = x.Id,
+                    Diem_so = x.Diem
+                }).ToList();
+                _context.BulkUpdate(updateList, new BulkConfig
+                {
+                    PropertiesToInclude = new List<string> { nameof(KetQua_Baikiemtra.Diem_so) }
+                });
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

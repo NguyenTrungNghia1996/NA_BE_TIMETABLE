@@ -127,6 +127,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Baikiemtra_List> DM_Baikiemtra_List { get; set; }
         public DbSet<DM_Loaikiemtra> DM_Loaikiemtra { get; set; }
         public DbSet<DM_Loaikiemtra_List> DM_Loaikiemtra_List { get; set; }
+        public DbSet<KetQua_Baikiemtra> KetQua_Baikiemtra { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
