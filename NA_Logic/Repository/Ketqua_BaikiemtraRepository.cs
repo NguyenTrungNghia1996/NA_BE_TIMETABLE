@@ -225,5 +225,20 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckId(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return (from kt in _context.DM_Hocsinh
+                        join l in _context.KetQua_Baikiemtra on kt.Id equals l.Id_hoc_sinh
+                        where l.Id == Id && kt.Id_don_vi == idDonvi
+                        select kt).Any();
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
