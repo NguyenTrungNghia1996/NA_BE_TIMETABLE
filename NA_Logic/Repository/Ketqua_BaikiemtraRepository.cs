@@ -67,8 +67,8 @@ namespace NA_Logic.Repository
 
                 currentRow++;
             }
-            worksheet.Column(2).Width = 8;
-            worksheet.Column(3).Width = 13;
+            worksheet.Column(2).Width = 12;
+            worksheet.Column(3).Width = 18;
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
@@ -158,7 +158,7 @@ namespace NA_Logic.Repository
                         stt,
                         row.Cell(2).GetValue<string>()?.Trim(),
                         row.Cell(3).GetValue<string>()?.Trim(),
-                        row.Cell(4).GetValue<string>()?.Trim()
+                        row.Cell(4).IsEmpty() ? 0 : row.Cell(4).GetValue<decimal>()
                     );
                     stt++;
                 }
