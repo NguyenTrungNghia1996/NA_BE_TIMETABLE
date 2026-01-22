@@ -197,7 +197,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(result.mess);
             }
         }
-        [HttpGet("ketqua/list")]
+        [HttpGet("ketqua")]
         [RequireToken]
         public IActionResult GetList([FromQuery] int idbai)
         {
@@ -208,6 +208,41 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {idbai}");
 
             return ApiResult.Success(list, "Thành công");
+        }
+        [HttpPost("ketqua")]
+        [RequireToken]
+        public IActionResult UpdateKetQua([FromBody] List<KetQua_Baikiemtra_List> list)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (list == null || list.Count == 0)
+                return ApiResult.BadRequest("Danh sách kết quả không được để trống");
+
+            var duplicateIds = list.GroupBy(x => x.Id).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+            if (duplicateIds.Any())
+            {
+                return ApiResult.BadRequest($"Id bị trùng: {string.Join(", ", duplicateIds)}");
+            }
+
+            foreach (var item in list)
+            {
+                bool check = _ketqua.CheckId(item.Id, idDonvi);
+                if (item.Id <= 0 || !check)
+                {
+                    return ApiResult.BadRequest( $"Id không hợp lệ: {item.Id}");
+                }
+
+                if (item.Diem < 0 || item.Diem > 10)
+                {
+                    return ApiResult.BadRequest($"Điểm phải từ 0-10");
+                }
+            }
+
+            bool add = _ketqua.UpdateDiem(list);
+            if (!add)
+                return ApiResult.NotFound("Cập nhật kết quả thất bại");
+            
+            return ApiResult.Success("Cập nhật kết quả thành công");
         }
     }
 }

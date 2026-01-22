@@ -15,5 +15,6 @@ namespace NA_Logic.IRepository
         (bool success, string mess) Import(IFormFile file, int id_bai);
         List<KetQua_Baikiemtra_List> Getlist(int idbai);
         bool UpdateDiem(List<KetQua_Baikiemtra_List> listKetQua);
+        bool CheckId(int Id, int idDonvi);
     }
 }
