@@ -550,16 +550,14 @@ namespace NA_Logic.Repository
         }
 
 
-        public bool Check_gv(int Ngay, int Tiet, int Ca, int? id_giaovien, int? idphong, int? idlop, int id_tkb)
+        public bool Check_gv(int Ngay, int Tiet, int Ca, int? id_giaovien, int id_tkb)
         {
             var object_gv = _ObjectGiaovien;
             if (object_gv == null)
             {
                 return false;
             }
-            bool check_trung_gv = object_gv.ds_tiet_da_xep.Any(t => t.Id_phong == idphong && t.Id_ca == Ca && t.Ngay == Ngay && t.Tiet == Tiet);
-            bool check_trung_phong = object_gv.ds_tiet_da_xep.Any(t => t.Id_giao_vien == id_giaovien && t.Id_ca == Ca && t.Ngay == Ngay && t.Tiet == Tiet);
-            bool check_trung_lop = object_gv.ds_tiet_da_xep.Any(t => t.Id_lop == idlop && t.Id_ca == Ca && t.Ngay == Ngay && t.Tiet == Tiet);
+            
             bool check_chi_day_mot_buoi = false;
             bool check_so_tiet_toi_da = false;
             var tiet_dau_trong_ngay = object_gv.ds_tiet_da_xep.FirstOrDefault(t => t.Ngay == Ngay && t.Id_giao_vien == id_giaovien);
@@ -579,7 +577,7 @@ namespace NA_Logic.Repository
                 }
             }
 
-            if (check_trung_gv || check_trung_phong || check_trung_lop || check_so_tiet_toi_da || check_chi_day_mot_buoi) { return true; }
+            if ( check_so_tiet_toi_da || check_chi_day_mot_buoi) { return true; }
 
             return false;
         }
@@ -758,7 +756,10 @@ namespace NA_Logic.Repository
 
         private bool CheckDieuKienConLai(int ngay, int tiet, int idCa, Object_Tiet objectTiet, List<Object_Tiet> ds_da_xep)
         {
-            if (Check_gv(ngay, tiet, idCa, objectTiet.Id_giao_vien, objectTiet.Id_phong, objectTiet.Id_lop, objectTiet.Id_tkb))
+            bool check_trung_phong = ds_da_xep.Any(t => t.Id_phong == objectTiet.Id_phong && t.Id_ca == idCa && t.Ngay == ngay && t.Tiet == tiet);
+            bool check_trung_gv = ds_da_xep.Any(t => t.Id_giao_vien == objectTiet.Id_giao_vien && t.Id_ca == idCa && t.Ngay == ngay && t.Tiet == tiet);
+            bool check_trung_lop = ds_da_xep.Any(t => t.Id_lop == objectTiet.Id_lop && t.Id_ca == idCa && t.Ngay == ngay && t.Tiet == tiet);
+            if (Check_gv(ngay, tiet, idCa, objectTiet.Id_giao_vien, objectTiet.Id_tkb))
             {
                 return false;
             }
@@ -772,6 +773,7 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+            if (check_trung_phong || check_trung_gv || check_trung_lop) { return false; }
 
             return true;
         }
@@ -1081,7 +1083,14 @@ namespace NA_Logic.Repository
                         }
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
-                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.Where(vt => vt.Ngay >= 1 && vt.Ngay <= _soNgay).FirstOrDefault();
+
+                    if (viTriChon == null)
+                    {
+                        dsTietBoqua.Add(tietCanXep);
+                        dsTietChuaXep.Remove(tietCanXep);
+                        continue;
+                    }
                     tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
