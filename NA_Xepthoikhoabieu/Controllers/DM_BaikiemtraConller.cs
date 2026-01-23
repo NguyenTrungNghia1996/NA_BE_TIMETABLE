@@ -154,6 +154,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 if (check_env)
                     return ApiResult.NotFound("Bạn cần đăng ký dùng bản chính thức để sử dụng chức năng này");
                 int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+                bool checkIdLop = _lopon.CheckId(idlop, idDonvi);
+                if (!checkIdLop)
+                    return ApiResult.BadRequest("Id lớp ôn không hợp lệ");
                 var excelBytes = _ketqua.ExportMauExcel(idlop);
 
                 if (excelBytes == null)
@@ -180,7 +183,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             if (file == null || file.Length == 0)
                 return ApiResult.BadRequest("Vui lòng chọn file");
-
+            bool checkIdBai = _kt.CheckId(idbai, idDonvi);
+            if (!checkIdBai)
+                return ApiResult.BadRequest("Id bài kiểm tra không hợp lệ");
 
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (extension != ".xlsx" && extension != ".xls")
@@ -189,20 +194,18 @@ namespace NA_Xepthoikhoabieu.Controllers
             var result = _ketqua.Import(file, idbai);
 
             if (result.success)
-            {
                 return ApiResult.Success("Import thành công");
-            }
             else
-            {
                 return ApiResult.BadRequest(result.mess);
-            }
         }
         [HttpGet("ketqua")]
         [RequireToken]
         public IActionResult GetList([FromQuery] int idbai)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-
+            bool checkIdBai = _kt.CheckId(idbai, idDonvi);
+            if (!checkIdBai)
+                return ApiResult.BadRequest("Id bài kiểm tra không hợp lệ");
             var list = _ketqua.Getlist(idbai);
             if (list == null)
                 return ApiResult.NotFound($"Không tìm thấy bản ghi nào cho Id= {idbai}");
@@ -241,7 +244,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool add = _ketqua.UpdateDiem(list);
             if (!add)
                 return ApiResult.NotFound("Cập nhật kết quả thất bại");
-            
             return ApiResult.Success("Cập nhật kết quả thành công");
         }
     }
