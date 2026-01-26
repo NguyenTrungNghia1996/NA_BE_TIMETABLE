@@ -24,4 +24,13 @@ namespace NA_Entities.Entities.Danh_muc
         public int Tong_tiet { get; set; } = 0;
         public string Ten_giao_vien { get; set; } = string.Empty;
     }
+    public class DsLopMon_byGV
+    {
+        public int Id_giao_vien { get; set; } = 0;
+        public int Id_mon { get; set; } = 0;
+        public string Ten_lop { get; set; } = string.Empty;
+        public int Tong_tiet { get; set; } = 0;
+        public string Ten_giao_vien { get; set; } = string.Empty;
+        public string Ten_mon { get; set; } = string.Empty;
+    }
 }

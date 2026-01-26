@@ -67,8 +67,7 @@ namespace NA_Logic.Repository
 
                 currentRow++;
             }
-            worksheet.Column(2).Width = 12;
-            worksheet.Column(3).Width = 18;
+            worksheet.Columns().AdjustToContents();
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
