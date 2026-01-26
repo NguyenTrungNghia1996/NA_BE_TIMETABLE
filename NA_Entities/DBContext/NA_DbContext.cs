@@ -128,6 +128,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Loaikiemtra> DM_Loaikiemtra { get; set; }
         public DbSet<DM_Loaikiemtra_List> DM_Loaikiemtra_List { get; set; }
         public DbSet<KetQua_Baikiemtra> KetQua_Baikiemtra { get; set; }
+        public DbSet<DsLopMon_byGV> DsLopMon_byGV { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
@@ -182,6 +183,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Hocsinh_Lopon_List>().HasNoKey();
             builder.Entity<DM_Baikiemtra_List>().HasNoKey();
             builder.Entity<DM_Loaikiemtra_List>().HasNoKey();
+            builder.Entity<DsLopMon_byGV>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>

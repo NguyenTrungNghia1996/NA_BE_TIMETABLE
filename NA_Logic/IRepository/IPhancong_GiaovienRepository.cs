@@ -13,5 +13,6 @@ namespace NA_Logic.IRepository
         List<PhancongGVDto> GetList_Paging(int idgv, int idDonvi, int type);
         List<DsLop_ByGVandMon> GetList_Lop_ByGvAndMon(int idgv, int idDonvi, int idMon);
         bool Add(List<PhancongGVDto> phancongList);
+        byte[] Export(int idDonvi);
     }
 }

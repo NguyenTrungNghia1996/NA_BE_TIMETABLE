@@ -23,16 +23,20 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpPost("import")]
         [RequireToken]
-        public IActionResult Import(IFormFile file)
+        public IActionResult Import(IFormFile file, [FromForm] int id_don_vi)
         {
             try
             {
-                int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-                if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+                int idUser = _claimHelperRepository.GetUserId(User);
+                bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+                if (!checkIsAdmin)
+                {
+                    return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+                }
                 bool result = false;
                 using (var stream = file.OpenReadStream())
                 {
-                    result = _file.ImportExcelToDb(stream, idDonvi);
+                    result = _file.ImportExcelToDb(stream, id_don_vi);
                 }
                 if (!result)
                     return ApiResult.BadRequest("Import thất bại");
