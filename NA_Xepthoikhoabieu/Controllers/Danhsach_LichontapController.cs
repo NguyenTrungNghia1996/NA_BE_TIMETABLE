@@ -45,7 +45,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             int totalrecord = 0;
             var list = _lich.GetList_Paging(PageIndex, PageSize, search, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
-                return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
+                return ApiResult.Ok();
             return ApiResult.Success(new
             {
                 items = list,

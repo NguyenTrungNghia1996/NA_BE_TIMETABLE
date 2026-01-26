@@ -126,7 +126,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var excelBytes = _pcgv.Export(idDonvi);
 
                 if (excelBytes == null)
-                    return NotFound("Không có dữ liệu thời khóa biểu");
+                    return NotFound("Không có dữ liệu");
 
                 var fileName = $"PhanCongGiaoVien_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 //header
