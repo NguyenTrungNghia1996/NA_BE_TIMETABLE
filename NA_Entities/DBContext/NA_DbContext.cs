@@ -128,8 +128,12 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Loaikiemtra> DM_Loaikiemtra { get; set; }
         public DbSet<DM_Loaikiemtra_List> DM_Loaikiemtra_List { get; set; }
         public DbSet<KetQua_Baikiemtra> KetQua_Baikiemtra { get; set; }
+        public DbSet<DM_Tohopmon_Ontap_List> DM_Tohopmon_Ontap_List { get; set; }
+        public DbSet<DM_Tohopmon_Ontap> DM_Tohopmon_Ontap { get; set; }
+        public DbSet<Monhoc_Tohop_Ontap> Monhoc_Tohop_Ontap { get; set; }
+        public DbSet<Hocsinh_Tohopmon> Hocsinh_Tohopmon { get; set; }
         public DbSet<DsLopMon_byGV> DsLopMon_byGV { get; set; }
-
+        public DbSet<Thongtin_Lienhe> Thongtin_Lienhe { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -183,6 +187,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Hocsinh_Lopon_List>().HasNoKey();
             builder.Entity<DM_Baikiemtra_List>().HasNoKey();
             builder.Entity<DM_Loaikiemtra_List>().HasNoKey();
+            builder.Entity<DM_Tohopmon_Ontap_List>().HasNoKey();
             builder.Entity<DsLopMon_byGV>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
