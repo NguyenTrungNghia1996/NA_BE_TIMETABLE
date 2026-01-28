@@ -13,9 +13,9 @@ namespace NA_Entities.Entities.Dtos
         public int Id_chitiet { get; set; } = 0;
         public int Id_don_vi { get; set; } = 0;
         public int Id_mon { get; set; } = 0;
-        public string Ten_mon { get; set; } = string.Empty;
+        public string? Ten_mon { get; set; } = string.Empty;
         public int Id_giao_vien { get; set; } = 0;
-        public string Ten_giao_vien { get; set; } = string.Empty;
+        public string? Ten_giao_vien { get; set; } = string.Empty;
         public int Id_phong { get; set; } = 0;
         public string? Ten_phong { get; set; } = string.Empty;
         public int Tiet_thu_may { get; set; } = 0;
