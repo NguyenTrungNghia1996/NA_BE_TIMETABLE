@@ -50,7 +50,7 @@ namespace NA_Logic.Repository
                     From = fromAddress,
                     Subject = $"[XEPTHOIKHOABIEU] - {thongtin.Ho_ten} - {thongtin.So_dien_thoai}",
                     Body = $"Người gửi: {thongtin.Ho_ten}\nSố điện thoại: {thongtin.So_dien_thoai}\nEmail: {thongtin.Email}\n" +
-                           $"Đơn vị: {thongtin.Ten_don_vi}\nĐịa chỉ: {thongtin.Dia_chi}",
+                           $"Đơn vị: {thongtin.Ten_don_vi}\nĐịa chỉ: {thongtin.Dia_chi}\nGhi chú: {thongtin.Ghi_chu}",
                     IsBodyHtml = false
                 };
 
