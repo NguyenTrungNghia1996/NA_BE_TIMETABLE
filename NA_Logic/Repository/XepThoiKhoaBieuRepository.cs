@@ -2335,8 +2335,8 @@ namespace NA_Logic.Repository
                 int idMon = tiet.Id_mon;
                 int idGiaoVien = tiet.Id_giao_vien;
                 int idPhong = tiet.Id_phong;
-                bool isRest = tiet.isRest;
-                bool isLock = tiet.isLock;
+                bool isRest = tiet.isRest ;
+                bool isLock = tiet.isLock ;
                 LoadAllInformation(idTkb, idDonvi);
 
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
@@ -2348,7 +2348,7 @@ namespace NA_Logic.Repository
                 {
                     return new ObjectTiet_theoLopDto();
                 }
-                if (isLock || isRest || tiet.isError)
+                if (isLock == true || isRest || tiet.isError)
                 {
                     return tkbBase;
                 }
@@ -2641,8 +2641,6 @@ namespace NA_Logic.Repository
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop != objectTiet.Id_lop && t.Id_giao_vien != objectTiet.Id_giao_vien)
-                    .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                     .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int i = 0; i<dsCa.Count; i++)
@@ -2653,7 +2651,7 @@ namespace NA_Logic.Repository
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
 
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey))
+                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
                                 continue;
                             else
                             {
@@ -2695,8 +2693,7 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop != objectTiet.Id_lop && t.Id_giao_vien != objectTiet.Id_giao_vien)
-                    .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                     .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int i = 0; i < dsCa.Count; i++)
@@ -2744,6 +2741,28 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+        }
+        private tkb_theo_lop ConvertToTietTheoLop(Object_Tiet tietGoc)
+        {
+            return new tkb_theo_lop
+            {
+                Id_chitiet = tietGoc.Id,
+                Id_tkb = tietGoc.Id_tkb,
+                Id_don_vi = tietGoc.Id_don_vi ?? 0,
+                Id_mon = tietGoc.Id_mon ?? 0,
+                Ten_mon = tietGoc.Ten_mon,
+                Id_giao_vien = tietGoc.Id_giao_vien ?? 0,
+                Ten_giao_vien = tietGoc.Ten_giao_vien,
+                Id_phong = tietGoc.Id_phong ?? 0,
+                Ten_phong = tietGoc.Ten_phong,
+                Tiet_thu_may = tietGoc.Tiet_thu_may,
+                Id_ca = tietGoc.Id_ca,
+                Ngay = tietGoc.Ngay,
+                Tiet = tietGoc.Tiet,
+                isDrag = false,
+                isRest = false,
+                isError = false
+            };
         }
         public ObjectTiet_theoGVDto TimViTriXepDuoc_byGV(ObjectTiet_theoGVDto tietDachon, int idDonvi)
         {
@@ -2837,7 +2856,7 @@ namespace NA_Logic.Repository
                             }
                         }
 
-                        
+
                         if (!tietdaxep.isLock)
                         {
                             var vitri = (tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet);
@@ -2855,6 +2874,45 @@ namespace NA_Logic.Repository
                                 vt.Tiet == vitri.Tiet);
 
                             isDrag = check_tietdaxep && check_tietgoc;
+                        }
+                    }
+                    else if (idlop > 0)
+                    {
+                        var tietcualop = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0 && c.Id_lop == idlop).ToList();
+                        foreach (var tietlop in tietcualop)
+                        {
+                            var dsvitri_tietdaxep = new List<(int Ca, int Ngay, int Tiet)>();
+                            var tietTheoLop = ConvertToTietTheoLop(tietlop);
+                            var objectTiet = TimViTriXepDuoc_Lop_Tietdaxep(tietTheoLop, idlop, idDonvi);
+
+                            if (objectTiet?.Ds_vi_tri_xep_duoc != null)
+                            {
+                                foreach (var viTri in objectTiet.Ds_vi_tri_xep_duoc)
+                                {
+                                    dsvitri_tietdaxep.Add((viTri.Ca, viTri.Ngay, viTri.Tiet));
+                                }
+                            }
+                            if (!tietdaxep.isLock)
+                            {
+                                bool check_tietgoc = dsvitri_tietdaxep.Any(vt =>
+                                    vt.Ca == idCa &&
+                                    vt.Ngay == ngay &&
+                                    vt.Tiet == tietSo);
+
+                                bool check_tietdaxep = dsViTriXepDuoc.Any(vt =>
+                                    vt.Ca == tietlop.Id_ca &&
+                                    vt.Ngay == tietlop.Ngay &&
+                                    vt.Tiet == tietlop.Tiet);
+
+                                if (check_tietdaxep && check_tietgoc &&
+                                    tietdaxep.Id_ca == tietlop.Id_ca &&
+                                    tietdaxep.Ngay == tietlop.Ngay &&
+                                    tietdaxep.Tiet == tietlop.Tiet)
+                                {
+                                    isDrag = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                     else
