@@ -19,5 +19,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ma { get; set; }
         public string Ten { get; set; }
         public int Id_don_vi { get; set; }
+        public string Ten_mon { get; set; }
+        public int Total { get; set; }
     }
 }
