@@ -35,7 +35,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var companyEmail = "loannkno1@gmail.com";
+                var companyEmail = "info.nguyenanhest@gmail.com";
                 if (string.IsNullOrEmpty(companyEmail))
                 {
                     return false;
