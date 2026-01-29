@@ -85,7 +85,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 int idDonvi = _claimHelperRepository.GetIdDonvi(User);
                 bool checkIdLop = _lop.CheckId(idlop, idDonvi);
                 if (!checkIdLop)
-                    return ApiResult.BadRequest("Id lớp ôn không hợp lệ");
+                    return ApiResult.BadRequest("Id lớp học không hợp lệ");
                 var excelBytes = _ht.ExportMauExcel(idlop);
 
                 if (excelBytes == null)
