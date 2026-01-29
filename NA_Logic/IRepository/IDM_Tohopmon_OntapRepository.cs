@@ -19,5 +19,7 @@ namespace NA_Logic.IRepository
         bool UpdateMon(int Id, List<int> monId);
         bool Delete(int Id);
         bool DeleteMon(int Id);
+        bool CheckId(int Id, int idDonvi);
+        bool CheckIds(IEnumerable<int> ids, int idDonvi);
     }
 }

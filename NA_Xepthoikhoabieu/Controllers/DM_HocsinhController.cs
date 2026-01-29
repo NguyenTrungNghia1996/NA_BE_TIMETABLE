@@ -18,8 +18,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_LophocRepository _lop;
         private readonly IHocsinh_LoponRepository _hl;
         private readonly IValidateRepository _validate;
+        private readonly IHocsinh_TohopmonRepository _ht;
         public DM_HocsinhController(IMapper mapper, IDM_HocsinhRepository hocsinh, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                     IValidateRepository validate, IDM_LophocRepository lop, IHocsinh_LoponRepository hl)
+                                     IValidateRepository validate, IDM_LophocRepository lop, IHocsinh_LoponRepository hl, IHocsinh_TohopmonRepository ht)
         {
             _mapper = mapper;
             _hocsinh = hocsinh;
@@ -27,17 +28,18 @@ namespace NA_Xepthoikhoabieu.Controllers
             _lop = lop;
             _validate = validate;
             _hl = hl;
+            _ht = ht;
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_lop, [FromQuery] string search = "")
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             
-            var list = _hocsinh.GetList_Paging(PageIndex, PageSize, search, idDonvi);
+            var list = _hocsinh.GetList_Paging(PageIndex, PageSize, search, idDonvi, Id_lop);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Hocsinh_ListDto>>(list);
@@ -145,9 +147,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             var hocsinhdb = _hocsinh.GetDetailById(id, idDonvi);
             if (hocsinhdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+
             bool deleteHocsinhLopon = _hl.DeleteByHocSinh(id);
             if (!deleteHocsinhLopon)
                 return ApiResult.BadRequest("Xoá các lớp ôn của học sinh thất bại");
+
+            bool deleteHocsinhTohop = _ht.DeleteByHocSinh(id);
+            if (!deleteHocsinhTohop)
+                return ApiResult.BadRequest("Xoá các tổ hợp môn của học sinh thất bại");
+
             bool request = _hocsinh.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");

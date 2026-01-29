@@ -160,7 +160,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 var excelBytes = _ketqua.ExportMauExcel(idlop);
 
                 if (excelBytes == null)
-                    return NotFound("Không có dữ liệu thời khóa biểu");
+                    return NotFound("Không có dữ liệu");
 
                 var fileName = $"MauImportKetQua.xlsx";
                 //header
