@@ -85,7 +85,6 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id lớp học không hợp lệ, vui lòng kiểm tra lại");
             }
 
-            
             // add 
             bool add = _hocsinh.Add(item);
             if (!add)
