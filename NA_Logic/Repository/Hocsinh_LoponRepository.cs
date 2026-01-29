@@ -182,7 +182,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var hs = _dbContext.Hocsinh_Lopon.Where(c=>c.Id_lop_on == Id).ToList();
+                var hs = _dbContext.Hocsinh_Lopon.Where(c=>c.Id_hoc_sinh == Id).ToList();
                 _dbContext.Hocsinh_Lopon.RemoveRange(hs);
                 _dbContext.SaveChanges();
                 return true;

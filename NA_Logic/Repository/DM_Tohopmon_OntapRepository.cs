@@ -214,6 +214,22 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
+        public bool CheckId(int Id, int idDonvi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _context.DM_Tohopmon_Ontap.Any(c => c.Id == Id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
+        {
+            var existingIds = _context.DM_Tohopmon_Ontap.Where(c => c.Id_don_vi == idDonvi && ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            return ids.All(id => existingIds.Contains(id));
+        }
     }
 }

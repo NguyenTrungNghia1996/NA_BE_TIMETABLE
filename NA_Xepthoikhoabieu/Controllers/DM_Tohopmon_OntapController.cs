@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NA_Xepthoikhoabieu.Controllers
@@ -84,6 +86,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             addthm.Id_don_vi = idDonvi;
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            if (!Regex.IsMatch(thm.Ma, @"^[A-Za-z0-9\s._-]+$"))
+            {
+                return BadRequest(new { message = "Mã tổ hợp món chỉ được chứa chữ cái, số, khoảng trắng và các ký tự . - _" });
+            }
             if (thm.Ds_mon == null || thm.Ds_mon.Count == 0)
             {
                 return ApiResult.BadRequest("Vui lòng chọn ít nhất 1 môn học");
@@ -123,11 +129,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             var item = _mapper.Map<DM_Tohopmon_Ontap>(thm);
             item.Id_don_vi = idDonvi;
             var thmdb = _thm.GetDetailById(thm.Id, idDonvi);
-            if (!ModelState.IsValid)
-                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+            
             if (thmdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-
+            if (!ModelState.IsValid)
+                return ApiResult.BadRequest(ModelState.GetErrorsAsString());
+            if (!Regex.IsMatch(thm.Ma, @"^[A-Za-z0-9\s._-]+$"))
+            {
+                return BadRequest(new { message = "Mã tổ hợp món chỉ được chứa chữ cái, số, khoảng trắng và các ký tự . - _" });
+            }
             if (thm.Ds_mon == null || thm.Ds_mon.Count == 0)
             {
                 return ApiResult.BadRequest("Vui lòng chọn ít nhất 1 môn học");

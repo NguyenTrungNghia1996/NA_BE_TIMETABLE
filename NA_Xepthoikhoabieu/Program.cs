@@ -83,6 +83,7 @@ builder.Services.AddScoped<IDM_BaikiemtraRepository, DM_BaikiemtraRepository>();
 builder.Services.AddScoped<IKetqua_BaikiemtraRepository, Ketqua_BaikiemtraRepository>();
 builder.Services.AddScoped<IThongtin_LienheRepository, Thongtin_LienheRepository>();
 builder.Services.AddScoped<IDM_Tohopmon_OntapRepository, DM_Tohopmon_OntapRepository>();
+builder.Services.AddScoped<IHocsinh_TohopmonRepository, Hocsinh_TohopmonRepository>();
 //builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
