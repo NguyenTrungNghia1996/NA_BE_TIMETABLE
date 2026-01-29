@@ -1507,7 +1507,9 @@ namespace NA_Logic.Repository
                     "DS Lớp",
                     "DS Tiết nghỉ của lớp",
                     "DS Môn học của lớp",
-                    "TTX Môn học của lớp"
+                    "TTX Môn học của lớp",
+                    "Danh sách Tkb",
+                    "Danh sách tiết học"
                 };
                 foreach (var sheetName in sheetNames)
                 {
