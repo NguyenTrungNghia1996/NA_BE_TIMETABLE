@@ -233,6 +233,10 @@ namespace NA_Logic.Repository
                     if (string.IsNullOrEmpty(ten))
                         return (false, "Họ tên không được để trống");
 
+                    if (string.IsNullOrEmpty(maToHop))
+                    {
+                        continue;
+                    }
                     if (!string.IsNullOrEmpty(maToHop))
                     {
                         var danhSachMa = maToHop.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
