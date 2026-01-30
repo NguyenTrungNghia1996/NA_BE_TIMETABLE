@@ -86,6 +86,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id lớp học không hợp lệ, vui lòng kiểm tra lại");
             }
+            var lop = _lop.getDetailById(hocsinh.Id_lop_chinh);
+            int soHS = _hocsinh.CountHocSinhByLop(hocsinh.Id_lop_chinh) + 1;
+            if(soHS > lop.Si_so)
+            {
+                return ApiResult.BadRequest($"Lớp {lop.Ten} đã đủ sĩ số {lop.Si_so}/{lop.Si_so}");
+            }
 
             // add 
             bool add = _hocsinh.Add(item);
@@ -102,17 +108,17 @@ namespace NA_Xepthoikhoabieu.Controllers
         [HttpPut]
         [RequireToken]
         public IActionResult Update([FromBody] DM_HocsinhDto hocsinh)
-        {// Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+        {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            // Kiểm tra bản ghi hợp lệ
+            if (idDonvi == 0) 
+                return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            
             var hocsinhdb = _hocsinh.GetDetailById(hocsinh.Id, idDonvi);
             if (!ModelState.IsValid)
                 return ApiResult.BadRequest(ModelState.GetErrorsAsString());
             if (hocsinhdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            
             var item = _mapper.Map<DM_Hocsinh>(hocsinh);
             item.Id_don_vi = idDonvi;
             
@@ -125,6 +131,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!checklop)
             {
                 return ApiResult.BadRequest("Id lớp học không hợp lệ, vui lòng kiểm tra lại");
+            }
+            if(hocsinh.Id_lop_chinh != hocsinhdb.Id_lop_chinh)
+            {
+                var lop = _lop.getDetailById(hocsinh.Id_lop_chinh);
+                int soHS = _hocsinh.CountHocSinhByLop(hocsinh.Id_lop_chinh) + 1;
+                if (soHS > lop.Si_so)
+                {
+                    return ApiResult.BadRequest($"Lớp {lop.Ten} đã đủ sĩ số {lop.Si_so}/{lop.Si_so}");
+                }
             }
             
             bool add = _hocsinh.Update(item);

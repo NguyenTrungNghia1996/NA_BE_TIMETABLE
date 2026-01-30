@@ -19,5 +19,6 @@ namespace NA_Logic.IRepository
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids, int idDonvi);
         (bool success, string mess) Import(IFormFile file, int idDonvi);
+        int CountHocSinhByLop(int idLop);
     }
 }
