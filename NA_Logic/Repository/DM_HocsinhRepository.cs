@@ -72,6 +72,18 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public int CountHocSinhByLop(int idLop)
+        {
+            try
+            {
+                int Tong = _dbContext.DM_Hocsinh.Where(c => c.Id_lop_chinh == idLop).Count();
+                return Tong;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
         public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
