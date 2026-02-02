@@ -198,15 +198,15 @@ namespace NA_Logic.Repository
                 headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                 headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                var groupedData = data.GroupBy(x => new { x.Id_giao_vien, x.Ten_giao_vien }).OrderBy(g => g.Key.Ten_giao_vien);
+                var listGV = data.GroupBy(x => new { x.Id_giao_vien, x.Ten_giao_vien }).OrderBy(g => g.Key.Ten_giao_vien.Split(' ').LastOrDefault());
 
                 int currentRow = 2;
 
-                foreach (var gvGroup in groupedData)
+                foreach (var gv in listGV)
                 {
                     int startRow = currentRow;
-                    int tongTietGV = gvGroup.Sum(x => x.Tong_tiet);
-                    var monHocGroups = gvGroup.GroupBy(x => x.Ten_mon).OrderBy(m => m.Key);
+                    int tongTietGV = gv.Sum(x => x.Tong_tiet);
+                    var monHocGroups = gv.GroupBy(x => x.Ten_mon).OrderBy(m => m.Key);
 
                     foreach (var monGroup in monHocGroups)
                     {
@@ -221,7 +221,7 @@ namespace NA_Logic.Repository
                     }
 
                     int endRow = currentRow - 1;
-                    worksheet.Cell(startRow, 1).Value = gvGroup.Key.Ten_giao_vien;
+                    worksheet.Cell(startRow, 1).Value = gv.Key.Ten_giao_vien;
                     worksheet.Cell(startRow, 4).Value = tongTietGV;
 
                     if (endRow > startRow)
