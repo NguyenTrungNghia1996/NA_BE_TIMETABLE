@@ -104,39 +104,36 @@ namespace NA_Logic.Repository
             try
             {
                 var grouped = phancongList.GroupBy(x => new { x.Id_giao_vien, x.Id_mon });
-
-                var ListDelete = new List<Lophoc_Monhoc>();
                 var ListAdd = new List<Lophoc_Monhoc>();
                 var ListUpdate = new List<Lophoc_Monhoc>();
+
                 foreach (var group in grouped)
                 {
                     var idgv = group.Key.Id_giao_vien;
                     var idmon = group.Key.Id_mon;
                     var newLopIds = group.SelectMany(x => x.Id_lop).Distinct().ToList();
-                    
+
                     var exist = _dbContext.Lophoc_Monhoc.Where(x => x.Id_giao_vien == idgv && x.Id_mon == idmon).ToList();
-                    if (newLopIds == null || newLopIds.Count == 0)
+
+                    var toUpdateGV = exist.Where(e => !newLopIds.Contains(e.Id_lop)).ToList();
+                    foreach (var x in toUpdateGV)
                     {
-                        if (exist.Count > 0)
-                        {
-                            ListDelete.AddRange(exist);
-                        }
-                        continue;
-                    } 
-                    var toDeleteForGroup = exist.Where(e => !newLopIds.Contains(e.Id_lop)).ToList();
-                    ListDelete.AddRange(toDeleteForGroup);
-                    
+                        x.Id_giao_vien = 0;
+                    }
+                    ListUpdate.AddRange(toUpdateGV);
+
                     var existingLopIds = exist.Select(x => x.Id_lop).ToList();
                     var listIdLop = newLopIds.Where(lopId => !existingLopIds.Contains(lopId)).ToList();
 
                     if (listIdLop.Any())
                     {
                         var oldTeacher = _dbContext.Lophoc_Monhoc.Where(x => x.Id_mon == idmon && listIdLop.Contains(x.Id_lop) && x.Id_giao_vien != idgv).ToList();
-                        foreach( var x in oldTeacher)
+                        foreach (var x in oldTeacher)
                         {
                             x.Id_giao_vien = idgv;
                         }
                         ListUpdate.AddRange(oldTeacher);
+
                         var IdLopUpdate = oldTeacher.Select(x => x.Id_lop).ToList();
                         var IdLopAdd = listIdLop.Except(IdLopUpdate).ToList();
                         var ListtoAdd = IdLopAdd
@@ -148,15 +145,10 @@ namespace NA_Logic.Repository
                             }).ToList();
                         ListAdd.AddRange(ListtoAdd);
                     }
-                    
                 }
-
-                if (ListDelete.Any())
-                    _dbContext.BulkDelete(ListDelete);
 
                 if (ListUpdate.Any())
                     _dbContext.BulkUpdate(ListUpdate);
-
                 if (ListAdd.Any())
                     _dbContext.BulkInsert(ListAdd);
 
