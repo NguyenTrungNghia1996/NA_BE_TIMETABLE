@@ -87,6 +87,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
 
             // Validate
+            var distinctTeachers = phancongList.Select(x => x.Id_giao_vien).Distinct().Count();
+            if (distinctTeachers > 1)
+                return BadRequest("Chỉ được phân công cho 1 giáo viên tại một thời điểm");
             foreach (var phancong in phancongList)
             {
                 bool check_gv = _giaovien.CheckId(phancong.Id_giao_vien, idDonvi);
