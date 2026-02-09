@@ -86,10 +86,9 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             }
 
-            // Validate
             var distinctTeachers = phancongList.Select(x => x.Id_giao_vien).Distinct().Count();
             if (distinctTeachers > 1)
-                return BadRequest("Chỉ được phân công cho 1 giáo viên tại một thời điểm");
+                return ApiResult.BadRequest("Chỉ được phân công cho 1 giáo viên tại một thời điểm");
             foreach (var phancong in phancongList)
             {
                 bool check_gv = _giaovien.CheckId(phancong.Id_giao_vien, idDonvi);
@@ -117,7 +116,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Cập nhật thông tin phân công không thành công");
             }
 
-            return ApiResult.Success($"Phân công chuyên môn thành công");
+            return ApiResult.Success("Phân công chuyên môn thành công");
         }
         [HttpGet("export")]
         [RequireToken]
