@@ -85,7 +85,6 @@ namespace NA_Logic.Repository
                     Value = idMon
                 };
 
-
                 var result = _dbContext.Set<DsLop_ByGVandMon>().FromSqlRaw("EXEC GetList_LopByMonAndGV @Id_giao_vien, @Id_mon, @Id_don_vi",
                     paramIdgv,paramIdMon, paramIdDonvi)
                     .ToList();
