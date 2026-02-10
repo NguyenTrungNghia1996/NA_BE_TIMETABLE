@@ -417,7 +417,6 @@ namespace NA_Logic.Repository
             worksheet.Cell(5, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(5, 2).Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
-            // Headers cho các lớp
             for (int i = 0; i < lopList.Count; i++)
             {
                 var headerCell = worksheet.Cell(5, i + 3);
@@ -429,13 +428,11 @@ namespace NA_Logic.Repository
 
             int currentRow = 6;
 
-            // Tạo dữ liệu cho từng thứ
             var thuNames = new[] { "THỨ\nHAI", "THỨ\nBA", "THỨ\nTƯ", "THỨ\nNĂM", "THỨ\nSÁU", "THỨ\nBẢY" };
 
             for (int ngayIndex = 0; ngayIndex < thuNames.Length; ngayIndex++)
             {
 
-                // Merge cột THỨ cho 5 tiết
                 var thuRange = worksheet.Range(currentRow, 1, currentRow + 4, 1);
                 thuRange.Merge();
                 thuRange.Value = thuNames[ngayIndex];
@@ -445,16 +442,13 @@ namespace NA_Logic.Repository
                 thuRange.Style.Alignment.SetWrapText(true);
                 thuRange.Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 
-                // 5 tiết trong ca
                 for (int tiet = 1; tiet <= 5; tiet++)
                 {
-                    // Cột TIẾT
                     worksheet.Cell(currentRow, 2).Value = tiet.ToString();
                     worksheet.Cell(currentRow, 2).Style.Font.SetBold(true);
                     worksheet.Cell(currentRow, 2).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     worksheet.Cell(currentRow, 2).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
-                    // Điền dữ liệu cho từng lớp
                     for (int lopIndex = 0; lopIndex < lopList.Count; lopIndex++)
                     {
                         int ngay = ngayIndex + 1;
@@ -476,6 +470,10 @@ namespace NA_Logic.Repository
                             {
                                 information.Add(lesson.Ten_giao_vien);
                             }
+                            else if (show_teacher == 2)
+                            {
+                                information.Add(lesson.Ho_ho_dem + " " + lesson.Ten_giao_vien);
+                            }
 
                             cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
@@ -487,12 +485,10 @@ namespace NA_Logic.Repository
                 }
             }
 
-            // Tạo border cho toàn bộ bảng
             var dataRange = worksheet.Range(5, 1, currentRow - 1, lopList.Count + 2);
             dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            // Set chiều cao và rộng
             for (int i = 6; i <= currentRow - 1; i++)
             {
                 worksheet.Row(i).Height = 45;
