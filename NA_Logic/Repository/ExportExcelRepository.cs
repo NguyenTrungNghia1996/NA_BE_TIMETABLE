@@ -104,13 +104,11 @@ namespace NA_Logic.Repository
                     headerCell.Style.Fill.SetBackgroundColor(XLColor.LightGray);
                 }
 
-                // sáng
                 var caSangCell = worksheet.Range(7, 1, 7, 7).Merge();
                 caSangCell.Value = "CA SÁNG";
                 caSangCell.Style.Font.SetBold(true);
                 caSangCell.Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 
-                // tiết
                 for (int tiet = 1; tiet <= 5; tiet++)
                 {
                     int row = 7 + tiet;
@@ -119,7 +117,6 @@ namespace NA_Logic.Repository
                     tietCell.Style.Font.SetBold(true);
                     tietCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
-                    // Điền dữ liệu cho từng ngày
                     for (int ngay = 1; ngay <= 7; ngay++)
                     {
                         int col = ngay + 1;
@@ -140,7 +137,10 @@ namespace NA_Logic.Repository
                             {
                                 information.Add(lesson.Ten_giao_vien);
                             }
-
+                            else if(show_teacher == 2)
+                            {
+                                information.Add(lesson.Ho_ho_dem + " " + lesson.Ten_giao_vien);
+                            }
                             cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
                             cell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
@@ -149,13 +149,11 @@ namespace NA_Logic.Repository
                     }
                 }
 
-                // chiều
                 var caChieuCell = worksheet.Range(13, 1, 13, 7).Merge();
                 caChieuCell.Value = "CA CHIỀU";
                 caChieuCell.Style.Font.SetBold(true);
                 caChieuCell.Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 
-                // Tiết
                 for (int tiet = 1; tiet <= 5; tiet++)
                 {
                     int row = 13 + tiet;
@@ -164,7 +162,6 @@ namespace NA_Logic.Repository
                     tietCell.Style.Font.SetBold(true);
                     tietCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
-                    // Điền dữ liệu cho từng ngày
                     for (int ngay = 1; ngay <= 7; ngay++)
                     {
                         int col = ngay + 1;
@@ -185,6 +182,10 @@ namespace NA_Logic.Repository
                             {
                                 information.Add(lesson.Ten_giao_vien);
                             }
+                            else if (show_teacher == 2)
+                            {
+                                information.Add(lesson.Ho_ho_dem + " " + lesson.Ten_giao_vien);
+                            }
 
                             cell.Value = string.Join(" - ", information);
                             cell.Style.Alignment.SetWrapText(true);
@@ -194,12 +195,10 @@ namespace NA_Logic.Repository
                     }
                 }
 
-                // Tạo border cho toàn bộ bảng
                 var dataRange = worksheet.Range(6, 1, 18, 7);
                 dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-                // Set chiều cao hàng
                 for (int i = 8; i <= 12; i++)
                 {
                     worksheet.Row(i).Height = 45;
@@ -209,7 +208,6 @@ namespace NA_Logic.Repository
                     worksheet.Row(i).Height = 45;
                 }
 
-                // Set chiều rộng cột
                 worksheet.Column(1).Width = 12;
                 for (int i = 2; i <= 8; i++)
                 {
