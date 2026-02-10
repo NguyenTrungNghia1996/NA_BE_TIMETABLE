@@ -45,9 +45,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if(type > 2 || type<= 0)
             {
                 return ApiResult.BadRequest($"Type: {type} không hợp lệ");
-
             }
-            // Lấy danh sách dữ liệu
             var list = _pcgv.GetList_Paging(idgv, idDonvi, type);
             if (list == null)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
@@ -70,7 +68,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest($"Id_mon: {idmon} không hợp lệ");
             }
-            // Lấy danh sách dữ liệu
             var list = _pcgv.GetList_Lop_ByGvAndMon(idgv, idDonvi, idmon);
             if (list == null)
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
