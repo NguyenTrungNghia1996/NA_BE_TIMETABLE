@@ -243,7 +243,7 @@ namespace NA_Logic.Repository
         }
         public object GetKetQuaHocSinh(int id_lop_on, int id_don_vi)
         {
-            var loaiKiemTra = _context.DM_Loaikiemtra.Select(c=> new {c.Id, c.Ten}).ToList();
+            var loaiKiemTra = _context.DM_Loaikiemtra.Select(c => new { c.Id, c.Ten }).ToList();
             var paramIdLop = new SqlParameter("Id_lop_on", SqlDbType.Int)
             {
                 Value = id_lop_on
@@ -254,21 +254,24 @@ namespace NA_Logic.Repository
             };
             var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh>("EXEC GetList_KetQuaHocSinh @Id_lop_on, @Id_don_vi", paramIdLop, paramIdDonvi).ToList();
 
-            var rows = rawData
-                .GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Ten_lop_on })
+            var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Id_lop_on, x.Ten_lop_on })
                 .Select(g =>
                 {
                     var diem = new Dictionary<string, object>();
 
                     foreach (var lkt in loaiKiemTra)
                     {
-                        var scores = g.Where(x => x.Id_loai_kiem_tra == lkt.Id)
-                                      .Select(x => x.Diem_so)
-                                      .Where(x => x.HasValue)
-                                      .Select(x => x.Value)
-                                      .ToList();
+                        var baiKiemTraCuaLop = rawData.Where(x => x.Id_lop_on == g.Key.Id_lop_on && x.Id_loai_kiem_tra == lkt.Id)
+                            .Select(x => x.Id_bai_kiem_tra).Distinct().OrderBy(x => x).ToList();
 
-                        diem[lkt.Ten] = scores.Count > 1 ? scores : (object?)scores.FirstOrDefault();
+                        var scores = baiKiemTraCuaLop
+                            .Select(idBai =>
+                            {
+                                var diem = g.FirstOrDefault(x => x.Id_bai_kiem_tra == idBai)?.Diem_so;
+                                return diem;
+                            }).ToList();
+
+                        diem[lkt.Ten] = scores.Any() ? scores : null;
                     }
 
                     return new
@@ -278,12 +281,12 @@ namespace NA_Logic.Repository
                         Lop_on = g.Key.Ten_lop_on,
                         Diem = diem
                     };
-                })
-                .ToList();
+                }).ToList();
 
             return new
             {
                 loai_kiem_tra = loaiKiemTra,
+                total_loai_kiem_tra = loaiKiemTra.Count(),
                 rows = rows
             };
         }
