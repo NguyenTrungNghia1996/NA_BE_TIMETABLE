@@ -243,7 +243,6 @@ namespace NA_Logic.Repository
         }
         public object GetKetQuaHocSinh(int id_lop_on, int id_don_vi)
         {
-            var loaiKiemTra = _context.DM_Loaikiemtra.Select(c => new { c.Id, c.Ten }).ToList();
             var paramIdLop = new SqlParameter("Id_lop_on", SqlDbType.Int)
             {
                 Value = id_lop_on
@@ -253,6 +252,15 @@ namespace NA_Logic.Repository
                 Value = id_don_vi
             };
             var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh>("EXEC GetList_KetQuaHocSinh @Id_lop_on, @Id_don_vi", paramIdLop, paramIdDonvi).ToList();
+
+            var loaiKiemTra = rawData.Where(x => x.Id_loai_kiem_tra.HasValue)
+                .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra, x.So_luong })
+                .Select(g => new
+                {
+                    Id = g.Key.Id_loai_kiem_tra.Value,
+                    Ten = g.Key.Ten_loai_kiem_tra,
+                    So_luong = g.Key.So_luong?? 0
+                }).ToList();
 
             var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Id_lop_on, x.Ten_lop_on })
                 .Select(g =>
@@ -286,7 +294,6 @@ namespace NA_Logic.Repository
             return new
             {
                 loai_kiem_tra = loaiKiemTra,
-                total_loai_kiem_tra = loaiKiemTra.Count(),
                 rows = rows
             };
         }

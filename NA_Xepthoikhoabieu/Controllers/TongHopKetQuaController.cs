@@ -33,7 +33,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.Ok();
             return ApiResult.Success(new
             {
-                items = list,
+                items = list
             },
             "Thành công");
         }

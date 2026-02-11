@@ -46,5 +46,6 @@ namespace NA_Entities.Entities.Danh_muc
         public int? Id_loai_kiem_tra { get; set; }
         public string? Ten_loai_kiem_tra { get; set; }
         public decimal? Diem_so { get; set; }
+        public int? So_luong { get; set; }
     }
 }
