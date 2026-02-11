@@ -134,6 +134,7 @@ namespace NA_Entities.DBContext
         public DbSet<Hocsinh_Tohopmon> Hocsinh_Tohopmon { get; set; }
         public DbSet<DsLopMon_byGV> DsLopMon_byGV { get; set; }
         public DbSet<Thongtin_Lienhe> Thongtin_Lienhe { get; set; }
+        public DbSet<Ketqua_Hocsinh> Ketqua_Hocsinh { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -189,6 +190,7 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Loaikiemtra_List>().HasNoKey();
             builder.Entity<DM_Tohopmon_Ontap_List>().HasNoKey();
             builder.Entity<DsLopMon_byGV>().HasNoKey();
+            builder.Entity<Ketqua_Hocsinh>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
