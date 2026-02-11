@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -15,11 +16,12 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class Ketqua_BaikiemtraRepository: IKetqua_BaikiemtraRepository
+    public class Ketqua_BaikiemtraRepository : IKetqua_BaikiemtraRepository
     {
 
         private readonly NA_DbContext _context;
-        public Ketqua_BaikiemtraRepository(NA_DbContext context) { 
+        public Ketqua_BaikiemtraRepository(NA_DbContext context)
+        {
             _context = context;
         }
         public byte[] ExportMauExcel(int idlop)
@@ -58,7 +60,7 @@ namespace NA_Logic.Repository
 
 
             int currentRow = 2;
-            
+
             for (int i = 0; i < data.Count; i++)
             {
                 worksheet.Cell(currentRow, 1).Value = i + 1;
@@ -72,16 +74,16 @@ namespace NA_Logic.Repository
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
-        public bool  Add( int id_bai)
+        public bool Add(int id_bai)
         {
             try
             {
 
                 var paramIdBai = new SqlParameter("Id_bai", SqlDbType.Int) { Value = id_bai };
-                
+
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
-                var results = _context.Database.ExecuteSqlRaw("EXEC [InsertHocSinh_KetQua] @Id_bai, @Message OUTPUT ", 
-                     paramIdBai,  paramMessage);
+                var results = _context.Database.ExecuteSqlRaw("EXEC [InsertHocSinh_KetQua] @Id_bai, @Message OUTPUT ",
+                     paramIdBai, paramMessage);
                 var Message = paramMessage.Value?.ToString() ?? "";
 
                 if (Message == "Thành công")
@@ -169,7 +171,7 @@ namespace NA_Logic.Repository
                     Value = dataTable
                 };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
-                var results = _context.Database.ExecuteSqlRaw("EXEC [ImportKetQuaBaiKiemTra] @Id_bai, @Data, @Message OUTPUT ", 
+                var results = _context.Database.ExecuteSqlRaw("EXEC [ImportKetQuaBaiKiemTra] @Id_bai, @Data, @Message OUTPUT ",
                      paramIdBai, dataParam, paramMessage);
                 var Message = paramMessage.Value?.ToString() ?? "";
 
@@ -238,6 +240,52 @@ namespace NA_Logic.Repository
             {
                 return false;
             }
+        }
+        public object GetKetQuaHocSinh(int id_lop_on, int id_don_vi)
+        {
+            var loaiKiemTra = _context.DM_Loaikiemtra.Select(c=> new {c.Id, c.Ten}).ToList();
+            var paramIdLop = new SqlParameter("Id_lop_on", SqlDbType.Int)
+            {
+                Value = id_lop_on
+            };
+            var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int)
+            {
+                Value = id_don_vi
+            };
+            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh>("EXEC GetList_KetQuaHocSinh @Id_lop_on, @Id_don_vi", paramIdLop, paramIdDonvi).ToList();
+
+            var rows = rawData
+                .GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Ten_lop_on })
+                .Select(g =>
+                {
+                    var diem = new Dictionary<string, object>();
+
+                    foreach (var lkt in loaiKiemTra)
+                    {
+                        var scores = g.Where(x => x.Id_loai_kiem_tra == lkt.Id)
+                                      .Select(x => x.Diem_so)
+                                      .Where(x => x.HasValue)
+                                      .Select(x => x.Value)
+                                      .ToList();
+
+                        diem[lkt.Ten] = scores.Count > 1 ? scores : (object?)scores.FirstOrDefault();
+                    }
+
+                    return new
+                    {
+                        Ma = g.Key.Ma_hoc_sinh,
+                        Ten = g.Key.Ten_hoc_sinh,
+                        Lop_on = g.Key.Ten_lop_on,
+                        Diem = diem
+                    };
+                })
+                .ToList();
+
+            return new
+            {
+                loai_kiem_tra = loaiKiemTra,
+                rows = rows
+            };
         }
     }
 }
