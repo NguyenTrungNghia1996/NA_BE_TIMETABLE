@@ -16,7 +16,7 @@ namespace NA_Logic.IRepository
         List<KetQua_Baikiemtra_List> Getlist(int idbai);
         bool UpdateDiem(List<KetQua_Baikiemtra_List> listKetQua);
         bool CheckId(int Id, int idDonvi);
-        object GetKetQuaHocSinh(int id_lop_on, int id_don_vi);
-        object GetKetQuaHocSinh_ToHopMon(int id_to_hop, int id_khoi, int id_don_vi);
+        object GetKetQuaHocSinh(int PageIndex, int PageSize, int id_lop_on, int id_don_vi);
+        object GetKetQuaHocSinh_ToHopMon(int PageIndex, int PageSize, int id_to_hop, int id_khoi, int id_don_vi);
     }
 }

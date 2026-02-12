@@ -241,8 +241,16 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public object GetKetQuaHocSinh(int id_lop_on, int id_don_vi)
+        public object GetKetQuaHocSinh(int PageIndex, int PageSize, int id_lop_on, int id_don_vi)
         {
+            var paramPageIndex = new SqlParameter("pageIndex", SqlDbType.Int)
+            {
+                Value = PageIndex
+            };
+            var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int)
+            {
+                Value = PageSize
+            };
             var paramIdLop = new SqlParameter("Id_lop_on", SqlDbType.Int)
             {
                 Value = id_lop_on
@@ -251,7 +259,8 @@ namespace NA_Logic.Repository
             {
                 Value = id_don_vi
             };
-            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh>("EXEC GetList_KetQuaHocSinh @Id_lop_on, @Id_don_vi", paramIdLop, paramIdDonvi).ToList();
+            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh>("EXEC GetList_KetQuaHocSinh @Id_lop_on, @Id_don_vi, @pageIndex, @pageSize", 
+                paramIdLop, paramIdDonvi, paramPageIndex, paramPageSize).ToList();
 
             var loaiKiemTra = rawData.Where(x => x.Id_loai_kiem_tra.HasValue)
                 .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra, x.So_luong })
@@ -297,8 +306,16 @@ namespace NA_Logic.Repository
                 rows = rows
             };
         }
-        public object GetKetQuaHocSinh_ToHopMon(int id_to_hop, int id_khoi, int id_don_vi)
+        public object GetKetQuaHocSinh_ToHopMon(int PageIndex, int PageSize, int id_to_hop, int id_khoi, int id_don_vi)
         {
+            var paramPageIndex = new SqlParameter("pageIndex", SqlDbType.Int)
+            {
+                Value = PageIndex
+            };
+            var paramPageSize = new SqlParameter("pageSize", SqlDbType.Int)
+            {
+                Value = PageSize
+            };
             var paramIdToHopMon = new SqlParameter("Id_to_hop_mon", SqlDbType.Int)
             {
                 Value = id_to_hop
@@ -311,8 +328,8 @@ namespace NA_Logic.Repository
             {
                 Value = id_don_vi
             };
-            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh_ToHopMon>("EXEC [GetList_KetQuaHocSinh_TheoToHopMon] @Id_to_hop_mon, @Id_khoi, @Id_don_vi", 
-                paramIdToHopMon, paramIdKhoi, paramIdDonvi).ToList();
+            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh_ToHopMon>("EXEC [GetList_KetQuaHocSinh_TheoToHopMon] @Id_to_hop_mon, @Id_khoi, @Id_don_vi, " +
+                "@pageIndex, @pageSize", paramIdToHopMon, paramIdKhoi, paramIdDonvi, paramPageIndex, paramPageSize).ToList();
 
             var loaiKiemTra = rawData.Where(x => x.Id_loai_kiem_tra.HasValue)
                 .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra, x.So_luong_max })

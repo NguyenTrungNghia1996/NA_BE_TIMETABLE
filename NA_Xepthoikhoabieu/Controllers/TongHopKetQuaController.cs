@@ -27,14 +27,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetKetQuaHocSinh([FromQuery] int Id_lop_on)
+        public IActionResult GetKetQuaHocSinh([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_lop_on)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             bool checklop = _lopon.CheckId(Id_lop_on, idDonvi);
             if (Id_lop_on > 0 && !checklop)
                 return ApiResult.BadRequest("Id lớp ôn không hợp lệ");
-            var list = _ketqua.GetKetQuaHocSinh(Id_lop_on, idDonvi);
+            var list = _ketqua.GetKetQuaHocSinh(PageIndex, PageSize, Id_lop_on, idDonvi);
             if (list == null)
                 return ApiResult.Ok();
             return ApiResult.Success(new
@@ -45,7 +45,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("tohopmon")]
         [RequireToken]
-        public IActionResult GetKetQuaHocSinh_ToHopMon([FromQuery] int Id_to_hop, [FromQuery] int Id_khoi)
+        public IActionResult GetKetQuaHocSinh_ToHopMon([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_to_hop, [FromQuery] int Id_khoi)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
@@ -62,7 +62,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             else if (Id_to_hop <= 0 || Id_to_hop == null)
                 return ApiResult.BadRequest("Vui lòng chọn tổ hợp môn");
 
-                var list = _ketqua.GetKetQuaHocSinh_ToHopMon(Id_to_hop, Id_khoi, idDonvi);
+                var list = _ketqua.GetKetQuaHocSinh_ToHopMon(PageIndex, PageSize, Id_to_hop, Id_khoi, idDonvi);
             if (list == null)
                 return ApiResult.Ok();
             return ApiResult.Success(new
