@@ -47,6 +47,7 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Ten_loai_kiem_tra { get; set; }
         public decimal? Diem_so { get; set; }
         public int? So_luong { get; set; }
+        public int? Total { get; set; }
     }
     public class Ketqua_Hocsinh_ToHopMon
     {
@@ -61,5 +62,6 @@ namespace NA_Entities.Entities.Danh_muc
         public string? Ten_loai_kiem_tra { get; set; }
         public decimal? Diem_so { get; set; }
         public int? So_luong_max { get; set; }
+        public int? Total { get; set; }
     }
 }

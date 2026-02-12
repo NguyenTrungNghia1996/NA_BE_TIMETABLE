@@ -303,7 +303,8 @@ namespace NA_Logic.Repository
             return new
             {
                 loai_kiem_tra = loaiKiemTra,
-                rows = rows
+                rows = rows,
+                total = rawData.First().Total
             };
         }
         public object GetKetQuaHocSinh_ToHopMon(int PageIndex, int PageSize, int id_to_hop, int id_khoi, int id_don_vi)
@@ -387,7 +388,8 @@ namespace NA_Logic.Repository
             return new
             {
                 loai_kiem_tra = loaiKiemTra,
-                rows = rows
+                rows = rows,
+                total = rawData.First().Total
             };
         }
     }
