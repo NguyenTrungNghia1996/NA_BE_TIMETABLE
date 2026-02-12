@@ -48,4 +48,18 @@ namespace NA_Entities.Entities.Danh_muc
         public decimal? Diem_so { get; set; }
         public int? So_luong { get; set; }
     }
+    public class Ketqua_Hocsinh_ToHopMon
+    {
+        public string Ma_hoc_sinh { get; set; }
+        public string Ten_hoc_sinh { get; set; }
+        public int Id_lop_on { get; set; }
+        public string Ten_lop_on { get; set; }
+        public int? Id_mon { get; set; }
+        public string? Ten_mon { get; set; }
+        public int? Id_bai_kiem_tra { get; set; }
+        public int? Id_loai_kiem_tra { get; set; }
+        public string? Ten_loai_kiem_tra { get; set; }
+        public decimal? Diem_so { get; set; }
+        public int? So_luong_max { get; set; }
+    }
 }

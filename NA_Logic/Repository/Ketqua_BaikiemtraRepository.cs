@@ -297,5 +297,81 @@ namespace NA_Logic.Repository
                 rows = rows
             };
         }
+        public object GetKetQuaHocSinh_ToHopMon(int id_to_hop, int id_khoi, int id_don_vi)
+        {
+            var paramIdToHopMon = new SqlParameter("Id_to_hop_mon", SqlDbType.Int)
+            {
+                Value = id_to_hop
+            };
+            var paramIdKhoi = new SqlParameter("Id_khoi", SqlDbType.Int)
+            {
+                Value = id_khoi
+            };
+            var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int)
+            {
+                Value = id_don_vi
+            };
+            var rawData = _context.Database.SqlQueryRaw<Ketqua_Hocsinh_ToHopMon>("EXEC [GetList_KetQuaHocSinh_TheoToHopMon] @Id_to_hop_mon, @Id_khoi, @Id_don_vi", 
+                paramIdToHopMon, paramIdKhoi, paramIdDonvi).ToList();
+
+            var loaiKiemTra = rawData.Where(x => x.Id_loai_kiem_tra.HasValue)
+                .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra, x.So_luong_max })
+                .Select(g => new
+                {
+                    Id = g.Key.Id_loai_kiem_tra.Value,
+                    Ten = g.Key.Ten_loai_kiem_tra,
+                    So_luong = g.Key.So_luong_max?? 0
+                }).ToList();
+
+            var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Ten_lop_on })
+                .Select(gHs =>
+                {
+                    var dsMon = gHs.GroupBy(x => new { x.Id_mon, x.Ten_mon, x.Id_lop_on })
+                    .Select(gMon =>
+                    {
+                        var loaiKiemTra = gMon.Where(x => x.Id_loai_kiem_tra.HasValue).GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra })
+                            .Select(g => new
+                            {
+                                Id = g.Key.Id_loai_kiem_tra.Value,
+                                Ten = g.Key.Ten_loai_kiem_tra
+                            }).ToList();
+
+                        var diem = new Dictionary<string, object>();
+
+                        foreach (var lkt in loaiKiemTra)
+                        {
+                            var baiKiemTraCuaLop = gMon.Where(x => x.Id_loai_kiem_tra == lkt.Id).Select(x => x.Id_bai_kiem_tra)
+                                .Distinct().OrderBy(x => x).ToList();
+
+                            var scores = baiKiemTraCuaLop
+                                .Select(idBai =>
+                                {
+                                    var diemSo = gMon.FirstOrDefault(x => x.Id_bai_kiem_tra == idBai)?.Diem_so;
+                                    return diemSo;
+                                }).ToList();
+
+                            diem[lkt.Ten] = scores.Any() ? scores : null;
+                        }
+
+                        return new
+                        {
+                            Ten_mon = gMon.Key.Ten_mon,
+                            Diem = diem
+                        };
+                    }).ToList();
+                    return new
+                    {
+                        Ma = gHs.Key.Ma_hoc_sinh,
+                        Ten = gHs.Key.Ten_hoc_sinh,
+                        Lop_on = gHs.Key.Ten_lop_on,
+                        Ds_mon = dsMon
+                    };
+                }).ToList();
+            return new
+            {
+                loai_kiem_tra = loaiKiemTra,
+                rows = rows
+            };
+        }
     }
 }
