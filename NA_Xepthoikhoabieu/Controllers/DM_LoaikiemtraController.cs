@@ -117,6 +117,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Loaikiemtradb = _Loaikiemtra.GetDetailById(id, idDonvi);
             if (Loaikiemtradb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            //check ràng buộc
+            bool check = _Loaikiemtra.CheckContraint(id, idDonvi);
+            if (check)
+            {
+                return ApiResult.BadRequest("Loại kiểm tra đã có ràng buộc, không thể xoá");
+            }
             bool request = _Loaikiemtra.Delete(id);
             if (!request)
                 return ApiResult.NotFound("Xóa thất bại");

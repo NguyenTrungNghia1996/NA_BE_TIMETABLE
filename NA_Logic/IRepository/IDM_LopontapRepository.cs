@@ -21,5 +21,6 @@ namespace NA_Logic.IRepository
         Lopontap_TietnghiDto GetListTietBan(int Id, int idDonvi);
         bool AddTietBan(List<Lopontap_Tietnghi> dsTietBan, int idPhong);
         bool DeleteTietBan(int Id);
+        bool CheckContraint(int id, int idDonvi);
     }
 }

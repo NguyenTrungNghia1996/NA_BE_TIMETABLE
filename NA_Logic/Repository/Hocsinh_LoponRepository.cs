@@ -150,6 +150,24 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckContraint(int id, int idDonvi)
+        {
+            try
+            {
+                bool check = (from kq in _dbContext.KetQua_Baikiemtra.AsNoTracking()
+                              join bai in _dbContext.DM_Baikiemtra.AsNoTracking() on kq.Id_bai_kiem_tra equals bai.Id
+                              join ht in _dbContext.Hocsinh_Lopon.AsNoTracking()  on new { bai.Id_lop_on, kq.Id_hoc_sinh }
+                                equals new { Id_lop_on = ht.Id_lop_on, Id_hoc_sinh = ht.Id_hoc_sinh }
+                              join lop in _dbContext.DM_Lopontap.AsNoTracking() on bai.Id_lop_on equals lop.Id
+                              where lop.Id_don_vi == idDonvi && ht.Id == id
+                              select 1).Any();
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try

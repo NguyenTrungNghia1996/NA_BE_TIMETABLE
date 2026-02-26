@@ -90,6 +90,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckContraint(int id, int idDonvi)
+        {
+            try
+            {
+                bool check = (from bai in _dbContext.DM_Baikiemtra.AsNoTracking()
+                              join loai in _dbContext.DM_Loaikiemtra.AsNoTracking() on bai.Id_loai_kiem_tra equals loai.Id
+                              where loai.Id_don_vi == idDonvi && loai.Id == id
+                              select 1).Any();
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try

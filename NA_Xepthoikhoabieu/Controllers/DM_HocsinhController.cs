@@ -162,6 +162,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             var hocsinhdb = _hocsinh.GetDetailById(id, idDonvi);
             if (hocsinhdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            //check ràng buộc
+            bool check = _hocsinh.CheckContraint(id, idDonvi);
+            if (check)
+            {
+                return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
+            }
 
             bool deleteHocsinhLopon = _hl.DeleteByHocSinh(id);
             if (!deleteHocsinhLopon)

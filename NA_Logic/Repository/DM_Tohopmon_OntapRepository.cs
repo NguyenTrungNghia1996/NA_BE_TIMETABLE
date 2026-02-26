@@ -176,7 +176,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        
+        public bool CheckContraint(int id, int idDonvi)
+        {
+            try
+            {
+                bool check = (from thm in _context.DM_Tohopmon_Ontap.AsNoTracking()
+                              join ht in _context.Hocsinh_Tohopmon.AsNoTracking() on thm.Id equals ht.Id_to_hop
+                              where thm.Id_don_vi == idDonvi && ht.Id_to_hop == id
+                              select 1).Any();
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Delete(int Id)
         {
             try
