@@ -30,7 +30,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Không tồn tại bản ghi hợp lệ nào");
             return ApiResult.Success(new
             {
-                items = list,
+                items = list, 
             },
             "Thành công");
         }

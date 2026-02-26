@@ -107,7 +107,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
         [HttpPost("import")]
         [RequireToken]
-        public IActionResult ImportStudents(IFormFile file)
+        public IActionResult ImportSubjectCombination(IFormFile file)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");

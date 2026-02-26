@@ -333,12 +333,12 @@ namespace NA_Logic.Repository
                 "@pageIndex, @pageSize", paramIdToHopMon, paramIdKhoi, paramIdDonvi, paramPageIndex, paramPageSize).ToList();
 
             var loaiKiemTra = rawData.Where(x => x.Id_loai_kiem_tra.HasValue)
-                .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra, x.So_luong_max })
+                .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra })
                 .Select(g => new
                 {
                     Id = g.Key.Id_loai_kiem_tra.Value,
                     Ten = g.Key.Ten_loai_kiem_tra,
-                    So_luong = g.Key.So_luong_max?? 0
+                    So_luong = g.Max(x => x.So_luong) ?? 0
                 }).ToList();
 
             var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Ten_lop_on })
