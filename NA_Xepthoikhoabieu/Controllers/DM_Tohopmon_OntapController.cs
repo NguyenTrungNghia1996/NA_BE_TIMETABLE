@@ -180,8 +180,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (thmdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
 
-            var deleteCa = _thm.DeleteMon(id);
-            if (!deleteCa)
+            //check ràng buộc
+            bool check = _thm.CheckContraint(id, idDonvi);
+            if (check)
+            {
+                return ApiResult.BadRequest("Tổ hợp môn đã có ràng buộc, không thể xoá");
+            }
+
+            var deleteMon = _thm.DeleteMon(id);
+            if (!deleteMon)
                 return ApiResult.BadRequest("Xóa các môn học thất bại");
             var delete = _thm.Delete(id);
             if (!delete)

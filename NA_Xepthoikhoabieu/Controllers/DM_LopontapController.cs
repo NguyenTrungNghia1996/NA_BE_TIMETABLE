@@ -193,6 +193,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             var Lopontapdb = _Lopontap.GetDetailById(id);
             if (Lopontapdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
+            //check ràng buộc
+            bool check = _Lopontap.CheckContraint(id, idDonvi);
+            if (check)
+            {
+                return ApiResult.BadRequest("Lớp ôn đã có ràng buộc, không thể xoá");
+            }
             bool deleteTietnghi = _Lopontap.DeleteTietBan(id);
             if (!deleteTietnghi)
                 return ApiResult.BadRequest("Xoá tiết nghỉ thất bại");

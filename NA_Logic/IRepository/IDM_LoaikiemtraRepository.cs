@@ -16,5 +16,6 @@ namespace NA_Logic.IRepository
         bool Delete(int Id);
         bool CheckId(int Id, int idDonvi);
         bool CheckIds(IEnumerable<int> ids, int idDonvi);
+        bool CheckContraint(int id, int idDonvi);
     }
 }
