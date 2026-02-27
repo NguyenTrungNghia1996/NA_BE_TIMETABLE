@@ -30,14 +30,14 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_lop_on, [FromQuery] string search = "")
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
 
-            var list = _hl.GetList_Paging(PageIndex, PageSize, search, idDonvi);
+            var list = _hl.GetList_Paging(PageIndex, PageSize, search, idDonvi, Id_lop_on);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<Hocsinh_Lopon_ListDto>>(list);

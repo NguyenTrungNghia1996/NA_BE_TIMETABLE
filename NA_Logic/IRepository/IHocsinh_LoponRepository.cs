@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IHocsinh_LoponRepository
     {
-        List<Hocsinh_Lopon_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi);
+        List<Hocsinh_Lopon_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLopOn);
         Hocsinh_Lopon GetDetailById(int Id, int idDonvi);
         Hocsinh_Lopon_Multi GetHocSinhByIdLop(int IdLop, int idDonvi);
         bool Add(Hocsinh_Lopon_Multi data);
