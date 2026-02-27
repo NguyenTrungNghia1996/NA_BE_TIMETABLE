@@ -22,5 +22,7 @@ namespace NA_Logic.IRepository
         bool CheckIds(IEnumerable<int> ids);
         bool CheckTrung(Hocsinh_Lopon hs, int idDonvi);
         (bool success, string mess) Import(IFormFile file, int idDonvi);
+        bool CheckListStudentsSameGrade(Hocsinh_Lopon_Multi data, int idDonvi);
+        bool CheckStudentSameGrade(Hocsinh_Lopon ds, int idDonvi);
     }
 }

@@ -29,6 +29,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_don_vi { get; set; } = 0;
         public int Id_lop_chinh { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
+        public int Id_khoi { get; set; } = 0;
         public int Total { get; set; }
     }
     public class Hocsinh_List

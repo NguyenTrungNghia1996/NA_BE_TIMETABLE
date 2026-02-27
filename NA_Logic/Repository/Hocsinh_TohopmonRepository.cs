@@ -91,13 +91,17 @@ namespace NA_Logic.Repository
                 if (listOld.Any())
                     _dbContext.BulkDelete(listOld);
 
-                var list = data.To_hop_mon.Select(c => new Hocsinh_Tohopmon
+                if(data.To_hop_mon.Count > 0)
                 {
-                    Id_to_hop = c,
-                    Id_hoc_sinh = data.Id_hoc_sinh
-                }).ToList();
+                    var list = data.To_hop_mon.Select(c => new Hocsinh_Tohopmon
+                    {
+                        Id_to_hop = c,
+                        Id_hoc_sinh = data.Id_hoc_sinh
+                    }).ToList();
 
-                _dbContext.BulkInsert(list);
+                    _dbContext.BulkInsert(list);
+                    
+                }
                 tranc.Commit();
                 return true;
             }

@@ -96,6 +96,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id học sinh không hợp lệ, vui lòng kiểm tra lại");
             }
+            bool checkkhoi = _hl.CheckListStudentsSameGrade(data, idDonvi);
+            if (!checkkhoi)
+                return ApiResult.BadRequest("Chỉ được thêm học sinh cùng khối với lớp ôn");
             // add 
             bool add = _hl.Add(data);
             if (!add)
@@ -128,6 +131,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id học sinh không hợp lệ, vui lòng kiểm tra lại");
             }
+            bool checkkhoi = _hl.CheckStudentSameGrade(hocsinh, idDonvi);
+            if (!checkkhoi)
+                return ApiResult.BadRequest("Học sinh phải cùng khối với lớp ôn");
             bool checktrung = _hl.CheckTrung(hocsinh, idDonvi);
             if (checktrung)
             {

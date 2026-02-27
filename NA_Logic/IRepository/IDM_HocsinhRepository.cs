@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository
 {
     public interface IDM_HocsinhRepository
     {
-        List<DM_Hocsinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLop);
+        List<DM_Hocsinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLop, int idKhoi);
         DM_Hocsinh GetDetailById(int Id, int idDonvi);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool Add(DM_Hocsinh hs);

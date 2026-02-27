@@ -97,7 +97,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             var addph = _mapper.Map<DM_Lophoc>(Lophoc);
             addph.Id = 0;
             addph.Id_don_vi = idDonvi;
-
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             //kiểm tra id phòng, ban, giáo viên, ca, khối
             var check_phong = _phong.CheckId(Lophoc.Id_phong,idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lophoc.Id_khoi,idDonvi);
@@ -121,8 +122,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest( "Tên lớp học đã tồn tại");
             }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            
             //thêm
             bool add = _Lophoc.Add(addph);
             if (!add)
@@ -151,6 +151,10 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var item = _mapper.Map<DM_Lophoc>(Lophoc);
             item.Id_don_vi = idDonvi;
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             //kiểm tra id phòng, ban, giáo viên, ca, khối
             var check_phong = _phong.CheckId(Lophoc.Id_phong, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lophoc.Id_khoi, idDonvi);
@@ -173,8 +177,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Tên lớp học đã tồn tại");
             }
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            
 
             //update
             bool add = _Lophoc.Update(item);

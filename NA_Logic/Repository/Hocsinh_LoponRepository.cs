@@ -110,6 +110,28 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckListStudentsSameGrade(Hocsinh_Lopon_Multi data, int idDonvi)
+        {
+            var khoiLop = _dbContext.DM_Lopontap.Where(c => c.Id == data.Id_lop).Select(c => c.Id_khoi).FirstOrDefault();
+
+            var checkSameKhoi = (from hs in _dbContext.DM_Hocsinh
+                               join l in _dbContext.DM_Lophoc on hs.Id_lop_chinh equals l.Id
+                               where hs.Id_don_vi == idDonvi && data.Hoc_sinh.Contains(hs.Id) && l.Id_khoi == khoiLop
+                               select hs.Id).Count() == data.Hoc_sinh.Count;
+
+            return checkSameKhoi;
+        }
+        public bool CheckStudentSameGrade(Hocsinh_Lopon ds, int idDonvi)
+        {
+            var khoiLop = _dbContext.DM_Lopontap.Where(c => c.Id == ds.Id_lop_on).Select(c => c.Id_khoi).FirstOrDefault();
+
+            var checkSameKhoi = (from hs in _dbContext.DM_Hocsinh
+                               join l in _dbContext.DM_Lophoc on hs.Id_lop_chinh equals l.Id
+                               where hs.Id_don_vi == idDonvi && ds.Id_hoc_sinh == hs.Id && l.Id_khoi == khoiLop
+                               select 1).Any();
+
+            return checkSameKhoi;
+        }
         public bool Add(Hocsinh_Lopon_Multi data)
         {
             using var tranc = _dbContext.Database.BeginTransaction();
