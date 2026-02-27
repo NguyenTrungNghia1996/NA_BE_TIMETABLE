@@ -32,7 +32,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_lop,[FromQuery] int Id_khoi,
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] int Id_lop,[FromQuery] int Id_khoi, [FromQuery] int Id_lop_on,
                                             [FromQuery] string search = "")
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
@@ -40,7 +40,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
             // Lấy danh sách dữ liệu
             
-            var list = _hocsinh.GetList_Paging(PageIndex, PageSize, search, idDonvi, Id_lop, Id_khoi);
+            var list = _hocsinh.GetList_Paging(PageIndex, PageSize, search, idDonvi, Id_lop, Id_khoi, Id_lop_on);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Hocsinh_ListDto>>(list);
