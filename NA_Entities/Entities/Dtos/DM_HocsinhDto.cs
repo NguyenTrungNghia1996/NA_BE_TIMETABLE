@@ -15,6 +15,7 @@ namespace NA_Entities.Entities.Dtos
         public string Ten { get; set; } = string.Empty;
         public int Id_lop_chinh { get; set; } = 0;
         public string? Ten_lop { get; set; } = string.Empty;
+        public int Id_khoi { get; set; } = 0;
     }
     public class DM_HocsinhDto
     {

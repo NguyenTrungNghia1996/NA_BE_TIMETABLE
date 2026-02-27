@@ -120,6 +120,18 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckTrung(DM_LopontapDto dm_Lopontap, int idDonvi)
+        {
+            try
+            {
+                return _dbContext.DM_Lopontap.Where(c => c.Id_giao_vien == dm_Lopontap.Id_giao_vien && c.Id_khoi == dm_Lopontap.Id_khoi && c.Id_mon == dm_Lopontap.Id_mon
+                        && c.Id_nam == dm_Lopontap.Id_nam && c.Id_don_vi == idDonvi && (dm_Lopontap.Id <= 0 || c.Id != dm_Lopontap.Id)).Any();
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckContraint(int id, int idDonvi)
         {
             try

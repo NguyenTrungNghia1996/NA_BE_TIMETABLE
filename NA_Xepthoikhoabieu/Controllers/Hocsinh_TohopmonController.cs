@@ -62,7 +62,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id học sinh không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkthm = _thm.CheckIds(data.To_hop_mon, idDonvi);
-            if (!checkthm || data.To_hop_mon.Count <= 0)
+            if (!checkthm && data.To_hop_mon.Count > 0)
             {
                 return ApiResult.BadRequest("Id tổ hợp môn không hợp lệ, vui lòng kiểm tra lại");
             }

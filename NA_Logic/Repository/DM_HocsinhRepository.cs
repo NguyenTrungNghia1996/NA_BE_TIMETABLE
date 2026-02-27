@@ -25,7 +25,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Hocsinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLop)
+        public List<DM_Hocsinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLop, int idKhoi)
         {
             try
             {
@@ -49,9 +49,13 @@ namespace NA_Logic.Repository
                 {
                     Value = idLop
                 };
+                var paramIdKhoi = new SqlParameter("idKhoi", SqlDbType.Int)
+                {
+                    Value = idKhoi
+                };
 
-                var result = _dbContext.Set<DM_Hocsinh_List>().FromSqlRaw("EXEC [DM_Hocsinh_GetList_Paging] @pageIndex, @pageSize, @search,@idDonvi, @idLop",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLop).ToList();
+                var result = _dbContext.Set<DM_Hocsinh_List>().FromSqlRaw("EXEC [DM_Hocsinh_GetList_Paging] @pageIndex, @pageSize, @search,@idDonvi, @idLop, @idKhoi",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLop, paramIdKhoi).ToList();
                 if (result == null) result = new List<DM_Hocsinh_List>();
                 return result;
             }
@@ -177,6 +181,7 @@ namespace NA_Logic.Repository
             var existingIds = _dbContext.DM_Hocsinh.Where(c => c.Id_don_vi == idDonvi && ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
+        
         public (bool success, string mess) Import(IFormFile file, int idDonvi)
         {
             try

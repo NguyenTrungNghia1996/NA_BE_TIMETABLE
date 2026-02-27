@@ -100,6 +100,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
             }
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lopontap.Ten);
+            if (checkten)
+            {
+                return ApiResult.BadRequest("Tên lớp học đã tồn tại");
+            }
             var check_phong = _phong.CheckId(Lopontap.Id_phong, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lopontap.Id_khoi, idDonvi);
             var check_mon = _mon.CheckId(Lopontap.Id_mon, idDonvi);
@@ -117,6 +122,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!check_nam)
                 return ApiResult.BadRequest("Id năm không hợp lệ, vui lòng kiểm tra lại");
 
+            bool checktrung = _Lopontap.CheckTrung(Lopontap, idDonvi);
+            if (checktrung)
+            {
+                return ApiResult.BadRequest("Lớp học đã tồn tại");
+            }
             // add 
             bool add = _Lopontap.Add(item);
             if (!add)
@@ -155,6 +165,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (checkma)
             {
                 return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
+            }
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lopontap.Ten, Lopontap.Id);
+            if (checkten)
+            {
+                return ApiResult.BadRequest("Tên lớp học đã tồn tại");
             }
             var check_phong = _phong.CheckId(Lopontap.Id_phong, idDonvi);
             var check_khoi = _khoilop.CheckKhoilopByDonvi(Lopontap.Id_khoi, idDonvi);
