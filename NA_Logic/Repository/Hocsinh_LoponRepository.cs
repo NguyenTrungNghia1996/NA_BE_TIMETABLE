@@ -26,7 +26,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<Hocsinh_Lopon_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi)
+        public List<Hocsinh_Lopon_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idLopOn)
         {
             try
             {
@@ -46,9 +46,12 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
-
-                var result = _dbContext.Set<Hocsinh_Lopon_List>().FromSqlRaw("EXEC [Hocsinh_Lopon_GetList_Paging] @pageIndex, @pageSize, @search,@idDonvi",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi).ToList();
+                var paramIdLopOn = new SqlParameter("idLopOn", SqlDbType.Int)
+                {
+                    Value = idLopOn
+                };
+                var result = _dbContext.Set<Hocsinh_Lopon_List>().FromSqlRaw("EXEC [Hocsinh_Lopon_GetList_Paging] @pageIndex, @pageSize, @search,@idDonvi, @idLopOn",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdLopOn).ToList();
                 if (result == null) result = new List<Hocsinh_Lopon_List>();
                 return result;
             }
