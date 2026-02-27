@@ -100,7 +100,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
             }
-            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lopontap.Ten);
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lopontap>(idDonvi, Lopontap.Ten);
             if (checkten)
             {
                 return ApiResult.BadRequest("Tên lớp học đã tồn tại");
@@ -166,7 +166,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Mã lớp ôn đã tồn tại");
             }
-            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lophoc>(idDonvi, Lopontap.Ten, Lopontap.Id);
+            bool checkten = _validate.CheckTrungTen_byDonvi<DM_Lopontap>(idDonvi, Lopontap.Ten, Lopontap.Id);
             if (checkten)
             {
                 return ApiResult.BadRequest("Tên lớp học đã tồn tại");
