@@ -278,33 +278,29 @@ namespace NA_Logic.Repository
                 }
 
                 int rowNumber = 2;
-                var listMa = new HashSet<string>();
+                var listTrung = new HashSet<string>();
                 foreach (var row in rows)
                 {
-                    var ma = row.Cell(2).GetValue<string>()?.Trim();
-                    var ten = row.Cell(3).GetValue<string>()?.Trim();
-                    var lop = row.Cell(4).GetValue<string>()?.Trim();
+                    var malop = row.Cell(2).GetValue<string>()?.Trim();
+                    var tenlop = row.Cell(3).GetValue<string>()?.Trim();
+                    var mahocsinh = row.Cell(4).GetValue<string>()?.Trim();
+                    var tenhocsinh = row.Cell(5).GetValue<string>()?.Trim();
 
-                    if (string.IsNullOrEmpty(ma))
+                    if (string.IsNullOrEmpty(malop))
+                        return (false, "Mã lớp không được để trống");
+
+                    if (string.IsNullOrEmpty(tenlop))
+                        return (false, "Tên lớp không được để trống");
+
+                    if (string.IsNullOrEmpty(mahocsinh))
                         return (false, "Mã học sinh không được để trống");
 
-                    if (string.IsNullOrEmpty(ten))
-                        return (false, "Họ tên không được để trống");
+                    if (string.IsNullOrEmpty(tenhocsinh))
+                        return (false, "Tên học sinh không được để trống");
 
-                    if (string.IsNullOrEmpty(lop))
-                        return (false, "Lớp không được để trống");
-
-                    if (!string.IsNullOrEmpty(ma))
-                    {
-                        if (listMa.Contains(ma))
-                        {
-                            return (false, $"Mã học sinh \"{ma}\" bị trùng trong file Excel");
-                        }
-                        else
-                        {
-                            listMa.Add(ma);
-                        }
-                    }
+                    var cum = $"{malop}_{mahocsinh}";
+                    if (!listTrung.Add(cum))
+                        return (false, $"Lớp {malop} - Học sinh {mahocsinh} bị trùng trong file Excel");
 
                     rowNumber++;
                 }
