@@ -239,13 +239,13 @@ namespace NA_Logic.Repository
 
                     if (string.IsNullOrEmpty(maToHop))
                     {
-                        continue;
+                        dataTable.Rows.Add(stt, ma, ten, null);
+                        stt++;
                     }
-                    if (!string.IsNullOrEmpty(maToHop))
+                    else
                     {
                         var danhSachMa = maToHop.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                .Select(m => m.Trim())
-                                                .ToArray();
+                                                .Select(m => m.Trim()).ToArray();
 
                         foreach (var m in danhSachMa)
                         {
@@ -255,14 +255,12 @@ namespace NA_Logic.Repository
 
                         if (danhSachMa.Length != danhSachMa.Distinct().Count())
                             return (false, $"Mã học sinh \"{ma}\" có mã tổ hợp môn bị trùng");
+
+                        foreach (var m in danhSachMa)
+                        {
+                            dataTable.Rows.Add(stt, ma, ten, m);
+                        }
                     }
-
-                    if (listMa.Contains(ma))
-                        return (false, $"Mã học sinh \"{ma}\" bị trùng trong file");
-
-                    listMa.Add(ma);
-
-                    dataTable.Rows.Add(stt, ma, ten, maToHop);
                     stt++;
                     rowNumber++;
                 }
