@@ -2731,7 +2731,8 @@ namespace NA_Logic.Repository
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
                 var tietban = DsTietTranhXep(objectTiet);
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
-                var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
+                    .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var slotKey = $"{Ngay}_{Ca}_{Tiet}";
                 if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
                     return false;
