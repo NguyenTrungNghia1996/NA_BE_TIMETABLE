@@ -3212,10 +3212,19 @@ namespace NA_Logic.Repository
                 if (objectTiet1.Id_mon == 0)
                 {
                     check = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    
                     if (check)
                     {
+                        bool updateTietLop = false;
+                        var tietTrongLop = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet2.Id_lop && c.Id_ca == ca1 && c.Ngay == ngay1 && c.Tiet == tietSo1);
+                        if (tietTrongLop != null)
+                        {
+                            bool checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca2, ngay2, tietSo2, idDonvi);
+                            if (checkLop)
+                                updateTietLop = UpdateTiet(tietTrongLop, ca2, ngay2, tietSo2);
+                        }
                         updateTiet2 = UpdateTiet(objectTiet2, ca1, ngay1, tietSo1);
-                        if (!updateTiet2)
+                        if (!updateTiet2 || !updateTietLop)
                         {
                             return (false, new ObjectTiet_theoGVDto());
                         }
@@ -3230,8 +3239,16 @@ namespace NA_Logic.Repository
                     check = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
                     if (check)
                     {
+                        bool updateTietLop = false;
+                        var tietTrongLop = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet1.Id_lop && c.Id_ca == ca2 && c.Ngay == ngay2 && c.Tiet == tietSo2);
+                        if (tietTrongLop != null)
+                        {
+                            bool checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca1, ngay1, tietSo1, idDonvi);
+                            if (checkLop)
+                                updateTietLop = UpdateTiet(tietTrongLop, ca1, ngay1, tietSo1);
+                        }
                         updateTiet1 = UpdateTiet(objectTiet1, ca2, ngay2, tietSo2);
-                        if (!updateTiet1)
+                        if (!updateTiet1 || !updateTietLop)
                         {
                             return (false, new ObjectTiet_theoGVDto());
                         }
