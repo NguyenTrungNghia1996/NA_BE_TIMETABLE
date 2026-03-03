@@ -631,7 +631,6 @@ namespace NA_Xepthoikhoabieu.Controllers
             var check_tkb = _tkb.CheckId(idtkb, idDonvi);
             if (idtkb <= 0 || !check_tkb)
                 return ApiResult.BadRequest($"Id thời khoá biểu = {idtkb} không hợp lệ, vui lòng kiểm tra lại");
-            // add 
             bool add = _ob.Xeptkb_byLopMon(dsLopMon, idtkb, idDonvi);
             //bool update = _tkb.Update_TrangThaiXep(id_tkb);
             //if (!update)
