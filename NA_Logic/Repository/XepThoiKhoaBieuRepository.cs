@@ -2173,7 +2173,7 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                //var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                     .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 for (int i=0; i < dsCa.Count; i++)
@@ -2184,7 +2184,7 @@ namespace NA_Logic.Repository
                         {
                             var slotKey = $"{ngay}_{dsCa[i].Id_ca}_{tiet}";
 
-                            if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                            if (tietban.Contains(slotKey) ||  ds_tiet_da_xep_phong.Contains(slotKey))
                                 continue;
                             else
                             {
@@ -2302,6 +2302,124 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        //public ObjectTiet_theoLopDto TimViTriXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
+        //{
+        //    try
+        //    {
+        //        int idLop = tietDachon.Id_lop;
+        //        var tiet = tietDachon.timetable?[0];
+        //        if (tiet == null)
+        //        {
+        //            return new ObjectTiet_theoLopDto();
+        //        }
+
+        //        int idChitiet = tiet.Id_chitiet;
+        //        int idTkb = tiet.Id_tkb;
+        //        int idCa = tiet.Id_ca;
+        //        int ngay = tiet.Ngay;
+        //        int tietSo = tiet.Tiet;
+        //        int idMon = tiet.Id_mon;
+        //        int idGiaoVien = tiet.Id_giao_vien;
+        //        int idPhong = tiet.Id_phong;
+        //        bool isRest = tiet.isRest ;
+        //        bool isLock = tiet.isLock ;
+        //        LoadAllInformation(idTkb, idDonvi);
+
+        //        if (_dsTietGoc == null || _dsTietGoc.Count == 0)
+        //        {
+        //            return new ObjectTiet_theoLopDto();
+        //        }
+        //        var tkbBase = GetTkbByLop(idLop, idTkb, idDonvi);
+        //        if (tkbBase == null)
+        //        {
+        //            return new ObjectTiet_theoLopDto();
+        //        }
+        //        if (isLock == true || isRest || tiet.isError)
+        //        {
+        //            return tkbBase;
+        //        }
+
+        //        var dsViTriXepDuoc = new List<(int Ca, int Ngay, int Tiet)>();
+
+        //        // TH1: objectTiet_DaChon có đủ thông tin
+        //        if (idMon > 0)
+        //        {
+        //            var tietGoc = _dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
+        //            if (tietGoc != null)
+        //            {
+        //                TimViTriXepDuoc_Lop(tietGoc, idDonvi);
+        //                if (tietGoc.Ds_vi_tri_xep_duoc != null)
+        //                {
+        //                    foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
+        //                    {
+        //                        dsViTriXepDuoc.Add((viTri.Ca,viTri.Ngay, viTri.Tiet));
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
+        //        else
+        //        {
+        //            var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop).ToList();
+        //            foreach (var tietGoc in cacTietCuaLop)
+        //            {
+        //                TimViTriXepDuoc_Lop(tietGoc, idDonvi);
+        //                if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
+        //                {
+        //                    bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri =>
+        //                        viTri.Ngay == ngay && viTri.Tiet == tietSo);
+
+        //                    if (coViTriTrung)
+        //                    {
+        //                        dsViTriXepDuoc.Add((tietGoc.Id_ca, tietGoc.Ngay, tietGoc.Tiet));
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        dsViTriXepDuoc.Add((idCa,ngay, tietSo));
+        //        // Cập nhật isDrag cho các tiết trong tkbBase
+        //        foreach (var tietdaxep in tkbBase.timetable)
+        //        {
+        //            bool isDrag = false;
+        //            if (tietdaxep.Id_mon > 0)
+        //            {
+        //                if (!tietdaxep.isLock)
+        //                {
+        //                    var vitri = (tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet);
+
+        //                    // Kiểm tra tiết gốc có trong ds vị trí xếp được của tiết đã xếp không
+        //                    bool check_tietgoc = CheckViTriXepDuoc_Lop_Tietdaxep(tietdaxep, idLop, idDonvi, idCa, ngay, tietSo);
+
+        //                    // Kiểm tra tiết đã xếp có trong dsViTriXepDuoc không
+        //                    bool check_tietdaxep = dsViTriXepDuoc.Any(vt =>
+        //                        vt.Ca == vitri.Id_ca &&
+        //                        vt.Ngay == vitri.Ngay &&
+        //                        vt.Tiet == vitri.Tiet);
+
+        //                    isDrag = check_tietdaxep && check_tietgoc;
+        //                }
+        //            }
+                    
+        //            else
+        //            {
+        //                isDrag = dsViTriXepDuoc.Any(vt =>
+        //                        vt.Ca == tietdaxep.Id_ca &&
+        //                        vt.Ngay == tietdaxep.Ngay &&
+        //                        vt.Tiet == tietdaxep.Tiet);
+        //            }
+        //            if (tietdaxep.Id_ca == idCa && tietdaxep.Ngay == ngay && tietdaxep.Tiet == tietSo)
+        //            {
+        //                isDrag = true;
+        //            }
+        //            tietdaxep.isDrag = isDrag;
+        //        }
+        //        return tkbBase;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new ObjectTiet_theoLopDto();
+        //    }
+        //}
         public ObjectTiet_theoLopDto TimViTriXepDuoc_byLop(ObjectTiet_theoLopDto tietDachon, int idDonvi)
         {
             try
@@ -2309,9 +2427,7 @@ namespace NA_Logic.Repository
                 int idLop = tietDachon.Id_lop;
                 var tiet = tietDachon.timetable?[0];
                 if (tiet == null)
-                {
                     return new ObjectTiet_theoLopDto();
-                }
 
                 int idChitiet = tiet.Id_chitiet;
                 int idTkb = tiet.Id_tkb;
@@ -2321,99 +2437,151 @@ namespace NA_Logic.Repository
                 int idMon = tiet.Id_mon;
                 int idGiaoVien = tiet.Id_giao_vien;
                 int idPhong = tiet.Id_phong;
-                bool isRest = tiet.isRest ;
-                bool isLock = tiet.isLock ;
-                LoadAllInformation(idTkb, idDonvi);
+                bool isRest = tiet.isRest;
+                bool isLock = tiet.isLock;
 
+                LoadAllInformation(idTkb, idDonvi);
                 if (_dsTietGoc == null || _dsTietGoc.Count == 0)
-                {
                     return new ObjectTiet_theoLopDto();
-                }
-                var tkbBase = GetTkbByLop(idLop, idTkb, idDonvi);
-                if (tkbBase == null)
-                {
+
+                var tkbGV = GetTkbByGiaovien(idGiaoVien, idTkb, idDonvi);
+                if (tkbGV == null)
                     return new ObjectTiet_theoLopDto();
-                }
-                if (isLock == true || isRest || tiet.isError)
-                {
-                    return tkbBase;
-                }
+
+                var tkbLop = GetTkbByLop(idLop, idTkb, idDonvi);
+                if (tkbLop == null)
+                    return new ObjectTiet_theoLopDto();
+
+                if (isLock || isRest || tiet.isError)
+                    return tkbLop;
 
                 var dsViTriXepDuoc = new List<(int Ca, int Ngay, int Tiet)>();
 
-                // TH1: objectTiet_DaChon có đủ thông tin
                 if (idMon > 0)
                 {
                     var tietGoc = _dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
                     if (tietGoc != null)
                     {
-                        TimViTriXepDuoc_Lop(tietGoc, idDonvi);
-                        if (tietGoc.Ds_vi_tri_xep_duoc != null)
-                        {
+                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
+                        if (tietGoc.Ds_vi_tri_xep_duoc?.Count > 0)
                             foreach (var viTri in tietGoc.Ds_vi_tri_xep_duoc)
-                            {
-                                dsViTriXepDuoc.Add((viTri.Ca,viTri.Ngay, viTri.Tiet));
-                            }
-                        }
+                                dsViTriXepDuoc.Add((viTri.Ca, viTri.Ngay, viTri.Tiet));
                     }
                 }
-                // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
-                    var cacTietCuaLop = _dsTietGoc.Where(t => t.Id_lop == idLop).ToList();
-                    foreach (var tietGoc in cacTietCuaLop)
+                    var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGiaoVien).ToList();
+                    foreach (var tietGoc in cacTietCuaGV)
                     {
-                        TimViTriXepDuoc_Lop(tietGoc, idDonvi);
-                        if (tietGoc.Ds_vi_tri_xep_duoc != null && tietGoc.Ds_vi_tri_xep_duoc.Count > 0)
+                        TimViTriXepDuoc_GV(tietGoc, idDonvi);
+                        if (tietGoc.Ds_vi_tri_xep_duoc?.Count > 0)
                         {
                             bool coViTriTrung = tietGoc.Ds_vi_tri_xep_duoc.Any(viTri =>
                                 viTri.Ngay == ngay && viTri.Tiet == tietSo);
-
                             if (coViTriTrung)
-                            {
                                 dsViTriXepDuoc.Add((tietGoc.Id_ca, tietGoc.Ngay, tietGoc.Tiet));
-                            }
                         }
                     }
                 }
-                dsViTriXepDuoc.Add((idCa,ngay, tietSo));
-                // Cập nhật isDrag cho các tiết trong tkbBase
-                foreach (var tietdaxep in tkbBase.timetable)
+                dsViTriXepDuoc.Add((idCa, ngay, tietSo));
+                var dsViTriHopLe = new List<(int Ca, int Ngay, int Tiet)>();
+
+                foreach (var tietdaxep in tkbGV.timetable)
                 {
                     bool isDrag = false;
-                    if (tietdaxep.Id_mon > 0)
+                    if (tietdaxep.Id_mon > 0 && idMon > 0)
                     {
                         if (!tietdaxep.isLock)
                         {
                             var vitri = (tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet);
 
-                            // Kiểm tra tiết gốc có trong ds vị trí xếp được của tiết đã xếp không
-                            bool check_tietgoc = CheckViTriXepDuoc_Lop_Tietdaxep(tietdaxep, idLop, idDonvi, idCa, ngay, tietSo);
+                            var tietTheoLopGoc = _dsTietGoc.FirstOrDefault(c => c.Id_lop == idLop
+                                && c.Ngay == tietdaxep.Ngay && c.Id_ca == tietdaxep.Id_ca && c.Tiet == tietdaxep.Tiet);
+                            bool check_tietlop_goc = tietTheoLopGoc != null
+                                ? CheckViTriXepDuoc_Lop_Tietdaxep(ConvertToTietTheoLop(tietTheoLopGoc), idLop, idDonvi, idCa, ngay, tietSo)
+                                : true;
 
-                            // Kiểm tra tiết đã xếp có trong dsViTriXepDuoc không
+                            bool check_tietgoc = CheckViTriXepDuoc_GV_Tietdaxep(tietdaxep, idGiaoVien, idDonvi, idCa, ngay, tietSo);
+
                             bool check_tietdaxep = dsViTriXepDuoc.Any(vt =>
                                 vt.Ca == vitri.Id_ca &&
                                 vt.Ngay == vitri.Ngay &&
                                 vt.Tiet == vitri.Tiet);
 
-                            isDrag = check_tietdaxep && check_tietgoc;
+                            isDrag = check_tietdaxep && check_tietgoc && check_tietlop_goc;
                         }
                     }
-                    
-                    else
+                    else if (tietdaxep.Id_mon > 0 && idMon <= 0)
                     {
-                        isDrag = dsViTriXepDuoc.Any(vt =>
+                        var tietLopTaiDay = _dsTietGoc.FirstOrDefault(c => c.Id_lop == tietdaxep.Id_lop &&
+                            c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tietSo);
+
+                        if (tietLopTaiDay != null)
+                        {
+                            var tietTheoLop = ConvertToTietTheoLop(tietLopTaiDay);
+                            bool check_tietlop_vao_vitrigoc = tietTheoLop != null
+                                ? CheckViTriXepDuoc_Lop_Tietdaxep(tietTheoLop, tietdaxep.Id_lop ?? 0, idDonvi,
+                                    tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet)
+                                : true;
+
+                            bool check_tietgoc_vao_vitrilop = dsViTriXepDuoc.Any(vt =>
+                                vt.Ca == tietLopTaiDay.Id_ca &&
+                                vt.Ngay == tietLopTaiDay.Ngay &&
+                                vt.Tiet == tietLopTaiDay.Tiet);
+
+                            isDrag = check_tietlop_vao_vitrigoc && check_tietgoc_vao_vitrilop;
+                        }
+                    }
+                    else if (idLop > 0)
+                    {
+                        var tietLopTaiViTriNay = _dsTietGoc.FirstOrDefault(c => c.Id_lop == idLop &&
+                            c.Id_ca == tietdaxep.Id_ca && c.Ngay == tietdaxep.Ngay && c.Tiet == tietdaxep.Tiet);
+
+                        if (tietLopTaiViTriNay != null)
+                        {
+                            var tietTheoLop = ConvertToTietTheoLop(tietLopTaiViTriNay);
+
+                            bool check_tietlop_vao_vitrigoc = CheckViTriXepDuoc_Lop_Tietdaxep(tietTheoLop, idLop, idDonvi, idCa, ngay, tietSo);
+
+                            bool check_tietgoc_vao_vitrilop = dsViTriXepDuoc.Any(vt =>
+                                vt.Ca == tietLopTaiViTriNay.Id_ca &&
+                                vt.Ngay == tietLopTaiViTriNay.Ngay &&
+                                vt.Tiet == tietLopTaiViTriNay.Tiet);
+
+                            isDrag = check_tietlop_vao_vitrigoc && check_tietgoc_vao_vitrilop;
+                        }
+                        else
+                        {
+                            isDrag = dsViTriXepDuoc.Any(vt =>
                                 vt.Ca == tietdaxep.Id_ca &&
                                 vt.Ngay == tietdaxep.Ngay &&
                                 vt.Tiet == tietdaxep.Tiet);
+                        }
                     }
-                    if (tietdaxep.Id_ca == idCa && tietdaxep.Ngay == ngay && tietdaxep.Tiet == tietSo)
+                    else
                     {
-                        isDrag = true;
+                        isDrag = dsViTriXepDuoc.Any(vt =>
+                            vt.Ca == tietdaxep.Id_ca &&
+                            vt.Ngay == tietdaxep.Ngay &&
+                            vt.Tiet == tietdaxep.Tiet);
                     }
-                    tietdaxep.isDrag = isDrag;
+
+                    if (tietdaxep.Id_ca == idCa && tietdaxep.Ngay == ngay && tietdaxep.Tiet == tietSo)
+                        isDrag = true;
+
+                    if (isDrag)
+                        dsViTriHopLe.Add((tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet));
                 }
-                return tkbBase;
+
+                foreach (var tietdaxep in tkbLop.timetable)
+                {
+                    tietdaxep.isDrag = dsViTriHopLe.Any(vt =>
+                        vt.Ca == tietdaxep.Id_ca &&
+                        vt.Ngay == tietdaxep.Ngay &&
+                        vt.Tiet == tietdaxep.Tiet);
+                }
+
+                return tkbLop;
             }
             catch (Exception)
             {
@@ -2767,7 +2935,6 @@ namespace NA_Logic.Repository
                 }
                 var dsViTriXepDuoc = new List<(int Ca,int Ngay, int Tiet)>();
 
-                // TH1: objectTiet_DaChon có đủ thông tin
                 if (idMon > 0)
                 {
                     var tietGoc = _dsTietGoc.FirstOrDefault(t => t.Id == idChitiet);
@@ -2783,7 +2950,6 @@ namespace NA_Logic.Repository
                         }
                     }
                 }
-                // TH2: objectTiet_DaChon chỉ có thông tin cơ bản
                 else
                 {
                     var cacTietCuaGV = _dsTietGoc.Where(t => t.Id_giao_vien == idGV).ToList();
