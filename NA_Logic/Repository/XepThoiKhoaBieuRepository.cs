@@ -12,6 +12,7 @@ using NuGet.DependencyResolver;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
@@ -2669,7 +2670,11 @@ namespace NA_Logic.Repository
                     .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
 
                 var tietTheoLop = _dsTietGoc.FirstOrDefault(c => c.Id_lop == tietdaxep.Id_lop && c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tiet);
-                bool checkLop = CheckViTriXepDuoc_Lop(tietTheoLop, objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet, idDonvi);
+                bool checkLop = false;
+                if (tietTheoLop != null)
+                    checkLop = CheckViTriXepDuoc_Lop(tietTheoLop, objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet, idDonvi);
+                else
+                    checkLop = true;
                 var slotKey = $"{ngay}_{idCa}_{tiet}";
 
                 if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey) || !checkLop)
@@ -2807,6 +2812,14 @@ namespace NA_Logic.Repository
                         {
                             var vitri = (tietdaxep.Id_ca, tietdaxep.Ngay, tietdaxep.Tiet);
 
+                            var tietTheoLopGoc = _dsTietGoc.FirstOrDefault(c => c.Id_lop == idlop
+                                && c.Ngay == tietdaxep.Ngay && c.Id_ca == tietdaxep.Id_ca && c.Tiet == tietdaxep.Tiet);
+                            bool check_tietlop_goc = false;
+                            if (tietTheoLopGoc != null)
+                                check_tietlop_goc = CheckViTriXepDuoc_Lop_Tietdaxep(ConvertToTietTheoLop(tietTheoLopGoc), idlop, idDonvi, idCa, ngay, tietSo);
+                            else
+                                check_tietlop_goc = true;
+
                             // Kiểm tra vị trí của tiết gốc có trong ds xếp được của tiết đang xét không
                             bool check_tietgoc = CheckViTriXepDuoc_GV_Tietdaxep(tietdaxep, idGV, idDonvi, idCa, ngay, tietSo);
 
@@ -2816,7 +2829,7 @@ namespace NA_Logic.Repository
                                 vt.Ngay == vitri.Ngay &&
                                 vt.Tiet == vitri.Tiet);
 
-                            isDrag = check_tietdaxep && check_tietgoc;
+                            isDrag = check_tietdaxep && check_tietgoc && check_tietlop_goc;
                         }
                     }
                     else if (tietdaxep.Id_mon > 0 && idMon <= 0)
@@ -3147,6 +3160,8 @@ namespace NA_Logic.Repository
                     {
                         checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca2, ngay2, tietSo2, idDonvi);
                     }
+                    else
+                        checkLop = true;
                     if (check && checkLop)
                     {
                         ApplyUpdate(objectTiet2, ca1, ngay1, tietSo1);
@@ -3177,6 +3192,8 @@ namespace NA_Logic.Repository
                     {
                         checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca1, ngay1, tietSo1, idDonvi);
                     }
+                    else
+                        checkLop = true;
                     if (check && checkLop)
                     {
                         ApplyUpdate(objectTiet1, ca2, ngay2, tietSo2);
@@ -3210,11 +3227,15 @@ namespace NA_Logic.Repository
                     {
                         checkLop1 = CheckViTriXepDuoc_Lop(tietTrongLop1, ca1, ngay1, tietSo1, idDonvi);
                     }
+                    else
+                        checkLop1 = true;
                     if (tietTrongLop2 != null)
                     {
                         checkLop2 = CheckViTriXepDuoc_Lop(tietTrongLop2, ca2, ngay2, tietSo2, idDonvi);
                     }
-                    if (check_t1 && check_t2 && !lock1&&!lock2 && checkLop1 && checkLop2)
+                    else
+                        checkLop2 = true;
+                    if (check_t1 && check_t2 && !lock1 && !lock2 && checkLop1 && checkLop2)
                     {
                         ApplyUpdate(objectTiet1, ca2, ngay2, tietSo2);
                         ApplyUpdate(objectTiet2, ca1, ngay1, tietSo1);
