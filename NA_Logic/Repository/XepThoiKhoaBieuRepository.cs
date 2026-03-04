@@ -3113,6 +3113,7 @@ namespace NA_Logic.Repository
                 // Tạo Object_Tiet từ tiết 1
                 var objectTiet1 = new Object_Tiet
                 {
+                    Id = tiet1.Id_chitiet,
                     Id_tkb = tiet1.Id_tkb,
                     Id_lop = tiet1.Id_lop, 
                     Id_mon = tiet1.Id_mon,
@@ -3125,6 +3126,7 @@ namespace NA_Logic.Repository
                 // Tạo Object_Tiet từ tiết 2  
                 var objectTiet2 = new Object_Tiet
                 {
+                    Id = tiet2.Id_chitiet,
                     Id_tkb = tiet2.Id_tkb,
                     Id_lop = tiet2.Id_lop,
                     Id_mon = tiet2.Id_mon,
@@ -3135,8 +3137,6 @@ namespace NA_Logic.Repository
                 };
                 LoadAllInformation(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
-                bool updateTiet1 = false;
-                bool updateTiet2 = false;
                 if (objectTiet1.Id_mon == 0)
                 {
                     var dsTiet = new List<Object_Tiet>();
