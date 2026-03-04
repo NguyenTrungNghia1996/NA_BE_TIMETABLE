@@ -2852,7 +2852,7 @@ namespace NA_Logic.Repository
                         {
                             var tietTheoLop = ConvertToTietTheoLop(tietLopTaiViTriNay);
 
-                            bool check_tietlop_vao_vitrigoc = CheckViTriXepDuoc_Lop_Tietdaxep(tietTheoLop, tietdaxep.Id_lop ?? 0, idDonvi, idCa, ngay, tietSo);
+                            bool check_tietlop_vao_vitrigoc = CheckViTriXepDuoc_Lop_Tietdaxep(tietTheoLop, idlop, idDonvi, idCa, ngay, tietSo);
 
                             bool check_tietgoc_vao_vitrilop = dsViTriXepDuoc.Any(vt =>
                                 vt.Ca == tietLopTaiViTriNay.Id_ca &&
