@@ -3161,28 +3161,57 @@ namespace NA_Logic.Repository
                 int ngay2 = tiet2.Ngay; int tietSo2 = tiet2.Tiet; int ca2 = tiet2.Id_ca;
                 bool lock1 = tiet1.isLock; bool lock2 = tiet2.isLock;
 
-                var objectTiet1 = new Object_Tiet
+                LoadAllInformation(tiet1.Id_tkb, idDonvi);
+
+                int idGiaoVien = tiet1.Id_giao_vien > 0 ? tiet1.Id_giao_vien : tiet2.Id_giao_vien;
+
+                var tietGV1 = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == idGiaoVien
+                    && c.Id_ca == ca1 && c.Ngay == ngay1 && c.Tiet == tietSo1);
+                var tietGV2 = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == idGiaoVien
+                    && c.Id_ca == ca2 && c.Ngay == ngay2 && c.Tiet == tietSo2);
+
+                var objectTiet1 = tietGV1 != null ? new Object_Tiet
+                {
+                    Id = tietGV1.Id,
+                    Id_tkb = tietGV1.Id_tkb,
+                    Id_lop = tietGV1.Id_lop,
+                    Id_mon = tietGV1.Id_mon,
+                    Id_giao_vien = tietGV1.Id_giao_vien,
+                    Id_phong = tietGV1.Id_phong,
+                    Id_ca = tietGV1.Id_ca,
+                    Tiet_thu_may = tietGV1.Tiet_thu_may,
+                } : new Object_Tiet
                 {
                     Id_tkb = tiet1.Id_tkb,
                     Id_lop = tietDachon.Id_lop,
-                    Id_mon = tiet1.Id_mon,
+                    Id_mon = 0,
                     Id_giao_vien = tiet1.Id_giao_vien,
                     Id_phong = tiet1.Id_phong,
                     Id_ca = tiet1.Id_ca,
                     Tiet_thu_may = tiet1.Tiet_thu_may,
                 };
-                var objectTiet2 = new Object_Tiet
+
+                var objectTiet2 = tietGV2 != null ? new Object_Tiet
+                {
+                    Id = tietGV2.Id,
+                    Id_tkb = tietGV2.Id_tkb,
+                    Id_lop = tietGV2.Id_lop,
+                    Id_mon = tietGV2.Id_mon,
+                    Id_giao_vien = tietGV2.Id_giao_vien,
+                    Id_phong = tietGV2.Id_phong,
+                    Id_ca = tietGV2.Id_ca,
+                    Tiet_thu_may = tietGV2.Tiet_thu_may,
+                } : new Object_Tiet
                 {
                     Id_tkb = tiet2.Id_tkb,
                     Id_lop = tietDachon.Id_lop,
-                    Id_mon = tiet2.Id_mon,
+                    Id_mon = 0,
                     Id_giao_vien = tiet2.Id_giao_vien,
                     Id_phong = tiet2.Id_phong,
                     Id_ca = tiet2.Id_ca,
-                    Tiet_thu_may = tiet2.Tiet_thu_may
+                    Tiet_thu_may = tiet2.Tiet_thu_may,
                 };
 
-                LoadAllInformation(objectTiet1.Id_tkb, idDonvi);
                 bool check = true;
                 if (objectTiet1.Id_mon == 0)
                 {
