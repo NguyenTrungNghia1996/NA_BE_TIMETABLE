@@ -9,10 +9,10 @@ namespace NA_Logic.IRepository
 {
     public interface ISoTietDanhMucRepository
     {
-        List<Sotiet_Mon> GetSotiet_Mon(int idDonvi, int id_tkb);
-        List<Sotiet_Lop> GetSotiet_Lop(int idDonvi, int id_tkb, int idLich);
-        List<Sotiet_Phong> GetSotiet_Phong(int idDonvi, int id_tkb, int idLich);
-        List<Sotiet_Giaovien> GetSotiet_Giaovien(int idDonvi, int id_tkb, int idLich);
-        List<Sotiet_LopMonDto> GetSotiet_LopMon(int idDonvi, int id_tkb);
+        List<Sotiet_Mon> GetSotiet_Mon(int idDonvi, int idTkb);
+        List<Sotiet_Lop> GetSotiet_Lop(int idDonvi, int idTkb, int idLich);
+        List<Sotiet_Phong> GetSotiet_Phong(int idDonvi, int idTkb, int idLich);
+        List<Sotiet_Giaovien> GetSotiet_Giaovien(int idDonvi, int idTkb, int idLich);
+        List<Sotiet_LopMonDto> GetSotiet_LopMon(int idDonvi, int idTkb);
     }
 }

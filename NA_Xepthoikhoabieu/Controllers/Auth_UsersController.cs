@@ -80,8 +80,12 @@ namespace NA_Xepthoikhoabieu.Controllers
         public IActionResult DetailUser_ById([FromQuery] int id)
         {
             int idUser = _claimHelperRepository.GetUserId(User);
-            if (idUser <= 0)
-                return ApiResult.Unauthorized($"Thông tin user id = {idUser} không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            // kiểm tra nếu là admin thì được truy cập
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             // Lấy bản ghi từ db
             var detailUser = _auth.FindUserById(id);

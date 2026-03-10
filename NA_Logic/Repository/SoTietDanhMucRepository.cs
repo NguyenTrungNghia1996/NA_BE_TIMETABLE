@@ -22,7 +22,7 @@ namespace NA_Logic.Repository
         {
             _context = context;
         }
-        public List<Sotiet_Mon> GetSotiet_Mon(int idDonvi, int id_tkb)
+        public List<Sotiet_Mon> GetSotiet_Mon(int idDonvi, int idTkb)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace NA_Logic.Repository
 
                 var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
                 {
-                    Value = id_tkb
+                    Value = idTkb
                 };
                 var result = _context.Set<Sotiet_Mon>().FromSqlRaw("EXEC Get_ListMon_SoTiet @Id_tkb, @Id_Donvi",
                       paramIdtkb, paramIdDonvi)
@@ -46,7 +46,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<Sotiet_Lop> GetSotiet_Lop(int idDonvi, int id_tkb, int idLich)
+        public List<Sotiet_Lop> GetSotiet_Lop(int idDonvi, int idTkb, int idLich)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace NA_Logic.Repository
 
                 var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
                 {
-                    Value = id_tkb
+                    Value = idTkb
                 };
                 var paramIdLich = new SqlParameter("Id_lich", SqlDbType.Int)
                 {
@@ -74,7 +74,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<Sotiet_Phong> GetSotiet_Phong(int idDonvi, int id_tkb, int idLich)
+        public List<Sotiet_Phong> GetSotiet_Phong(int idDonvi, int idTkb, int idLich)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace NA_Logic.Repository
 
                 var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
                 {
-                    Value = id_tkb
+                    Value = idTkb
                 };
                 var paramIdLich = new SqlParameter("Id_lich", SqlDbType.Int)
                 {
@@ -102,7 +102,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<Sotiet_Giaovien> GetSotiet_Giaovien(int idDonvi, int id_tkb, int idLich)
+        public List<Sotiet_Giaovien> GetSotiet_Giaovien(int idDonvi, int idTkb, int idLich)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace NA_Logic.Repository
 
                 var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
                 {
-                    Value = id_tkb
+                    Value = idTkb
                 };
                 var paramIdLich = new SqlParameter("Id_lich", SqlDbType.Int)
                 {
@@ -130,7 +130,7 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<Sotiet_LopMonDto> GetSotiet_LopMon(int idDonvi, int id_tkb)
+        public List<Sotiet_LopMonDto> GetSotiet_LopMon(int idDonvi, int idTkb)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace NA_Logic.Repository
 
                 var paramIdtkb = new SqlParameter("Id_tkb", SqlDbType.Int)
                 {
-                    Value = id_tkb
+                    Value = idTkb
                 };
                 var result = _context.Set<Sotiet_LopMon>().FromSqlRaw("EXEC Get_ListLopMon_SoTiet @Id_tkb, @Id_Donvi",
                       paramIdtkb, paramIdDonvi)
