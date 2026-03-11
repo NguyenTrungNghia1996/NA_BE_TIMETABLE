@@ -15,7 +15,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Live"
+        "ASPNETCORE_ENVIRONMENT": "Test"
       }
     }
   },
