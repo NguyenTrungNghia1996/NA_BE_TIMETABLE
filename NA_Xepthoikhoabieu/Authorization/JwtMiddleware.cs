@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.Auth;
 
 namespace NA_Xepthoikhoabieu.Authorization
 {

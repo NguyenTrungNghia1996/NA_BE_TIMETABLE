@@ -5,6 +5,7 @@ using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Danhmuc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.XepThoiKhoaBieu;
 using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;

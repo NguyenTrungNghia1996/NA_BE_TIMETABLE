@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Auth;
-using NA_Logic.IRepository;
+using NA_Logic.IRepository.Auth;
 
 namespace NA_Logic.Repository
 {

@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
-using NA_Logic.IRepository;
+using NA_Logic.IRepository.LichBaoGiang;
 using System;
 using System.Collections.Generic;
 using System.Data;

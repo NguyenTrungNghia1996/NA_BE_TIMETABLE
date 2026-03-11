@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.XepThoiKhoaBieu;
 using NA_Xepthoikhoabieu.Helpers;
 using System.Composition;
 
