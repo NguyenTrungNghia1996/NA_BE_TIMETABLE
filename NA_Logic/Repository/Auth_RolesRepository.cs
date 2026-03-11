@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Dtos;
-using NA_Logic.IRepository;
+using NA_Logic.IRepository.Auth;
 using NuGet.Common;
 
 namespace NA_Logic.Repository

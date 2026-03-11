@@ -2,6 +2,10 @@
 using Microsoft.OpenApi.Models;
 using NA_Entities.DBContext;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.Auth;
+using NA_Logic.IRepository.LichBaoGiang;
+using NA_Logic.IRepository.LichOnTap;
+using NA_Logic.IRepository.XepThoiKhoaBieu;
 using NA_Logic.Repository;
 using NA_Xepthoikhoabieu.Authorization;
 using NA_Xepthoikhoabieu.Mapping;

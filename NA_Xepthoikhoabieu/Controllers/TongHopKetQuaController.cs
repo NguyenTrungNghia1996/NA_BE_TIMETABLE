@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Dtos;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.LichOnTap;
+using NA_Logic.IRepository.XepThoiKhoaBieu;
 using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers

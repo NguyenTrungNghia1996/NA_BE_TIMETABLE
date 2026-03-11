@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Auth;
 using NA_Entities.Entities.Danh_muc;
-using NA_Logic.IRepository;
+using NA_Logic.IRepository.XepThoiKhoaBieu;
 
 namespace NA_Logic.Repository
 {

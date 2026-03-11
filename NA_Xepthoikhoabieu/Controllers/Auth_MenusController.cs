@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NA_Entities.Entities.Auth;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.Auth;
 using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers

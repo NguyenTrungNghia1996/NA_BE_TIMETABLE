@@ -1,0 +1,20 @@
+﻿using NA_Entities.Entities.Danh_muc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NA_Logic.IRepository.XepThoiKhoaBieu
+{
+    public interface IDM_CahocRepository
+    {
+        List<DM_Cahoc_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, ref int totalrecord);
+        DM_Cahoc GetDetailById(int Id);
+        bool Add(DM_Cahoc dm_cahoc);
+        bool Update(DM_Cahoc dm_cahoc);
+        (bool success, string message) Delete(int Id);
+        bool CheckId(int Id, int idDonvi);
+        bool CheckIds(IEnumerable<int> ids);
+    }
+}
