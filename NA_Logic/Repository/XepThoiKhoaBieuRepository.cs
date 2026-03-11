@@ -1845,7 +1845,7 @@ namespace NA_Logic.Repository
                         }
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
-                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.First();
+                    var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt => vt.Ngay >= 1 && vt.Ngay <= _soNgay);
                     tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
