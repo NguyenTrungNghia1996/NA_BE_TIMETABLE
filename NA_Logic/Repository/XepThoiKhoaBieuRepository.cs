@@ -2827,7 +2827,7 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                //var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                     .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
 
@@ -2839,7 +2839,7 @@ namespace NA_Logic.Repository
                     checkLop = true;
                 var slotKey = $"{ngay}_{idCa}_{tiet}";
 
-                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_lop.Contains(slotKey) || !checkLop)
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || !checkLop)
                     return false;
                 
                 return true;
