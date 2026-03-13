@@ -2209,12 +2209,18 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                //var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                         .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var slotKey = $"{ngay}_{idCa}_{tiet}";
-
-                if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                var tietTheoGV = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == tietdaxep.Id_giao_vien && c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tiet);
+                bool checkGV = false;
+                if (tietTheoGV != null)
+                    checkGV = CheckViTriXepDuoc_GV_Tietdaxep(ConvertToTietTheoGV(tietTheoGV), tietdaxep.Id_giao_vien, idDonvi,
+                        objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet);
+                else
+                    checkGV = true;
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || !checkGV)
                     return false;
                 return true;
             }
