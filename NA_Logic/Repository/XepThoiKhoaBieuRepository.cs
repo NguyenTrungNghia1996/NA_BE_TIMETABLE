@@ -2209,18 +2209,18 @@ namespace NA_Logic.Repository
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var tietban = DsTietTranhXep(objectTiet);
                 var dsCa = _dsCa;
-                //var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
                         .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var slotKey = $"{ngay}_{idCa}_{tiet}";
-                var tietTheoGV = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == tietdaxep.Id_giao_vien && c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tiet);
-                bool checkGV = false;
-                if (tietTheoGV != null)
-                    checkGV = CheckViTriXepDuoc_GV_Tietdaxep(ConvertToTietTheoGV(tietTheoGV), tietdaxep.Id_giao_vien, idDonvi,
-                        objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet);
-                else
-                    checkGV = true;
-                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || !checkGV)
+                //var tietTheoGV = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == tietdaxep.Id_giao_vien && c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tiet);
+                //bool checkGV = false;
+                //if (tietTheoGV != null)
+                //    checkGV = CheckViTriXepDuoc_GV_Tietdaxep(ConvertToTietTheoGV(tietTheoGV), tietdaxep.Id_giao_vien, idDonvi,
+                //        objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet);
+                //else
+                //    checkGV = true;
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey))
                     return false;
                 return true;
             }
@@ -2283,6 +2283,33 @@ namespace NA_Logic.Repository
                 var slotKey = $"{Ngay}_{Ca}_{Tiet}";
 
                 if (tietban.Contains(slotKey) || ds_tiet_da_xep_gv.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey))
+                    return false;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool CheckViTriXepDuoc_Lop_DoiCho_GV(Object_Tiet objectTiet, int Ca, int Ngay, int Tiet, int idDonvi)
+        {
+            try
+            {
+                var tietban = DsTietTranhXep(objectTiet); 
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
+                var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
+                //var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
+                        .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var slotKey = $"{Ngay}_{Ca}_{Tiet}";
+                var tietTheoGV = _dsTietGoc.FirstOrDefault(c => c.Id_giao_vien == objectTiet.Id_giao_vien && c.Id_ca == Ca && c.Ngay == Ngay && c.Tiet == Tiet);
+                bool checkGV = false;
+                if (tietTheoGV != null)
+                    checkGV = CheckViTriXepDuoc_GV_Tietdaxep(ConvertToTietTheoGV(tietTheoGV), (int)objectTiet.Id_giao_vien, idDonvi,
+                        objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet);
+                else
+                    checkGV = true;
+                if (tietban.Contains(slotKey) || !checkGV || ds_tiet_da_xep_phong.Contains(slotKey))
                     return false;
                 return true;
             }
@@ -3043,6 +3070,13 @@ namespace NA_Logic.Repository
 
                             isDrag = check_tietlop_vao_vitrigoc && check_tietgoc_vao_vitrilop;
                         }
+                        else
+                        {
+                            isDrag = dsViTriXepDuoc.Any(vt =>
+                                vt.Ca == tietdaxep.Id_ca &&
+                                vt.Ngay == tietdaxep.Ngay &&
+                                vt.Tiet == tietdaxep.Tiet);
+                        }
                     }
                     else if (idlop > 0)
                     {
@@ -3423,7 +3457,7 @@ namespace NA_Logic.Repository
                     bool checkLop = false;
                     if (tietTrongLop != null)
                     {
-                        checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca2, ngay2, tietSo2, idDonvi);
+                        checkLop = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop, ca2, ngay2, tietSo2, idDonvi);
                     }
                     else
                         checkLop = true;
@@ -3455,7 +3489,7 @@ namespace NA_Logic.Repository
                     bool checkLop = false;
                     if (tietTrongLop != null)
                     {
-                        checkLop = CheckViTriXepDuoc_Lop(tietTrongLop, ca1, ngay1, tietSo1, idDonvi);
+                        checkLop = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop, ca1, ngay1, tietSo1, idDonvi);
                     }
                     else
                         checkLop = true;
@@ -3482,8 +3516,8 @@ namespace NA_Logic.Repository
                 else
                 {
                     var dsTiet = new List<Object_Tiet>();
-                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
-                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    var check_t1 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     bool checkLop1 = false;
                     bool checkLop2 = false;
                     var tietTrongLop1 = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet1.Id_lop && c.Id_ca == ca2 && c.Ngay == ngay2 && c.Tiet == tietSo2);
