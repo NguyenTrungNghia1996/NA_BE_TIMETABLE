@@ -3360,21 +3360,21 @@ namespace NA_Logic.Repository
                 else
                 {
                     var dsTiet = new List<Object_Tiet>();
-                    var check_t1 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
-                    var check_t2 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     bool checkLop1 = false;
                     bool checkLop2 = false;
                     var tietTrongLop1 = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet1.Id_lop && c.Id_ca == ca2 && c.Ngay == ngay2 && c.Tiet == tietSo2);
                     var tietTrongLop2 = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet2.Id_lop && c.Id_ca == ca1 && c.Ngay == ngay1 && c.Tiet == tietSo1);
                     if (tietTrongLop1 != null)
                     {
-                        checkLop1 = CheckViTriXepDuoc_Lop(tietTrongLop1, ca1, ngay1, tietSo1, idDonvi);
+                        checkLop1 = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop1, ca1, ngay1, tietSo1, idDonvi);
                     }
                     else
                         checkLop1 = true;
                     if (tietTrongLop2 != null)
                     {
-                        checkLop2 = CheckViTriXepDuoc_Lop(tietTrongLop2, ca2, ngay2, tietSo2, idDonvi);
+                        checkLop2 = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop2, ca2, ngay2, tietSo2, idDonvi);
                     }
                     else
                         checkLop2 = true;
@@ -3588,21 +3588,21 @@ namespace NA_Logic.Repository
                 else
                 {
                     var dsTiet = new List<Object_Tiet>();
-                    var check_t1 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
-                    var check_t2 = CheckViTriXepDuoc_Lop_DoiCho_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
+                    var check_t1 = CheckViTriXepDuoc_GV(objectTiet1, ca2, ngay2, tietSo2, idDonvi);
+                    var check_t2 = CheckViTriXepDuoc_GV(objectTiet2, ca1, ngay1, tietSo1, idDonvi);
                     bool checkLop1 = false;
                     bool checkLop2 = false;
                     var tietTrongLop1 = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet1.Id_lop && c.Id_ca == ca2 && c.Ngay == ngay2 && c.Tiet == tietSo2);
                     var tietTrongLop2 = _dsTietGoc.FirstOrDefault(c => c.Id_lop == objectTiet2.Id_lop && c.Id_ca == ca1 && c.Ngay == ngay1 && c.Tiet == tietSo1);
                     if (tietTrongLop1 != null)
                     {
-                        checkLop1 = CheckViTriXepDuoc_Lop(tietTrongLop1, ca1, ngay1, tietSo1, idDonvi);
+                        checkLop1 = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop1, ca1, ngay1, tietSo1, idDonvi);
                     }
                     else
                         checkLop1 = true;
                     if (tietTrongLop2 != null)
                     {
-                        checkLop2 = CheckViTriXepDuoc_Lop(tietTrongLop2, ca2, ngay2, tietSo2, idDonvi);
+                        checkLop2 = CheckViTriXepDuoc_Lop_DoiCho_GV(tietTrongLop2, ca2, ngay2, tietSo2, idDonvi);
                     }
                     else
                         checkLop2 = true;
