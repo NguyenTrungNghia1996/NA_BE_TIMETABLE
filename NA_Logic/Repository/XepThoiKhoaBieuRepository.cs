@@ -35,7 +35,6 @@ namespace NA_Logic.Repository
         private List<Object_Tohopmon> _ObjectTohopmon = new List<Object_Tohopmon>();
         //private List<object_tiet_co_dinh> _ObjectTietcodinh;
         private List<Object_Tiet> _dsTietGoc = new List<Object_Tiet>();
-
         private List<Object_Monhoc> _dsObjectMon = new List<Object_Monhoc>();
         private List<Object_Lophoc> _dsObjectLop = new List<Object_Lophoc>();
         private List<Object_Giaovien> _dsObjectGiaovien = new List<Object_Giaovien>();
@@ -2529,7 +2528,7 @@ namespace NA_Logic.Repository
                                     ? CheckViTriXepDuoc_Lop_Tietdaxep(ConvertToTietTheoLop(tietTheoLopGoc), idLop, idDonvi, idCa, ngay, tietSo)
                                     : true;
 
-                                bool check_tietgoc = CheckViTriXepDuoc_GV_Tietdaxep(tietdaxep, idGiaoVien, idDonvi, idCa, ngay, tietSo);
+                                bool check_tietgoc = CheckViTriXepDuoc_GV_VoiTietGoc(tietdaxep, idGiaoVien, idDonvi, idCa, ngay, tietSo);
 
                                 bool check_tietdaxep = dsViTriXepDuoc.Any(vt =>
                                     vt.Ca == vitri.Id_ca &&
@@ -2839,6 +2838,50 @@ namespace NA_Logic.Repository
                 objectTiet.Ds_vi_tri_xep_duoc.Clear();
             }
         }
+        public bool CheckViTriXepDuoc_GV_VoiTietGoc(tkb_theo_giaovien tietdaxep, int idgiaovien, int idDonvi, int idCa, int ngay, int tiet)
+        {
+            try
+            {
+                Object_Tiet objectTiet = new Object_Tiet
+                {
+                    Id = tietdaxep.Id_chitiet,
+                    Id_don_vi = idDonvi,
+                    Id_ca = tietdaxep.Id_ca,
+                    Id_giao_vien = idgiaovien,
+                    Id_lop = tietdaxep.Id_lop,
+                    Id_mon = tietdaxep.Id_mon,
+                    Id_phong = tietdaxep.Id_phong,
+                    Tiet_thu_may = tietdaxep.Tiet_thu_may,
+                    Ngay = tietdaxep.Ngay,
+                    Tiet = tietdaxep.Tiet
+                };
+                LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
+                var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
+                var tietban = DsTietTranhXep(objectTiet);
+                var dsCa = _dsCa;
+                //var ds_tiet_da_xep_lop = ds_da_xep.Where(t => t.Id_lop == objectTiet.Id_lop).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+                var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
+                    .Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
+
+                var tietTheoLop = _dsTietGoc.FirstOrDefault(c => c.Id_lop == tietdaxep.Id_lop && c.Id_ca == idCa && c.Ngay == ngay && c.Tiet == tiet);
+                bool checkLop = false;
+                if (tietTheoLop != null)
+                    checkLop = CheckViTriXepDuoc_Lop_Tietdaxep( ConvertToTietTheoLop(tietTheoLop), (int)tietTheoLop.Id_lop, idDonvi, 
+                        objectTiet.Id_ca, objectTiet.Ngay, objectTiet.Tiet);
+                else
+                    checkLop = true;
+                var slotKey = $"{ngay}_{idCa}_{tiet}";
+
+                if (tietban.Contains(slotKey) || ds_tiet_da_xep_phong.Contains(slotKey) || !checkLop)
+                    return false;
+                
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool CheckViTriXepDuoc_GV_Tietdaxep(tkb_theo_giaovien tietdaxep, int idgiaovien, int idDonvi, int idCa, int ngay, int tiet)
         {
             try
@@ -3036,7 +3079,7 @@ namespace NA_Logic.Repository
                                 check_tietlop_goc = true;
 
                             // Kiểm tra vị trí của tiết gốc có trong ds xếp được của tiết đang xét không
-                            bool check_tietgoc = CheckViTriXepDuoc_GV_Tietdaxep(tietdaxep, idGV, idDonvi, idCa, ngay, tietSo);
+                            bool check_tietgoc = CheckViTriXepDuoc_GV_VoiTietGoc(tietdaxep, idGV, idDonvi, idCa, ngay, tietSo);
 
                             // Kiểm tra vị trí hiện tại có trong dsViTriXepDuoc không
                             bool check_tietdaxep = dsViTriXepDuoc.Any(vt =>

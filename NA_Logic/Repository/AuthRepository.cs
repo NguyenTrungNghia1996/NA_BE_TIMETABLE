@@ -90,7 +90,7 @@ namespace NA_Logic.Repository
             try
             {
                 var getPass = _configuration.GetSection("Password").Value;
-                if (getPass == null) getPass = "12345";
+                if (getPass == null) getPass = "1";
                 string hashPassword = _passwordhash.HashPassword(getPass);
                 user.Password = hashPassword;
                 _context.Auth_Users.Add(user);
