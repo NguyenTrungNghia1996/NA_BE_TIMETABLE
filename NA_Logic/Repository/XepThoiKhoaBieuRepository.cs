@@ -3061,7 +3061,13 @@ namespace NA_Logic.Repository
                     }
                 }
                 dsViTriXepDuoc.Add((idCa,ngay, tietSo));
-                foreach (var tietdaxep in tkbBase.timetable)
+                var timetable= tkbBase.timetable
+                    .Where(t => dsViTriXepDuoc.Any(vt =>
+                        vt.Ca == t.Id_ca &&
+                        vt.Ngay == t.Ngay &&
+                        vt.Tiet == t.Tiet)).ToList();
+
+                foreach (var tietdaxep in timetable)
                 {
                     bool isDrag = false;
                     if (tietdaxep.Id_mon > 0 && idMon > 0)
