@@ -26,17 +26,15 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IDM_CaphocRepository _caphocRepository;
-        private readonly IDM_NgayhocRepository _ngayhocRepository;
         private readonly IDM_CahocRepository _cahocRepository;
         public Thongtin_DonviController(IMapper mapper, IDM_DonviRepository donvi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-            IDM_CaphocRepository caphocRepository, IDM_NgayhocRepository ngayhocRepository, IDM_CahocRepository cahocRepository, IThongtin_DonviRepository ttdonvi)
+            IDM_CaphocRepository caphocRepository, IDM_CahocRepository cahocRepository, IThongtin_DonviRepository ttdonvi)
         {
             _mapper = mapper;
             _donvi = donvi;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _caphocRepository = caphocRepository;
-            _ngayhocRepository = ngayhocRepository;
             _cahocRepository = cahocRepository;
             _ttdonvi = ttdonvi;
         }

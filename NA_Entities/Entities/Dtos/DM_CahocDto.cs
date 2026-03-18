@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NA_Entities.Entities.Danh_muc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,6 +23,18 @@ namespace NA_Entities.Entities.Dtos
         public int Id { get; set; } = 0;
         public string Ten { get; set; }= string.Empty;
         public string Ghichu { get; set; }=string.Empty;
+    }
+    public class TietbanDto
+    {
+        public Tiet Id { get; set; } = Tiet.tiet_mot;
+        public string Ten { get; set; }
+        public bool Trang_thai { get; set; } = false;
+    }
+    public class Ngay_banDto
+    {
+        public Ngay Id { get; set; } = Ngay.thu_hai;
+        public string Ten { get; set; }
+        public List<TietbanDto> Ds_Tiet { get; set; } = new List<TietbanDto>();
     }
     public class Ca_banDto
     {
