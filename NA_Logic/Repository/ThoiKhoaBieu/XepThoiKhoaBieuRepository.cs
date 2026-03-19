@@ -2273,8 +2273,9 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
         {
             try
             {
-                var tietban = DsTietTranhXep(objectTiet); 
                 LoadObjectsFromTiet_TietBan(objectTiet, idDonvi);
+                var tietban = DsTietTranhXep(objectTiet); 
+                
                 var ds_da_xep = _dsTietGoc.Where(c => c.Ngay > 0 && c.Tiet > 0).ToList();
                 var ds_tiet_da_xep_gv = ds_da_xep.Where(t => t.Id_giao_vien == objectTiet.Id_giao_vien).Select(c => $"{c.Ngay}_{c.Id_ca}_{c.Tiet}").ToList();
                 var ds_tiet_da_xep_phong = ds_da_xep.Where(t => t.Id_phong == objectTiet.Id_phong && t.Id_lop != objectTiet.Id_lop)
