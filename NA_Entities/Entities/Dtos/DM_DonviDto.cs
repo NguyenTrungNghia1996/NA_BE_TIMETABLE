@@ -33,7 +33,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
         public List<int> Id_cahoc { get; set; } = new List<int>();
-        public int Id_cha { get; set; } = 0;
+        public int? Id_cha { get; set; }
         public bool La_so_giao_duc { get; set; } = false;
 
     }
@@ -71,7 +71,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
         public List<int> Id_cahoc { get; set; } = new List<int>();
-        public int Id_cha { get; set; } = 0;
+        public int? Id_cha { get; set; }
         public bool La_so_giao_duc { get; set; } = false;
     }
     public class Thongtin_Donvi_updateDto
@@ -94,7 +94,7 @@ namespace NA_Entities.Entities.Dtos
         public List<int> IdCap { get; set; } = new List<int>();
         public List<Ca_DonviDto> List_ca { get; set; } = new List<Ca_DonviDto>();
         public int So_ngay { get; set; } = 0;
-        public int Id_cha { get; set; } = 0;
+        public int? Id_cha { get; set; }
         public bool La_so_giao_duc { get; set; } = false;
     }
 
