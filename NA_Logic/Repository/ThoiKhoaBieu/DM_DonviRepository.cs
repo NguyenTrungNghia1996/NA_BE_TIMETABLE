@@ -127,6 +127,18 @@ namespace NA_Logic.Repository.LichBaoGiang
                 return false;
             }
         }
+        public bool CheckId(int Id)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _context.DM_Donvi.Any(c => c.Id == Id);
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckTrungTen(string ten, int? excludeId = null)
         {
             var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";

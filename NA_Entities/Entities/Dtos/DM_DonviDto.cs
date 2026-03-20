@@ -33,6 +33,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
         public List<int> Id_cahoc { get; set; } = new List<int>();
+        public int Id_cha { get; set; } = 0;
     }
     public class DM_Donvi_List_Dto
     {
@@ -44,6 +45,7 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         public string Ten_cap { get; set; } = string.Empty;
         public string Ten_ca { get; set; } = string.Empty;
+        public string Ten_cha { get; set; } = string.Empty;
     }
     public class DM_Donvi_updateDto
     {
@@ -67,6 +69,7 @@ namespace NA_Entities.Entities.Dtos
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một cấp học")]
         public List<int> IdCap { get; set; } = new List<int>();
         public List<int> Id_cahoc { get; set; } = new List<int>();
+        public int Id_cha { get; set; } = 0;
     }
     public class Thongtin_Donvi_updateDto
     {
@@ -88,6 +91,7 @@ namespace NA_Entities.Entities.Dtos
         public List<int> IdCap { get; set; } = new List<int>();
         public List<Ca_DonviDto> List_ca { get; set; } = new List<Ca_DonviDto>();
         public int So_ngay { get; set; } = 0;
+        public int Id_cha { get; set; } = 0;
     }
 
 }

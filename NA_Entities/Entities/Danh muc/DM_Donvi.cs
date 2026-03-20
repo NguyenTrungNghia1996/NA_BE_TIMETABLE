@@ -26,6 +26,7 @@ namespace NA_Entities.Entities.Danhmuc
         public int Id_tinh { get; set; } = 0;
         public string Nguoi_lien_he { get; set; } = string.Empty;
         public int So_ngay { get; set; } = 0;
+        public int Id_cha { get; set; } = 0;
     }
     //public class DM_Donvi_Demo
     //{
@@ -59,5 +60,7 @@ namespace NA_Entities.Entities.Danhmuc
         public string Ten_cap { get; set;} = string.Empty;
         public string Ten_ca { get; set;} = string.Empty;
         public int So_ngay { get; set; } = 0;
+        public int Id_cha { get; set; } = 0;
+        public string Ten_cha { get; set; } = string.Empty;
     }
 }

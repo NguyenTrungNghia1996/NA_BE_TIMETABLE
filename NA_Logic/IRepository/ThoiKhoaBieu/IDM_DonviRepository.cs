@@ -28,5 +28,6 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool AddCa(int Id, List<int> caId);
         bool CheckDonviChuaCoTaikhoan(int id);
         bool CheckTrungTen( string ten, int? excludeId = null);
+        bool CheckId(int Id);
     }
 }
