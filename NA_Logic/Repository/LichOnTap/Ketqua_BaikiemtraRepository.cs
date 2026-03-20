@@ -347,50 +347,49 @@ namespace NA_Logic.Repository.LichOnTap
                     So_luong = g.Max(x => x.So_luong) ?? 0
                 }).ToList();
 
-            var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh, x.Ten_lop_on })
-                .Select(gHs =>
+            var rows = rawData.GroupBy(x => new { x.Ma_hoc_sinh, x.Ten_hoc_sinh })
+            .Select(gHs =>
+            {
+                var dsMon = gHs.GroupBy(x => new { x.Id_mon, x.Ten_mon, x.Id_lop_on, x.Ten_lop_on })
+                .Select(gMon =>
                 {
-                    var dsMon = gHs.GroupBy(x => new { x.Id_mon, x.Ten_mon, x.Id_lop_on })
-                    .Select(gMon =>
+                    var loaiKiemTra = gMon.Where(x => x.Id_loai_kiem_tra.HasValue)
+                        .GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra })
+                        .Select(g => new
+                        {
+                            Id = g.Key.Id_loai_kiem_tra.Value,
+                            Ten = g.Key.Ten_loai_kiem_tra
+                        }).ToList();
+
+                    var diem = new Dictionary<string, object>();
+                    foreach (var lkt in loaiKiemTra)
                     {
-                        var loaiKiemTra = gMon.Where(x => x.Id_loai_kiem_tra.HasValue).GroupBy(x => new { x.Id_loai_kiem_tra, x.Ten_loai_kiem_tra })
-                            .Select(g => new
-                            {
-                                Id = g.Key.Id_loai_kiem_tra.Value,
-                                Ten = g.Key.Ten_loai_kiem_tra
-                            }).ToList();
+                        var baiKiemTraCuaLop = gMon.Where(x => x.Id_loai_kiem_tra == lkt.Id)
+                            .Select(x => x.Id_bai_kiem_tra)
+                            .Distinct().OrderBy(x => x).ToList();
 
-                        var diem = new Dictionary<string, object>();
+                        var scores = baiKiemTraCuaLop
+                            .Select(idBai => gMon.FirstOrDefault(x => x.Id_bai_kiem_tra == idBai)?.Diem_so)
+                            .ToList();
 
-                        foreach (var lkt in loaiKiemTra)
-                        {
-                            var baiKiemTraCuaLop = gMon.Where(x => x.Id_loai_kiem_tra == lkt.Id).Select(x => x.Id_bai_kiem_tra)
-                                .Distinct().OrderBy(x => x).ToList();
+                        diem[lkt.Ten] = scores.Any() ? scores : null;
+                    }
 
-                            var scores = baiKiemTraCuaLop
-                                .Select(idBai =>
-                                {
-                                    var diemSo = gMon.FirstOrDefault(x => x.Id_bai_kiem_tra == idBai)?.Diem_so;
-                                    return diemSo;
-                                }).ToList();
-
-                            diem[lkt.Ten] = scores.Any() ? scores : null;
-                        }
-
-                        return new
-                        {
-                            gMon.Key.Ten_mon,
-                            Diem = diem
-                        };
-                    }).ToList();
                     return new
                     {
-                        Ma = gHs.Key.Ma_hoc_sinh,
-                        Ten = gHs.Key.Ten_hoc_sinh,
-                        Lop_on = gHs.Key.Ten_lop_on,
-                        Ds_mon = dsMon
+                        gMon.Key.Ten_mon,
+                        Lop_on = gMon.Key.Ten_lop_on,
+                        Diem = diem
                     };
                 }).ToList();
+
+                return new
+                {
+                    Ma = gHs.Key.Ma_hoc_sinh,
+                    Ten = gHs.Key.Ten_hoc_sinh,
+                    Ds_mon = dsMon
+                };
+            }).ToList();
             return new
             {
                 loai_kiem_tra = loaiKiemTra,
