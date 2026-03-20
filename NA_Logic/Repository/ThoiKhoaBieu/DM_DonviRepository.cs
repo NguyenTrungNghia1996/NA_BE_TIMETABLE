@@ -101,7 +101,7 @@ namespace NA_Logic.Repository.LichBaoGiang
                     Direction = ParameterDirection.Output
                 };
                 var result = _context.Set<DM_Donvi_List>().FromSqlRaw("EXEC DM_Donvi_GetList_Paging @pageIndex, @pageSize, @search, @isAdmin, @idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch,  paramTotal)
+                    paramPageIndex, paramPageSize, paramSearch, paramIsAdmin, paramIdDonvi,  paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Donvi_List>();
                 totalrecord = (int)paramTotal.Value;
