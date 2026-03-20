@@ -47,7 +47,7 @@ namespace NA_Entities.Entities.Dtos
         public string Email { get; set; } = string.Empty;
         public string Ten_cap { get; set; } = string.Empty;
         public string Ten_ca { get; set; } = string.Empty;
-        public string Ten_cha { get; set; } = string.Empty;
+        public string? Ten_cha { get; set; } = string.Empty;
     }
     public class DM_Donvi_updateDto
     {

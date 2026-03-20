@@ -148,7 +148,13 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
-            var checkcha = _donvi.CheckIdCha(donvi.Id_cha);
+            var checkcha = false;
+            if (donvi.Id_cha != null)
+            {
+                checkcha = _donvi.CheckIdCha((int)donvi.Id_cha);
+                if (!checkcha)
+                    return ApiResult.BadRequest("Id_cha không hợp lệ!");
+            }
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
@@ -197,7 +203,7 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             bool checkSo = _donvi.CheckIdCha(idDonvi);
-            if (!checkIsAdmin || !checkSo)
+            if (!checkIsAdmin && !checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
@@ -235,7 +241,14 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
-            var checkcha = _donvi.CheckIdCha(donvi.Id_cha);
+            var checkcha = false;
+            if(donvi.Id_cha != null)
+            {
+                checkcha = _donvi.CheckIdCha((int)donvi.Id_cha);
+                if (!checkcha)
+                    return ApiResult.BadRequest("Id_cha không hợp lệ!");
+            }
+                
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
