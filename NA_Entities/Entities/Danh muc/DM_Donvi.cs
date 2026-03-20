@@ -27,6 +27,8 @@ namespace NA_Entities.Entities.Danhmuc
         public string Nguoi_lien_he { get; set; } = string.Empty;
         public int So_ngay { get; set; } = 0;
         public int Id_cha { get; set; } = 0;
+        public bool La_so_giao_duc { get; set; } = false;
+
     }
     //public class DM_Donvi_Demo
     //{

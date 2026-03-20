@@ -60,7 +60,19 @@ namespace NA_Logic.Repository.LichBaoGiang
                 return new List<int>();
             }
         }
-        public List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, ref int totalrecord)
+        public List<DM_Donvi> GetList_SoGiaoDuc()
+        {
+            try
+            {
+                var list = _context.DM_Donvi.Where(c=>c.La_so_giao_duc == true).ToList();
+                return list;
+            }
+            catch
+            {
+                return new List<DM_Donvi>();
+            }
+        }
+        public List<DM_Donvi_List> GetList_Paging(int PageIndex, int PageSize, string search, bool isAdmin, int idDonvi, ref int totalrecord)
         {
             try
             {
@@ -76,11 +88,19 @@ namespace NA_Logic.Repository.LichBaoGiang
                 {
                     Value = search ?? string.Empty
                 };
+                var paramIsAdmin = new SqlParameter("isAdmin", SqlDbType.Bit)
+                {
+                    Value = isAdmin
+                };
+                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int)
+                {
+                    Value = idDonvi
+                };
                 var paramTotal = new SqlParameter("total", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _context.Set<DM_Donvi_List>().FromSqlRaw("EXEC DM_Donvi_GetList_Paging @pageIndex, @pageSize, @search, @total OUTPUT",
+                var result = _context.Set<DM_Donvi_List>().FromSqlRaw("EXEC DM_Donvi_GetList_Paging @pageIndex, @pageSize, @search, @isAdmin, @idDonvi, @total OUTPUT",
                     paramPageIndex, paramPageSize, paramSearch,  paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Donvi_List>();
@@ -127,18 +147,19 @@ namespace NA_Logic.Repository.LichBaoGiang
                 return false;
             }
         }
-        public bool CheckId(int Id)
+        public bool CheckIdCha(int Id)
         {
             if (Id <= 0) return false;
             try
             {
-                return _context.DM_Donvi.Any(c => c.Id == Id);
+                return _context.DM_Donvi.Any(c => c.La_so_giao_duc == true && c.Id == Id);
             }
             catch
             {
                 return false;
             }
         }
+
         public bool CheckTrungTen(string ten, int? excludeId = null)
         {
             var ten_input = ten?.Trim().ToLower().Replace(" ", "") ?? "";

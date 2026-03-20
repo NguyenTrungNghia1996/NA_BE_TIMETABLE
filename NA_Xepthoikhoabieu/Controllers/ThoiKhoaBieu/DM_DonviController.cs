@@ -41,15 +41,17 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
         public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "")
         {
             int idUser = _claimHelperRepository.GetUserId(User);
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            bool checkSo = _donvi.CheckIdCha(idDonvi);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
+            if (!checkIsAdmin || !checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();
-            var list = _donvi.GetList_Paging(PageIndex, PageSize, search, ref totalrecord);
+            var list = _donvi.GetList_Paging(PageIndex, PageSize, search, checkIsAdmin, idDonvi, ref totalrecord);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Donvi_List_Dto>>(list);
@@ -57,6 +59,25 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             {
                 items = listDto,
                 totalrecord
+            },
+            "Thành công");
+        }
+        [HttpGet("sogiaoduc")]
+        [RequireToken]
+        public IActionResult GetList_SoGiaoDuc()
+        {
+            int idUser = _claimHelperRepository.GetUserId(User);
+            bool checkIsAdmin = _auth.checkIsAdmin(idUser);
+            if (!checkIsAdmin)
+            {
+                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            }
+            var list = _donvi.GetList_SoGiaoDuc();
+            if (list == null || list.Count == 0)
+                return ApiResult.Ok();
+            return ApiResult.Success(new
+            {
+                items = list
             },
             "Thành công");
         }
@@ -101,7 +122,9 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
 
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            bool checkSo = _donvi.CheckIdCha(idDonvi);
+            if (!checkIsAdmin || checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
@@ -118,14 +141,14 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             {
                 ModelState.AddModelError("Id_ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
-            if (donvi.Id_cha == null || donvi.Id_cha == 0)
+            if (donvi.La_so_giao_duc == false && (donvi.Id_cha == null || donvi.Id_cha == 0))
             {
                 ModelState.AddModelError("Id_cha", "Vui lòng chọn đơn vị quản lý học");
             }
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
-            var checkcha = _donvi.CheckId(donvi.Id_cha);
+            var checkcha = _donvi.CheckIdCha(donvi.Id_cha);
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
@@ -135,12 +158,14 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             {
                 return ApiResult.BadRequest("Tên đơn vị đã tồn tại");
             }
-            if (!checkcha)
+            if (donvi.La_so_giao_duc == false && !checkcha)
                 return ApiResult.BadRequest("Id_cha không hợp lệ!");
             //hiển thị lỗi
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //add
+            if (checkSo)
+                addDonvi.Id_cha = idDonvi;
             bool add = _donvi.Add(addDonvi);
             if (!add)
                 return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
@@ -170,7 +195,9 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
         {
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin)
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            bool checkSo = _donvi.CheckIdCha(idDonvi);
+            if (!checkIsAdmin || !checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
@@ -198,7 +225,7 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             {
                 ModelState.AddModelError("Id_ca_hoc", "Vui lòng chọn ít nhất 1 ca học");
             }
-            if (donvi.Id_cha == null || donvi.Id_cha == 0)
+            if (donvi.La_so_giao_duc == false && (donvi.Id_cha == null || donvi.Id_cha == 0))
             {
                 ModelState.AddModelError("Id_cha", "Vui lòng chọn đơn vị quản lý học");
             }
@@ -208,14 +235,16 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             //check id ca, cấp
             var checkcaphoc = _caphocRepository.CheckIds(donvi.IdCap);
             var checkcahoc = _cahocRepository.CheckIds(donvi.Id_cahoc);
-            var checkcha = _donvi.CheckId(donvi.Id_cha);
+            var checkcha = _donvi.CheckIdCha(donvi.Id_cha);
             if (!checkcaphoc)
                 ModelState.AddModelError("IdCap", "Id cấp học không hợp lệ, vui lòng kiểm tra lại");
             if (!checkcahoc)
                 ModelState.AddModelError("Id_ca_hoc", "Id ca học không hợp lệ, vui lòng kiểm tra lại");
-            if (!checkcha || donvi.Id_cha == donvi.Id)
+            if (donvi.La_so_giao_duc == false && (!checkcha || donvi.Id_cha == donvi.Id))
                 return ApiResult.BadRequest("Id_cha không hợp lệ!");
             //update
+            if (checkSo)
+                item.Id_cha = idDonvi;
             bool update = _donvi.Update(item);
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
