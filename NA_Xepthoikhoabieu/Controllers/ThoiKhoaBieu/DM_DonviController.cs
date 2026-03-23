@@ -44,7 +44,7 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             bool checkSo = _donvi.CheckIdCha(idDonvi);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin || !checkSo)
+            if (!checkIsAdmin && !checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }
@@ -124,7 +124,7 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             bool checkSo = _donvi.CheckIdCha(idDonvi);
-            if (!checkIsAdmin || checkSo)
+            if (!checkIsAdmin && !checkSo)
             {
                 return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
             }

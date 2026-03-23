@@ -80,6 +80,7 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Tohopmon_Ontap_List, DM_Tohopmon_Ontap_ListDto>();
             CreateMap<Hocsinh_Lopon_List, Hocsinh_Lopon_ListDto>();
             CreateMap<DM_Baikiemtra_List, DM_Baikiemtra_ListDto>();
+            CreateMap<DM_Hoidongthi_List, DM_Hoidongthi_ListDto>();
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();
