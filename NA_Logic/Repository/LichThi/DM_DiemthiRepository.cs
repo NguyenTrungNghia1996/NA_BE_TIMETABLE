@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
 using NA_Logic.IRepository;
+using NA_Logic.IRepository.LichThi;
 using NA_Logic.IRepository.XepGiamThi;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,15 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class DM_HoidongthiRepository : IDM_HoidongthiRepository
+    public class DM_DiemthiRepository : IDM_DiemthiRepository
     {
         private readonly NA_DbContext _dbContext;
-        public DM_HoidongthiRepository(NA_DbContext dbContext)
+        public DM_DiemthiRepository(NA_DbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public List<DM_Hoidongthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idNam)
+        public List<DM_Diemthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi)
         {
             try
             {
@@ -41,13 +42,9 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
-                var paramIdNam = new SqlParameter("idNam", SqlDbType.Int)
-                {
-                    Value = idNam
-                };
-                var result = _dbContext.Set<DM_Hoidongthi_List>().FromSqlRaw("EXEC [DM_Hoidongthi_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idNam",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdNam).ToList();
-                if (result == null) result = new List<DM_Hoidongthi_List>();
+                var result = _dbContext.Set<DM_Diemthi_List>().FromSqlRaw("EXEC [DM_Diemthi_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi).ToList();
+                if (result == null) result = new List<DM_Diemthi_List>();
                 return result;
             }
             catch (Exception)
@@ -55,23 +52,24 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Hoidongthi GetDetailById(int Id, int idDonvi)
+        public DM_Diemthi GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var hoidong = _dbContext.DM_Hoidongthi.FirstOrDefault(c => c.Id == Id && c.Id_don_vi == idDonvi);
-                return hoidong;
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(c=> c.Id).ToList();
+                var diemthi = _dbContext.DM_Diemthi.FirstOrDefault(c => c.Id == Id && hoidong.Contains(c.Id_hoi_dong));
+                return diemthi;
             }
             catch (Exception)
             {
                 return null;
             }
         }
-        public bool Add(DM_Hoidongthi hoidong)
+        public bool Add(DM_Diemthi diemthi)
         {
             try
             {
-                _dbContext.DM_Hoidongthi.Add(hoidong);
+                _dbContext.DM_Diemthi.Add(diemthi);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -80,12 +78,12 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool Update(DM_Hoidongthi hoidong)
+        public bool Update(DM_Diemthi diemthi)
         {
             try
             {
                 _dbContext.ChangeTracker.Clear();
-                _dbContext.DM_Hoidongthi.Update(hoidong);
+                _dbContext.DM_Diemthi.Update(diemthi);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -98,12 +96,13 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var hoidong = _dbContext.DM_Hoidongthi.FirstOrDefault(c=> c.Id == id && c.Id_don_vi == idDonvi);
-                if (hoidong == null)
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
+                var diemthi = _dbContext.DM_Diemthi.FirstOrDefault(c=> hoidong.Contains(c.Id_hoi_dong) && c.Id == id);
+                if (diemthi == null)
                 {
                     return false;
                 }
-                _dbContext.DM_Hoidongthi.Remove(hoidong);
+                _dbContext.DM_Diemthi.Remove(diemthi);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -112,11 +111,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckMa(string Ma, int idNam, int? Id)
+        public bool CheckMa(string Ma, int idDonvi, int? Id)
         {
             try
             {
-                var query = _dbContext.DM_Hoidongthi.Where(c => c.Ma == Ma && c.Id_nam == idNam);
+                var query = _dbContext.DM_Diemthi.Where(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
 
                 if (Id.HasValue)
                 {
@@ -132,7 +131,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool Check_constraint(int Id)
+        public bool Check_constraint(int Id, int idDonvi)
         {
             try
             {
@@ -146,13 +145,13 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        
+
         public bool CheckId(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Hoidongthi.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
+                return _dbContext.DM_Diemthi.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
             }
             catch
             {
@@ -161,7 +160,7 @@ namespace NA_Logic.Repository
         }
         public bool CheckIds(IEnumerable<int> ids)
         {
-            var existingIds = _dbContext.DM_Hoidongthi.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Diemthi.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

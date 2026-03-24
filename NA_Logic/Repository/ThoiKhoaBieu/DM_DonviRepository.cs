@@ -171,6 +171,18 @@ namespace NA_Logic.Repository.LichBaoGiang
                 return false;
             }
         }
+        public bool CheckIdCon(int Id, int idCha)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+                return _context.DM_Donvi.Any(c => c.Id == Id && c.Id_cha == idCha);
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public bool CheckTrungTen(string ten, int? excludeId = null)
         {

@@ -30,6 +30,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool CheckTrungTen( string ten, int? excludeId = null);
         bool CheckIdCha(int Id);
         bool CheckId(int Id);
+        bool CheckIdCon(int Id, int idCha);
         List<DM_Donvi> GetList_SoGiaoDuc();
     }
 }
