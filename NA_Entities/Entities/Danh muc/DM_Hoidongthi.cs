@@ -24,7 +24,7 @@ namespace NA_Entities.Entities.Danh_muc
     public class DM_Hoidongthi_List
     {
         public int Id { get; set; }
-        public int Ma { get; set; }
+        public string Ma { get; set; }
         public string Ten { get; set; }
         public int Id_don_vi { get; set; }
         public string Ten_don_vi { get; set; }
