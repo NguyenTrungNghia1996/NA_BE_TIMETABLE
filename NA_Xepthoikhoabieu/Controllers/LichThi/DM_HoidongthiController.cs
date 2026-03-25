@@ -155,19 +155,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (hoidongdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _hoidong.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
-
-            //bool deletehoidongLopon = _hl.DeleteByhoidong(id);
-            //if (!deletehoidongLopon)
-            //    return ApiResult.BadRequest("Xoá các lớp ôn của học sinh thất bại");
-
-            //bool deletehoidongTohop = _ht.DeleteByhoidong(id);
-            //if (!deletehoidongTohop)
-            //    return ApiResult.BadRequest("Xoá các tổ hợp môn của học sinh thất bại");
+            bool check = _hoidong.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Hội đồng đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _hoidong.Delete(id, idDonvi);
             if (!request)

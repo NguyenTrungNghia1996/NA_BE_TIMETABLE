@@ -63,6 +63,6 @@ namespace NA_Entities.Entities.Danhmuc
         public string Ten_ca { get; set;} = string.Empty;
         public int So_ngay { get; set; } = 0;
         public int? Id_cha { get; set; }
-        public string Ten_cha { get; set; } = string.Empty;
+        public string? Ten_cha { get; set; } = string.Empty;
     }
 }

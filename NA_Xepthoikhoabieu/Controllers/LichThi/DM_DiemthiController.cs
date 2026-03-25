@@ -76,10 +76,10 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool checkma = _diemthi.CheckMa(diemthi.Ma, idDonvi, diemthi.Id);
+            bool checkma = _diemthi.CheckMa(diemthi.Ma, diemthi.Id_hoi_dong, diemthi.Id);
             if (checkma)
             {
-                return ApiResult.BadRequest("Mã hội đồng đã tồn tại");
+                return ApiResult.BadRequest("Mã điểm thi đã tồn tại");
             }
 
             if (diemthi.Id_hoi_dong == 0 || diemthi.Id_hoi_dong == null)
@@ -134,11 +134,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkma = _diemthi.CheckMa(diemthi.Ma, diemthi.Id_hoi_dong, diemthi.Id);
             if (checkma)
             {
-                return ApiResult.BadRequest("Mã hội đồng đã tồn tại");
+                return ApiResult.BadRequest("Mã điểm thi đã tồn tại");
             }
             if (diemthi.Id_hoi_dong == 0 || diemthi.Id_hoi_dong == null)
             {
-                return ApiResult.BadRequest("Vui lòng chọn năm");
+                return ApiResult.BadRequest("Vui lòng chọn hội đồng");
             }
             if (diemthi.Id_don_vi == 0 || diemthi.Id_don_vi == null)
             {

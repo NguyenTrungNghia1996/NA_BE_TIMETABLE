@@ -111,11 +111,11 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool CheckMa(string Ma, int idDonvi, int? Id)
+        public bool CheckMa(string Ma, int idHoiDong, int? Id)
         {
             try
             {
-                var query = _dbContext.DM_Diemthi.Where(c => c.Ma == Ma && c.Id_don_vi == idDonvi);
+                var query = _dbContext.DM_Diemthi.Where(c => c.Ma == Ma && c.Id_hoi_dong == idHoiDong);
 
                 if (Id.HasValue)
                 {
