@@ -137,6 +137,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Hoidongthi_List> DM_Hoidongthi_List { get; set; }
         public DbSet<DM_Diemthi> DM_Diemthi { get; set; }
         public DbSet<DM_Diemthi_List> DM_Diemthi_List { get; set; }
+        public DbSet<DM_Monthi> DM_Monthi { get; set; }
+        public DbSet<DM_Monthi_List> DM_Monthi_List { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -194,6 +196,7 @@ namespace NA_Entities.DBContext
             builder.Entity<Ketqua_Hocsinh_ToHopMon>().HasNoKey();
             builder.Entity<DM_Hoidongthi_List>().HasNoKey();
             builder.Entity<DM_Diemthi_List>().HasNoKey();
+            builder.Entity<DM_Monthi_List>().HasNoKey();
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>

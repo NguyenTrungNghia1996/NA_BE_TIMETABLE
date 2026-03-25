@@ -83,8 +83,11 @@ namespace NA_Xepthoikhoabieu.Mapping
 
             CreateMap<DM_Hoidongthi, DM_HoidongthiDto>();
             CreateMap<DM_HoidongthiDto, DM_Hoidongthi>();
-            CreateMap<DM_Hoidongthi_List, DM_Hoidongthi_ListDto>();;
+            CreateMap<DM_Hoidongthi_List, DM_Hoidongthi_ListDto>();
             CreateMap<DM_Diemthi_List, DM_Diemthi_ListDto>();
+            CreateMap<DM_Monthi, DM_MonthiDto>();
+            CreateMap<DM_MonthiDto, DM_Monthi>();
+            CreateMap<DM_Monthi_List, DM_Monthi_ListDto>(); ;
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();
