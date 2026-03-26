@@ -71,7 +71,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet("list")]
         [RequireToken]
-        public IActionResult GetListMon([FromQuery] int idDiemThi)
+        public IActionResult GetList([FromQuery] int idDiemThi)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             bool checkDiemthi = _diemthi.CheckId(idDiemThi, idDonvi);
@@ -106,7 +106,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
-            bool checkGiaoVien = _giaovien.CheckIds(data.Id_giao_vien.OfType<int>(), idDonvi);
+            var diemThi = _diemthi.GetDetailById(data.Id_diem_thi, idDonvi);
+            bool checkGiaoVien = _giaovien.CheckIds(data.Id_giao_vien.OfType<int>(), diemThi.Id_don_vi);
             if (!checkGiaoVien)
             {
                 return ApiResult.BadRequest("Id giáo viên không hợp lệ, vui lòng kiểm tra lại");

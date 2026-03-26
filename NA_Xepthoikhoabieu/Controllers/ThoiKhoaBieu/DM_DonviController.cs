@@ -42,12 +42,12 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
         {
             int idUser = _claimHelperRepository.GetUserId(User);
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            bool checkSo = _donvi.CheckIdCha(idDonvi);
+            //bool checkSo = _donvi.CheckIdCha(idDonvi);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            if (!checkIsAdmin && !checkSo)
-            {
-                return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
-            }
+            //if (!checkIsAdmin && !checkSo)
+            //{
+            //    return ApiResult.Forbidden("Không có quyền truy cập, vui lòng liên hệ admin");
+            //}
             // Lấy danh sách dữ liệu
             int totalrecord = 0;
             search = search.Trim();

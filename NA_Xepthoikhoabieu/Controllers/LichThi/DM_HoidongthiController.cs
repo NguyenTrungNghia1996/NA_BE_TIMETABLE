@@ -77,7 +77,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool checkma = _hoidong.CheckMa(hoidong.Ma, hoidong.Id_nam, hoidong.Id);
+            bool checkma = _hoidong.CheckMa(hoidong.Ma, idDonvi, hoidong.Id_nam, hoidong.Id);
             if (checkma)
             {
                 return ApiResult.BadRequest("Mã hội đồng đã tồn tại");
@@ -119,7 +119,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (hoidongdb == null)
                 return ApiResult.NotFound("Bản ghi không tồn tại, vui lòng kiểm tra lại Id");
 
-            bool checkma = _hoidong.CheckMa(hoidong.Ma, hoidong.Id_nam, hoidong.Id);
+            bool checkma = _hoidong.CheckMa(hoidong.Ma, idDonvi, hoidong.Id_nam, hoidong.Id);
             if (checkma)
             {
                 return ApiResult.BadRequest("Mã hội đồng đã tồn tại");

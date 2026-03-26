@@ -14,7 +14,7 @@ namespace NA_Logic.IRepository.XepGiamThi
         bool Add(DM_Hoidongthi hoidong);
         bool Update(DM_Hoidongthi hoidong);
         bool Delete(int id, int idDonvi);
-        bool CheckMa(string Ma, int idNam, int? Id);
+        bool CheckMa(string Ma, int idDonVi, int idNam, int? Id);
         bool CheckId(int Id, int idDonvi);
         bool Check_constraint(int Id);
     }
