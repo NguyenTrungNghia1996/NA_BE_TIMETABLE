@@ -24,7 +24,7 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
             _dbContext = dbContext;
         }
 
-        public List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, ref int totalrecord)
+        public List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, int Id_don_vi, ref int totalrecord)
         {
             try
             {
@@ -44,6 +44,10 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 {
                     Value = idDonvi 
                 };
+                var paramIdDonViSearch = new SqlParameter("Id_don_vi", SqlDbType.Int)
+                {
+                    Value = Id_don_vi 
+                };
                 var paramIdmon = new SqlParameter("idMon", SqlDbType.Int)
                 {
                     Value = idMon
@@ -53,8 +57,9 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 {
                     Direction = ParameterDirection.Output
                 };
-                var result = _dbContext.Set<DM_Giaovien_List>().FromSqlRaw("EXEC DM_Giaovien_GetList_Paging @pageIndex, @pageSize, @search, @idMon, @idDonvi, @total OUTPUT",
-                    paramPageIndex, paramPageSize, paramSearch,paramIdmon, paramIdDonvi, paramTotal)
+                var result = _dbContext.Set<DM_Giaovien_List>().FromSqlRaw("EXEC DM_Giaovien_GetList_Paging @pageIndex, @pageSize, @search, @idMon, @idDonvi, " +
+                    "@Id_don_vi, @total OUTPUT",
+                    paramPageIndex, paramPageSize, paramSearch,paramIdmon, paramIdDonvi, paramIdDonViSearch, paramTotal)
                     .ToList();
                 if (result == null) result = new List<DM_Giaovien_List>();
                 totalrecord = (int)paramTotal.Value;
@@ -344,9 +349,9 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 return false;
             }
         }
-        public bool CheckIds(IEnumerable<int> ids)
+        public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Giaovien.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
+            var existingIds = _dbContext.DM_Giaovien.Where(c => ids.Contains(c.Id) && c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
             return ids.All(id => existingIds.Contains(id));
         }
 

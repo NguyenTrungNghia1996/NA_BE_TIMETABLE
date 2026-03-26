@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
 {
     public interface IDM_GiaovienRepository
     {
-        List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, ref int totalrecord);
+        List<DM_Giaovien_List> GetList_Paging(int PageIndex, int PageSize, string search, int idMon, int idDonvi, int Id_don_vi, ref int totalrecord);
         DM_Giaovien GetDetailById(int Id, int idDonvi);
         List<int> GetlistDiadiemday(int id);
         List<int> GetlistTochuyenmon(int id);
@@ -26,7 +26,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool checkContraints(int Id, int idDonvi);
         bool CheckMa(string Ma, int idDonvi, int? Id);
         bool CheckId(int Id, int idDonvi);
-        bool CheckIds(IEnumerable<int> ids);
+        bool CheckIds(IEnumerable<int> ids, int idDonvi);
         Giaovien_banDto GetListTietBan(int Id, int idDonvi);
         bool AddTietBan(List<Giaovien_Tiettranhxep> dsTietTranhXep, int Idgv);
         bool SaveBuoiday(Giaovien_Buoiday gvbd);

@@ -151,7 +151,8 @@ namespace NA_Logic.Repository
             if (Id <= 0) return false;
             try
             {
-                return _dbContext.DM_Diemthi.Any(c => c.Id == Id && c.Id_don_vi == idDonvi);
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
+                return _dbContext.DM_Diemthi.Any(c => c.Id == Id && hoidong.Contains(c.Id_hoi_dong));
             }
             catch
             {
