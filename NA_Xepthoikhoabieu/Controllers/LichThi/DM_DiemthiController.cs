@@ -181,19 +181,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (diemthidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _diemthi.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
-
-            //bool deletediemthiLopon = _hl.DeleteBydiemthi(id);
-            //if (!deletediemthiLopon)
-            //    return ApiResult.BadRequest("Xoá các lớp ôn của học sinh thất bại");
-
-            //bool deletediemthiTohop = _ht.DeleteBydiemthi(id);
-            //if (!deletediemthiTohop)
-            //    return ApiResult.BadRequest("Xoá các tổ hợp môn của học sinh thất bại");
+            bool check = _diemthi.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Điểm thi đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _diemthi.Delete(id, idDonvi);
             if (!request)

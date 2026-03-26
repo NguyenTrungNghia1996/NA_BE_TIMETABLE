@@ -131,14 +131,14 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool Check_constraint(int Id, int idDonvi)
+        public bool Check_constraint(int Id)
         {
             try
             {
 
                 return _dbContext.Database.SqlQuery<int>($@"
-                          select 1 as Value from Phanphoi_Chuongtrinh where Id_nam_hoc = {Id}
-                          union select 1 from Lich_Baogiang where Id_nam_hoc = {Id}").Any();
+                          select 1 as Value from DM_Giamthi where Id_diem_thi = {Id}
+                          union select 1 from DM_Phongthi where Id_diem_thi = {Id}").Any();
             }
             catch (Exception)
             {

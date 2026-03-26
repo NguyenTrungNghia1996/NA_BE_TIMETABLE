@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository.LichThi
 {
     public interface IDM_GiamthiRepository
     {
-        List<DM_Giamthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi);
+        List<DM_Giamthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDiemthi);
         DM_Giamthi GetDetailById(int Id, int idDonvi);
         DM_Giamthi_Multi GetGiamThiByDiemThi(int IdDiemThi);
         bool Add(DM_Giamthi gt);

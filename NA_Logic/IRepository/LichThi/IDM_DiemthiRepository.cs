@@ -16,5 +16,6 @@ namespace NA_Logic.IRepository.LichThi
         bool Delete(int id, int idDonvi);
         bool CheckId(int Id, int idDonvi);
         bool CheckMa(string Ma, int idHoiDong, int? Id);
+        bool Check_constraint(int Id);
     }
 }
