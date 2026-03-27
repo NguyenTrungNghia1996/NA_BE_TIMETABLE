@@ -10,7 +10,7 @@ namespace NA_Entities.Entities.Danh_muc
     {
         public int Id { get; set; }
         public string Ten { get; set; }
-        public int Id_cha { get; set; }
-        public string Ten_cha { get; set; }
+        public int? Id_cha { get; set; }
+        public string? Ten_cha { get; set; }
     }
 }

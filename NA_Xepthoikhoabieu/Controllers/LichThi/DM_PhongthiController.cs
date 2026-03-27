@@ -25,6 +25,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_DonviRepository _donvi;
         private readonly IDM_GiaovienRepository _giaovien;
         private readonly IDM_DiemthiRepository _diemthi;
+        private readonly IDM_HoidongthiRepository _hoidong;
         public DM_PhongthiController(IMapper mapper, IDM_PhongthiRepository phongthi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
                                        IDM_HoidongthiRepository hoidong, IDM_DonviRepository donvi, IDM_GiaovienRepository giaovien, IDM_DiemthiRepository diemthi)
         {
@@ -35,6 +36,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _donvi = donvi;
             _giaovien = giaovien;
             _diemthi = diemthi;
+            _hoidong = hoidong;
         }
         [HttpGet]
         [RequireToken]
@@ -45,8 +47,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
             bool checkDiemthi = _diemthi.CheckId(idDiemThi, idDonvi);
-            if (!checkDiemthi)
+            if (!checkDiemthi && idDiemThi > 0)
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ");
+
+            bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
+            if (!checkHoiDong && idHoiDong > 0)
+                return ApiResult.BadRequest("Id hội đồng không hợp lệ");
 
             var list = _phongthi.GetList_Paging(PageIndex, PageSize, search, idDonvi, idDiemThi, idHoiDong);
             if (list == null || list.Count == 0)

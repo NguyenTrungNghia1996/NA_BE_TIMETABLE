@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
+using NA_Logic.IRepository.LichThi;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository.XepGiamThi
 {
-    public class DM_DantocRepository
+    public class DM_DantocRepository: IDM_DantocRepository
     {
         private readonly NA_DbContext _dbContext;
         public DM_DantocRepository(NA_DbContext dbContext)
