@@ -20,8 +20,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool Update(DM_Donvi dm_donvi);
         bool UpdateCap(int Id, List<int> capId);
         bool UpdateCa(int Id, List<int> caId);
-
-         bool Delete(int Id);
+        bool Delete(int Id);
         (bool success, string message) DeleteCap(int Id);
         bool DeleteCa(int Id);
         bool AddCap(int Id, List<int> capId);
@@ -29,7 +28,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool CheckDonviChuaCoTaikhoan(int id);
         bool CheckTrungTen( string ten, int? excludeId = null);
         bool CheckIdCha(int Id);
-        bool CheckId(int Id);
+        bool CheckId(int Id, int idDonvi);
         bool CheckIdCon(int Id, int idCha);
         List<DM_Donvi> GetList_SoGiaoDuc();
     }

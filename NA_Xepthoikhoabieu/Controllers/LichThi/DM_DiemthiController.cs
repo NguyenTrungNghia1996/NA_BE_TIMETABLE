@@ -98,11 +98,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            bool checkDonvi = true;
-            if (!checkIsAdmin)
-            {
-                checkDonvi = _donvi.CheckIdCon(diemthi.Id_don_vi, idDonvi);
-            }
+            bool checkDonvi = _donvi.CheckId(diemthi.Id_don_vi, idDonvi);
             if (!checkDonvi)
             {
                 return ApiResult.BadRequest("Id đơn vị không hợp lệ, vui lòng kiểm tra lại");
@@ -151,11 +147,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             int idUser = _claimHelperRepository.GetUserId(User);
             bool checkIsAdmin = _auth.checkIsAdmin(idUser);
-            bool checkDonvi = true;
-            if (!checkIsAdmin)
-            {
-                checkDonvi = _donvi.CheckIdCon(diemthi.Id_don_vi, idDonvi);
-            }
+            bool checkDonvi = _donvi.CheckId(diemthi.Id_don_vi, idDonvi);
             if (!checkDonvi)
             {
                 return ApiResult.BadRequest("Id đơn vị không hợp lệ, vui lòng kiểm tra lại");

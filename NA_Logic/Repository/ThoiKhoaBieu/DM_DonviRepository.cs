@@ -159,12 +159,25 @@ namespace NA_Logic.Repository.LichBaoGiang
                 return false;
             }
         }
-        public bool CheckId(int Id)
+
+        public bool CheckId(int Id, int idDonvi)
         {
-            if (Id <= 0) return false;
+            if (Id <= 0 || idDonvi <= 0) return false;
             try
             {
-                return _context.DM_Donvi.Any(c => c.Id == Id);
+                var donvi = _context.DM_Donvi.FirstOrDefault(c => c.Id == idDonvi);
+                if (donvi == null) return false;
+
+                if (donvi.La_so_giao_duc == true)
+                {
+                    return _context.DM_Donvi.Any(c => c.Id == Id &&
+                           (c.Id == idDonvi || c.Id_cha == idDonvi));
+                }
+                else
+                {
+                    return _context.DM_Donvi.Any(c => c.Id == Id &&
+                           (c.Id == idDonvi || c.Id_cha == donvi.Id_cha));
+                }
             }
             catch
             {
