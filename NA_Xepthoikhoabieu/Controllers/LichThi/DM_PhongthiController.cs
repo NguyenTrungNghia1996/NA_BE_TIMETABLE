@@ -38,7 +38,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "", [FromQuery] int idDiemThi = 0)
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "", 
+                                            [FromQuery] int idDiemThi = 0, [FromQuery] int idHoiDong = 0)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
@@ -47,7 +48,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!checkDiemthi)
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ");
 
-            var list = _phongthi.GetList_Paging(PageIndex, PageSize, search, idDiemThi);
+            var list = _phongthi.GetList_Paging(PageIndex, PageSize, search, idDonvi, idDiemThi, idHoiDong);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Phongthi_ListDto>>(list);

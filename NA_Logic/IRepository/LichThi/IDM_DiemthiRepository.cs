@@ -9,7 +9,7 @@ namespace NA_Logic.IRepository.LichThi
 {
     public interface IDM_DiemthiRepository
     {
-        List<DM_Diemthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi);
+        List<DM_Diemthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idHoiDong);
         DM_Diemthi GetDetailById(int Id, int idDonvi);
         bool Add(DM_Diemthi diemthi);
         bool Update(DM_Diemthi diemthi);

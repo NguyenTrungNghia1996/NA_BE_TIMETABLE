@@ -22,7 +22,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Diemthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi)
+        public List<DM_Diemthi_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idHoiDong)
         {
             try
             {
@@ -42,8 +42,12 @@ namespace NA_Logic.Repository
                 {
                     Value = idDonvi
                 };
-                var result = _dbContext.Set<DM_Diemthi_List>().FromSqlRaw("EXEC [DM_Diemthi_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi).ToList();
+                var paramIdHoiDong = new SqlParameter("idHoiDong", SqlDbType.Int)
+                {
+                    Value = idHoiDong
+                };
+                var result = _dbContext.Set<DM_Diemthi_List>().FromSqlRaw("EXEC [DM_Diemthi_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idHoiDong",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdHoiDong).ToList();
                 if (result == null) result = new List<DM_Diemthi_List>();
                 return result;
             }
