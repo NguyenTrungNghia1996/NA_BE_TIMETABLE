@@ -351,7 +351,22 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
         }
         public bool CheckIds(IEnumerable<int> ids, int idDonvi)
         {
-            var existingIds = _dbContext.DM_Giaovien.Where(c => ids.Contains(c.Id) && c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
+            var donvi = _dbContext.DM_Donvi.FirstOrDefault(c => c.Id == idDonvi);
+            if (donvi == null) return false;
+
+            IEnumerable<int> idDonviDuocPhep;
+            if (donvi.La_so_giao_duc == true)
+            {
+                idDonviDuocPhep = _dbContext.DM_Donvi.Where(c => c.Id == idDonvi || c.Id_cha == idDonvi).Select(c => c.Id);
+            }
+            else
+            {
+                idDonviDuocPhep = _dbContext.DM_Donvi.Where(c => c.Id == idDonvi || c.Id_cha == donvi.Id_cha).Select(c => c.Id);
+            }
+
+            var existingIds = _dbContext.DM_Giaovien.Where(c => ids.Contains(c.Id) && idDonviDuocPhep.Contains(c.Id_don_vi))
+                .Select(c => c.Id).ToList();
+
             return ids.All(id => existingIds.Contains(id));
         }
 
