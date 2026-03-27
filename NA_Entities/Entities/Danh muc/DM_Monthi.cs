@@ -15,6 +15,15 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_hoi_dong { get; set; }
         public int? Id_mon { get; set; }
     }
+    public class DM_Monthi_Detail
+    {
+        public int Id { get; set; }
+        public string Ma { get; set; }
+        public string Ten { get; set; }
+        public int Id_hoi_dong { get; set; }
+        public int? Id_mon { get; set; }
+        public int Id_nam { get; set; }
+    }
     public class DM_Monthi_Multi
     {
         public int Id_hoi_dong { get; set; }

@@ -63,20 +63,30 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Phongthi GetDetailById(int Id, int idDonvi)
+        public DM_Phongthi_Detail GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var idDiemthiByDonvi = _dbContext.DM_Diemthi.Where(c => c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
+                var result = (from phong in _dbContext.DM_Phongthi
+                              join diem in _dbContext.DM_Diemthi
+                                  on phong.Id_diem_thi equals diem.Id
+                              join hoidong in _dbContext.DM_Hoidongthi
+                                  on diem.Id_hoi_dong equals hoidong.Id into hoidongGroup
+                              from hoidong in hoidongGroup.DefaultIfEmpty()
+                              where phong.Id == Id
+                                    && (diem.Id_don_vi == idDonvi || hoidong.Id_don_vi == idDonvi)
+                              select new DM_Phongthi_Detail
+                              {
+                                  Id =  phong.Id, 
+                                  So_phong= phong.So_phong, 
+                                  Toa = phong.Toa, 
+                                  Tang = phong.Tang, 
+                                  Id_diem_thi = phong.Id_diem_thi, 
+                                  Id_hoi_dong = diem.Id_hoi_dong, 
+                                  Id_nam = hoidong.Id_nam
+                              }).FirstOrDefault();
 
-                var idHoidong = _dbContext.DM_Hoidongthi.Where(c => c.Id_don_vi == idDonvi).Select(c => c.Id).ToList();
-
-                var idDiemthiByHoidong = _dbContext.DM_Diemthi.Where(c => idHoidong.Contains(c.Id_hoi_dong)).Select(c => c.Id).ToList();
-
-                var idDiemthi = idDiemthiByDonvi.Union(idDiemthiByHoidong).ToList();
-
-                var phongThi = _dbContext.DM_Phongthi.FirstOrDefault(c => c.Id == Id && idDiemthi.Contains(c.Id_diem_thi));
-                return phongThi;
+                return result;
             }
             catch (Exception)
             {

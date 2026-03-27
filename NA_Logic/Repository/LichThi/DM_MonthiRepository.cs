@@ -56,13 +56,25 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public DM_Monthi GetDetailById(int Id, int idDonvi)
+        public DM_Monthi_Detail GetDetailById(int Id, int idDonvi)
         {
             try
             {
-                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(h => h.Id).ToList();
-                var mon = _dbContext.DM_Monthi.FirstOrDefault(c => c.Id == Id && hoidong.Contains(c.Id_hoi_dong));
-                return mon;
+                var result = (from mon in _dbContext.DM_Monthi
+                              join hoidong in _dbContext.DM_Hoidongthi
+                                  on mon.Id_hoi_dong equals hoidong.Id
+                              where mon.Id == Id && hoidong.Id_don_vi == idDonvi
+                              select new DM_Monthi_Detail
+                              {
+                                  Id = mon.Id,
+                                  Ma = mon.Ma,
+                                  Ten = mon.Ten,
+                                  Id_hoi_dong = mon.Id_hoi_dong,
+                                  Id_mon = mon.Id_mon,
+                                  Id_nam = hoidong.Id_nam
+                              }).FirstOrDefault();
+
+                return result;
             }
             catch (Exception)
             {
