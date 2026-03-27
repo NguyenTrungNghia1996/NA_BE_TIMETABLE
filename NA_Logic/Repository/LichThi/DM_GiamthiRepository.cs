@@ -234,7 +234,6 @@ namespace NA_Logic.Repository
         {
             try
             {
-
                 using var stream = file.OpenReadStream();
                 using var workbook = new XLWorkbook(stream);
                 var worksheet = workbook.Worksheet(1);
