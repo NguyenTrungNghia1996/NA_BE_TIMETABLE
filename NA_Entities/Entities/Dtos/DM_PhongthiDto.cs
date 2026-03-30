@@ -9,6 +9,7 @@ namespace NA_Entities.Entities.Dtos
     public class DM_Phongthi_ListDto
     {
         public int Id { get; set; }
+        public int So_phong { get; set; }
         public string Toa { get; set; }
         public int Tang { get; set; }
         public int Id_diem_thi { get; set; }
