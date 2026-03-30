@@ -179,7 +179,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkma = _monthi.CheckMa(monthi.Ma, monthi.Id_hoi_dong, monthi.Id);
             if (checkma)
             {
-                return ApiResult.BadRequest("Mã hội đồng đã tồn tại");
+                return ApiResult.BadRequest("Mã môn thi đã tồn tại");
             }
             bool checkten = _monthi.CheckTrungTen(monthi.Id_hoi_dong, monthi.Ten, monthi.Id);
             if (checkten)
