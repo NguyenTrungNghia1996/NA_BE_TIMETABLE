@@ -107,7 +107,7 @@ namespace NA_Logic.Repository
                 _dbContext.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("UQ_CCCD") == true)
             {
                 return false;
             }
@@ -186,7 +186,7 @@ namespace NA_Logic.Repository
         //    var existingIds = _dbContext.DM_Thisinh.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
         //    return ids.All(id => existingIds.Contains(id));
         //}
-        public (bool result, string mess) Import(Stream file, int idDonvi)
+        public (bool result, string mess, List<ThiSinhCheck> list) Import(Stream file, int idDonvi)
         {
             try
             {
@@ -194,9 +194,9 @@ namespace NA_Logic.Repository
                 var worksheet = workbook.Worksheet(1);
                 var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 0;
                 if (lastRow < 2)
-                    return (false, "File Excel không có dữ liệu");
+                    return (false, "File Excel không có dữ liệu", null);
 
-                var headers = new[] { "STT", "Mã điểm thi", "Số phòng", "Toà nhà", "Tầng" };
+                var headers = new[] { "STT", "Mã điểm thi", "Họ và tên", "CCCD", "Ngày sinh", "Nơi sinh", "Nơi thường trú", "Dân tộc", "Môn thi 1", "Môn thi 2" };
                 for (int col = 1; col <= headers.Length; col++)
                 {
                     var headerValue = worksheet.Cell(1, col).Value.ToString()?.Trim()
@@ -205,62 +205,90 @@ namespace NA_Logic.Repository
 
                     if (string.IsNullOrEmpty(headerValue) ||
                         !headerValue.Equals(expected, StringComparison.OrdinalIgnoreCase))
-                        return (false, "File không đúng định dạng");
+                        return (false, "File không đúng định dạng",null);
                 }
 
                 var rows = worksheet.RowsUsed().Skip(1).ToList();
 
-                var soPhong = rows.Select(r => r.Cell(3).GetValue<int>()).OrderBy(x => x).ToList();
-                if (soPhong[0] != 1)
-                    return (false, "Phòng đầu tiên phải bắt đầu từ 1");
-
-                var cacthisinheu = new List<int>();
-                for (int i = 1; i <= soPhong.Count; i++)
-                {
-                    if (!soPhong.Contains(i))
-                        cacthisinheu.Add(i);
-                }
-                if (cacthisinheu.Any())
-                    return (false, $"Số phòng phải liên tiếp, thiếu phòng: {string.Join(", ", cacthisinheu)}");
-
                 var dataTable = new DataTable();
                 dataTable.Columns.Add("STT", typeof(int));
                 dataTable.Columns.Add("Ma_diem_thi", typeof(string));
-                dataTable.Columns.Add("So_phong", typeof(int));
-                dataTable.Columns.Add("Toa", typeof(string));
-                dataTable.Columns.Add("Tang", typeof(int));
+                dataTable.Columns.Add("Ho_va_ten", typeof(string));
+                dataTable.Columns.Add("CCCD", typeof(string));
+                dataTable.Columns.Add("Ngay_sinh", typeof(DateTime));
+                dataTable.Columns.Add("Noi_sinh", typeof(int));
+                dataTable.Columns.Add("Noi_thuong_tru", typeof(int));
+                dataTable.Columns.Add("Dan_toc", typeof(int));
+                dataTable.Columns.Add("Mon_1", typeof(string));
+                dataTable.Columns.Add("Mon_2", typeof(string));
+
 
                 int stt = 1;
                 foreach (var row in rows)
                 {
-                    dataTable.Rows.Add(
-                        stt,
-                        row.Cell(2).GetValue<string>()?.Trim(),
-                        row.Cell(3).GetValue<int>(),
-                        row.Cell(4).GetValue<string>()?.Trim(),
-                        row.Cell(5).GetValue<string>()?.Trim()
-                    );
+                    var maDiemThi = row.Cell(2).GetValue<string>()?.Trim();
+                    var hoVaTen = row.Cell(3).GetValue<string>()?.Trim();
+                    var cccd = row.Cell(4).GetValue<string>()?.Trim();
+                    var ngaySinhRaw = row.Cell(5).Value.ToString()?.Trim();
+                    var noiSinhRaw = row.Cell(6).Value.ToString()?.Trim();
+                    var noiThuongTruRaw = row.Cell(7).Value.ToString()?.Trim();
+                    var danTocRaw = row.Cell(8).Value.ToString()?.Trim();
+                    var mon1 = row.Cell(9).Value.ToString()?.Trim();
+                    var mon2 = row.Cell(10).Value.ToString()?.Trim();
+
+                    // Check không được để trống
+                    if (string.IsNullOrEmpty(maDiemThi)) 
+                        return (false, $"Dòng {stt + 1}: Mã điểm thi không được để trống", null);
+                    if (string.IsNullOrEmpty(hoVaTen)) 
+                        return (false, $"Dòng {stt + 1}: Họ và tên không được để trống", null);
+                    if (string.IsNullOrEmpty(cccd)) 
+                        return (false, $"Dòng {stt + 1}: CCCD không được để trống", null);
+                    if (string.IsNullOrEmpty(ngaySinhRaw)) 
+                        return (false, $"Dòng {stt + 1}: Ngày sinh không được để trống", null);
+                    if (string.IsNullOrEmpty(noiSinhRaw)) 
+                        return (false, $"Dòng {stt + 1}: Nơi sinh không được để trống", null);
+                    if (string.IsNullOrEmpty(noiThuongTruRaw)) 
+                        return (false, $"Dòng {stt + 1}: Nơi thường trú không được để trống", null);
+                    if (string.IsNullOrEmpty(danTocRaw)) 
+                        return (false, $"Dòng {stt + 1}: Dân tộc không được để trống", null);
+                    if (string.IsNullOrEmpty(mon1)) 
+                        return (false, $"Dòng {stt + 1}: Môn thi 1 không được để trống", null);
+                    if (string.IsNullOrEmpty(mon2)) 
+                        return (false, $"Dòng {stt + 1}: Môn thi 2 không được để trống", null);
+
+                    // Check đúng kiểu dữ liệu
+                    if (!DateTime.TryParse(ngaySinhRaw, out var ngaySinh)) 
+                        return (false, $"Dòng {stt + 1}: Ngày sinh không đúng định dạng", null);
+                    if (!int.TryParse(noiSinhRaw, out var noiSinh)) 
+                        return (false, $"Dòng {stt + 1}: Nơi sinh phải là số", null);
+                    if (!int.TryParse(noiThuongTruRaw, out var noiThuongTru)) 
+                        return (false, $"Dòng {stt + 1}: Nơi thường trú phải là số", null);
+                    if (!int.TryParse(danTocRaw, out var danToc)) 
+                        return (false, $"Dòng {stt + 1}: Dân tộc phải là số", null);
+
+                    dataTable.Rows.Add(stt, maDiemThi, hoVaTen, cccd, ngaySinh, noiSinh, noiThuongTru, danToc, mon1, mon2);
                     stt++;
                 }
 
                 var paramIdDonvi = new SqlParameter("Id_don_vi", SqlDbType.Int) { Value = idDonvi };
                 var dataParam = new SqlParameter("@Data", SqlDbType.Structured)
                 {
-                    TypeName = "dbo.DMthisinh",
+                    TypeName = "dbo.DMThiSinh",
                     Value = dataTable
                 };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC [Importthisinh] @Id_don_vi, @Data, @Message OUTPUT", paramIdDonvi, dataParam, paramMessage);
+                var danhSach = _dbContext.Database.SqlQueryRaw<ThiSinhCheck>("EXEC [CheckThiSinh] @Id_don_vi, @Data, @Message OUTPUT",paramIdDonvi, dataParam, paramMessage)
+                    .ToList();
 
                 var message = paramMessage.Value?.ToString() ?? "";
                 if (message == "Thành công")
-                    return (true, message);
-                return (false, message);
+                    return (true, message, danhSach);
+                return (false, message, null);
             }
             catch
             {
-                return (false, "Import thất bại");
+                return (false, "Import thất bại", null);
             }
         }
     }

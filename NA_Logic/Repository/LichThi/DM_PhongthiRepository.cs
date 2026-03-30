@@ -241,7 +241,7 @@ namespace NA_Logic.Repository
                         row.Cell(2).GetValue<string>()?.Trim(),
                         row.Cell(3).GetValue<int>(),
                         row.Cell(4).GetValue<string>()?.Trim(),
-                        row.Cell(5).GetValue<string>()?.Trim()
+                        row.Cell(5).GetValue<int>()
                     );
                     stt++;
                 }

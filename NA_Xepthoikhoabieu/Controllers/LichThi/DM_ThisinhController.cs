@@ -218,32 +218,36 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
-        //[HttpPost("import")]
-        //[RequireToken]
-        //public IActionResult Import(IFormFile file)
-        //{
-        //    int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-        //    if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-        //    if (file == null || file.Length == 0)
-        //        return ApiResult.BadRequest("Vui lòng chọn file");
+        [HttpPost("import")]
+        [RequireToken]
+        public IActionResult Import(IFormFile file)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (file == null || file.Length == 0)
+                return ApiResult.BadRequest("Vui lòng chọn file");
 
 
-        //    var extension = Path.GetExtension(file.FileName).ToLower();
-        //    if (extension != ".xlsx" && extension != ".xls")
-        //        return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
-        //    var (result, mess) = (false, "");
-        //    using (var stream = file.OpenReadStream())
-        //    {
-        //        (result, mess) = _thisinh.Import(stream, idDonvi);
-        //    }
-        //    if (result)
-        //    {
-        //        return ApiResult.Success("Import thành công");
-        //    }
-        //    else
-        //    {
-        //        return ApiResult.BadRequest(mess);
-        //    }
-        //}
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            if (extension != ".xlsx" && extension != ".xls")
+                return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
+            var (result, mess, list) = (false, "", new List<ThiSinhCheck>());
+            using (var stream = file.OpenReadStream())
+            {
+                (result, mess, list) = _thisinh.Import(stream, idDonvi);
+            }
+            if (result)
+            {
+                return ApiResult.Success(new
+                {
+                    item = list
+                },
+            "Thành công");
+            }
+            else
+            {
+                return ApiResult.BadRequest(mess);
+            }
+        }
     }
 }

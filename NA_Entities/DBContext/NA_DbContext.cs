@@ -145,6 +145,7 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Phongthi_List> DM_Phongthi_List { get; set; }
         public DbSet<DM_Thisinh> DM_Thisinh { get; set; }
         public DbSet<DM_Thisinh_List> DM_Thisinh_List { get; set; }
+        public DbSet<ThiSinhCheck> ThiSinhCheck { get; set; }
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
@@ -206,6 +207,8 @@ namespace NA_Entities.DBContext
             builder.Entity<DM_Giamthi_List>().HasNoKey();
             builder.Entity<DM_Phongthi_List>().HasNoKey();
             builder.Entity<DM_Thisinh_List>().HasNoKey();
+            builder.Entity<ThiSinhCheck>().HasNoKey();
+
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
             builder.Entity<DM_Donvi>(entity =>
