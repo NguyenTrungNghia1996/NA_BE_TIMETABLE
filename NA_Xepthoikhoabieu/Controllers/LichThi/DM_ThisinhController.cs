@@ -249,5 +249,28 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(mess);
             }
         }
+        [HttpPost("SBD")]
+        [RequireToken]
+        public IActionResult DanhSBD([FromQuery] int idHoiDong)
+        {
+            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (idHoiDong == 0 || idHoiDong == null)
+            {
+                return ApiResult.BadRequest("Hội đồng thi không được để trống");
+            }
+            bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
+            if (!checkHoiDong)
+            {
+                return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
+            }
+
+            bool add = _thisinh.DanhSoBaoDanh(idHoiDong);
+            if (!add)
+                return ApiResult.NotFound("Thất bại, lưu dữ liệu không thành công");
+
+            return ApiResult.Success("Thành công");
+        }
     }
 }

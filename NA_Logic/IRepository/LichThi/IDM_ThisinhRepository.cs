@@ -16,5 +16,6 @@ namespace NA_Logic.IRepository.LichThi
         bool Delete(int id);
         bool CheckId(int Id, int idDonvi);
         (bool result, string mess, List<ThiSinhCheck> list) Import(Stream file, int idDonvi);
+        bool DanhSoBaoDanh(int idHoiDong);
     }
 }

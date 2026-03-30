@@ -11,6 +11,7 @@ using NA_Logic.IRepository.XepGiamThi;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -144,7 +145,40 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool DanhSoBaoDanh(int idHoiDong)
+        {
+            try
+            {
+                var culture = new CultureInfo("vi-VN");
+                var comparer = StringComparer.Create(culture, ignoreCase: true);
 
+                var hoiDong = _dbContext.DM_Hoidongthi.FirstOrDefault(x => x.Id == idHoiDong);
+                if (hoiDong == null) return false;
+
+                var danhSach = (from ts in _dbContext.DM_Thisinh
+                                join dt in _dbContext.DM_Diemthi on ts.Id_diem_thi equals dt.Id
+                                join hd in _dbContext.DM_Hoidongthi on dt.Id_hoi_dong equals hd.Id
+                                where hd.Id == idHoiDong
+                                select ts).ToList();
+
+                if (!danhSach.Any()) return false;
+
+                var sorted = danhSach
+                    .OrderBy(x => x.Ho_va_ten.Split(' ').Last(), comparer)
+                    .ThenBy(x => string.Join(" ", x.Ho_va_ten.Split(' ').SkipLast(1)), comparer)
+                    .ToList();
+
+                for (int i = 0; i < sorted.Count; i++)
+                    sorted[i].So_bao_danh = $"{hoiDong.Ma}{(i + 1):D6}";
+
+                _dbContext.BulkUpdate(sorted);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool Check_constraint(int Id)
         {
             try
