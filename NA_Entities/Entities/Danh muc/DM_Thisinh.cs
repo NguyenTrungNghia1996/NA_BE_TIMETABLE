@@ -28,9 +28,11 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ho_va_ten { get;set; }
         public DateTime Ngay_sinh { get; set; }
         public int Noi_sinh_xa { get; set; }
+        public int Noi_sinh_tinh { get; set; }
         public int Dan_toc { get; set; }
         public string CCCD { get; set; }
         public int Thuong_tru_xa { get; set; }
+        public int Thuong_tru_tinh { get; set; }
         public int? Id_truong { get; set; }
         public int Id_diem_thi { get; set; }
         public int Mon_thi_1 { get; set; }

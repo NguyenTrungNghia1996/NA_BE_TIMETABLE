@@ -70,6 +70,8 @@ namespace NA_Logic.Repository
                 var result = (from thisinh in _dbContext.DM_Thisinh
                               join diem in _dbContext.DM_Diemthi on thisinh.Id_diem_thi equals diem.Id
                               join hoidong in _dbContext.DM_Hoidongthi on diem.Id_hoi_dong equals hoidong.Id into hoidongGroup from hoidong in hoidongGroup.DefaultIfEmpty()
+                              join noisinh in _dbContext.DM_DonviHanhchinh on thisinh.Noi_sinh_xa equals noisinh.Id
+                              join thuongtru in _dbContext.DM_DonviHanhchinh on thisinh.Thuong_tru_xa equals thuongtru.Id
                               where thisinh.Id == Id && (diem.Id_don_vi == idDonvi || hoidong.Id_don_vi == idDonvi)
                               select new DM_Thisinh_Detail
                               {
@@ -78,9 +80,11 @@ namespace NA_Logic.Repository
                                   Ho_va_ten = thisinh.Ho_va_ten,
                                   Ngay_sinh = thisinh.Ngay_sinh,
                                   Noi_sinh_xa = thisinh.Noi_sinh_xa,
+                                  Noi_sinh_tinh = (int)noisinh.Id_cha,
                                   Dan_toc = thisinh.Dan_toc,
                                   CCCD = thisinh.CCCD,
                                   Thuong_tru_xa = thisinh.Thuong_tru_xa,
+                                  Thuong_tru_tinh = (int)thuongtru.Id_cha,
                                   Mon_thi_1 = thisinh.Mon_thi_1,
                                   Mon_thi_2 = thisinh.Mon_thi_2,
                                   Id_diem_thi = thisinh.Id_diem_thi,
