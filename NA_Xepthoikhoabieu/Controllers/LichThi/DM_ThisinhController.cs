@@ -113,6 +113,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id dân tộc không hợp lệ, vui lòng kiểm tra lại");
             }
+            if (data.Mon_thi_1 == null && data.Mon_thi_2 == null)
+                return ApiResult.BadRequest("Vui lòng chọn ít nhất 1 môn thi");
             bool checkMon1 = _monthi.CheckId(data.Mon_thi_1, idDonvi);
             if (!checkMon1)
             {
@@ -175,6 +177,8 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id dân tộc không hợp lệ, vui lòng kiểm tra lại");
             }
+            if (thisinh.Mon_thi_1 == null && thisinh.Mon_thi_2 == null)
+                return ApiResult.BadRequest("Vui lòng chọn ít nhất 1 môn thi");
             bool checkMon1 = _monthi.CheckId(thisinh.Mon_thi_1, idDonvi);
             if (!checkMon1)
             {

@@ -24,10 +24,8 @@ namespace NA_Entities.Entities.Dtos
         public int Thuong_tru_xa { get; set; }
         [Required(ErrorMessage = "Điểm thi không được để trống")]
         public int Id_diem_thi { get; set; }
-        [Required(ErrorMessage = "Môn thi 1 không được để trống")]
-        public int Mon_thi_1 { get; set; }
-        [Required(ErrorMessage = "Môn thi 2 không được để trống")]
-        public int Mon_thi_2 { get; set; }
+        public int? Mon_thi_1 { get; set; }
+        public int? Mon_thi_2 { get; set; }
     }
     public class DM_Thisinh_ListDto
     {
@@ -43,9 +41,9 @@ namespace NA_Entities.Entities.Dtos
         public string Ten_thuong_tru { get; set; }
         public int Thuong_tru_xa { get; set; }
         public int Id_diem_thi { get; set; }
-        public string Ten_mon_1 { get; set; }
-        public int Mon_thi_1 { get; set; }
-        public string Ten_mon_2 { get; set; }
-        public int Mon_thi_2 { get; set; }
+        public string? Ten_mon_1 { get; set; }
+        public int? Mon_thi_1 { get; set; }
+        public string? Ten_mon_2 { get; set; }
+        public int? Mon_thi_2 { get; set; }
     }
 }

@@ -18,8 +18,8 @@ namespace NA_Entities.Entities.Danh_muc
         public int Thuong_tru_xa { get; set; }
         public int? Id_truong { get; set; }
         public int Id_diem_thi { get; set; }
-        public int Mon_thi_1 { get; set; }
-        public int Mon_thi_2 { get; set; }
+        public int? Mon_thi_1 { get; set; }
+        public int? Mon_thi_2 { get; set; }
     }
     public class DM_Thisinh_Detail
     {
@@ -35,8 +35,8 @@ namespace NA_Entities.Entities.Danh_muc
         public int Thuong_tru_tinh { get; set; }
         public int? Id_truong { get; set; }
         public int Id_diem_thi { get; set; }
-        public int Mon_thi_1 { get; set; }
-        public int Mon_thi_2 { get; set; }
+        public int? Mon_thi_1 { get; set; }
+        public int? Mon_thi_2 { get; set; }
         public int Id_hoi_dong { get; set; }
         public int Id_nam { get; set; }
     }
@@ -49,8 +49,8 @@ namespace NA_Entities.Entities.Danh_muc
         public int Dan_toc { get; set; }
         public string CCCD { get; set; }
         public string Ma_diem_thi { get; set; }
-        public int Mon_1 { get; set; }
-        public int Mon_2 { get; set; }
+        public int? Mon_1 { get; set; }
+        public int? Mon_2 { get; set; }
         public bool IsDuplicate { get; set; }
     }
     public class DM_Thisinh_List
@@ -68,10 +68,10 @@ namespace NA_Entities.Entities.Danh_muc
         public int Thuong_tru_xa { get; set; }
         public int? Id_truong { get; set; }
         public int Id_diem_thi { get; set; }
-        public string Ten_mon_1 { get; set; }
-        public int Mon_thi_1 { get; set; }
-        public string Ten_mon_2 { get; set; }
-        public int Mon_thi_2 { get; set; }
+        public string? Ten_mon_1 { get; set; }
+        public int? Mon_thi_1 { get; set; }
+        public string? Ten_mon_2 { get; set; }
+        public int? Mon_thi_2 { get; set; }
         public int Total { get; set; }
     }
 }

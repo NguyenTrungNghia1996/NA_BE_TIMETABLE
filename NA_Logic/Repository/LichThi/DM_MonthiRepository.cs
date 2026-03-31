@@ -227,7 +227,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool CheckId(int Id, int idDonvi)
+        public bool CheckId(int? Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try

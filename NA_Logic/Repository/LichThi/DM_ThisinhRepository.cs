@@ -155,17 +155,19 @@ namespace NA_Logic.Repository
                 var hoiDong = _dbContext.DM_Hoidongthi.FirstOrDefault(x => x.Id == idHoiDong);
                 if (hoiDong == null) return false;
 
+                var diemThiList = _dbContext.DM_Diemthi.Where(x => x.Id_hoi_dong == idHoiDong).OrderBy(x => x.Id).Select(x => x.Id).ToList();
+
+                if (!diemThiList.Any()) return false;
+
                 var danhSach = (from ts in _dbContext.DM_Thisinh
                                 join dt in _dbContext.DM_Diemthi on ts.Id_diem_thi equals dt.Id
-                                join hd in _dbContext.DM_Hoidongthi on dt.Id_hoi_dong equals hd.Id
-                                where hd.Id == idHoiDong
+                                where dt.Id_hoi_dong == idHoiDong
                                 select ts).ToList();
 
-                if (!danhSach.Any()) return false;
-
-                var sorted = danhSach
-                    .OrderBy(x => x.Ho_va_ten.Split(' ').Last(), comparer)
-                    .ThenBy(x => string.Join(" ", x.Ho_va_ten.Split(' ').SkipLast(1)), comparer)
+                var sorted = diemThiList
+                    .SelectMany(idDiemThi => danhSach
+                        .Where(ts => ts.Id_diem_thi == idDiemThi).OrderBy(x => x.Ho_va_ten.Split(' ').Last(), comparer)
+                        .ThenBy(x => string.Join(" ", x.Ho_va_ten.Split(' ').SkipLast(1)), comparer))
                     .ToList();
 
                 for (int i = 0; i < sorted.Count; i++)

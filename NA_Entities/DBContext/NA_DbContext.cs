@@ -146,6 +146,8 @@ namespace NA_Entities.DBContext
         public DbSet<DM_Thisinh> DM_Thisinh { get; set; }
         public DbSet<DM_Thisinh_List> DM_Thisinh_List { get; set; }
         public DbSet<ThiSinhCheck> ThiSinhCheck { get; set; }
+        public DbSet<Phongthi_Thisinh> Phongthi_Thisinh { get; set; }
+
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }
 
