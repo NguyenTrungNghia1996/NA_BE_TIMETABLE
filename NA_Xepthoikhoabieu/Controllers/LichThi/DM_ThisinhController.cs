@@ -180,12 +180,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (thisinh.Mon_thi_1 == null && thisinh.Mon_thi_2 == null)
                 return ApiResult.BadRequest("Vui lòng chọn ít nhất 1 môn thi");
             bool checkMon1 = _monthi.CheckId(thisinh.Mon_thi_1, idDonvi);
-            if (!checkMon1)
+            if (!checkMon1 && thisinh.Mon_thi_1 != null)
             {
                 return ApiResult.BadRequest("Id môn thi 1 không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkMon2 = _monthi.CheckId(thisinh.Mon_thi_2, idDonvi);
-            if (!checkMon2)
+            if (!checkMon2 && thisinh.Mon_thi_2 != null)
             {
                 return ApiResult.BadRequest("Id môn thi 2 không hợp lệ, vui lòng kiểm tra lại");
             }
