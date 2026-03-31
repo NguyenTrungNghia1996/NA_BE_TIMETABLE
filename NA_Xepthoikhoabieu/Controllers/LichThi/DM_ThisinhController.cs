@@ -249,7 +249,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest(mess);
             }
         }
-        [HttpPost("SBD")]
+        [HttpPost("sbd")]
         [RequireToken]
         public IActionResult DanhSBD([FromQuery] int idHoiDong)
         {
