@@ -287,10 +287,8 @@ namespace NA_Logic.Repository
                         return (false, $"Dòng {stt + 1}: Nơi thường trú không được để trống", null);
                     if (string.IsNullOrEmpty(danTocRaw)) 
                         return (false, $"Dòng {stt + 1}: Dân tộc không được để trống", null);
-                    if (string.IsNullOrEmpty(mon1)) 
-                        return (false, $"Dòng {stt + 1}: Môn thi 1 không được để trống", null);
-                    if (string.IsNullOrEmpty(mon2)) 
-                        return (false, $"Dòng {stt + 1}: Môn thi 2 không được để trống", null);
+                    if (string.IsNullOrEmpty(mon1) && string.IsNullOrEmpty(mon2)) 
+                        return (false, $"Dòng {stt + 1}: Vui lòng chọn ít nhất 1 môn", null);
 
                     // Check đúng kiểu dữ liệu
                     if (!DateTime.TryParse(ngaySinhRaw, out var ngaySinh)) 
