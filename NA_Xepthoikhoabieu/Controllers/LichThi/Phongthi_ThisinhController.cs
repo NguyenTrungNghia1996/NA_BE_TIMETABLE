@@ -34,52 +34,38 @@ namespace NA_Xepthoikhoabieu.Controllers
             _hoidong = hoidong;
         }
 
-        [HttpPost("hoidong")]
+        [HttpPost]
         [RequireToken]
-        public IActionResult XepPhongTheoHoiDong([FromQuery] int idHoiDong)
+        public IActionResult XepPhongTheoHoiDong([FromQuery] int idHoiDong = 0, [FromQuery] int idDiemThi = 0)
         {
             // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (idHoiDong == 0 || idHoiDong == null)
+            if ((idHoiDong == 0 || idHoiDong == null) && (idDiemThi == 0 || idDiemThi == null))
             {
-                return ApiResult.BadRequest("Hội đồng thi không được để trống");
+                return ApiResult.BadRequest("Vui lòng chọn hội đồng hoặc điểm thi");
             }
             bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
-            if (!checkHoiDong)
+            if (!checkHoiDong && (idHoiDong != 0 || idHoiDong != null))
             {
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
-            
-            bool add = _pt.XepPhongTheoHoiDong(idHoiDong);
-            if (!add)
-                return ApiResult.NotFound("Thất bại");
-
-            return ApiResult.Success("Thành công");
-        }
-        [HttpPost("diemthi")]
-        [RequireToken]
-        public IActionResult XepPhongTheoDiemThi([FromQuery] int idDiemThi)
-        {
-            // Kiểm tra tồn tại Id_Donvi và lấy Id_Donvi từ token
-            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
-            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            if (idDiemThi == 0 || idDiemThi == null)
-            {
-                return ApiResult.BadRequest("Hội đồng thi không được để trống");
-            }
             bool checkDiemthi = _diemthi.CheckId(idDiemThi, idDonvi);
-            if (!checkDiemthi)
+            if (!checkDiemthi && (idDiemThi == 0 || idDiemThi == null))
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
-
-            bool add = _pt.XepPhongTheoDiemThi(idDiemThi);
+            bool add = false;
+            if (idHoiDong == 0 || idHoiDong == null)
+                add = _pt.XepPhongTheoDiemThi(idDiemThi);
+            else if (idDiemThi == 0 || idDiemThi == null)
+                add = _pt.XepPhongTheoHoiDong(idHoiDong);
             if (!add)
                 return ApiResult.NotFound("Thất bại");
 
             return ApiResult.Success("Thành công");
         }
+        
         
     }
 }
