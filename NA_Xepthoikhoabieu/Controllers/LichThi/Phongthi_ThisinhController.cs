@@ -46,12 +46,12 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Vui lòng chọn hội đồng hoặc điểm thi");
             }
             bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
-            if (!checkHoiDong && (idHoiDong != 0 || idHoiDong != null))
+            if (!checkHoiDong && idHoiDong != 0 )
             {
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkDiemthi = _diemthi.CheckId(idDiemThi, idDonvi);
-            if (!checkDiemthi && (idDiemThi == 0 || idDiemThi == null))
+            if (!checkDiemthi && idDiemThi == 0)
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
