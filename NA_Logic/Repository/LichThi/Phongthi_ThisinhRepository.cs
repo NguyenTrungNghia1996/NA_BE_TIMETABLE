@@ -23,8 +23,7 @@ namespace NA_Logic.Repository.LichThi
             var diemThiList = _context.DM_Diemthi.Where(x => x.Id_hoi_dong == idHoiDong).Select(x => x.Id).ToList();
 
             foreach (var idDiemThi in diemThiList)
-                if (!XepPhongTheoDiemThi(idDiemThi)) 
-                    return false;
+                XepPhongTheoDiemThi(idDiemThi);
 
             return true;
         }

@@ -51,15 +51,16 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkDiemthi = _diemthi.CheckId(idDiemThi, idDonvi);
-            if (!checkDiemthi && idDiemThi == 0)
+            if (!checkDiemthi && idDiemThi != 0)
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
             bool add = false;
-            if (idHoiDong == 0 || idHoiDong == null)
-                add = _pt.XepPhongTheoDiemThi(idDiemThi);
-            else if (idDiemThi == 0 || idDiemThi == null)
+            if (idHoiDong != 0 || idHoiDong != null)
                 add = _pt.XepPhongTheoHoiDong(idHoiDong);
+            
+            else if (idDiemThi != 0 || idDiemThi != null)
+                add = _pt.XepPhongTheoDiemThi(idDiemThi);
             if (!add)
                 return ApiResult.NotFound("Thất bại");
 
