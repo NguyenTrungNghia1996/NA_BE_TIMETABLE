@@ -14,6 +14,8 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten { get; set; }
         public int Id_hoi_dong { get; set; }
         public int? Id_mon { get; set; }
+        public int? Id_cha { get; set; }
+        public bool La_mon_tu_chon { get; set; }
     }
     public class DM_Monthi_Detail
     {
@@ -23,6 +25,8 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_hoi_dong { get; set; }
         public int? Id_mon { get; set; }
         public int Id_nam { get; set; }
+        public int? Id_cha { get; set; }
+        public bool La_mon_tu_chon { get; set; }
     }
     public class DM_Monthi_Multi
     {
@@ -38,6 +42,8 @@ namespace NA_Entities.Entities.Danh_muc
         public string Ten_nam { get; set; }
         public int Id_hoi_dong { get; set; }
         public int? Id_mon { get; set; }
+        public int? Id_cha { get; set; }
+        public bool La_mon_tu_chon { get; set; }
         public int Total { get; set; }
     }
 }

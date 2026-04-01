@@ -55,6 +55,56 @@ namespace NA_Xepthoikhoabieu.Controllers
             },
             "Thành công");
         }
+        [HttpGet("cha")]
+        [RequireToken]
+        public IActionResult GetListCha([FromQuery] int idHoiDong, [FromQuery] string search = "")
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (idHoiDong == 0 || idHoiDong == null)
+            {
+                return ApiResult.BadRequest("Vui lòng chọn hội đồng");
+            }
+            bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
+            if (!checkHoiDong)
+            {
+                return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
+            }
+            var list = _monthi.GetlistCha(search, idHoiDong);
+            if (list == null || list.Count == 0)
+                return ApiResult.Ok();
+
+            return ApiResult.Success(new
+            {
+                items = list
+            },
+            "Thành công");
+        }
+        [HttpGet("tuchon")]
+        [RequireToken]
+        public IActionResult GetListTuChon([FromQuery] int idHoiDong, [FromQuery] string search = "")
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            if (idHoiDong == 0 || idHoiDong == null)
+            {
+                return ApiResult.BadRequest("Vui lòng chọn hội đồng");
+            }
+            bool checkHoiDong = _hoidong.CheckId(idHoiDong, idDonvi);
+            if (!checkHoiDong)
+            {
+                return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
+            }
+            var list = _monthi.GetlistMonTuChon(search, idHoiDong);
+            if (list == null || list.Count == 0)
+                return ApiResult.Ok();
+
+            return ApiResult.Success(new
+            {
+                items = list
+            },
+            "Thành công");
+        }
         [HttpGet("detail")]
         [RequireToken]
         public IActionResult GetDetailByID([FromQuery] int Id)
@@ -151,6 +201,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
+            bool checkcha = _monthi.CheckIdCha(monthi.Id_cha, idDonvi);
+            if (!checkcha)
+            {
+                return ApiResult.BadRequest("Id cha không hợp lệ, vui lòng kiểm tra lại");
+            }
 
             bool add = _monthi.Add(item);
             if (!add)
@@ -196,7 +251,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
-
+            bool checkcha = _monthi.CheckIdCha(monthi.Id_cha, idDonvi);
+            if (!checkcha)
+            {
+                return ApiResult.BadRequest("Id cha không hợp lệ, vui lòng kiểm tra lại");
+            }
             bool add = _monthi.Update(item);
             if (!add)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");

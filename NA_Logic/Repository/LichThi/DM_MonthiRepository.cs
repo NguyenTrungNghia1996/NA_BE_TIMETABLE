@@ -56,6 +56,27 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
+        public List<DM_Monthi> GetlistCha(string search, int idHoiDong) {
+            try
+            {
+                return _dbContext.DM_Monthi.Where(c => c.Id_cha == null && c.Id_hoi_dong == idHoiDong && (string.IsNullOrEmpty(search) || c.Ten.Contains(search))).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public List<DM_Monthi> GetlistMonTuChon(string search, int idHoiDong) {
+            try
+            {
+                return _dbContext.DM_Monthi.Where(c => c.La_mon_tu_chon == true && c.Id_hoi_dong == idHoiDong && (string.IsNullOrEmpty(search) || c.Ten.Contains(search))).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public DM_Monthi_Detail GetDetailById(int Id, int idDonvi)
         {
             try
@@ -71,7 +92,9 @@ namespace NA_Logic.Repository
                                   Ten = mon.Ten,
                                   Id_hoi_dong = mon.Id_hoi_dong,
                                   Id_mon = mon.Id_mon,
-                                  Id_nam = hoidong.Id_nam
+                                  Id_nam = hoidong.Id_nam,
+                                  Id_cha = mon.Id_cha,
+                                  La_mon_tu_chon = mon.La_mon_tu_chon
                               }).FirstOrDefault();
 
                 return result;
@@ -234,6 +257,18 @@ namespace NA_Logic.Repository
             {
                 var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(h => h.Id).ToList();
                 return _dbContext.DM_Monthi.Any(c => c.Id == Id && hoidong.Contains(c.Id_hoi_dong));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIdCha(int? IdCha, int idDonvi)
+        {
+            try
+            {
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(h => h.Id).ToList();
+                return _dbContext.DM_Monthi.Any(c => c.Id == IdCha && c.Id_cha == null && hoidong.Contains(c.Id_hoi_dong));
             }
             catch
             {
