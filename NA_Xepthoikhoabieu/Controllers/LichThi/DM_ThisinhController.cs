@@ -235,7 +235,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (extension != ".xlsx" && extension != ".xls")
                 return ApiResult.BadRequest("Chỉ chấp nhận file Excel (.xlsx, .xls)");
-            var (result, mess, list) = (false, "", new List<ThiSinhCheck>());
+            var (result, mess, list) = (false, "", new List<ThiSinhCheck?>());
             using (var stream = file.OpenReadStream())
             {
                 (result, mess, list) = _thisinh.Import(stream, idDonvi);

@@ -222,7 +222,7 @@ namespace NA_Logic.Repository
         //    var existingIds = _dbContext.DM_Thisinh.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
         //    return ids.All(id => existingIds.Contains(id));
         //}
-        public (bool result, string mess, List<ThiSinhCheck> list) Import(Stream file, int idDonvi)
+        public (bool result, string mess, List<ThiSinhCheck?> list) Import(Stream file, int idDonvi)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace NA_Logic.Repository
                 };
                 var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
-                var danhSach = _dbContext.Database.SqlQueryRaw<ThiSinhCheck>("EXEC [CheckThiSinh] @Id_don_vi, @Data, @Message OUTPUT",paramIdDonvi, dataParam, paramMessage)
+                var danhSach = _dbContext.Database.SqlQueryRaw<ThiSinhCheck?>("EXEC [CheckThiSinh] @Id_don_vi, @Data, @Message OUTPUT",paramIdDonvi, dataParam, paramMessage)
                     .ToList();
 
                 var message = paramMessage.Value?.ToString() ?? "";
