@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
 using NA_Entities.Entities.Danh_muc;
+using NA_Logic.IRepository.LichThi;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository.LichThi
 {
-    public class Phongthi_ThisinhRepository
+    public class Phongthi_ThisinhRepository: IPhongthi_ThisinhRepository
     {
         private readonly NA_DbContext _context;
         public Phongthi_ThisinhRepository(NA_DbContext context) { 

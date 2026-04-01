@@ -12,6 +12,7 @@ using NA_Logic.Repository;
 using NA_Logic.Repository.Auth;
 using NA_Logic.Repository.LichBaoGiang;
 using NA_Logic.Repository.LichOnTap;
+using NA_Logic.Repository.LichThi;
 using NA_Logic.Repository.ThoiKhoaBieu;
 using NA_Logic.Repository.XepGiamThi;
 using NA_Xepthoikhoabieu.Authorization;
@@ -100,6 +101,7 @@ builder.Services.AddScoped<IDM_PhongthiRepository, DM_PhongthiRepository>();
 builder.Services.AddScoped<IDM_ThisinhRepository, DM_ThisinhRepository>();
 builder.Services.AddScoped<IDM_DantocRepository, DM_DantocRepository>();
 builder.Services.AddScoped<IDM_DonviHanhchinhRepository, DM_DonviHanhChinhRepository>();
+builder.Services.AddScoped<IPhongthi_ThisinhRepository, Phongthi_ThisinhRepository>();
 //builder.Services.AddScoped<INgayAndTiet_DonviRepository, NgayAndTiet_DonviRepository>();
 // Đọc cấu hình từ appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
