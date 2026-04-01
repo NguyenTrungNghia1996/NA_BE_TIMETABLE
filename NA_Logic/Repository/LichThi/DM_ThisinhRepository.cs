@@ -181,6 +181,28 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckCCCD(string CCCD, int idDiemThi, int? Id)
+        {
+            try
+            {
+                var idHoidong = _dbContext.DM_Diemthi.Where(c => c.Id == idDiemThi).Select(c => c.Id_hoi_dong).FirstOrDefault();
+
+                var idDiemthiByHoidong = _dbContext.DM_Diemthi.Where(c => c.Id_hoi_dong == idHoidong).Select(c => c.Id).ToList();
+                var query = _dbContext.DM_Thisinh.Where(c => c.CCCD == CCCD && idDiemthiByHoidong.Contains(c.Id_diem_thi));
+
+                if (Id.HasValue)
+                {
+                    query = query.Where(c => c.Id != Id.Value);
+                }
+
+                var check = query.Any();
+                return check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool Check_constraint(int Id)
         {
             try

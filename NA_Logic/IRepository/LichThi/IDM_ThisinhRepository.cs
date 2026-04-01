@@ -17,5 +17,6 @@ namespace NA_Logic.IRepository.LichThi
         bool CheckId(int Id, int idDonvi);
         (bool result, string mess, List<ThiSinhCheck?> list) Import(Stream file, int idDonvi);
         bool DanhSoBaoDanh(int idHoiDong);
+        bool CheckCCCD(string CCCD, int idDiemThi, int? Id);
     }
 }

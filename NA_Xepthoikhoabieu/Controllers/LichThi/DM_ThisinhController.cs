@@ -98,6 +98,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
+            bool checkCCCD = _thisinh.CheckCCCD(data.CCCD, data.Id_diem_thi, null);
+            if (checkCCCD)
+                return ApiResult.BadRequest("CCCD đã tồn tại, vui lòng kiểm tra lại");
             bool checkNoisinh = _hanhchinh.CheckId(data.Noi_sinh_xa);
             if (!checkNoisinh)
             {
@@ -121,7 +124,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id môn thi 1 không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkMon2 = _monthi.CheckId(data.Mon_thi_2, idDonvi);
-            if (!checkMon2 && data.Mon_thi_1 != null)
+            if (!checkMon2 && data.Mon_thi_2 != null)
             {
                 return ApiResult.BadRequest("Id môn thi 2 không hợp lệ, vui lòng kiểm tra lại");
             }
@@ -162,6 +165,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
+            bool checkCCCD = _thisinh.CheckCCCD(thisinh.CCCD, thisinh.Id_diem_thi, thisinh.Id);
+            if (checkCCCD)
+                return ApiResult.BadRequest("CCCD đã tồn tại, vui lòng kiểm tra lại");
             bool checkNoisinh = _hanhchinh.CheckId(thisinh.Noi_sinh_xa);
             if (!checkNoisinh)
             {
