@@ -300,7 +300,8 @@ namespace NA_Logic.Repository
                     if (!int.TryParse(danTocRaw, out var danToc)) 
                         return (false, $"Dòng {stt + 1}: Dân tộc phải là số", null);
 
-                    dataTable.Rows.Add(stt, maDiemThi, hoVaTen, cccd, ngaySinh, noiSinh, noiThuongTru, danToc, mon1, mon2);
+                    dataTable.Rows.Add(stt, maDiemThi, hoVaTen, cccd, ngaySinh, noiSinh, noiThuongTru, danToc,
+                    string.IsNullOrEmpty(mon1) ? DBNull.Value : (object)mon1,string.IsNullOrEmpty(mon2) ? DBNull.Value : (object)mon2);
                     stt++;
                 }
 
