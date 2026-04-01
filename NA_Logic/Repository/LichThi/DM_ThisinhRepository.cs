@@ -310,10 +310,20 @@ namespace NA_Logic.Repository
                     TypeName = "dbo.DMThiSinh",
                     Value = dataTable
                 };
-                var paramMessage = new SqlParameter("Message", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+                var paramMessage = new SqlParameter("@Message", SqlDbType.NVarChar, 500)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-                var danhSach = _dbContext.Database.SqlQueryRaw<ThiSinhCheck?>("EXEC [CheckThiSinh] @Id_don_vi, @Data, @Message OUTPUT",paramIdDonvi, dataParam, paramMessage)
-                    .ToList();
+                var danhSach = new List<ThiSinhCheck?>();
+
+                try
+                {
+                    danhSach = _dbContext.Database
+                        .SqlQueryRaw<ThiSinhCheck?>("EXEC [CheckThiSinh] @Id_don_vi, @Data, @Message OUTPUT", paramIdDonvi, dataParam, paramMessage)
+                        .ToList();
+                }
+                catch { }
 
                 var message = paramMessage.Value?.ToString() ?? "";
                 if (message == "Thành công")
