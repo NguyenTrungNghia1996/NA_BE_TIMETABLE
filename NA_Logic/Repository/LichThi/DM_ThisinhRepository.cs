@@ -26,7 +26,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Thisinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idDiemThi, int idHoiDong)
+        public List<DM_Thisinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idDiemThi, int idHoiDong, int idPhong)
         {
             try
             {
@@ -54,8 +54,12 @@ namespace NA_Logic.Repository
                 {
                     Value = idDiemThi
                 };
-                var result = _dbContext.Set<DM_Thisinh_List>().FromSqlRaw("EXEC [DM_Thisinh_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idDiemThi, @idHoiDong",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdDiemThi, paramIdHoiDong).ToList();
+                var paramIdPhong = new SqlParameter("idPhong", SqlDbType.Int)
+                {
+                    Value = idPhong
+                };
+                var result = _dbContext.Set<DM_Thisinh_List>().FromSqlRaw("EXEC [DM_Thisinh_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idDiemThi, @idHoiDong, @idPhong",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdDiemThi, paramIdHoiDong, paramIdPhong).ToList();
                 if (result == null) result = new List<DM_Thisinh_List>();
                 return result;
             }
@@ -166,8 +170,9 @@ namespace NA_Logic.Repository
 
                 var sorted = diemThiList
                     .SelectMany(idDiemThi => danhSach
-                        .Where(ts => ts.Id_diem_thi == idDiemThi).OrderBy(x => x.Ho_va_ten.Split(' ').Last(), comparer)
-                        .ThenBy(x => string.Join(" ", x.Ho_va_ten.Split(' ').SkipLast(1)), comparer))
+                        .Where(ts => ts.Id_diem_thi == idDiemThi)
+                        .OrderBy(x => x.Ho_va_ten.Split(' ').Last(), comparer)
+                        .ThenBy(x => string.Join(" ", x.Ho_va_ten.Split(' ').SkipLast(1)), comparer).ThenBy(x => x.Id))
                     .ToList();
 
                 for (int i = 0; i < sorted.Count; i++)

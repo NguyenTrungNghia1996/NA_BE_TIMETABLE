@@ -31,6 +31,8 @@ namespace NA_Entities.Entities.Danh_muc
         public string Toa { get; set; }
         public int Tang { get; set; }
         public int Id_diem_thi { get; set; }
+        public string? Ten_mon_1 { get; set; }
+        public string? Ten_mon_2 { get; set; }
         public int Total { get; set; }
     }
 }
