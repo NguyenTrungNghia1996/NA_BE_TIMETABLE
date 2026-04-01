@@ -156,7 +156,8 @@ namespace NA_Logic.Repository
                         Id_hoi_dong = data.Id_hoi_dong,
                         Id_mon = c,
                         Ma = monHoc?.Ma,
-                        Ten = monHoc?.Ten
+                        Ten = monHoc?.Ten,
+                        La_mon_tu_chon = false
                     };
                 }).ToList();
 
