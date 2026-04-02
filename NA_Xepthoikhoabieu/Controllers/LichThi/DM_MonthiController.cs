@@ -202,7 +202,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkcha = _monthi.CheckIdCha(monthi.Id_cha, idDonvi);
-            if (!checkcha)
+            if (!checkcha && monthi.Id_cha != null)
             {
                 return ApiResult.BadRequest("Id cha không hợp lệ, vui lòng kiểm tra lại");
             }
@@ -252,7 +252,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ, vui lòng kiểm tra lại");
             }
             bool checkcha = _monthi.CheckIdCha(monthi.Id_cha, idDonvi);
-            if (!checkcha)
+            if (!checkcha && monthi.Id_cha != null)
             {
                 return ApiResult.BadRequest("Id cha không hợp lệ, vui lòng kiểm tra lại");
             }

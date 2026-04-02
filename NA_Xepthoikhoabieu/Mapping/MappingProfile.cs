@@ -97,6 +97,7 @@ namespace NA_Xepthoikhoabieu.Mapping
             CreateMap<DM_Thisinh, DM_ThisinhDto>();
             CreateMap<DM_ThisinhDto, DM_Thisinh>();
             CreateMap<DM_Thisinh_List, DM_Thisinh_ListDto>(); 
+            CreateMap<DM_Lichthi_List, DM_Lichthi_ListDto>(); 
 
             CreateMap<Auth_Roles, Auth_RolesDto>();
             CreateMap<Auth_RolesDto, Auth_Roles>();

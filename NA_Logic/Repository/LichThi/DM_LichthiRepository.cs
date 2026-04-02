@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace NA_Logic.Repository
 {
-    public class DM_LichthiRepository
+    public class DM_LichthiRepository: IDM_LichthiRepository
     {
         private readonly NA_DbContext _dbContext;
         public DM_LichthiRepository(NA_DbContext dbContext)

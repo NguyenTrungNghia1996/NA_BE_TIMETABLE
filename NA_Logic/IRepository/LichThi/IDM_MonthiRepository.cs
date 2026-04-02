@@ -22,5 +22,7 @@ namespace NA_Logic.IRepository.LichThi
         List<DM_Monthi_TuChon> GetlistMonTuChon(string search, int idHoiDong);
         List<DM_Monthi> GetlistCha(string search, int idHoiDong);
         bool CheckIdCha(int? IdCha, int idDonvi);
+        bool CheckIsCha(int? Id, int idDonvi);
+        bool CheckIdTuChon(int? Id, int idDonvi);
     }
 }

@@ -295,6 +295,36 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool CheckIsCha(int? Id, int idDonvi)
+        {
+            try
+            {
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(h => h.Id).ToList();
+
+                var item = _dbContext.DM_Monthi.Any(c => c.Id == Id && c.Id_cha == null && hoidong.Contains(c.Id_hoi_dong));
+
+                var check = _dbContext.DM_Monthi.Any(c => c.Id_cha == Id);
+
+
+                return item && check;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIdTuChon(int? Id, int idDonvi)
+        {
+            try
+            {
+                var hoidong = _dbContext.DM_Hoidongthi.Where(h => h.Id_don_vi == idDonvi).Select(h => h.Id).ToList();
+                return _dbContext.DM_Monthi.Any(c => c.Id == Id && c.La_mon_tu_chon == true && hoidong.Contains(c.Id_hoi_dong));
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CheckIds(IEnumerable<int> ids)
         {
             var existingIds = _dbContext.DM_Monthi.Where(c => ids.Contains(c.Id)).Select(c => c.Id).ToList();
