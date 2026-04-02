@@ -66,10 +66,29 @@ namespace NA_Logic.Repository
                 return null;
             }
         }
-        public List<DM_Monthi> GetlistMonTuChon(string search, int idHoiDong) {
+        public List<DM_Monthi_TuChon> GetlistMonTuChon(string search, int idHoiDong)
+        {
             try
             {
-                return _dbContext.DM_Monthi.Where(c => c.La_mon_tu_chon == true && c.Id_hoi_dong == idHoiDong && (string.IsNullOrEmpty(search) || c.Ten.Contains(search))).ToList();
+                var list = _dbContext.DM_Monthi.Where(c => c.La_mon_tu_chon == true && c.Id_hoi_dong == idHoiDong && (string.IsNullOrEmpty(search) || c.Ten.Contains(search)))
+                    .Select(c => new DM_Monthi_TuChon
+                    {
+                        Id = c.Id,
+                        Ma = c.Ma,
+                        Ten = c.Ten,
+                        Id_hoi_dong = c.Id_hoi_dong,
+                        Id_mon = c.Id_mon,
+                        Id_cha = c.Id_cha,
+                        La_mon_tu_chon = c.La_mon_tu_chon
+                    })
+                    .ToList();
+
+                var idChaSet = list.Where(c => c.Id_cha != null).Select(c => c.Id_cha).ToHashSet();
+
+                foreach (var item in list)
+                    item.La_cha = idChaSet.Contains(item.Id);
+
+                return list;
             }
             catch
             {

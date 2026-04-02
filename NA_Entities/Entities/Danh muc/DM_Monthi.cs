@@ -17,6 +17,17 @@ namespace NA_Entities.Entities.Danh_muc
         public int? Id_cha { get; set; }
         public bool La_mon_tu_chon { get; set; } = false;
     }
+    public class DM_Monthi_TuChon 
+    {
+        public int Id { get; set; }
+        public string Ma { get; set; }
+        public string Ten { get; set; }
+        public int Id_hoi_dong { get; set; }
+        public int? Id_mon { get; set; }
+        public int? Id_cha { get; set; }
+        public bool La_mon_tu_chon { get; set; } = false;
+        public bool La_cha { get; set; } = false;
+    }
     public class DM_Monthi_Detail
     {
         public int Id { get; set; }
