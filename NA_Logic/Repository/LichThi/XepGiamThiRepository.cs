@@ -23,10 +23,10 @@ namespace NA_Logic.Repository
     public class XepGiamThiRepository : IXepGiamThiRepository
     {
         private readonly NA_DbContext _dbContext;
-        private readonly List<DM_Giamthi> _dsGiamThi;
-        private readonly List<DM_Phongthi> _dsPhongThi;
-        private readonly List<Phongthi_Thisinh> _dsPhongThiThiSinh;
-        private readonly List<Giaovien_Monhoc> _dsPhanCongGV;
+        private readonly List<DM_Giamthi> _dsGiamThi = new List<DM_Giamthi>();
+        private readonly List<DM_Phongthi> _dsPhongThi = new List<DM_Phongthi>();
+        private readonly List<Phongthi_Thisinh> _dsPhongThiThiSinh = new List<Phongthi_Thisinh>();
+        private readonly List<Giaovien_Monhoc> _dsPhanCongGV = new List<Giaovien_Monhoc>();
 
         public XepGiamThiRepository(NA_DbContext dbContext)
         {
@@ -170,10 +170,7 @@ namespace NA_Logic.Repository
                     monTheoPhong[phong.Id] = danhSachMon;
                 }
 
-                var idGiaoVienList = _dsGiamThi.Select(x => x.Id_giao_vien).ToList();
-
-                var phanCong = _dsPhanCongGV.Where(x => idGiaoVienList.Contains(x.Id_giao_vien))
-                    .GroupBy(x => x.Id_giao_vien).ToDictionary(x => x.Key, x => x.Select(p => p.Id_mon).ToList());
+                var phanCong = _dsPhanCongGV.GroupBy(x => x.Id_giao_vien).ToDictionary(x => x.Key, x => x.Select(p => p.Id_mon).ToList());
 
                 var random = new Random();
                 var ketQua = new List<Chitiet_Lichthi>();
@@ -193,7 +190,7 @@ namespace NA_Logic.Repository
                     foreach (var gt in giamThiConLai)
                     {
                         var monGiaoVien = new List<int>();
-                        if (phanCong.ContainsKey((int)gt.Id_giao_vien))
+                        if (gt.Id_giao_vien != null && phanCong.ContainsKey((int)gt.Id_giao_vien))
                             monGiaoVien = phanCong[(int)gt.Id_giao_vien];
 
                         var phongXepDuoc = new List<DM_Phongthi>();
@@ -304,6 +301,19 @@ namespace NA_Logic.Repository
                 _dbContext.BulkDelete(dataCu);
                 _dbContext.BulkInsert(ketQua);
 
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool HuyKetQua(int idLich)
+        {
+            try
+            {
+                var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_lich == idLich).ToList();
+                _dbContext.BulkDelete(dataCu);
                 return true;
             }
             catch (Exception)
