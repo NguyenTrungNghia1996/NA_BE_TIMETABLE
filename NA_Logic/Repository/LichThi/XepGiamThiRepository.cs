@@ -244,9 +244,11 @@ namespace NA_Logic.Repository
                             {
                                 ketQua.Add(new Chitiet_Lichthi
                                 {
+                                    Id_lich = idLich,
                                     Id_phong = phong.Id,
                                     Id_giam_thi = giamThiDuocChon.Id,
-                                    Loai_giam_thi = loai
+                                    Loai_giam_thi = loai,
+                                    La_phong_cho = false
                                 });
                             }
                         }
@@ -264,6 +266,14 @@ namespace NA_Logic.Repository
                         {
                             if (phongDuocChon.Id == -1)
                             {
+                                ketQua.Add(new Chitiet_Lichthi
+                                {
+                                    Id_lich = idLich,
+                                    Id_phong = null,
+                                    Id_giam_thi = giamThiDuocChon.Id,
+                                    Loai_giam_thi = loai,
+                                    La_phong_cho = true
+                                });
                                 soGiamThiTheoPhong[-1]++;
                                 if (soGiamThiTheoPhong[-1] >= soGiamThiPhongAo)
                                     phongConLai.Remove(phongAo);
@@ -272,9 +282,11 @@ namespace NA_Logic.Repository
                             {
                                 ketQua.Add(new Chitiet_Lichthi
                                 {
+                                    Id_lich = idLich,
                                     Id_phong = phongDuocChon.Id,
                                     Id_giam_thi = giamThiDuocChon.Id,
-                                    Loai_giam_thi = loai
+                                    Loai_giam_thi = loai,
+                                    La_phong_cho = false
                                 });
 
                                 soGiamThiTheoPhong[phongDuocChon.Id]++;
@@ -288,10 +300,9 @@ namespace NA_Logic.Repository
                     giamThiConLai.Remove(giamThiDuocChon);
                 }
 
-                var idLichList = ketQua.Where(x => x.Id_phong != -1).ToList();
                 var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_lich == idLich).ToList();
                 _dbContext.BulkDelete(dataCu);
-                _dbContext.BulkInsert(idLichList);
+                _dbContext.BulkInsert(ketQua);
 
                 return true;
             }

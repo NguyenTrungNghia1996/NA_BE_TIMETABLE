@@ -14,7 +14,7 @@ using NA_Xepthoikhoabieu.Helpers;
 
 namespace NA_Xepthoikhoabieu.Controllers
 {
-    [Route("api/lichthi")]
+    [Route("api/xeplichthi")]
     [ApiController]
     public class XepGiamThiController : ControllerBase
     {

@@ -13,6 +13,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int Id_phong { get; set; }
         public int Id_giam_thi { get; set; }
         public int Loai_giam_thi { get; set; }
+        public bool La_phong_cho { get; set; } = false;
     }
     public class PhongTheoGiamThi
     {
