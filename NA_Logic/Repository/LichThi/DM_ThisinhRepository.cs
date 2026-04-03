@@ -272,7 +272,6 @@ namespace NA_Logic.Repository
                 }
 
                 var rows = worksheet.RowsUsed().Skip(1).ToList();
-
                 var dataTable = new DataTable();
                 dataTable.Columns.Add("STT", typeof(int));
                 dataTable.Columns.Add("Ma_diem_thi", typeof(string));

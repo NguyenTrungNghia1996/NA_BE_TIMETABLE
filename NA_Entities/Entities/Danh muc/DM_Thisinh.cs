@@ -49,6 +49,7 @@ namespace NA_Entities.Entities.Danh_muc
         public int? Dan_toc { get; set; }
         public string? CCCD { get; set; }
         public string? Ma_diem_thi { get; set; }
+        public int Id_diem_thi { get; set; }
         public int? Mon_1 { get; set; }
         public int? Mon_2 { get; set; }
         public bool? IsDuplicate { get; set; }

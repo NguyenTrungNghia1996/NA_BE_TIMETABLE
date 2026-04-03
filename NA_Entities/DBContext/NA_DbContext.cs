@@ -149,6 +149,7 @@ namespace NA_Entities.DBContext
         public DbSet<Phongthi_Thisinh> Phongthi_Thisinh { get; set; }
         public DbSet<DM_Lichthi> DM_Lichthi { get; set; }
         public DbSet<DM_Lichthi_List> DM_Lichthi_List { get; set; }
+        public DbSet<Chitiet_Lichthi> Chitiet_Lichthi { get; set; }
 
 
         //public DbSet<DM_Donvi_Demo> DM_Donvi_Demo { get; set; }

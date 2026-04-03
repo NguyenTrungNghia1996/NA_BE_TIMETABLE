@@ -44,7 +44,7 @@ namespace NA_Logic.Repository.LichThi
                 if (!danhSachPhong.Any()) 
                     return false;
 
-                var danhSachThisinh = _context.DM_Thisinh.Where(x => x.Id_diem_thi == idDiemThi).ToList();
+                var danhSachThisinh = _context.DM_Thisinh.Where(x => x.Id_diem_thi == idDiemThi && x.So_bao_danh != null).ToList();
 
                 if (!danhSachThisinh.Any()) 
                     return false;
@@ -132,11 +132,21 @@ namespace NA_Logic.Repository.LichThi
                         int layMon2 = Math.Min(mon2.DanhSach.Count, sucChua - layMon1);
 
                         foreach (var ts in mon1.DanhSach.Take(layMon1))
-                            ketQua.Add(new Phongthi_Thisinh { Id_thi_sinh = ts.Id, Id_phong = danhSachPhong[phongIndex].Id, Mon_1 = ts.Mon_thi_1, Mon_2 = ts.Mon_thi_2 });
-
+                            ketQua.Add(new Phongthi_Thisinh
+                            {
+                                Id_thi_sinh = ts.Id,
+                                Id_phong = danhSachPhong[phongIndex].Id,
+                                Mon_1 = ts.Mon_thi_1 != null ? mon1.Mon : null,
+                                Mon_2 = ts.Mon_thi_2 != null ? mon1.Mon : null
+                            });
                         foreach (var ts in mon2.DanhSach.Take(layMon2))
-                            ketQua.Add(new Phongthi_Thisinh { Id_thi_sinh = ts.Id, Id_phong = danhSachPhong[phongIndex].Id, Mon_1 = ts.Mon_thi_1, Mon_2 = ts.Mon_thi_2 });
-
+                            ketQua.Add(new Phongthi_Thisinh
+                            {
+                                Id_thi_sinh = ts.Id,
+                                Id_phong = danhSachPhong[phongIndex].Id,
+                                Mon_1 = ts.Mon_thi_1 != null ? mon2.Mon : null,
+                                Mon_2 = ts.Mon_thi_2 != null ? mon2.Mon : null
+                            });
                         phongIndex++;
 
                         var duMon2 = mon2.DanhSach.Skip(layMon2).ToList();
