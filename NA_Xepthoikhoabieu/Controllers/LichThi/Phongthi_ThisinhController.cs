@@ -56,10 +56,10 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
             bool add = false;
-            if (idHoiDong != 0 || idHoiDong != null)
+            if (idHoiDong != 0 && idHoiDong != null)
                 add = _pt.XepPhongTheoHoiDong(idHoiDong);
             
-            else if (idDiemThi != 0 || idDiemThi != null)
+            else if (idDiemThi != 0 && idDiemThi != null)
                 add = _pt.XepPhongTheoDiemThi(idDiemThi);
             if (!add)
                 return ApiResult.NotFound("Thất bại");

@@ -308,6 +308,179 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public bool XepMotGiamThi(int idLich, int idGiamThi)
+        {
+            try
+            {
+                var daXep = _dbContext.Chitiet_Lichthi.Any(x => x.Id_lich == idLich && x.Id_giam_thi == idGiamThi);
+                if (daXep) 
+                    return false;
+
+                var lich = _dbContext.DM_Lichthi.FirstOrDefault(x => x.Id == idLich);
+                if (lich == null)
+                    return false;
+
+                var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == lich.Id_diem_thi);
+                if (diemThi == null) 
+                    return false;
+
+                int soGiamThiPhong = diemThi.So_giam_thi_1_phong;
+                int? soPhongGiamSat = diemThi.So_phong_giam_sat_toi_da;
+
+                LoadAllInformation(idLich);
+
+                var chiTietHienTai = _dbContext.Chitiet_Lichthi.Where(x => x.Id_lich == idLich).ToList();
+
+                var soGiamThiTheoPhong = _dsPhongThi.ToDictionary(x => x.Id, x => 0);
+                foreach (var ct in chiTietHienTai.Where(x => x.Loai_giam_thi != 1 && x.La_phong_cho != true))
+                {
+                    if (ct.Id_phong != null && soGiamThiTheoPhong.ContainsKey(ct.Id_phong.Value))
+                        soGiamThiTheoPhong[ct.Id_phong.Value]++;
+                }
+
+                var phongConLai = _dsPhongThi.Where(x => soGiamThiTheoPhong[x.Id] < soGiamThiPhong).ToList();
+
+                var nhomPhongGiamSat = new List<List<DM_Phongthi>>();
+                if (diemThi.Co_giam_sat && soPhongGiamSat != null && soPhongGiamSat > 0)
+                {
+                    var groupByTang = _dsPhongThi.GroupBy(x => new { x.Toa, x.Tang });
+                    foreach (var tang in groupByTang)
+                    {
+                        var danhSachPhongTrongTang = tang.ToList();
+                        for (int i = 0; i < danhSachPhongTrongTang.Count; i += soPhongGiamSat.Value)
+                        {
+                            var nhom = danhSachPhongTrongTang.Skip(i).Take(soPhongGiamSat.Value).ToList();
+                            nhomPhongGiamSat.Add(nhom);
+                        }
+                    }
+                }
+
+                var nhomCoGiamSat = new HashSet<int>();
+                var giamSatHienTai = chiTietHienTai.Where(x => x.Loai_giam_thi == 1).ToList();
+                foreach (var gs in giamSatHienTai)
+                {
+                    var nhom = nhomPhongGiamSat.Select((n, index) => new { n, index }).FirstOrDefault(x => x.n.Any(p => p.Id == gs.Id_phong));
+
+                    if (nhom != null)
+                        nhomCoGiamSat.Add(nhom.index);
+                }
+
+                var giamThi = _dsGiamThi.FirstOrDefault(x => x.Id == idGiamThi);
+                if (giamThi == null) return false;
+
+                var phanCong = _dsPhanCongGV.GroupBy(x => x.Id_giao_vien).ToDictionary(x => x.Key, x => x.Select(p => p.Id_mon).ToList());
+
+                var monTheoPhong = new Dictionary<int, List<int>>();
+                foreach (var phong in _dsPhongThi)
+                {
+                    List<int> danhSachMon;
+                    if (lich.Bai_thi_tu_chon)
+                    {
+                        danhSachMon = _dsPhongThiThiSinh.Where(x => x.Id_phong == phong.Id).SelectMany(x => new[] { x.Mon_1, x.Mon_2 }).Where(x => x != null)
+                            .Select(x => x!.Value).Distinct().ToList();
+                    }
+                    else
+                    {
+                        danhSachMon = lich.Id_mon != null
+                            ? new List<int> { lich.Id_mon.Value }
+                            : new List<int>();
+                    }
+                    monTheoPhong[phong.Id] = danhSachMon;
+                }
+
+                var monGiaoVien = new List<int>();
+                if (giamThi.Id_giao_vien != null && phanCong.ContainsKey((int)giamThi.Id_giao_vien))
+                    monGiaoVien = phanCong[(int)giamThi.Id_giao_vien];
+
+                int tongSlotConTrong = phongConLai.Sum(x => soGiamThiPhong - soGiamThiTheoPhong[x.Id]);
+                int soGiamThiChuaXep = _dsGiamThi.Count - chiTietHienTai.Select(x => x.Id_giam_thi).Distinct().Count();
+                bool coPhongAo = soGiamThiChuaXep > tongSlotConTrong + (nhomPhongGiamSat.Count - nhomCoGiamSat.Count);
+                var phongAo = coPhongAo ? new DM_Phongthi { Id = -1 } : null;
+
+                var phongXepDuoc = new List<DM_Phongthi>();
+                foreach (var phong in phongConLai)
+                {
+                    if (!monTheoPhong.ContainsKey(phong.Id))
+                    {
+                        phongXepDuoc.Add(phong);
+                        continue;
+                    }
+
+                    var monPhong = monTheoPhong[phong.Id];
+                    bool coTrungMon = monPhong.Any(m => monGiaoVien.Contains(m));
+                    if (!coTrungMon)
+                        phongXepDuoc.Add(phong);
+                }
+
+                var random = new Random();
+                int loai;
+                if (diemThi.Co_giam_sat)
+                    loai = random.Next(1, soGiamThiPhong + 2);
+                else
+                    loai = random.Next(2, soGiamThiPhong + 2);
+
+                var ketQua = new Chitiet_Lichthi
+                {
+                    Id_lich = idLich,
+                    Id_giam_thi = idGiamThi,
+                    La_phong_cho = false
+                };
+
+                if (loai == 1)
+                {
+                    var nhomChuaCoGiamSat = nhomPhongGiamSat.Select((nhom, index) => new { nhom, index })
+                        .Where(x => !nhomCoGiamSat.Contains(x.index)).ToList();
+
+                    if (nhomChuaCoGiamSat.Any())
+                    {
+                        var nhomChon = nhomChuaCoGiamSat[random.Next(nhomChuaCoGiamSat.Count)];
+                        ketQua.Id_phong = nhomChon.nhom[0].Id;
+                        ketQua.Loai_giam_thi = loai;
+
+                        var dsInsert = nhomChon.nhom.Select(p => new Chitiet_Lichthi
+                        {
+                            Id_lich = idLich,
+                            Id_giam_thi = idGiamThi,
+                            Id_phong = p.Id,
+                            Loai_giam_thi = loai,
+                            La_phong_cho = false
+                        }).ToList();
+
+                        _dbContext.Chitiet_Lichthi.AddRange(dsInsert);
+                        _dbContext.SaveChanges();
+                        return true;
+                    }
+                    else
+                        loai = random.Next(2, soGiamThiPhong + 2);
+                }
+
+                if (loai != 1)
+                {
+                    if (phongXepDuoc.Any())
+                    {
+                        var phongChon = phongXepDuoc[random.Next(phongXepDuoc.Count)];
+                        ketQua.Id_phong = phongChon.Id;
+                        ketQua.Loai_giam_thi = loai;
+                        ketQua.La_phong_cho = false;
+                    }
+                    else
+                    {
+                        ketQua.Id_phong = null;
+                        ketQua.Loai_giam_thi = loai;
+                        ketQua.La_phong_cho = true;
+                    }
+
+                    _dbContext.Chitiet_Lichthi.Add(ketQua);
+                    _dbContext.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool HuyKetQua(int idLich)
         {
             try

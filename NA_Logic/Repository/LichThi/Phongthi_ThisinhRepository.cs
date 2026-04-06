@@ -136,16 +136,17 @@ namespace NA_Logic.Repository.LichThi
                             {
                                 Id_thi_sinh = ts.Id,
                                 Id_phong = danhSachPhong[phongIndex].Id,
-                                Mon_1 = ts.Mon_thi_1 != null ? mon1.Mon : null,
-                                Mon_2 = ts.Mon_thi_2 != null ? mon1.Mon : null
+                                Mon_1 = mon1.Mon,
+                                Mon_2 = null
                             });
+
                         foreach (var ts in mon2.DanhSach.Take(layMon2))
                             ketQua.Add(new Phongthi_Thisinh
                             {
                                 Id_thi_sinh = ts.Id,
                                 Id_phong = danhSachPhong[phongIndex].Id,
-                                Mon_1 = ts.Mon_thi_1 != null ? mon2.Mon : null,
-                                Mon_2 = ts.Mon_thi_2 != null ? mon2.Mon : null
+                                Mon_1 = null,
+                                Mon_2 = mon2.Mon,
                             });
                         phongIndex++;
 

@@ -9,5 +9,7 @@ namespace NA_Logic.IRepository.LichThi
     public interface IXepGiamThiRepository
     {
         bool XepGiamThi(int idLich);
+        bool XepMotGiamThi(int idLich, int idGiamThi);
+        bool HuyKetQua(int idLich);
     }
 }

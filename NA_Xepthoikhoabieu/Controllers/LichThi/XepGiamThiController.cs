@@ -23,14 +23,16 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IXepGiamThiRepository _xep;
+        private readonly IDM_GiamthiRepository _giamthi;
         public XepGiamThiController(IMapper mapper, IDM_LichthiRepository lichthi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                    IXepGiamThiRepository xep)
+                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi)
         {
             _mapper = mapper;
             _lichthi = lichthi;
             _claimHelperRepository = claimHelperRepository;
             _auth = auth;
             _xep = xep;
+            _giamthi = giamthi;
         }
 
         [HttpPost]
@@ -45,6 +47,43 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.NotFound("Id lịch không hợp lệ");
 
             var xep = _xep.XepGiamThi(IdLich);
+            if (!xep)
+                return ApiResult.BadRequest($"Xếp lịch thi thất bại");
+
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPost("le")]
+        [RequireToken]
+        public IActionResult XepLẻ([FromQuery] int IdLich, [FromQuery] int idGiamThi)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
+            if (!checkLich)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+            bool checkGiamThi = _giamthi.CheckId(IdLich, idDonvi);
+            if (!checkGiamThi)
+                return ApiResult.NotFound("Id giám thị không hợp lệ");
+
+            var xep = _xep.XepGiamThi(IdLich);
+            if (!xep)
+                return ApiResult.BadRequest($"Xếp lịch thi thất bại");
+
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPost("huyketqua")]
+        [RequireToken]
+        public IActionResult HuyKetQua([FromQuery] int IdLich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
+            if (!checkLich)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+
+            var xep = _xep.HuyKetQua(IdLich);
             if (!xep)
                 return ApiResult.BadRequest($"Xếp lịch thi thất bại");
 
