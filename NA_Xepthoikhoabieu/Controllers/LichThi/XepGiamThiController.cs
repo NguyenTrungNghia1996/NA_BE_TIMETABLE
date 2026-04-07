@@ -113,7 +113,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
             var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
-            if (checkLich == null)
+            if (checkLich == null) 
                 return ApiResult.NotFound("Id lịch không hợp lệ");
 
             bool checkGiamThi = _giamthi.CheckId(idGiamThi, checkLich.Id_diem_thi);

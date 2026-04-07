@@ -640,7 +640,7 @@ namespace NA_Logic.Repository
         {
             try
             {
-                var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_phong == idPhong).ToList();
+                var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_phong == idPhong && x.Loai_giam_thi != 1).ToList();
                 _dbContext.BulkDelete(dataCu);
                 return true;
             }
