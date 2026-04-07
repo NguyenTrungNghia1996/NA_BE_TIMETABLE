@@ -120,11 +120,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!checkGiamThi)
                 return ApiResult.NotFound("Id giám sát không hợp lệ");
 
-            var xep = _xep.XepGiamThi(IdLich);
-            if (!xep)
+            (bool result, string mess) = _xep.XepMotGiamThi(IdLich, idGiamThi);
+            if (!result)
                 return ApiResult.BadRequest($"Xếp lịch thi thất bại");
 
-            return ApiResult.Success("Thành công");
+            return ApiResult.Success(mess);
         }
         [HttpDelete("huyketqua")]
         [RequireToken]
