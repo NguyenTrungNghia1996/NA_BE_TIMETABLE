@@ -76,9 +76,12 @@ namespace NA_Logic.Repository
             try
             {
                 var result = (from lich in _dbContext.DM_Lichthi
+                              join mon in _dbContext.DM_Monthi on lich.Id_mon equals mon.Id into monGroup
+                              from mon in monGroup.DefaultIfEmpty()
                               join diem in _dbContext.DM_Diemthi on lich.Id_diem_thi equals diem.Id
                               join hoidong in _dbContext.DM_Hoidongthi on diem.Id_hoi_dong equals hoidong.Id into hoidongGroup
                               from hoidong in hoidongGroup.DefaultIfEmpty()
+                              join nam in _dbContext.DM_Namhoc on hoidong.Id_nam equals nam.Id
                               where lich.Id == Id && (diem.Id_don_vi == idDonvi || hoidong.Id_don_vi == idDonvi)
                               select new DM_Lichthi_Detail
                               {
@@ -89,7 +92,12 @@ namespace NA_Logic.Repository
                                   Giam_thi_khong_cung_mon = lich.Giam_thi_khong_cung_mon,
                                   Id_diem_thi = lich.Id_diem_thi,
                                   Id_hoi_dong = diem.Id_hoi_dong,
-                                  Id_nam = hoidong.Id_nam
+                                  Id_nam = hoidong.Id_nam,
+                                  Ten_mon = mon.Ten ?? "",
+                                  Ten_diem_thi = diem.Ten,
+                                  Ten_hoi_dong = hoidong.Ten,
+                                  Ten_nam = nam.Ten
+
                               }).FirstOrDefault();
 
                 return result;

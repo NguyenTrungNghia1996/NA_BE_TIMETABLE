@@ -308,21 +308,21 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-        public bool XepMotGiamThi(int idLich, int idGiamThi)
+        public (bool success, string? mess) XepMotGiamThi(int idLich, int idGiamThi)
         {
             try
             {
                 var daXep = _dbContext.Chitiet_Lichthi.Any(x => x.Id_lich == idLich && x.Id_giam_thi == idGiamThi);
                 if (daXep) 
-                    return false;
+                    return (false, null);
 
                 var lich = _dbContext.DM_Lichthi.FirstOrDefault(x => x.Id == idLich);
                 if (lich == null)
-                    return false;
+                    return (false, null);
 
                 var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == lich.Id_diem_thi);
-                if (diemThi == null) 
-                    return false;
+                if (diemThi == null)
+                    return (false, null);
 
                 int soGiamThiPhong = diemThi.So_giam_thi_1_phong;
                 int? soPhongGiamSat = diemThi.So_phong_giam_sat_toi_da;
@@ -366,7 +366,8 @@ namespace NA_Logic.Repository
                 }
 
                 var giamThi = _dsGiamThi.FirstOrDefault(x => x.Id == idGiamThi);
-                if (giamThi == null) return false;
+                if (giamThi == null)
+                    return (false, null);
 
                 var phanCong = _dsPhanCongGV.GroupBy(x => x.Id_giao_vien).ToDictionary(x => x.Key, x => x.Select(p => p.Id_mon).ToList());
 
@@ -448,37 +449,45 @@ namespace NA_Logic.Repository
 
                         _dbContext.Chitiet_Lichthi.AddRange(dsInsert);
                         _dbContext.SaveChanges();
-                        return true;
+                        var dsPhong = string.Join(", ", nhomChon.nhom.Select(p => $"Phòng {p.So_phong} (Tòa {p.Toa} - Tầng {p.Tang})"));
+                        return (true, $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - {dsPhong} - Vị trí: Giám sát ");
                     }
                     else
                         loai = random.Next(2, soGiamThiPhong + 2);
                 }
-
+                string ketQuaMessage = "";
                 if (loai != 1)
                 {
                     if (phongXepDuoc.Any())
                     {
                         var phongChon = phongXepDuoc[random.Next(phongXepDuoc.Count)];
-                        ketQua.Id_phong = phongChon.Id;
+                        ketQua.Id_phong = phongChon.Id == -1 ? null : phongChon.Id;
                         ketQua.Loai_giam_thi = loai;
-                        ketQua.La_phong_cho = false;
+                        ketQua.La_phong_cho = phongChon.Id == -1;
+
+                        ketQuaMessage = phongChon.Id == -1
+                            ? $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ"
+                            : $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng {phongChon.So_phong} (Tòa {phongChon.Toa} - Tầng {phongChon.Tang}" +
+                            $" - Vị trí: Giám thị {loai - 1}: )";
                     }
                     else
                     {
                         ketQua.Id_phong = null;
                         ketQua.Loai_giam_thi = loai;
                         ketQua.La_phong_cho = true;
+                        ketQuaMessage = $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ";
                     }
 
                     _dbContext.Chitiet_Lichthi.Add(ketQua);
                     _dbContext.SaveChanges();
+                    return (true, ketQuaMessage);
                 }
 
-                return true;
+                return (true, ketQuaMessage);
             }
             catch (Exception)
             {
-                return false;
+                return (false,null);
             }
         }
         public bool HuyKetQua(int idLich)

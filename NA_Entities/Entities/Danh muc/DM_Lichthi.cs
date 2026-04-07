@@ -25,6 +25,10 @@ namespace NA_Entities.Entities.Danh_muc
         public bool Bai_thi_tu_chon { get; set; } = false;
         public int Id_hoi_dong { get; set; }
         public int Id_nam { get; set; }
+        public string? Ten_mon { get; set; }
+        public string Ten_diem_thi { get; set; }
+        public string Ten_hoi_dong { get; set; }
+        public string Ten_nam { get; set; }
     }
     public class DM_Lichthi_List
     {

@@ -10,7 +10,7 @@ namespace NA_Logic.IRepository.LichThi
     public interface IXepGiamThiRepository
     {
         bool XepGiamThi(int idLich);
-        bool XepMotGiamThi(int idLich, int idGiamThi);
+        (bool success, string mess) XepMotGiamThi(int idLich, int idGiamThi);
         bool HuyKetQua(int idLich);
         object GetChiTietLichCoiThi(int idLich);
         List<DM_Giamthi> GetListChuaXep(int idLich);
