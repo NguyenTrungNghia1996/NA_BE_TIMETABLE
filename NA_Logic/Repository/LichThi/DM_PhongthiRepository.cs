@@ -163,7 +163,7 @@ namespace NA_Logic.Repository
             }
         }
 
-        public bool CheckId(int Id, int idDonvi)
+        public bool CheckIdByDonVi(int Id, int idDonvi)
         {
             if (Id <= 0) return false;
             try
@@ -177,6 +177,20 @@ namespace NA_Logic.Repository
                 var idDiemthi = idDiemthiByDonvi.Union(idDiemthiByHoidong).ToList();
 
                 var phongThi = _dbContext.DM_Phongthi.Any(c => c.Id == Id && idDiemthi.Contains(c.Id_diem_thi));
+                return phongThi;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool CheckIdByDiemThi(int Id, int idDiemThi)
+        {
+            if (Id <= 0) return false;
+            try
+            {
+
+                var phongThi = _dbContext.DM_Phongthi.Any(c => c.Id == Id && c.Id_diem_thi == idDiemThi);
                 return phongThi;
             }
             catch

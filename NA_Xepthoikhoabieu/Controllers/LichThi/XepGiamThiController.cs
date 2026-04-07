@@ -24,8 +24,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IAuthRepository _auth;
         private readonly IXepGiamThiRepository _xep;
         private readonly IDM_GiamthiRepository _giamthi;
+        private readonly IDM_PhongthiRepository _phong;
         public XepGiamThiController(IMapper mapper, IDM_LichthiRepository lichthi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi)
+                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi, IDM_PhongthiRepository phong)
         {
             _mapper = mapper;
             _lichthi = lichthi;
@@ -33,6 +34,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _xep = xep;
             _giamthi = giamthi;
+            _phong = phong;
         }
 
         [HttpPost]
@@ -52,9 +54,9 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success("Thành công");
         }
-        [HttpPost("le")]
+        [HttpGet]
         [RequireToken]
-        public IActionResult XepLẻ([FromQuery] int IdLich, [FromQuery] int idGiamThi)
+        public IActionResult GetKetQua([FromQuery] int IdLich)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
@@ -62,9 +64,61 @@ namespace NA_Xepthoikhoabieu.Controllers
             bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
             if (!checkLich)
                 return ApiResult.NotFound("Id lịch không hợp lệ");
-            bool checkGiamThi = _giamthi.CheckId(IdLich, idDonvi);
+
+            var xep = _xep.GetChiTietLichCoiThi(IdLich);
+            if (xep==null)
+                return ApiResult.BadRequest($"Thất bại");
+
+            return ApiResult.Success(new {data = xep} ,"Thành công");
+        }
+        [HttpGet("phongcho")]
+        [RequireToken]
+        public IActionResult GetPhongCho([FromQuery] int IdLich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
+            if (!checkLich)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+
+            var xep = _xep.GetListPhongCho(IdLich);
+            if (xep==null)
+                return ApiResult.BadRequest($"Thất bại");
+
+            return ApiResult.Success(new {data = xep} ,"Thành công");
+        }
+        [HttpGet("chuaxep")]
+        [RequireToken]
+        public IActionResult GetChuaXep([FromQuery] int IdLich)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
+            if (!checkLich)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+
+            var xep = _xep.GetListChuaXep(IdLich);
+            if (xep==null)
+                return ApiResult.BadRequest($"Thất bại");
+
+            return ApiResult.Success(new {data = xep} ,"Thành công");
+        }
+        [HttpPost("le")]
+        [RequireToken]
+        public IActionResult XepLe([FromQuery] int IdLich, [FromQuery] int idGiamThi)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
+            if (checkLich == null)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+
+            bool checkGiamThi = _giamthi.CheckId(idGiamThi, checkLich.Id_diem_thi);
             if (!checkGiamThi)
-                return ApiResult.NotFound("Id giám thị không hợp lệ");
+                return ApiResult.NotFound("Id giám sát không hợp lệ");
 
             var xep = _xep.XepGiamThi(IdLich);
             if (!xep)
@@ -85,7 +139,43 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             var xep = _xep.HuyKetQua(IdLich);
             if (!xep)
-                return ApiResult.BadRequest($"Xếp lịch thi thất bại");
+                return ApiResult.BadRequest($"Thất bại");
+
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPost("huyketqua/giamsat")]
+        [RequireToken]
+        public IActionResult HuyKetQuaGiamSat([FromQuery] int IdLich, [FromQuery] int IdGiamSat)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
+            bool checkGiamThi = _giamthi.CheckId(IdGiamSat, checkLich.Id_diem_thi);
+            if (!checkGiamThi)
+                return ApiResult.NotFound("Id giám sát không hợp lệ");
+
+            var xep = _xep.HuyKetQuaGiamSat(IdGiamSat);
+            if (!xep)
+                return ApiResult.BadRequest($"Thất bại");
+
+            return ApiResult.Success("Thành công");
+        }
+        [HttpPost("huyketqua/phong")]
+        [RequireToken]
+        public IActionResult HuyKetQuaPhong([FromQuery] int IdLich, [FromQuery] int IdPhong)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+
+            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
+            bool checkPhong = _phong.CheckIdByDiemThi(IdPhong, checkLich.Id_diem_thi);
+            if (!checkPhong)
+                return ApiResult.NotFound("Id phòng không hợp lệ");
+
+            var xep = _xep.HuyKetQuaPhong(IdPhong);
+            if (!xep)
+                return ApiResult.BadRequest($"Thất bại");
 
             return ApiResult.Success("Thành công");
         }

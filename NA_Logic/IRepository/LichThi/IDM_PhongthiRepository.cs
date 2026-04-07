@@ -14,7 +14,8 @@ namespace NA_Logic.IRepository.LichThi
         bool Add(DM_Phongthi phongthi);
         bool Update(DM_Phongthi phongthi);
         bool Delete(int id);
-        bool CheckId(int Id, int idDonvi);
+        bool CheckIdByDonVi(int Id, int idDonvi);
+        bool CheckIdByDiemThi(int Id, int idDiemThi);
         (bool result, string mess) Import(Stream file, int idDonvi);
     }
 }

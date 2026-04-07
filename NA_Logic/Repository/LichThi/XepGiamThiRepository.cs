@@ -494,5 +494,164 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
+        public object GetChiTietLichCoiThi(int idLich)
+        {
+            try
+            {
+                var lich = _dbContext.DM_Lichthi.FirstOrDefault(x => x.Id == idLich);
+                if (lich == null) 
+                    return null;
+
+                var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == lich.Id_diem_thi);
+                if (diemThi == null) 
+                    return null;
+
+                int soGiamThiPhong = diemThi.So_giam_thi_1_phong;
+                int? soPhongGiamSat = diemThi.So_phong_giam_sat_toi_da;
+
+                LoadAllInformation(idLich);
+
+                var chiTiet = _dbContext.Chitiet_Lichthi.Where(x => x.Id_lich == idLich && x.La_phong_cho != true).ToList();
+
+                var giamSatTheoPhong = chiTiet.Where(x => x.Loai_giam_thi == 1 && x.Id_phong != null)
+                    .ToDictionary(
+                        x => x.Id_phong!.Value,
+                        x => new {
+                            id = x.Id_giam_thi,
+                            ten = _dsGiamThi.FirstOrDefault(gt => gt.Id == x.Id_giam_thi)?.Ho_va_ten
+                        }
+                    );
+
+                var nhomPhongGiamSat = new List<List<DM_Phongthi>>();
+                if (soPhongGiamSat != null && soPhongGiamSat > 0)
+                {
+                    var groupByTang = _dsPhongThi.GroupBy(x => new { x.Toa, x.Tang });
+                    foreach (var tang in groupByTang)
+                    {
+                        var danhSachPhongTrongTang = tang.ToList();
+                        for (int i = 0; i < danhSachPhongTrongTang.Count; i += soPhongGiamSat.Value)
+                        {
+                            var nhom = danhSachPhongTrongTang.Skip(i).Take(soPhongGiamSat.Value).ToList();
+                            nhomPhongGiamSat.Add(nhom);
+                        }
+                    }
+                }
+                var duLieuPhanBo = _dsPhongThi.GroupBy(x => x.Toa)
+                    .Select(toaGroup => new
+                    {
+                        toa = toaGroup.Key,
+                        cac_tang = toaGroup.GroupBy(x => x.Tang)
+                            .Select(tangGroup => new
+                            {
+                                tang = $"Tầng {tangGroup.Key}",
+                                nhom_giam_sat = nhomPhongGiamSat.Where(nhom => nhom.Any(p => p.Toa == toaGroup.Key && p.Tang == tangGroup.Key))
+                                    .Select(nhom =>
+                                    {
+                                        var ctGiamSat = chiTiet.FirstOrDefault(x =>nhom.Any(p => p.Id == x.Id_phong) && x.Loai_giam_thi == 1);
+                                        DM_Giamthi? gtGiamSat = null;
+                                        if (ctGiamSat != null)
+                                            gtGiamSat = _dsGiamThi.FirstOrDefault(x => x.Id == ctGiamSat.Id_giam_thi);
+                                            
+
+                                        return new
+                                        {
+                                            ten_gst = gtGiamSat?.Ho_va_ten,
+                                            id_gst = gtGiamSat?.Id,
+                                            cac_phong_phu_trach = nhom.Select(phong =>
+                                            {
+                                                var phongObj = new Dictionary<string, object>
+                                                {
+                                                    { "so_phong", phong.So_phong.ToString() },
+                                                    { "id_phong", phong.Id }
+                                                };
+
+                                                for (int i = 1; i <= soGiamThiPhong; i++)
+                                                {
+                                                    var ct = chiTiet.FirstOrDefault(x => x.Id_phong == phong.Id && x.Loai_giam_thi == i + 1);
+                                                    var gt = ct != null ? _dsGiamThi.FirstOrDefault(x => x.Id == ct.Id_giam_thi) : null;
+                                                    phongObj[$"giam_thi_{i}"] = gt?.Ho_va_ten;
+                                                    phongObj[$"id_giam_thi_{i}"] = gt?.Id;
+                                                }
+                                                return phongObj;
+                                            }).ToList()
+                                        };
+                                    }).ToList()
+                            }).ToList()
+                    }).ToList();
+
+                var monThi = _dbContext.DM_Monthi.FirstOrDefault(x => x.Id == lich.Id_mon);
+
+                return new
+                {
+                    id_lich = lich.Id,
+                    diem_thi = diemThi.Ten,
+                    ngay_thi = lich.Ngay.ToString("dd/MM/yyyy"),
+                    du_lieu_phan_bo = duLieuPhanBo
+                };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<DM_Giamthi> GetListPhongCho(int idLich)
+        {
+            try
+            {
+                var list = (from gt in _dbContext.DM_Giamthi
+                            join lich in _dbContext.Chitiet_Lichthi on gt.Id equals lich.Id_giam_thi
+                            where lich.Id_lich == idLich && lich.La_phong_cho == true
+                            select gt).ToList();
+                return list;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public List<DM_Giamthi> GetListChuaXep(int idLich)
+        {
+            try
+            {
+                int idDiemThi = _dbContext.DM_Lichthi.Where(c => c.Id == idLich).Select(c => c.Id_diem_thi).FirstOrDefault();
+                var list = (from gt in _dbContext.DM_Giamthi
+                            join ct in _dbContext.Chitiet_Lichthi
+                                on new { gt.Id, idLich } equals new { Id = ct.Id_giam_thi, idLich = ct.Id_lich } into ctGroup
+                            from ct in ctGroup.DefaultIfEmpty()
+                            where gt.Id_diem_thi == idDiemThi && ct == null
+                            select gt).ToList();
+                return list;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public bool HuyKetQuaPhong(int idPhong)
+        {
+            try
+            {
+                var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_phong == idPhong).ToList();
+                _dbContext.BulkDelete(dataCu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool HuyKetQuaGiamSat(int idGiamSat)
+        {
+            try
+            {
+                var dataCu = _dbContext.Chitiet_Lichthi.Where(x => x.Id_giam_thi == idGiamSat && x.Loai_giam_thi == 1).ToList();
+                _dbContext.BulkDelete(dataCu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
