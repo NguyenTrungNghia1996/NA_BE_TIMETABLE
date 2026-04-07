@@ -126,7 +126,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success("Thành công");
         }
-        [HttpPost("huyketqua")]
+        [HttpDelete("huyketqua")]
         [RequireToken]
         public IActionResult HuyKetQua([FromQuery] int IdLich)
         {
@@ -143,7 +143,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success("Thành công");
         }
-        [HttpPost("huyketqua/giamsat")]
+        [HttpDelete("huyketqua/giamsat")]
         [RequireToken]
         public IActionResult HuyKetQuaGiamSat([FromQuery] int IdLich, [FromQuery] int IdGiamSat)
         {
@@ -161,7 +161,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             return ApiResult.Success("Thành công");
         }
-        [HttpPost("huyketqua/phong")]
+        [HttpDelete("huyketqua/phong")]
         [RequireToken]
         public IActionResult HuyKetQuaPhong([FromQuery] int IdLich, [FromQuery] int IdPhong)
         {
