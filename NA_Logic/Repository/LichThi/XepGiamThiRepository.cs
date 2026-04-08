@@ -178,10 +178,12 @@ namespace NA_Logic.Repository
                 var phongConLai = _dsPhongThi.ToList();
                 var soGiamThiTheoPhong = _dsPhongThi.ToDictionary(x => x.Id, x => 0);
                 var nhomCoGiamSat = new HashSet<int>();
+                var loaiTheoPhong = _dsPhongThi.ToDictionary(x => x.Id, x => new List<int>());
                 if (coPhongAo)
                 {
                     phongConLai.Add(phongAo);
                     soGiamThiTheoPhong[-1] = 0;
+                    loaiTheoPhong[-1] = new List<int>();
                 }
                 while (giamThiConLai.Any())
                 {
@@ -224,7 +226,7 @@ namespace NA_Logic.Repository
                     var phongCoThe = chon.PhongCoThe;
 
                     int loai;
-                    if (diemThi.Co_giam_sat || tongGiamSatCan == 0)
+                    if (diemThi.Co_giam_sat)
                         loai = random.Next(1, soGiamThiPhong + 2);
                     else
                         loai = random.Next(2, soGiamThiPhong + 2);
@@ -255,14 +257,23 @@ namespace NA_Logic.Repository
 
                     if (loai != 1)
                     {
-                        DM_Phongthi phongDuocChon = null;
+                        var cacLoaiCanThiem = Enumerable.Range(2, soGiamThiPhong).ToList(); // [2, 3, ...]
 
-                        if (phongCoThe.Any())
-                            phongDuocChon = phongCoThe[random.Next(phongCoThe.Count)];
-                        if (phongDuocChon != null)
+                        var phongHopLe = phongCoThe
+                            .Where(p => cacLoaiCanThiem.Any(l => !loaiTheoPhong[p.Id].Contains(l)))
+                            .ToList();
+
+                        DM_Phongthi phongDuocChon = null;
+                        if (phongHopLe.Any())
+                            phongDuocChon = phongHopLe[random.Next(phongHopLe.Count)];
+
+                        if (phongDuocChon == null)
                         {
-                            if (phongDuocChon.Id == -1)
+                            if (coPhongAo && soGiamThiTheoPhong[-1] < soGiamThiPhongAo)
                             {
+                                var loaiConThieuAo = cacLoaiCanThiem.Where(l => !loaiTheoPhong[-1].Contains(l)).ToList();
+                                loai = loaiConThieuAo.Any() ? loaiConThieuAo[random.Next(loaiConThieuAo.Count)] : 2;
+
                                 ketQua.Add(new Chitiet_Lichthi
                                 {
                                     Id_lich = idLich,
@@ -272,26 +283,48 @@ namespace NA_Logic.Repository
                                     La_phong_cho = true
                                 });
                                 soGiamThiTheoPhong[-1]++;
+                                loaiTheoPhong[-1].Add(loai);
                                 if (soGiamThiTheoPhong[-1] >= soGiamThiPhongAo)
                                     phongConLai.Remove(phongAo);
                             }
-                            else
-                            {
-                                ketQua.Add(new Chitiet_Lichthi
-                                {
-                                    Id_lich = idLich,
-                                    Id_phong = phongDuocChon.Id,
-                                    Id_giam_thi = giamThiDuocChon.Id,
-                                    Loai_giam_thi = loai,
-                                    La_phong_cho = false
-                                });
-
-                                soGiamThiTheoPhong[phongDuocChon.Id]++;
-
-                                if (soGiamThiTheoPhong[phongDuocChon.Id] >= soGiamThiPhong)
-                                    phongConLai.Remove(phongDuocChon);
-                            }
                         }
+                        else if (phongDuocChon.Id == -1)
+                        {
+                            var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[-1].Contains(l)).ToList();
+                            loai = loaiConThieu.Any() ? loaiConThieu[random.Next(loaiConThieu.Count)] : 2;
+
+                            ketQua.Add(new Chitiet_Lichthi
+                            {
+                                Id_lich = idLich,
+                                Id_phong = null,
+                                Id_giam_thi = giamThiDuocChon.Id,
+                                Loai_giam_thi = loai,
+                                La_phong_cho = true
+                            });
+                            soGiamThiTheoPhong[-1]++;
+                            loaiTheoPhong[-1].Add(loai);
+                            if (soGiamThiTheoPhong[-1] >= soGiamThiPhongAo)
+                                phongConLai.Remove(phongAo);
+                        }
+                        else
+                        {
+                            var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[phongDuocChon.Id].Contains(l)).ToList();
+                            loai = loaiConThieu.Any() ? loaiConThieu[random.Next(loaiConThieu.Count)] : 2;
+
+                            ketQua.Add(new Chitiet_Lichthi
+                            {
+                                Id_lich = idLich,
+                                Id_phong = phongDuocChon.Id,
+                                Id_giam_thi = giamThiDuocChon.Id,
+                                Loai_giam_thi = loai,
+                                La_phong_cho = false
+                            });
+                            soGiamThiTheoPhong[phongDuocChon.Id]++;
+                            loaiTheoPhong[phongDuocChon.Id].Add(loai);
+                            if (soGiamThiTheoPhong[phongDuocChon.Id] >= soGiamThiPhong)
+                                phongConLai.Remove(phongDuocChon);
+                        }
+
                     }
 
                     giamThiConLai.Remove(giamThiDuocChon);
@@ -336,6 +369,13 @@ namespace NA_Logic.Repository
                 {
                     if (ct.Id_phong != null && soGiamThiTheoPhong.ContainsKey(ct.Id_phong.Value))
                         soGiamThiTheoPhong[ct.Id_phong.Value]++;
+                }
+
+                var loaiTheoPhong = _dsPhongThi.ToDictionary(x => x.Id, x => new List<int>());
+                foreach (var ct in chiTietHienTai.Where(x => x.Loai_giam_thi != 1 && x.La_phong_cho != true))
+                {
+                    if (ct.Id_phong != null && loaiTheoPhong.ContainsKey(ct.Id_phong.Value))
+                        loaiTheoPhong[ct.Id_phong.Value].Add(ct.Loai_giam_thi);
                 }
 
                 var phongConLai = _dsPhongThi.Where(x => soGiamThiTheoPhong[x.Id] < soGiamThiPhong).ToList();
@@ -458,17 +498,34 @@ namespace NA_Logic.Repository
                 string ketQuaMessage = "";
                 if (loai != 1)
                 {
-                    if (phongXepDuoc.Any())
-                    {
-                        var phongChon = phongXepDuoc[random.Next(phongXepDuoc.Count)];
-                        ketQua.Id_phong = phongChon.Id == -1 ? null : phongChon.Id;
-                        ketQua.Loai_giam_thi = loai;
-                        ketQua.La_phong_cho = phongChon.Id == -1;
+                    var cacLoaiCanThiem = Enumerable.Range(2, soGiamThiPhong).ToList();
 
-                        ketQuaMessage = phongChon.Id == -1
-                            ? $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ"
-                            : $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng {phongChon.So_phong} (Tòa {phongChon.Toa} - Tầng {phongChon.Tang}" +
-                            $" - Vị trí: Giám thị {loai - 1}: )";
+                    var phongHopLe = phongXepDuoc
+                        .Where(p => p.Id == -1 || cacLoaiCanThiem.Any(l => !loaiTheoPhong[p.Id].Contains(l)))
+                        .ToList();
+
+                    if (phongHopLe.Any())
+                    {
+                        var phongChon = phongHopLe[random.Next(phongHopLe.Count)];
+
+                        if (phongChon.Id == -1)
+                        {
+                            ketQua.Id_phong = null;
+                            ketQua.Loai_giam_thi = loai;
+                            ketQua.La_phong_cho = true;
+                            ketQuaMessage = $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ";
+                        }
+                        else
+                        {
+                            var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[phongChon.Id].Contains(l)).ToList();
+                            loai = loaiConThieu[random.Next(loaiConThieu.Count)];
+
+                            ketQua.Id_phong = phongChon.Id;
+                            ketQua.Loai_giam_thi = loai;
+                            ketQua.La_phong_cho = false;
+                            ketQuaMessage = $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng {phongChon.So_phong} (Tòa {phongChon.Toa} - Tầng {phongChon.Tang})" +
+                                $" - Vị trí: Giám thị {loai - 1}";
+                        }
                     }
                     else
                     {
@@ -483,7 +540,7 @@ namespace NA_Logic.Repository
                     return (true, ketQuaMessage);
                 }
 
-                return (true, ketQuaMessage);
+                return (false, "");
             }
             catch (Exception)
             {
@@ -624,8 +681,7 @@ namespace NA_Logic.Repository
             {
                 int idDiemThi = _dbContext.DM_Lichthi.Where(c => c.Id == idLich).Select(c => c.Id_diem_thi).FirstOrDefault();
                 var list = (from gt in _dbContext.DM_Giamthi
-                            join ct in _dbContext.Chitiet_Lichthi
-                                on new { gt.Id, idLich } equals new { Id = ct.Id_giam_thi, idLich = ct.Id_lich } into ctGroup
+                            join ct in _dbContext.Chitiet_Lichthi on new { gt.Id, idLich } equals new { Id = ct.Id_giam_thi, idLich = ct.Id_lich } into ctGroup
                             from ct in ctGroup.DefaultIfEmpty()
                             where gt.Id_diem_thi == idDiemThi && ct == null
                             select gt).ToList();
