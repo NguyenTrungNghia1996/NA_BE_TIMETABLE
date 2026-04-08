@@ -257,59 +257,41 @@ namespace NA_Logic.Repository
 
                     if (loai != 1)
                     {
-                        var cacLoaiCanThiem = Enumerable.Range(2, soGiamThiPhong).ToList(); // [2, 3, ...]
-
-                        var phongHopLe = phongCoThe
-                            .Where(p => cacLoaiCanThiem.Any(l => !loaiTheoPhong[p.Id].Contains(l)))
-                            .ToList();
+                        var cacLoaiCanThiem = Enumerable.Range(2, soGiamThiPhong).ToList();
 
                         DM_Phongthi phongDuocChon = null;
-                        if (phongHopLe.Any())
-                            phongDuocChon = phongHopLe[random.Next(phongHopLe.Count)];
-
-                        if (phongDuocChon == null)
+                        if (phongCoThe.Any())
+                            phongDuocChon = phongCoThe[random.Next(phongCoThe.Count)];
+                        if (phongDuocChon.Id == -1)
                         {
-                            if (coPhongAo && soGiamThiTheoPhong[-1] < soGiamThiPhongAo)
-                            {
-                                var loaiConThieuAo = cacLoaiCanThiem.Where(l => !loaiTheoPhong[-1].Contains(l)).ToList();
-                                loai = loaiConThieuAo.Any() ? loaiConThieuAo[random.Next(loaiConThieuAo.Count)] : 2;
-
-                                ketQua.Add(new Chitiet_Lichthi
-                                {
-                                    Id_lich = idLich,
-                                    Id_phong = null,
-                                    Id_giam_thi = giamThiDuocChon.Id,
-                                    Loai_giam_thi = loai,
-                                    La_phong_cho = true
-                                });
-                                soGiamThiTheoPhong[-1]++;
-                                loaiTheoPhong[-1].Add(loai);
-                                if (soGiamThiTheoPhong[-1] >= soGiamThiPhongAo)
-                                    phongConLai.Remove(phongAo);
-                            }
-                        }
-                        else if (phongDuocChon.Id == -1)
-                        {
-                            var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[-1].Contains(l)).ToList();
-                            loai = loaiConThieu.Any() ? loaiConThieu[random.Next(loaiConThieu.Count)] : 2;
-
                             ketQua.Add(new Chitiet_Lichthi
                             {
                                 Id_lich = idLich,
                                 Id_phong = null,
                                 Id_giam_thi = giamThiDuocChon.Id,
-                                Loai_giam_thi = loai,
+                                Loai_giam_thi = 0,
                                 La_phong_cho = true
                             });
                             soGiamThiTheoPhong[-1]++;
-                            loaiTheoPhong[-1].Add(loai);
                             if (soGiamThiTheoPhong[-1] >= soGiamThiPhongAo)
                                 phongConLai.Remove(phongAo);
+                        }
+                        else if (phongDuocChon == null)
+                        {
+                            ketQua.Add(new Chitiet_Lichthi
+                            {
+                                Id_lich = idLich,
+                                Id_phong = null,
+                                Id_giam_thi = giamThiDuocChon.Id,
+                                Loai_giam_thi = 0,
+                                La_phong_cho = true
+                            });
                         }
                         else
                         {
                             var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[phongDuocChon.Id].Contains(l)).ToList();
-                            loai = loaiConThieu.Any() ? loaiConThieu[random.Next(loaiConThieu.Count)] : 2;
+                            if (loaiConThieu.Any() && !loaiConThieu.Contains(loai))
+                                loai = loaiConThieu[random.Next(loaiConThieu.Count)];
 
                             ketQua.Add(new Chitiet_Lichthi
                             {
@@ -324,9 +306,8 @@ namespace NA_Logic.Repository
                             if (soGiamThiTheoPhong[phongDuocChon.Id] >= soGiamThiPhong)
                                 phongConLai.Remove(phongDuocChon);
                         }
-
+                        
                     }
-
                     giamThiConLai.Remove(giamThiDuocChon);
                 }
 
@@ -437,7 +418,8 @@ namespace NA_Logic.Repository
                 int soGiamThiChuaXep = _dsGiamThi.Count - chiTietHienTai.Select(x => x.Id_giam_thi).Distinct().Count();
                 bool coPhongAo = soGiamThiChuaXep > tongSlotConTrong + (nhomPhongGiamSat.Count - nhomCoGiamSat.Count);
                 var phongAo = coPhongAo ? new DM_Phongthi { Id = -1 } : null;
-
+                if (coPhongAo)
+                    phongConLai.Add(phongAo);
                 var phongXepDuoc = new List<DM_Phongthi>();
                 foreach (var phong in phongConLai)
                 {
@@ -452,7 +434,7 @@ namespace NA_Logic.Repository
                     if (!coTrungMon)
                         phongXepDuoc.Add(phong);
                 }
-
+                
                 var random = new Random();
                 int loai;
                 if (diemThi.Co_giam_sat)
@@ -500,25 +482,22 @@ namespace NA_Logic.Repository
                 {
                     var cacLoaiCanThiem = Enumerable.Range(2, soGiamThiPhong).ToList();
 
-                    var phongHopLe = phongXepDuoc
-                        .Where(p => p.Id == -1 || cacLoaiCanThiem.Any(l => !loaiTheoPhong[p.Id].Contains(l)))
-                        .ToList();
-
-                    if (phongHopLe.Any())
+                    if (phongXepDuoc.Any())
                     {
-                        var phongChon = phongHopLe[random.Next(phongHopLe.Count)];
+                        var phongChon = phongXepDuoc[random.Next(phongXepDuoc.Count)];
 
                         if (phongChon.Id == -1)
                         {
                             ketQua.Id_phong = null;
-                            ketQua.Loai_giam_thi = loai;
+                            ketQua.Loai_giam_thi = 0;
                             ketQua.La_phong_cho = true;
                             ketQuaMessage = $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ";
                         }
                         else
                         {
                             var loaiConThieu = cacLoaiCanThiem.Where(l => !loaiTheoPhong[phongChon.Id].Contains(l)).ToList();
-                            loai = loaiConThieu[random.Next(loaiConThieu.Count)];
+                            if (loaiConThieu.Any() && !loaiConThieu.Contains(loai))
+                                loai = loaiConThieu[random.Next(loaiConThieu.Count)];
 
                             ketQua.Id_phong = phongChon.Id;
                             ketQua.Loai_giam_thi = loai;
@@ -529,10 +508,7 @@ namespace NA_Logic.Repository
                     }
                     else
                     {
-                        ketQua.Id_phong = null;
-                        ketQua.Loai_giam_thi = loai;
-                        ketQua.La_phong_cho = true;
-                        ketQuaMessage = $"Kết quả bốc thăm của giám thị: {giamThi.Ho_va_ten} - Phòng chờ";
+                        return (false, "Không có phòng phù hợp để xếp giám thị");
                     }
 
                     _dbContext.Chitiet_Lichthi.Add(ketQua);
