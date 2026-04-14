@@ -107,5 +107,10 @@ namespace NA_Logic.Repository
             var env = _configuration.GetSection("Environment").Value ?? "Dev";
             return env.Equals("Demo", StringComparison.OrdinalIgnoreCase);
         }
+        public bool IsLiveSite()
+        {
+            var env = _configuration.GetSection("Environment").Value ?? "Dev";
+            return env.Equals("Live", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

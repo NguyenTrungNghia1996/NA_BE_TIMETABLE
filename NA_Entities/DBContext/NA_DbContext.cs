@@ -217,12 +217,18 @@ namespace NA_Entities.DBContext
 
             var environment = _configuration["Environment"];
             var isdemo = environment == "Demo";
+            var islive = environment == "Live";
             builder.Entity<DM_Donvi>(entity =>
             {
                 if (!isdemo)
                 {
                     entity.Ignore(e => e.Id_tinh);
                     entity.Ignore(e => e.Nguoi_lien_he);
+                }
+                if (islive)
+                {
+                    entity.Ignore(e => e.La_so_giao_duc);
+                    entity.Ignore(e => e.Id_cha);
                 }
             });
             base.OnModelCreating(builder);
