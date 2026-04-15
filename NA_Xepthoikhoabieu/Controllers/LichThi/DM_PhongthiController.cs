@@ -157,11 +157,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (phongthidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _phongthi.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
+            bool check = _phongthi.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Phòng thi đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _phongthi.Delete(id);
             if (!request)

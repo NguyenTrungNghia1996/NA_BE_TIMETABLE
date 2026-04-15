@@ -13,6 +13,7 @@ namespace NA_Logic.IRepository.LichThi
         DM_Phongthi_Detail GetDetailById(int Id, int idDonvi);
         bool Add(DM_Phongthi phongthi);
         bool Update(DM_Phongthi phongthi);
+        bool Check_constraint(int Id);
         bool Delete(int id);
         bool CheckIdByDonVi(int Id, int idDonvi);
         bool CheckIdByDiemThi(int Id, int idDiemThi);

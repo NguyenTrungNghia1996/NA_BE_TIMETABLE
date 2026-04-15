@@ -154,8 +154,7 @@ namespace NA_Logic.Repository
             {
 
                 return _dbContext.Database.SqlQuery<int>($@"
-                          select 1 as Value from DM_Giamthi where Id_diem_thi = {Id}
-                          union select 1 from DM_Phongthi where Id_diem_thi = {Id}").Any();
+                          select 1 from Phongthi_Thisinh where Id_phong = {Id}").Any();
             }
             catch (Exception)
             {
