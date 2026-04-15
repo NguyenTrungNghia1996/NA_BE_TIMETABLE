@@ -26,7 +26,7 @@ namespace NA_Logic.Repository
             _dbContext = dbContext;
         }
 
-        public List<DM_Thisinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idDiemThi, int idHoiDong, int idPhong)
+        public List<DM_Thisinh_List> GetList_Paging(int PageIndex, int PageSize, string search, int idDonvi, int idDiemThi, int idHoiDong, int idPhong, bool? trangThai)
         {
             try
             {
@@ -58,8 +58,13 @@ namespace NA_Logic.Repository
                 {
                     Value = idPhong
                 };
-                var result = _dbContext.Set<DM_Thisinh_List>().FromSqlRaw("EXEC [DM_Thisinh_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idDiemThi, @idHoiDong, @idPhong",
-                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdDiemThi, paramIdHoiDong, paramIdPhong).ToList();
+                var paramTrangThai = new SqlParameter("trangThai", SqlDbType.Bit)
+                {
+                    Value = (object)trangThai ?? DBNull.Value
+                };
+                var result = _dbContext.Set<DM_Thisinh_List>().FromSqlRaw("EXEC [DM_Thisinh_GetList_Paging] @pageIndex, @pageSize, @search, @idDonvi, @idDiemThi, " +
+                    "@idHoiDong, @idPhong, @trangThai",
+                    paramPageIndex, paramPageSize, paramSearch, paramIdDonvi, paramIdDiemThi, paramIdHoiDong, paramIdPhong, paramTrangThai).ToList();
                 if (result == null) result = new List<DM_Thisinh_List>();
                 return result;
             }

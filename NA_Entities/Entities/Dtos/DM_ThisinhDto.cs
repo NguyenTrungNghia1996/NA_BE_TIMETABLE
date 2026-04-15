@@ -45,5 +45,6 @@ namespace NA_Entities.Entities.Dtos
         public int? Mon_thi_1 { get; set; }
         public string? Ten_mon_2 { get; set; }
         public int? Mon_thi_2 { get; set; }
+        public int? So_phong { get; set; }
     }
 }

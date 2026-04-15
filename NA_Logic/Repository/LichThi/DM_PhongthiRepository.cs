@@ -99,12 +99,12 @@ namespace NA_Logic.Repository
             {
                 var idHoidong = _dbContext.DM_Diemthi.Where(c => c.Id == phongthi.Id_diem_thi).Select(c => c.Id_hoi_dong).FirstOrDefault();
 
-                var soPhongHienCo = (from p in _dbContext.DM_Phongthi
+                var soPhongMax = (from p in _dbContext.DM_Phongthi
                                      join d in _dbContext.DM_Diemthi on p.Id_diem_thi equals d.Id
                                      where d.Id_hoi_dong == idHoidong
-                                     select p).Count();
+                                     select p.So_phong).Max();
 
-                phongthi.So_phong = soPhongHienCo + 1;
+                phongthi.So_phong = soPhongMax + 1;
 
                 _dbContext.DM_Phongthi.Add(phongthi);
                 _dbContext.SaveChanges();

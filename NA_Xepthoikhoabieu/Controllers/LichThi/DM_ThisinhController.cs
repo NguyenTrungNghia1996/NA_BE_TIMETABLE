@@ -41,7 +41,7 @@ namespace NA_Xepthoikhoabieu.Controllers
         }
         [HttpGet]
         [RequireToken]
-        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize, [FromQuery] string search = "",
+        public IActionResult GetList_Paging([FromQuery] int PageIndex, [FromQuery] int PageSize,[FromQuery] bool? trangThai, [FromQuery] string search = "",
                                             [FromQuery] int idDiemThi = 0, [FromQuery] int idHoiDong = 0, [FromQuery] int idPhong = 0)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
@@ -55,7 +55,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (!checkHoiDong && idHoiDong > 0)
                 return ApiResult.BadRequest("Id hội đồng không hợp lệ");
 
-            var list = _thisinh.GetList_Paging(PageIndex, PageSize, search, idDonvi, idDiemThi, idHoiDong, idPhong);
+            var list = _thisinh.GetList_Paging(PageIndex, PageSize, search, idDonvi, idDiemThi, idHoiDong, idPhong, trangThai);
             if (list == null || list.Count == 0)
                 return ApiResult.Ok();
             var listDto = _mapper.Map<List<DM_Thisinh_ListDto>>(list);
