@@ -24,5 +24,6 @@ namespace NA_Logic.IRepository.LichThi
         bool CheckIdCha(int? IdCha, int idDonvi);
         bool CheckIsCha(int? Id, int idDonvi);
         bool CheckIdTuChon(int? Id, int idDonvi);
+        bool Check_constraint(int Id);
     }
 }

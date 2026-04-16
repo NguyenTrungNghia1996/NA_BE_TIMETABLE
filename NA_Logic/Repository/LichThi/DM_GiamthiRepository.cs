@@ -198,20 +198,19 @@ namespace NA_Logic.Repository
             }
         }
 
-        //public bool Check_constraint(int Id)
-        //{
-        //    try
-        //    {
+        public bool Check_constraint(int Id)
+        {
+            try
+            {
 
-        //        return _dbContext.Database.SqlQuery<int>($@"
-        //                  select 1 as Value from Phanphoi_Chuongtrinh where Id_nam_hoc = {Id}
-        //                  union select 1 from Lich_Baogiang where Id_nam_hoc = {Id}").Any();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+                return _dbContext.Database.SqlQuery<int>($@"
+                          select 1 as Value from Chitiet_Lichthi where Id_giam_thi = {Id}").Any();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public bool CheckId(int Id, int idDiemThi)
         {

@@ -25,8 +25,9 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IXepGiamThiRepository _xep;
         private readonly IDM_GiamthiRepository _giamthi;
         private readonly IDM_PhongthiRepository _phong;
+        private readonly IPhongthi_ThisinhRepository _phongThisinh;
         public XepGiamThiController(IMapper mapper, IDM_LichthiRepository lichthi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi, IDM_PhongthiRepository phong)
+                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi, IDM_PhongthiRepository phong, IPhongthi_ThisinhRepository phongThisinh)
         {
             _mapper = mapper;
             _lichthi = lichthi;
@@ -35,6 +36,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _xep = xep;
             _giamthi = giamthi;
             _phong = phong;
+            _phongThisinh = phongThisinh;
         }
 
         [HttpPost]
@@ -44,10 +46,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
 
-            bool checkLich = _lichthi.CheckId(IdLich, idDonvi);
-            if (!checkLich)
+            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
+            if (checkLich == null)
                 return ApiResult.NotFound("Id lịch không hợp lệ");
-
+            bool checkPhong = _phongThisinh.CheckPhongCoThiSinh(checkLich.Id_diem_thi);
+            if (checkPhong == false)
+                return ApiResult.BadRequest("Chưa xếp thí sinh vào phòng thi, vui lòng xếp phòng trước");
             var xep = _xep.XepGiamThi(IdLich);
             if (!xep)
                 return ApiResult.BadRequest($"Xếp lịch thi thất bại");
@@ -115,7 +119,9 @@ namespace NA_Xepthoikhoabieu.Controllers
             var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
             if (checkLich == null) 
                 return ApiResult.NotFound("Id lịch không hợp lệ");
-
+            bool checkPhong = _phongThisinh.CheckPhongCoThiSinh(checkLich.Id_diem_thi);
+            if (checkPhong == false)
+                return ApiResult.BadRequest("Chưa xếp thí sinh vào phòng thi, vui lòng xếp phòng trước");
             bool checkGiamThi = _giamthi.CheckId(idGiamThi, checkLich.Id_diem_thi);
             if (!checkGiamThi)
                 return ApiResult.NotFound("Id giám sát không hợp lệ");

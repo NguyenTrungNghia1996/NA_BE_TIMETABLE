@@ -181,7 +181,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             bool request = _diemthi.Delete(id, idDonvi);
             if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.BadRequest("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
 

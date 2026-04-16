@@ -219,11 +219,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (thisinhdb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _thisinh.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
+            bool check = _thisinh.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Thí sinh đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _thisinh.Delete(id);
             if (!request)

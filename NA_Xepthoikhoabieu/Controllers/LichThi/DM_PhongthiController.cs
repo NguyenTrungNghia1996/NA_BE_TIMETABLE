@@ -165,7 +165,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             bool request = _phongthi.Delete(id);
             if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.BadRequest("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
         [HttpPost("import")]

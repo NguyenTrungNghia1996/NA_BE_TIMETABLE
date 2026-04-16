@@ -19,6 +19,7 @@ namespace NA_Logic.IRepository.LichThi
         bool Delete(int id);
         bool CheckMa(string Ma, int idDiemThi, int? Id);
         bool CheckId(int Id, int idDiemThi);
+        bool Check_constraint(int Id);
         (bool success, string mess) Import(IFormFile file, int idDonvi);
     }
 }

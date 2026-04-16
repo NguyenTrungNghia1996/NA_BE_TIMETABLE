@@ -180,10 +180,12 @@ namespace NA_Xepthoikhoabieu.Controllers
             //{
             //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
             //}
-
+            bool deleteChiTiet = _lichthi.DeleteChiTiet(id);
+            if (!deleteChiTiet)
+                return ApiResult.BadRequest("Xoá chi tiết thất bại");
             bool request = _lichthi.Delete(id);
             if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.BadRequest("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
     }

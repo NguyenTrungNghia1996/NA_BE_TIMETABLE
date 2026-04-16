@@ -96,7 +96,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             
             bool add = _hoidong.Add(item);
             if (!add)
-                return ApiResult.NotFound("Thêm mới thất bại, lưu dữ liệu không thành công");
+                return ApiResult.BadRequest("Thêm mới thất bại, lưu dữ liệu không thành công");
 
             return ApiResult.Success(new
             {
@@ -136,7 +136,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             bool add = _hoidong.Update(item);
             if (!add)
-                return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");
+                return ApiResult.BadRequest("Cập nhật thất bại, lưu dữ liệu không thành công");
             return ApiResult.Success(new
             {
                 item = hoidong
@@ -163,7 +163,7 @@ namespace NA_Xepthoikhoabieu.Controllers
 
             bool request = _hoidong.Delete(id, idDonvi);
             if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.BadRequest("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
         

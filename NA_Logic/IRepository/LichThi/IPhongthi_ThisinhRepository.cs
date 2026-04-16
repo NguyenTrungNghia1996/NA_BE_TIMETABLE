@@ -10,5 +10,6 @@ namespace NA_Logic.IRepository.LichThi
     {
         bool XepPhongTheoHoiDong(int idHoiDong);
         bool XepPhongTheoDiemThi(int idDiemThi);
+        bool CheckPhongCoThiSinh(int idDiemThi);
     }
 }

@@ -174,15 +174,15 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (giamthidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _giamthi.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
+            bool check = _giamthi.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Giám thị đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _giamthi.Delete(id);
             if (!request)
-                return ApiResult.NotFound("Xóa thất bại");
+                return ApiResult.BadRequest("Xóa thất bại");
             return ApiResult.Ok("Xóa thành công");
         }
         [HttpPost("import")]

@@ -15,6 +15,7 @@ namespace NA_Logic.IRepository.LichThi
         bool Update(DM_Thisinh thisinh);
         bool Delete(int id);
         bool CheckId(int Id, int idDonvi);
+        bool Check_constraint(int Id);
         (bool result, string mess, List<ThiSinhCheck?> list) Import(Stream file, int idDonvi);
         bool DanhSoBaoDanh(int idHoiDong);
         bool CheckCCCD(string CCCD, int idDiemThi, int? Id);

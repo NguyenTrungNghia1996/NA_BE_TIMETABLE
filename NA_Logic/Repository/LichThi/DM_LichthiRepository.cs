@@ -152,21 +152,39 @@ namespace NA_Logic.Repository
                 return false;
             }
         }
-
-        public bool Check_constraint(int Id)
+        public bool DeleteChiTiet(int id)
         {
             try
             {
-
-                return _dbContext.Database.SqlQuery<int>($@"
-                          select 1 as Value from DM_Giamthi where Id_diem_thi = {Id}
-                          union select 1 from DM_Lichthi where Id_diem_thi = {Id}").Any();
+                var lichthi = _dbContext.Chitiet_Lichthi.FirstOrDefault(c => c.Id_lich == id);
+                if (lichthi == null)
+                {
+                    return false;
+                }
+                _dbContext.Chitiet_Lichthi.Remove(lichthi);
+                _dbContext.SaveChanges();
+                return true;
             }
             catch (Exception)
             {
                 return false;
             }
         }
+
+        //public bool Check_constraint(int Id)
+        //{
+        //    try
+        //    {
+
+        //        return _dbContext.Database.SqlQuery<int>($@"
+        //                  select 1 as Value from DM_Giamthi where Id_diem_thi = {Id}
+        //                  union select 1 from DM_Lichthi where Id_diem_thi = {Id}").Any();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
 
         public bool CheckId(int Id, int idDonvi)
         {

@@ -277,11 +277,11 @@ namespace NA_Xepthoikhoabieu.Controllers
             if (monthidb == null)
                 return ApiResult.NotFound($"Bản ghi có Id= {id} không tồn tại, vui lòng kiểm tra lại");
             //check ràng buộc
-            //bool check = _monthi.CheckContraint(id, idDonvi);
-            //if (check)
-            //{
-            //    return ApiResult.BadRequest("Học sinh đã có ràng buộc, không thể xoá");
-            //}
+            bool check = _monthi.Check_constraint(id);
+            if (check)
+            {
+                return ApiResult.BadRequest("Môn thi đã có ràng buộc, không thể xoá");
+            }
 
             bool request = _monthi.Delete(id, idDonvi);
             if (!request)

@@ -183,5 +183,11 @@ namespace NA_Logic.Repository.LichThi
                 return false;
             }
         }
+        public bool CheckPhongCoThiSinh(int idDiemThi)
+        {
+            return _context.DM_Phongthi
+                .Any(p => p.Id_diem_thi == idDiemThi
+                    && _context.Phongthi_Thisinh.Any(pt => pt.Id_phong == p.Id));
+        }
     }
 }

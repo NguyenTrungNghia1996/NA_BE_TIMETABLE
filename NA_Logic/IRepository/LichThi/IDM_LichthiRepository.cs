@@ -14,6 +14,7 @@ namespace NA_Logic.IRepository.LichThi
         bool Add(DM_Lichthi lichthi);
         bool Update(DM_Lichthi lichthi);
         bool Delete(int id);
+        bool DeleteChiTiet(int id);
         bool CheckId(int Id, int idDonvi);
     }
 }
