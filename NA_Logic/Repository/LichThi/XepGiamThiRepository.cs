@@ -109,7 +109,44 @@ namespace NA_Logic.Repository
                 return;
             }
         }
+        public (bool isValid, string message) ValidateSoGiamThi(int idLich)
+        {
+            var lich = _dbContext.DM_Lichthi.FirstOrDefault(x => x.Id == idLich);
+            if (lich == null)
+                return (false, "Lịch thi không tồn tại");
 
+            var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == lich.Id_diem_thi);
+            if (diemThi == null)
+                return (false, "Điểm thi không tồn tại");
+
+            var dsPhong = _dbContext.DM_Phongthi
+                .Where(p => p.Id_diem_thi == lich.Id_diem_thi && _dbContext.Phongthi_Thisinh.Any(pt => pt.Id_phong == p.Id))
+                .OrderBy(x => x.Toa).ThenBy(x => x.Tang).ThenBy(x => x.So_phong).ToList();
+
+            if (!dsPhong.Any())
+                return (false, "Chưa xếp thí sinh vào phòng thi, vui lòng xếp phòng trước");
+
+            int tongGiamThiThuongCan = dsPhong.Count * diemThi.So_giam_thi_1_phong;
+
+            int tongGiamSatCan = 0;
+            if (diemThi.Co_giam_sat && diemThi.So_phong_giam_sat_toi_da != null && diemThi.So_phong_giam_sat_toi_da > 0)
+            {
+                var groupByTang = dsPhong.GroupBy(x => new { x.Toa, x.Tang });
+                foreach (var tang in groupByTang)
+                {
+                    int soNhom = (int)Math.Ceiling((double)tang.Count() / diemThi.So_phong_giam_sat_toi_da.Value);
+                    tongGiamSatCan += soNhom;
+                }
+            }
+
+            int tongCan = tongGiamThiThuongCan + tongGiamSatCan;
+            int soGiamThiHienCo = _dbContext.DM_Giamthi.Count(x => x.Id_diem_thi == lich.Id_diem_thi);
+
+            if (soGiamThiHienCo < tongCan)
+                return (false, $"Không đủ giám thị, cần {tongCan} người nhưng hiện chỉ có {soGiamThiHienCo} người");
+
+            return (true, "Đủ giám thị");
+        }
         public bool XepGiamThi(int idLich)
         {
             try

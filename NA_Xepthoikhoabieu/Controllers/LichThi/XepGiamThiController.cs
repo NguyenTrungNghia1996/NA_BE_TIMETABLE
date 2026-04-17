@@ -38,7 +38,21 @@ namespace NA_Xepthoikhoabieu.Controllers
             _phong = phong;
             _phongThisinh = phongThisinh;
         }
+        [HttpGet("check")]
+        [RequireToken]
+        public IActionResult ValidateSoGiamThi([FromQuery] int IdLich = 0)
+        {
+            int idDonvi = _claimHelperRepository.GetIdDonvi(User);
+            if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
+            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
+            if (checkLich == null)
+                return ApiResult.NotFound("Id lịch không hợp lệ");
+            (bool add, string mess) = _xep.ValidateSoGiamThi(IdLich);
+            if (!add)
+                return ApiResult.BadRequest(mess);
 
+            return ApiResult.Success("Thành công");
+        }
         [HttpPost]
         [RequireToken]
         public IActionResult XepTuDong([FromQuery] int IdLich)

@@ -11,5 +11,8 @@ namespace NA_Logic.IRepository.LichThi
         bool XepPhongTheoHoiDong(int idHoiDong);
         bool XepPhongTheoDiemThi(int idDiemThi);
         bool CheckPhongCoThiSinh(int idDiemThi);
+        (bool isValid, string message) ValidateSoPhongTheoDiemThi(int idDiemThi);
+        (bool isValid, string message) ValidateSoPhongTheoHoiDong(int idHoiDong);
+        bool Delete(int id);
     }
 }
