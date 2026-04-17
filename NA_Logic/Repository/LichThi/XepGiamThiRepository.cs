@@ -109,18 +109,15 @@ namespace NA_Logic.Repository
                 return;
             }
         }
-        public (bool isValid, string message) ValidateSoGiamThi(int idLich)
+        public (bool isValid, string message) ValidateSoGiamThi(int idDiemThi)
         {
-            var lich = _dbContext.DM_Lichthi.FirstOrDefault(x => x.Id == idLich);
-            if (lich == null)
-                return (false, "Lịch thi không tồn tại");
 
-            var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == lich.Id_diem_thi);
+            var diemThi = _dbContext.DM_Diemthi.FirstOrDefault(x => x.Id == idDiemThi);
             if (diemThi == null)
                 return (false, "Điểm thi không tồn tại");
 
             var dsPhong = _dbContext.DM_Phongthi
-                .Where(p => p.Id_diem_thi == lich.Id_diem_thi && _dbContext.Phongthi_Thisinh.Any(pt => pt.Id_phong == p.Id))
+                .Where(p => p.Id_diem_thi == idDiemThi && _dbContext.Phongthi_Thisinh.Any(pt => pt.Id_phong == p.Id))
                 .OrderBy(x => x.Toa).ThenBy(x => x.Tang).ThenBy(x => x.So_phong).ToList();
 
             if (!dsPhong.Any())
@@ -140,7 +137,7 @@ namespace NA_Logic.Repository
             }
 
             int tongCan = tongGiamThiThuongCan + tongGiamSatCan;
-            int soGiamThiHienCo = _dbContext.DM_Giamthi.Count(x => x.Id_diem_thi == lich.Id_diem_thi);
+            int soGiamThiHienCo = _dbContext.DM_Giamthi.Count(x => x.Id_diem_thi == idDiemThi);
 
             if (soGiamThiHienCo < tongCan)
                 return (false, $"Không đủ giám thị, cần {tongCan} người nhưng hiện chỉ có {soGiamThiHienCo} người");

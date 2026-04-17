@@ -154,6 +154,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             {
                 return ApiResult.BadRequest("Id môn thi không hợp lệ, vui lòng kiểm tra lại");
             }
+            item.Id_diem_thi = lichthidb.Id_diem_thi;
             bool update = _lichthi.Update(item);
             if (!update)
                 return ApiResult.NotFound("Cập nhật thất bại, lưu dữ liệu không thành công");

@@ -17,6 +17,6 @@ namespace NA_Logic.IRepository.LichThi
         List<DM_Giamthi> GetListPhongCho(int idLich);
         bool HuyKetQuaPhong(int idPhong);
         bool HuyKetQuaGiamSat(int idGiamSat);
-        (bool isValid, string message) ValidateSoGiamThi(int idLich);
+        (bool isValid, string message) ValidateSoGiamThi(int idDiemThi);
     }
 }

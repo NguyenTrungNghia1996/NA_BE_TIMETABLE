@@ -20,6 +20,7 @@ namespace NA_Xepthoikhoabieu.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IDM_LichthiRepository _lichthi;
+        private readonly IDM_DiemthiRepository _diemthi;
         private readonly IClaimHelperRepository _claimHelperRepository;
         private readonly IAuthRepository _auth;
         private readonly IXepGiamThiRepository _xep;
@@ -27,7 +28,8 @@ namespace NA_Xepthoikhoabieu.Controllers
         private readonly IDM_PhongthiRepository _phong;
         private readonly IPhongthi_ThisinhRepository _phongThisinh;
         public XepGiamThiController(IMapper mapper, IDM_LichthiRepository lichthi, IClaimHelperRepository claimHelperRepository, IAuthRepository auth,
-                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi, IDM_PhongthiRepository phong, IPhongthi_ThisinhRepository phongThisinh)
+                                    IXepGiamThiRepository xep, IDM_GiamthiRepository giamthi, IDM_PhongthiRepository phong, IPhongthi_ThisinhRepository phongThisinh, 
+                                    IDM_DiemthiRepository diemthi)
         {
             _mapper = mapper;
             _lichthi = lichthi;
@@ -37,17 +39,18 @@ namespace NA_Xepthoikhoabieu.Controllers
             _giamthi = giamthi;
             _phong = phong;
             _phongThisinh = phongThisinh;
+            _diemthi = diemthi;
         }
         [HttpGet("check")]
         [RequireToken]
-        public IActionResult ValidateSoGiamThi([FromQuery] int IdLich = 0)
+        public IActionResult ValidateSoGiamThi([FromQuery] int idDiemThi = 0)
         {
             int idDonvi = _claimHelperRepository.GetIdDonvi(User);
             if (idDonvi == 0) return ApiResult.Unauthorized("Thông tin đơn vị không hợp lệ, vui lòng kiểm tra lại hoặc liên hệ admin để biết thêm chi tiết");
-            var checkLich = _lichthi.GetDetailById(IdLich, idDonvi);
-            if (checkLich == null)
-                return ApiResult.NotFound("Id lịch không hợp lệ");
-            (bool add, string mess) = _xep.ValidateSoGiamThi(IdLich);
+            var checkDiemThi = _diemthi.GetDetailById(idDiemThi, idDonvi);
+            if (checkDiemThi == null)
+                return ApiResult.NotFound("Id điểm thi không hợp lệ");
+            (bool add, string mess) = _xep.ValidateSoGiamThi(idDiemThi);
             if (!add)
                 return ApiResult.BadRequest(mess);
 
