@@ -218,8 +218,7 @@ namespace NA_Logic.Repository
             try
             {
 
-                return _dbContext.Database.SqlQuery<int>($@"
-                          select 1 from Phongthi_Thisinh where Id_thi_sinh = {Id}").Any();
+                return _dbContext.Phongthi_Thisinh.Any(c => c.Id_thi_sinh == Id);
             }
             catch (Exception)
             {
