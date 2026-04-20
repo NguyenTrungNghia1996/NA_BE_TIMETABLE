@@ -54,7 +54,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
             (bool add, string mess) = (false,"");
-            if (idHoiDong != 0 && idHoiDong != null)
+            if (idHoiDong != 0 && idHoiDong != null && idDiemThi == 0)
                 (add,mess) = _pt.ValidateSoPhongTheoHoiDong(idHoiDong);
 
             else if (idDiemThi != 0 && idDiemThi != null)
@@ -86,7 +86,7 @@ namespace NA_Xepthoikhoabieu.Controllers
                 return ApiResult.BadRequest("Id điểm thi không hợp lệ, vui lòng kiểm tra lại");
             }
             bool add = false;
-            if (idHoiDong != 0 && idHoiDong != null)
+            if (idHoiDong != 0 && idHoiDong != null && idDiemThi == 0)
                 add = _pt.XepPhongTheoHoiDong(idHoiDong);
             
             else if (idDiemThi != 0 && idDiemThi != null)
