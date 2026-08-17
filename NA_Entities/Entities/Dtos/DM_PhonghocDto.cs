@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -42,6 +42,7 @@ namespace NA_Entities.Entities.Dtos
     public class Phong_banDto
     {
         public int Id { get; set; } = 0;
+        public bool apply_all { get; set; } = false;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
 }

@@ -1,4 +1,4 @@
-﻿using EFCore.BulkExtensions;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -271,22 +271,57 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
 
             return result;
         }
-        public bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong)
+        public bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong, bool applyAll = false, int idDonvi = 0)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                var existingTietBan = _context.Tiet_ban.Where(tb => tb.Id_phong == idPhong).ToList();
+                if (applyAll)
+                {
+                    var dsIds = (from p in _context.DM_Phonghoc
+                                 join d in _context.DM_Diemtruong on p.Id_Diem_truong equals d.Id
+                                 where d.Id_don_vi == idDonvi
+                                 select p.Id).ToList();
 
-                //xóa
-                if (existingTietBan.Any())
-                {
-                    _context.BulkDelete(existingTietBan);
+                    var existingTietBan = _context.Tiet_ban.Where(tb => dsIds.Contains(tb.Id_phong)).ToList();
+                    if (existingTietBan.Any())
+                    {
+                        _context.BulkDelete(existingTietBan);
+                    }
+
+                    var listToInsert = new List<Tiet_ban>();
+                    if (dsTietBan != null && dsTietBan.Any())
+                    {
+                        foreach (var id in dsIds)
+                        {
+                            foreach (var t in dsTietBan)
+                            {
+                                listToInsert.Add(new Tiet_ban
+                                {
+                                    Id_phong = id,
+                                    Id_ca = t.Id_ca,
+                                    Thu = t.Thu,
+                                    Tiet = t.Tiet
+                                });
+                            }
+                        }
+                        _context.BulkInsert(listToInsert);
+                    }
                 }
-                //thêm
-                if (dsTietBan != null && dsTietBan.Any())
+                else
                 {
-                    _context.BulkInsert(dsTietBan);
+                    var existingTietBan = _context.Tiet_ban.Where(tb => tb.Id_phong == idPhong).ToList();
+
+                    //xóa
+                    if (existingTietBan.Any())
+                    {
+                        _context.BulkDelete(existingTietBan);
+                    }
+                    //thêm
+                    if (dsTietBan != null && dsTietBan.Any())
+                    {
+                        _context.BulkInsert(dsTietBan);
+                    }
                 }
 
                 transaction.Commit();

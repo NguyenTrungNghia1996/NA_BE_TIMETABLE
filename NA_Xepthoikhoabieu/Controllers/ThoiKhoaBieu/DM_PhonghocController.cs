@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -263,7 +263,7 @@ namespace NA_Xepthoikhoabieu.Controllers.ThoiKhoaBieu
             if (errors.Any())
                 return ApiResult.BadRequest(string.Join("; ", errors));
             //add
-            bool result = _phonghoc.AddTietBan(danhSachTietBan,phongban.Id);
+            bool result = _phonghoc.AddTietBan(danhSachTietBan, phongban.Id, phongban.apply_all, idDonvi);
             if (!result)
                 return ApiResult.NotFound("Cập nhật tiết bận thất bại");
 

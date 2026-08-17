@@ -1,4 +1,4 @@
-﻿using NA_Entities.Entities.Danh_muc;
+using NA_Entities.Entities.Danh_muc;
 using NA_Entities.Entities.Dtos;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace NA_Logic.IRepository.XepThoiKhoaBieu
         bool Update(DM_Phonghoc dM_Phonghoc);
         bool Delete(int Id);
         Phong_banDto GetListTietBan(int Id, int idDonvi);
-        bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong);
+        bool AddTietBan(List<Tiet_ban> dsTietBan, int idPhong, bool applyAll = false, int idDonvi = 0);
         bool CheckId(int? Id, int idDonvi);
         bool CheckId_Phongchuyendung(int? Id, int idDonvi);
         bool CheckId_Phongtruyenthong(int? Id, int idDonvi);
