@@ -22,6 +22,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             _auth = auth;
             _file = file;
         }
+        // import db excel từ phần mềm cũ sang 
         [HttpPost("import")]
         [RequireToken]
         public IActionResult Import(IFormFile file, [FromForm] int id_don_vi)
