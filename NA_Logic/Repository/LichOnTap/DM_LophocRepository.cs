@@ -1,4 +1,4 @@
-﻿using EFCore.BulkExtensions;
+using EFCore.BulkExtensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -220,12 +220,39 @@ namespace NA_Logic.Repository.LichOnTap
 
             return result;
         }
-        public bool AddTietBan(List<Lophoc_Tietnghi> dsTietBan, int idLop)
+        public bool AddTietBan(List<Lophoc_Tietnghi> dsTietBan, int idLop, bool applyAllGrade = false, bool applyAllSchool = false, int idDonvi = 0)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                var existingTietBan = _context.Lophoc_Tietnghi.Where(tb => tb.Id_lop == idLop).ToList();
+                List<int> dsIds = new List<int>();
+
+                if (applyAllSchool)
+                {
+                    dsIds = _context.DM_Lophoc
+                                    .Where(l => l.Id_don_vi == idDonvi)
+                                    .Select(l => l.Id).ToList();
+                }
+                else if (applyAllGrade)
+                {
+                    var lopHienTai = _context.DM_Lophoc.FirstOrDefault(l => l.Id == idLop);
+                    if (lopHienTai != null)
+                    {
+                        dsIds = _context.DM_Lophoc
+                                        .Where(l => l.Id_don_vi == idDonvi && l.Id_khoi == lopHienTai.Id_khoi)
+                                        .Select(l => l.Id).ToList();
+                    }
+                    else
+                    {
+                        dsIds.Add(idLop);
+                    }
+                }
+                else
+                {
+                    dsIds.Add(idLop);
+                }
+
+                var existingTietBan = _context.Lophoc_Tietnghi.Where(tb => dsIds.Contains(tb.Id_lop)).ToList();
 
                 //xóa
                 if (existingTietBan.Any())
@@ -233,9 +260,23 @@ namespace NA_Logic.Repository.LichOnTap
                     _context.BulkDelete(existingTietBan);
                 }
                 //thêm
+                var listToInsert = new List<Lophoc_Tietnghi>();
                 if (dsTietBan != null && dsTietBan.Any())
                 {
-                    _context.BulkInsert(dsTietBan); 
+                    foreach (var id in dsIds)
+                    {
+                        foreach (var t in dsTietBan)
+                        {
+                            listToInsert.Add(new Lophoc_Tietnghi
+                            {
+                                Id_lop = id,
+                                Id_ca = t.Id_ca,
+                                Ngay = t.Ngay,
+                                Tiet = t.Tiet
+                            });
+                        }
+                    }
+                    _context.BulkInsert(listToInsert); 
                 }
 
                 transaction.Commit();

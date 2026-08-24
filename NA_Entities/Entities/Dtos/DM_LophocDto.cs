@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -48,6 +48,8 @@ namespace NA_Entities.Entities.Dtos
     public class Lophoc_banDto
     {
         public int Id_lop { get; set; } = 0;
+        public bool ApplyAllGrade { get; set; } = false;
+        public bool ApplyAllSchool { get; set; } = false;
         public List<Ca_banDto> Ds_Ca { get; set; } = new List<Ca_banDto>();
     }
 }
