@@ -22,6 +22,7 @@ namespace NA_Entities.Entities.Auth
         public int Id_Donvi { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsAdmin { get; set; }
+        public DateTime? CreateAt { get; set; }
     }
     public class Auth_Users_List
     {
@@ -33,5 +34,6 @@ namespace NA_Entities.Entities.Auth
         public string? Tendonvi { get; set; } = string.Empty;
         public bool? IsActive { get; set; }
         public bool? IsAdmin { get; set; }
+        public DateTime? CreateAt { get; set; }
     }
 }

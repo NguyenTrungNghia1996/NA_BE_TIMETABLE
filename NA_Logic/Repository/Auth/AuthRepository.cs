@@ -93,6 +93,7 @@ namespace NA_Logic.Repository.Auth
                 if (getPass == null) getPass = "1";
                 string hashPassword = _passwordhash.HashPassword(getPass);
                 user.Password = hashPassword;
+                user.CreateAt = DateTime.Now;
                 _context.Auth_Users.Add(user);
                 _context.SaveChanges();
                 return true;
@@ -108,6 +109,7 @@ namespace NA_Logic.Repository.Auth
             {
                 string hashPassword = _passwordhash.HashPassword(user.Password);
                 user.Password = hashPassword;
+                user.CreateAt = DateTime.Now;
                 _context.Auth_Users.Add(user);
                 _context.SaveChanges();
                 return true;
