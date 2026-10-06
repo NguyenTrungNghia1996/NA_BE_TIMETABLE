@@ -346,7 +346,7 @@ namespace NA_Xepthoikhoabieu.Controllers.Auth
             }
             if (user.IsActive != true)
             {
-                return ApiResult.Forbidden("Tài khoản chưa kích hoạt");
+                return ApiResult.Forbidden("Tài khoản đã bị khóa");
             }
 
             var validPassword = _passwordHasher.VerifyPassword(user.Password, loginDto.Password);
