@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +15,7 @@ namespace NA_Logic.IRepository
         byte[] ExportExcel_MaTranKhoi(int idtkb);
         byte[] ExportExcel_MaTranGiaoVien(int idtkb);
         byte[] ExportExcel_MaTranToChuyenMon(int idtkb, int idDonvi);
+        byte[] ExportExcel_MaTranToChuyenMon_TheoCa(int idtkb, int idDonvi);
         byte[] ExportExcel_MaTranLop(int idtkb);
         byte[] ExportExcel_MaTranLop_Doc(int idtkb);
         byte[] ExportBackUp(int idDonvi);
