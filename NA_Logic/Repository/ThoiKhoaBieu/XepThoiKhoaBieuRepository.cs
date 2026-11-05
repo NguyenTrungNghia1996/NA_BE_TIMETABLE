@@ -105,7 +105,8 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 _ObjectMon = _dsObjectMon.FirstOrDefault(c => c.Id_mon == objectTiet.Id_mon);
                 _ObjectLop = _dsObjectLop.FirstOrDefault(c => c.Id_lop == objectTiet.Id_lop);
                 _ObjectGiaovien = _dsObjectGiaovien.FirstOrDefault(c => c.Id_giao_vien == objectTiet.Id_giao_vien);
-                _ObjectGiaovien.ds_tiet_da_xep = ds_da_xep;
+                //_ObjectGiaovien.ds_tiet_da_xep = ds_da_xep;
+                _ObjectGiaovien.ds_tiet_da_xep = ds_da_xep.Where(x => x.Id_giao_vien == objectTiet.Id_giao_vien || x.Id_lop == objectTiet.Id_lop).ToList();
                 _ObjectGiaovien.ds_tiet_chua_xep = ds_chua_xep;
                 if (objectTiet.Id_phong == 0)
                 {
@@ -1392,11 +1393,41 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 var dsTietChuaXep = new List<Object_Tiet>();
                 var dsTietDaXep = new List<Object_Tiet>();
                 var dsTietBoqua = new List<Object_Tiet>();
-                for ( int i = 0; i< idmon.Count; i++)
+
+                // Nạp các tiết đã xếp của các môn khác để tránh xếp trùng GV, Lớp, Phòng
+                dsTietDaXep.AddRange(_dsTietGoc.Where(c => !idmon.Contains(c.Id_mon ?? 0) && c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0));
+
+                for (int i = 0; i < idmon.Count; i++)
                 {
                     int id = idmon[i];
-                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay == 0 && c.Tiet == 0));
-                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_mon == id && c.Ngay > 0 && c.Tiet > 0));
+                    var dsTheoMon = _dsTietGoc.Where(c => c.Id_mon == id).ToList();
+                    foreach (var tiet in dsTheoMon)
+                    {
+                        if (tiet.Id_ca > 0 && tiet.Ngay > 0 && tiet.Tiet > 0)
+                        {
+                            bool biTrung = dsTietDaXep.Any(t =>
+                                t.Id_ca == tiet.Id_ca && t.Ngay == tiet.Ngay && t.Tiet == tiet.Tiet &&
+                                (t.Id_giao_vien == tiet.Id_giao_vien ||
+                                 t.Id_lop == tiet.Id_lop ||
+                                 (tiet.Id_phong > 0 && t.Id_phong == tiet.Id_phong)));
+
+                            if (!biTrung)
+                            {
+                                dsTietDaXep.Add(tiet);
+                            }
+                            else
+                            {
+                                tiet.Id_ca = 0;
+                                tiet.Ngay = 0;
+                                tiet.Tiet = 0;
+                                dsTietChuaXep.Add(tiet);
+                            }
+                        }
+                        else
+                        {
+                            dsTietChuaXep.Add(tiet);
+                        }
+                    }
                 }
                 // 2. Xử lý tiết cố định
                 if (dsTietDaXep == null || dsTietDaXep.Count == 0)
@@ -1411,12 +1442,20 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
-                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
-                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
-                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
-                                dsTietChuaXep.Remove(_dsTietGoc[i]);
-                                dsTietDaXep.Add(_dsTietGoc[i]
-                                    );
+                                bool biTrung = dsTietDaXep.Any(t =>
+                                    t.Id_ca == tietCoDinh.Id_ca && t.Ngay == tietCoDinh.Ngay && t.Tiet == tietCoDinh.Tiet &&
+                                    (t.Id_giao_vien == _dsTietGoc[i].Id_giao_vien ||
+                                     t.Id_lop == _dsTietGoc[i].Id_lop ||
+                                     (_dsTietGoc[i].Id_phong > 0 && t.Id_phong == _dsTietGoc[i].Id_phong)));
+
+                                if (!biTrung)
+                                {
+                                    _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
+                                    _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                    _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                    dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                    dsTietDaXep.Add(_dsTietGoc[i]);
+                                }
                             }
 
                         }
@@ -1462,6 +1501,12 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt => vt.Ngay >= 1 && vt.Ngay <= _soNgay);
+                    if (viTriChon == null)
+                    {
+                        dsTietBoqua.Add(tietCanXep);
+                        dsTietChuaXep.Remove(tietCanXep);
+                        continue;
+                    }
                     tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
@@ -1499,11 +1544,41 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 var dsTietChuaXep = new List<Object_Tiet>();
                 var dsTietDaXep = new List<Object_Tiet>();
                 var dsTietBoqua = new List<Object_Tiet>();
-                for ( int i = 0; i< idgv.Count; i++)
+
+                // Nạp các tiết đã xếp của các giáo viên khác để tránh xếp trùng Lớp, Phòng
+                dsTietDaXep.AddRange(_dsTietGoc.Where(c => !idgv.Contains(c.Id_giao_vien ?? 0) && c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0));
+
+                for (int i = 0; i < idgv.Count; i++)
                 {
                     int id = idgv[i];
-                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay == 0 && c.Tiet == 0));
-                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_giao_vien == id && c.Ngay > 0 && c.Tiet > 0));
+                    var dsTheoGv = _dsTietGoc.Where(c => c.Id_giao_vien == id).ToList();
+                    foreach (var tiet in dsTheoGv)
+                    {
+                        if (tiet.Id_ca > 0 && tiet.Ngay > 0 && tiet.Tiet > 0)
+                        {
+                            bool biTrung = dsTietDaXep.Any(t =>
+                                t.Id_ca == tiet.Id_ca && t.Ngay == tiet.Ngay && t.Tiet == tiet.Tiet &&
+                                (t.Id_giao_vien == tiet.Id_giao_vien ||
+                                 t.Id_lop == tiet.Id_lop ||
+                                 (tiet.Id_phong > 0 && t.Id_phong == tiet.Id_phong)));
+
+                            if (!biTrung)
+                            {
+                                dsTietDaXep.Add(tiet);
+                            }
+                            else
+                            {
+                                tiet.Id_ca = 0;
+                                tiet.Ngay = 0;
+                                tiet.Tiet = 0;
+                                dsTietChuaXep.Add(tiet);
+                            }
+                        }
+                        else
+                        {
+                            dsTietChuaXep.Add(tiet);
+                        }
+                    }
                 }
                 // 2. Xử lý tiết cố định
                 if (dsTietDaXep == null || dsTietDaXep.Count == 0)
@@ -1518,12 +1593,20 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
-                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
-                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
-                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
-                                dsTietChuaXep.Remove(_dsTietGoc[i]);
-                                dsTietDaXep.Add(_dsTietGoc[i]
-                                    );
+                                bool biTrung = dsTietDaXep.Any(t =>
+                                    t.Id_ca == tietCoDinh.Id_ca && t.Ngay == tietCoDinh.Ngay && t.Tiet == tietCoDinh.Tiet &&
+                                    (t.Id_giao_vien == _dsTietGoc[i].Id_giao_vien ||
+                                     t.Id_lop == _dsTietGoc[i].Id_lop ||
+                                     (_dsTietGoc[i].Id_phong > 0 && t.Id_phong == _dsTietGoc[i].Id_phong)));
+
+                                if (!biTrung)
+                                {
+                                    _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
+                                    _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                    _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                    dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                    dsTietDaXep.Add(_dsTietGoc[i]);
+                                }
                             }
 
                         }
@@ -1569,6 +1652,12 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt => vt.Ngay >= 1 && vt.Ngay <= _soNgay);
+                    if (viTriChon == null)
+                    {
+                        dsTietBoqua.Add(tietCanXep);
+                        dsTietChuaXep.Remove(tietCanXep);
+                        continue;
+                    }
                     tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
@@ -1606,11 +1695,41 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                 var dsTietChuaXep = new List<Object_Tiet>();
                 var dsTietDaXep = new List<Object_Tiet>();
                 var dsTietBoqua = new List<Object_Tiet>();
-                for ( int i = 0; i< idlop.Count; i++)
+
+                // Nạp các tiết đã xếp của các lớp khác để tránh xếp trùng GV, Phòng
+                dsTietDaXep.AddRange(_dsTietGoc.Where(c => !idlop.Contains(c.Id_lop ?? 0) && c.Id_ca > 0 && c.Ngay > 0 && c.Tiet > 0));
+
+                for (int i = 0; i < idlop.Count; i++)
                 {
                     int id = idlop[i];
-                    dsTietChuaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay == 0 && c.Tiet == 0));
-                    dsTietDaXep.AddRange(_dsTietGoc.Where(c => c.Id_lop == id && c.Ngay > 0 && c.Tiet > 0));
+                    var dsTheoLop = _dsTietGoc.Where(c => c.Id_lop == id).ToList();
+                    foreach (var tiet in dsTheoLop)
+                    {
+                        if (tiet.Id_ca > 0 && tiet.Ngay > 0 && tiet.Tiet > 0)
+                        {
+                            bool biTrung = dsTietDaXep.Any(t =>
+                                t.Id_ca == tiet.Id_ca && t.Ngay == tiet.Ngay && t.Tiet == tiet.Tiet &&
+                                (t.Id_giao_vien == tiet.Id_giao_vien ||
+                                 t.Id_lop == tiet.Id_lop ||
+                                 (tiet.Id_phong > 0 && t.Id_phong == tiet.Id_phong)));
+
+                            if (!biTrung)
+                            {
+                                dsTietDaXep.Add(tiet);
+                            }
+                            else
+                            {
+                                tiet.Id_ca = 0;
+                                tiet.Ngay = 0;
+                                tiet.Tiet = 0;
+                                dsTietChuaXep.Add(tiet);
+                            }
+                        }
+                        else
+                        {
+                            dsTietChuaXep.Add(tiet);
+                        }
+                    }
                 }
                 // 2. Xử lý tiết cố định
                 if (dsTietDaXep == null || dsTietDaXep.Count == 0)
@@ -1625,12 +1744,20 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                             LoadObjectsPhongFromTiet(_dsTietGoc[i]);
                             if (_ObjectPhong == null || _ObjectPhong.Id_loai_phong == 1)
                             {
-                                _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
-                                _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
-                                _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
-                                dsTietChuaXep.Remove(_dsTietGoc[i]);
-                                dsTietDaXep.Add(_dsTietGoc[i]
-                                    );
+                                bool biTrung = dsTietDaXep.Any(t =>
+                                    t.Id_ca == tietCoDinh.Id_ca && t.Ngay == tietCoDinh.Ngay && t.Tiet == tietCoDinh.Tiet &&
+                                    (t.Id_giao_vien == _dsTietGoc[i].Id_giao_vien ||
+                                     t.Id_lop == _dsTietGoc[i].Id_lop ||
+                                     (_dsTietGoc[i].Id_phong > 0 && t.Id_phong == _dsTietGoc[i].Id_phong)));
+
+                                if (!biTrung)
+                                {
+                                    _dsTietGoc[i].Id_ca = tietCoDinh.Id_ca;
+                                    _dsTietGoc[i].Ngay = tietCoDinh.Ngay;
+                                    _dsTietGoc[i].Tiet = tietCoDinh.Tiet;
+                                    dsTietChuaXep.Remove(_dsTietGoc[i]);
+                                    dsTietDaXep.Add(_dsTietGoc[i]);
+                                }
                             }
 
                         }
@@ -1676,6 +1803,12 @@ namespace NA_Logic.Repository.ThoiKhoaBieu
                     }
                     // b5: Update tiết này vào database (chọn vị trí đầu tiên có thể xếp)
                     var viTriChon = tietCanXep.Ds_vi_tri_xep_duoc.FirstOrDefault(vt => vt.Ngay >= 1 && vt.Ngay <= _soNgay);
+                    if (viTriChon == null)
+                    {
+                        dsTietBoqua.Add(tietCanXep);
+                        dsTietChuaXep.Remove(tietCanXep);
+                        continue;
+                    }
                     tietCanXep.Id_ca = viTriChon.Ca;
                     tietCanXep.Ngay = viTriChon.Ngay;
                     tietCanXep.Tiet = viTriChon.Tiet;
