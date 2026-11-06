@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NA_Entities.DBContext;
@@ -108,6 +108,8 @@ namespace NA_Logic.Repository
                         maTKB = range.Cell(1, 2).GetString().Trim();
                     }
 
+                    CheckDuplicateRoomCodes(worksheet, range, headerRow);
+
                     var headers = new List<string>();
                     int maDiemTruongCol = -1;
                     int maTkbCol = -1;
@@ -208,6 +210,8 @@ namespace NA_Logic.Repository
                         continue;
                     }
 
+                    CheckDuplicateRoomCodes(worksheet, range, 1);
+
                     var headers = new List<string>();
                     var headerRow = range.Row(1);
                     for (int col = 1; col <= range.ColumnCount(); col++)
@@ -290,43 +294,90 @@ namespace NA_Logic.Repository
             return result;
         }
 
-        public bool ImportExcelToDb(Stream stream, int idDonvi)
+        private void CheckDuplicateRoomCodes(IXLWorksheet worksheet, IXLRange range, int headerRow)
         {
-            try
+            if (ConvertToPascalCase(worksheet.Name) != "DsPhongHoc")
+                return;
+
+            int maPhongCol = -1;
+            for (int col = 1; col <= range.ColumnCount(); col++)
             {
-                var json = ImportAccessConvertExcelToJson(stream);
-                var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
-                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
-                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
-
-                _context.Database.ExecuteSqlRaw("EXEC [InsertFromAccess] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
-
-                var errorMessage = paramMessage.Value?.ToString() ?? "";
-                return errorMessage == "success";
+                var header = range.Cell(headerRow, col).GetString().ToLower();
+                if (header.Contains("mã") || header.Contains("ma"))
+                {
+                    maPhongCol = col;
+                    break;
+                }
             }
-            catch
+
+            if (maPhongCol == -1) return;
+
+            var roomCodeRows = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
+
+            for (int row = headerRow + 1; row <= range.RowCount(); row++)
             {
-                return false;
+                var cell = range.Cell(row, maPhongCol);
+                var code = cell.GetString().Trim();
+
+                if (string.IsNullOrEmpty(code)) continue;
+
+                var firstCellStr = range.Cell(row, 1).GetString().Trim().ToLower();
+                if (firstCellStr.Contains("tiết") || firstCellStr.Contains("tiet"))
+                    continue;
+
+                int excelRowNum = cell.Address.RowNumber;
+                if (!roomCodeRows.TryGetValue(code, out var rowList))
+                {
+                    rowList = new List<int>();
+                    roomCodeRows[code] = rowList;
+                }
+                rowList.Add(excelRowNum);
+            }
+
+            var duplicates = roomCodeRows.Where(kv => kv.Value.Count > 1).ToList();
+            if (duplicates.Any())
+            {
+                var details = duplicates.Select(kv => $"Các dòng {string.Join(", ", kv.Value)} đang trùng mã \"{kv.Key}\"");
+                if (duplicates.Count == 1)
+                {
+                    throw new Exception($"Danh sách phòng học có mã bị trùng: {details.First()}");
+                }
+                throw new Exception("Danh sách phòng học có mã bị trùng:\n" + string.Join("\n", details));
             }
         }
+
+        public bool ImportExcelToDb(Stream stream, int idDonvi)
+        {
+            var json = ImportAccessConvertExcelToJson(stream);
+            var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
+            var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
+            var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+
+            _context.Database.ExecuteSqlRaw("EXEC [InsertFromAccess] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
+
+            var errorMessage = paramMessage.Value?.ToString() ?? "";
+            if (errorMessage != "success")
+            {
+                throw new Exception(string.IsNullOrEmpty(errorMessage) ? "Import thất bại" : errorMessage);
+            }
+            return true;
+        }
+
         public bool ImportBackUpToDb(Stream stream, int idDonvi)
         {
-            try
-            {
-                var json = ImportBackUpConvertExcelToJson(stream);
-                var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
-                var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
-                var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
+            var json = ImportBackUpConvertExcelToJson(stream);
+            var paramJson = new SqlParameter("json", SqlDbType.NVarChar, -1) { Value = json };
+            var paramIdDonvi = new SqlParameter("idDonvi", SqlDbType.Int) { Value = idDonvi };
+            var paramMessage = new SqlParameter("ErrorMessage", SqlDbType.NVarChar, -1) { Direction = ParameterDirection.Output };
 
-                _context.Database.ExecuteSqlRaw("EXEC [InsertFromBackUp] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
+            _context.Database.ExecuteSqlRaw("EXEC [InsertFromBackUp] @json, @idDonvi, @ErrorMessage OUTPUT", paramJson, paramIdDonvi, paramMessage);
 
-                var errorMessage = paramMessage.Value?.ToString() ?? "";
-                return errorMessage == "success";
-            }
-            catch
+            var errorMessage = paramMessage.Value?.ToString() ?? "";
+            if (errorMessage != "success")
             {
-                return false;
+                throw new Exception(string.IsNullOrEmpty(errorMessage) ? "Import thất bại" : errorMessage);
             }
+            return true;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NA_Logic.IRepository;
 using NA_Logic.IRepository.Auth;
@@ -46,7 +46,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return ApiResult.BadRequest(ex.Message);
             }
         }
         [HttpPost("exceltojson")]
@@ -66,7 +66,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return ApiResult.BadRequest(ex.Message);
             }
         }
         [HttpPost("backuptojson")]
@@ -86,7 +86,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return ApiResult.BadRequest(ex.Message);
             }
         }
         [HttpPost("backup/import")]
@@ -108,7 +108,7 @@ namespace NA_Xepthoikhoabieu.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}");
+                return ApiResult.BadRequest(ex.Message);
             }
         }
     }
